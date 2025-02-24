@@ -1,0 +1,55 @@
+{
+  "name": "openmcp-mono",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "yarn@4.6.0",
+  "engines": {
+    "node": ">= 20"
+  },
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "libs/*",
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "--deps--": "",
+    "check-constraints": "yarn constraints",
+    "doctor": "yarn dlx @yarnpkg/doctor",
+    "--dev--": "",
+    "dev": "nx run-many --target dev --projects www api-event-ingestor worker bull-board --output-style stream --parallel 4",
+    "docker.up": "docker compose -f ./docker/docker-compose.yml up -d",
+    "docker.down": "docker compose -f ./docker/docker-compose.yml down --remove-orphans",
+    "docker.nuke": "yarn docker.down -v",
+    "clean": "rm -r **/node_modules && rm -r **/.nx && rm -r **/dist && rm -r **/build",
+    "lint": "nx run-many --target lint",
+    "lint.fix": "yarn lint --fix && prettier --ignore-path .eslintignore --write \"**/*.{ts,tsx}\";",
+    "test": "nx run-many --target test --exclude @marbemac/root",
+    "test.ch": "nx run-many --target test.ch --exclude @marbemac/root",
+    "typecheck": "nx run-many --target typecheck --exclude @marbemac/root demo"
+  },
+  "devDependencies": {
+    "@yarnpkg/types": "~4.0.0",
+    "nx": "20.4.4",
+    "prettier": "3.5.1",
+    "prettier-plugin-classnames": "~0.7.6",
+    "typescript": "5.7.3"
+  },
+  "prettier": {
+    "endingPosition": "absolute-with-indent",
+    "arrowParens": "avoid",
+    "printWidth": 120,
+    "trailingComma": "all",
+    "proseWrap": "always",
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "package*.json",
+        "options": {
+          "printWidth": 1000
+        }
+      }
+    ]
+  }
+}

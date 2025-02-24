@@ -1,0 +1,18 @@
+{
+  "extends": "nx/presets/npm.json",
+  "defaultBase": "main",
+  "useDaemonProcess": false,
+  "cli": {
+    "packageManager": "yarn"
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"],
+      "cache": true
+    },
+    "typecheck": {
+      "cache": true
+    }
+  }
+}

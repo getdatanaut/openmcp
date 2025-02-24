@@ -1,0 +1,23 @@
+{
+	"name": "server",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"deploy": "workers-mcp docgen src/index.ts && wrangler deploy",
+		"dev": "wrangler dev",
+		"dev.bun": "bun run src/index-bun.ts",
+		"start": "wrangler dev",
+		"cf-typegen": "wrangler types"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "4.20250214.0",
+		"@modelcontextprotocol/sdk": "1.5.0",
+		"@stoplight/http-spec": "7.1.0",
+		"cloudflare-workers-sse": "2.0.0",
+		"openapi-mcp-server": "1.2.0-beta05",
+		"workers-mcp": "0.0.13",
+		"wrangler": "3.109.2",
+		"zod": "3.24.2"
+	}
+}

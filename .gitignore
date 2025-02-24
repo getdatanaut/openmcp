@@ -1,0 +1,62 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+dist
+build
+# do not ignore built dist files in yalc'd packages
+!.yalc/**/dist
+tmp
+out-tsc
+.cache
+.wrangler
+storybook-static
+.nx
+stats.html
+.vinxi
+.vercel
+.output
+
+# typescript
+*.tsbuildinfo
+
+# dependencies
+node_modules
+
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/coverage
+yarn-error.log
+.no-checkin
+.ignore
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# env
+.env.local
+.env.*.local
