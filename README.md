@@ -1,6 +1,7 @@
 # Open MCP
 
 ```bash
+yarn workspace server dev
 npx @modelcontextprotocol/inspector
 # open http://localhost:5173
 # connect to http://localhost:8787/sse
