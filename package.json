@@ -33,11 +33,25 @@
     "@yarnpkg/types": "~4.0.1",
     "nx": "20.4.4",
     "prettier": "3.5.1",
-    "prettier-plugin-classnames": "~0.7.6",
+    "prettier-plugin-classnames": "0.7.6",
+    "prettier-plugin-tailwindcss": "0.6.11",
     "typescript": "5.8.2"
   },
   "prettier": {
+    "plugins": [
+      "prettier-plugin-classnames",
+      "prettier-plugin-tailwindcss"
+    ],
+    "customAttributes": [],
+    "customFunctions": [
+      "tx",
+      "tw"
+    ],
     "endingPosition": "absolute-with-indent",
+    "tailwindFunctions": [
+      "tw",
+      "tx"
+    ],
     "arrowParens": "avoid",
     "printWidth": 120,
     "trailingComma": "all",
