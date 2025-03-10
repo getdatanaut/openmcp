@@ -1,0 +1,11 @@
+{
+  "name": "@libs/tsconfig",
+  "version": "0.0.0",
+  "license": "MIT",
+  "files": [
+    "tsconfig.base.json",
+    "tsconfig.node.json",
+    "tsconfig.react.json",
+    "tsconfig.workerd.json"
+  ]
+}
