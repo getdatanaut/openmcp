@@ -2,7 +2,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import ReactDOM from 'react-dom/client';
 
 import { Button } from './components/Button.tsx';
-import { routeTree } from './routeTree.gen';
+import { routeTree } from './routeTree.gen.ts';
 
 // Set up a Router instance
 const router = createRouter({
