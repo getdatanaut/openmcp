@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
   "files.associations": {
     "wrangler.json": "jsonc",
     "*.css": "tailwindcss"
