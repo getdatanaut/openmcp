@@ -1,35 +1,45 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/router-devtools';
+import '../assets/app.css';
+
+import { createRootRoute, HeadContent, Outlet, retainSearchParams } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import { z } from 'zod';
+
+import { fallback } from '~/utils/routing.ts';
+// import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+
+const rootSearchSchema = z.object({
+  sidebar: fallback(z.enum(['history', 'servers', 'dev', 'settings']), 'history'),
+});
 
 export const Route = createRootRoute({
   component: RootComponent,
+  validateSearch: rootSearchSchema,
+  search: {
+    middlewares: [retainSearchParams(['sidebar'])],
+  },
 });
 
 function RootComponent() {
+  useReactScan();
+
   return (
     <>
-      <div className="flex gap-2 p-2 text-lg">
-        <Link
-          to="/"
-          activeProps={{
-            className: 'font-bold',
-          }}
-          activeOptions={{ exact: true }}
-        >
-          Home
-        </Link>{' '}
-        <Link
-          to="/about"
-          activeProps={{
-            className: 'font-bold',
-          }}
-        >
-          About
-        </Link>
-      </div>
-      <hr />
+      <HeadContent />
       <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
     </>
   );
 }
+
+let reactScanAdded = false;
+const useReactScan = () => {
+  useEffect(() => {
+    if (!import.meta.env.DEV || reactScanAdded) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/react-scan/dist/auto.global.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    reactScanAdded = true;
+  }, []);
+};

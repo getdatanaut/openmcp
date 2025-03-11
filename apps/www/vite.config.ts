@@ -11,6 +11,7 @@ export default defineConfig({
     TanStackRouterVite({
       target: 'react',
       autoCodeSplitting: true,
+      routeToken: 'layout',
     }),
     react(),
     tsConfigPaths(),

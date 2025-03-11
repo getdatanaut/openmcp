@@ -1,6 +1,7 @@
 {
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifierEnding": "js",
   "files.associations": {
     "wrangler.json": "jsonc",
     "*.css": "tailwindcss"
@@ -12,6 +13,7 @@
     "strings": true
   },
   "tailwindCSS.validate": false,
+  "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.experimental.classRegex": [
     "tw`([^`]*)`",
     ["(?:tx|cn|twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"]
