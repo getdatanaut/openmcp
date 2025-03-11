@@ -35,7 +35,7 @@ export const baseConfig = tseslint.config(
         typescript: {
           // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
           alwaysTryTypes: true,
-          project: ['apps/*/tsconfig.json', 'libs/*/tsconfig.json', 'packages/*/tsconfig.json'],
+          project: ['tsconfig.json', 'apps/*/tsconfig.json', 'libs/*/tsconfig.json', 'packages/*/tsconfig.json'],
         },
       },
     },
@@ -63,6 +63,7 @@ export const baseConfig = tseslint.config(
       'import/extensions': ['error', 'ignorePackages'],
       'no-return-await': 'error',
       'no-empty': ['error', { allowEmptyCatch: true }],
+      'no-unused-vars': 'warn',
     },
   },
 
@@ -84,7 +85,6 @@ export const baseConfig = tseslint.config(
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-empty-interface': 'off',
-      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
