@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 import { Icon, type IconProps } from '~/primitives/components/Icon/icon.tsx';
+import { Markdown } from '~/primitives/components/Markdown/index.tsx';
 import { twJoin } from '~/primitives/tw.ts';
 import { generateMockConversation, generateMockServers, type MCPServerConfig } from '~/utils/mocks.ts';
 
@@ -139,7 +140,7 @@ const ExampleHistorySidebar = () => {
 };
 
 const ChatList = ({ children }: { children: ReactNode }) => {
-  return <div className="flex flex-col gap-px">{children}</div>;
+  return <div className="flex flex-col gap-px divide-y-[0.5px]">{children}</div>;
 };
 
 const ChatListItem = ({
@@ -153,7 +154,7 @@ const ChatListItem = ({
   isActive?: boolean;
   lineNumber: number;
 }) => {
-  const classes = twJoin('hover:ak-layer-[0.5] px-5 py-8');
+  const classes = twJoin('hover:ak-layer-[0.5] px-5 py-10');
 
   const contentClasses = twJoin(
     'mx-auto flex max-w-[50rem] leading-relaxed',
@@ -165,7 +166,9 @@ const ChatListItem = ({
     <div className={classes}>
       <div className={contentClasses}>
         <div className="w-10 flex-shrink-0 pr-5 text-right font-bold opacity-30">{lineNumber}</div>
-        <div>{content}</div>
+        <div className="dn-prose w-full">
+          <Markdown theme="dracula" content={content} />
+        </div>
       </div>
     </div>
   );

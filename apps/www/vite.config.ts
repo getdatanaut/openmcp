@@ -16,4 +16,8 @@ export default defineConfig({
     react(),
     tsConfigPaths(),
   ],
+
+  define: {
+    'process.env': {},
+  },
 });

@@ -2,6 +2,8 @@
 
 @import '@ariakit/tailwind';
 
+@import '../primitives/components/Markdown/style.css';
+
 @font-face {
   src: url(./fonts/ml/0-normal.woff2) format('woff2');
   font-family: ml;
