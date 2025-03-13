@@ -2,7 +2,9 @@
   "extends": "@libs/tsconfig/tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]

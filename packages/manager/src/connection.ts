@@ -1,14 +1,13 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
-import type { Manager } from './manager.ts';
-import type { ServerConfig } from './server.ts';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { z } from 'zod';
 
+import type { ClientId } from './client.ts';
+import type { Manager } from './manager.ts';
+import type { ServerConfig, ServerId } from './server.ts';
 import { createTransport } from './transport.ts';
 
-type ClientId = string;
-type ServerId = string;
-type ToolName = string;
+export type ToolName = string;
 
 export interface ConnectionConfig {
   clientId: ClientId;

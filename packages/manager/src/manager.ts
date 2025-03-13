@@ -1,15 +1,19 @@
+import { Client, type ClientConfig, type ClientId } from './client.ts';
+import { Server, type ServerConfig, type ServerId, type ServerStorageData } from './server.ts';
+import type { Storage } from './storage/index.ts';
+import { createMemoryStorage } from './storage/memory.ts';
+import { createThreadManager, type ThreadManager, type ThreadStorageData } from './threads/index.ts';
 import type { TransportConfigs } from './transport.ts';
-import { Server, type ServerConfig } from './server.ts';
-import { Client, type ClientConfig } from './client.ts';
 
-type ServerId = string;
-type ClientId = string;
+export type ManagerId = string;
+
+export interface ManagerStorageData extends ThreadStorageData, ServerStorageData {}
 
 export interface ManagerOptions {
   /**
    * A unique identifier for this manager
    */
-  id: string;
+  id: ManagerId;
 
   /**
    * Transports available for clients to connect to this manager
@@ -26,10 +30,22 @@ export interface ManagerOptions {
   servers?: {
     [id: ServerId]: Omit<ServerConfig, 'id'>;
   };
+
+  /**
+   * Optionally provide a ThreadManager
+   */
+  threads?: ThreadManager;
+
+  /**
+   * Optionally provide a Storage implementation to persist manager state
+   *
+   * @default MemoryStorage
+   */
+  storage?: Storage<ManagerStorageData>;
 }
 
 /**
- * Create a new manager instance.
+ * Creates new Manager instance.
  */
 export function createManager(options: ManagerOptions) {
   return new Manager(options);
@@ -40,14 +56,24 @@ export function createManager(options: ManagerOptions) {
  * connected clients, and server<->client connections.
  */
 export class Manager {
-  public readonly id: string;
+  public readonly id: ManagerId;
   public readonly transports: ManagerOptions['transports'];
   public readonly servers = new Map<ServerId, Server>();
   public readonly clients = new Map<ClientId, Client>();
+  public readonly threads: ThreadManager;
+  public readonly storage: Storage<ManagerStorageData>;
 
   constructor(options: ManagerOptions) {
     this.id = options.id;
     this.transports = options.transports ?? { inMemory: {} };
+    this.storage =
+      options.storage ??
+      createMemoryStorage<ManagerStorageData>({
+        threads: [],
+        threadMessages: [],
+        servers: [],
+      });
+    this.threads = options.threads ?? createThreadManager({}, this);
 
     if (options.servers) {
       Object.entries(options.servers).forEach(([serverId, server]) => {
@@ -56,6 +82,16 @@ export class Manager {
           id: serverId,
         });
       });
+    }
+  }
+
+  /**
+   * Initialize the Manager by loading all registered servers from the storage.
+   */
+  public async intialize() {
+    const servers = await this.storage.servers.select();
+    for (const server of servers) {
+      this.registerServer(server);
     }
   }
 

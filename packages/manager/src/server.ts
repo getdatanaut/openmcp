@@ -1,13 +1,14 @@
-import { createTransport, type TransportConfigs } from './transport.ts';
-import type { TransportConfig } from './transport.ts';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
-import type { z } from 'zod';
-import type { Manager } from './manager.ts';
 import { createHash } from 'node:crypto';
 
-type ServerId = string;
-type ToolName = string;
+import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { z } from 'zod';
+
+import type { ToolName } from './connection.ts';
+import type { Manager } from './manager.ts';
+import { createTransport, type TransportConfig, type TransportConfigs } from './transport.ts';
+
+export type ServerId = string;
 
 export interface ServerCapabilities {
   tools: {
@@ -66,6 +67,10 @@ export interface ServerConfig {
   createServer?: (config: z.infer<ServerConfig['configSchema']>) => McpServer;
 }
 
+export interface ServerStorageData {
+  servers: Pick<Server, 'id' | 'name' | 'version' | 'transport' | 'capabilities' | 'configSchema'>;
+}
+
 /**
  * Create a server configuration
  */
@@ -102,6 +107,13 @@ export class Server {
     this.createServer = config.createServer;
 
     this.manager = manager;
+  }
+
+  /**
+   * Get the storage from the manager
+   */
+  protected get storage() {
+    return this.manager.storage;
   }
 
   /**

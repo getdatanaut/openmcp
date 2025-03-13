@@ -8,19 +8,26 @@
     "./connection": "./src/connection.ts",
     "./manager": "./src/manager.ts",
     "./server": "./src/server.ts",
-    "./transport": "./src/transport.ts"
+    "./storage": "./src/storage/index.ts",
+    "./transport": "./src/transport.ts",
+    "./threads": "./src/threads/index.ts"
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "tsc",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.7.0"
+    "@modelcontextprotocol/sdk": "1.7.0",
+    "ai": "4.1.61"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "msw": "2.7.3",
+    "@types/node": "22.13.10",
+    "eslint": "9.22.0",
+    "typescript": "5.8.2",
     "vitest": "3.0.8"
   },
   "keywords": [

@@ -1,12 +1,11 @@
-import { Connection } from './connection.ts';
-import type { Manager } from './manager.ts';
-import type { TransportConfigs, TransportConfig } from './transport.ts';
-import type { ServerConfig } from './server.ts';
 import type { z } from 'zod';
 
-type ClientId = string;
-type ServerId = string;
-type ToolName = string;
+import { Connection, type ToolName } from './connection.ts';
+import type { Manager } from './manager.ts';
+import type { ServerConfig, ServerId } from './server.ts';
+import type { TransportConfig, TransportConfigs } from './transport.ts';
+
+export type ClientId = string;
 
 export interface ClientConfig {
   id: ClientId;
@@ -35,6 +34,13 @@ export class Client {
     this.id = config.id;
     this.transport = config.transport ?? { type: 'inMemory', config: {} };
     this.manager = manager;
+  }
+
+  /**
+   * Get the storage from the manager
+   */
+  protected get storage() {
+    return this.manager.storage;
   }
 
   /**

@@ -1,10 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { createManager, Manager } from '../src/manager';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { createMemoryStorage } from 'src/storage/memory.ts';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
+import { createManager, Manager, type ManagerStorageData } from '../src/manager.ts';
+
 describe('createManager()', () => {
-  it('should create a manager with servers', () => {
+  it('should create a manager with servers', async () => {
     const manager = createManager({
       id: 'test',
       transports: {
@@ -41,6 +43,107 @@ describe('createManager()', () => {
     });
     expect(manager.servers.size).toBe(1);
     expect(manager.servers.get('test')).toBeDefined();
+  });
+
+  it('should initialize with servers from storage', async () => {
+    const storage = createMemoryStorage<ManagerStorageData>({
+      servers: [
+        {
+          id: 'test',
+          name: 'Test Server',
+          version: '1.0.0',
+          transport: {
+            type: 'inMemory',
+            config: {},
+          },
+          capabilities: {
+            tools: {},
+          },
+          configSchema: z.object({}),
+        },
+      ],
+      threads: [],
+      threadMessages: [],
+    });
+
+    const manager = createManager({
+      id: 'test',
+      transports: {
+        inMemory: {},
+      },
+      storage,
+    });
+
+    await manager.intialize();
+
+    expect(manager).toBeDefined();
+    expect(manager.id).toBe('test');
+    expect(manager.transports).toEqual({
+      inMemory: {},
+    });
+    expect(manager.servers.size).toBe(1);
+    expect(manager.servers.get('test')).toHaveProperty('name', 'Test Server');
+  });
+
+  it('should initialize with threads from storage', async () => {
+    const storage = createMemoryStorage<ManagerStorageData>({
+      servers: [],
+      threads: [
+        {
+          id: 'test',
+          clientId: 'test',
+        },
+      ],
+      threadMessages: [
+        {
+          id: 'test',
+          threadId: 'test',
+          role: 'user',
+          content: 'test',
+        },
+        {
+          id: 'test2',
+          threadId: 'test',
+          role: 'assistant',
+          content: 'test2',
+        },
+      ],
+    });
+
+    const manager = createManager({
+      id: 'test',
+      transports: {
+        inMemory: {},
+      },
+      storage,
+    });
+    await manager.intialize();
+
+    expect(manager).toBeDefined();
+    expect(manager.id).toBe('test');
+    expect(manager.transports).toEqual({
+      inMemory: {},
+    });
+    expect(await manager.threads.list()).toEqual([
+      expect.objectContaining({
+        id: 'test',
+        clientId: 'test',
+      }),
+    ]);
+
+    const thread = await manager.threads.get('test');
+    expect(await thread?.listMessages()).toEqual([
+      expect.objectContaining({
+        id: 'test',
+        role: 'user',
+        content: 'test',
+      }),
+      expect.objectContaining({
+        id: 'test2',
+        role: 'assistant',
+        content: 'test2',
+      }),
+    ]);
   });
 });
 

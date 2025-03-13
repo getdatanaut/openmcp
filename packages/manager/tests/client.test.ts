@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Manager } from '../src/manager';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
+
+import { Manager } from '../src/manager.ts';
 
 describe.only('Client', () => {
   let manager: Manager;
