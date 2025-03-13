@@ -17,7 +17,7 @@
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "msw": "^2.7.3",
+    "msw": "2.7.3",
     "vitest": "3.0.8"
   }
 }
