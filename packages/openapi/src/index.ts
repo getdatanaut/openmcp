@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { bundleOas3Service } from '@stoplight/http-spec';
-import $RefParser from '@stoplight/json-schema-ref-parser';
+import $RefParser from '@stoplight/json-schema-ref-parser/node';
 import { decycle } from '@stoplight/json';
 
 import type { IHttpOperation, IHttpOperationRequest, Reference } from '@stoplight/types';

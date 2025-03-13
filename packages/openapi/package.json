@@ -13,7 +13,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
     "@stoplight/http-spec": "7.1.0",
-    "@stoplight/json-schema-ref-parser": "10.0.0"
+    "@stoplight/json-schema-ref-parser": "patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",

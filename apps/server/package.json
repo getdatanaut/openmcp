@@ -1,24 +1,26 @@
 {
-	"name": "server",
-	"version": "0.0.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"deploy": "workers-mcp docgen src/index.ts && wrangler deploy",
-		"dev": "wrangler dev",
-		"dev.bun": "bun run src/index-bun.ts",
-		"start": "wrangler dev",
-		"cf-typegen": "wrangler types"
-	},
-	"dependencies": {
-		"@openmcp/openapi": "workspace:*"
-	},
-	"devDependencies": {
-		"@cloudflare/workers-types": "4.20250312.0",
-		"@modelcontextprotocol/sdk": "1.7.0",
-		"cloudflare-workers-sse": "2.0.0",
-		"workers-mcp": "0.0.13",
-		"wrangler": "4.0.0",
-		"zod": "3.24.2"
-	}
+  "name": "server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "workers-mcp docgen src/index.ts && wrangler deploy",
+    "dev": "wrangler dev",
+    "dev.bun": "bun run src/index-bun.ts",
+    "start": "wrangler dev",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@openmcp/openapi": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20250312.0",
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
+    "@modelcontextprotocol/sdk": "1.7.0",
+    "cloudflare-workers-sse": "2.0.0",
+    "workers-mcp": "0.0.13",
+    "wrangler": "4.0.0",
+    "zod": "3.24.2"
+  }
 }

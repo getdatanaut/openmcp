@@ -1710,7 +1710,7 @@ __metadata:
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
     "@stoplight/http-spec": "npm:7.1.0"
-    "@stoplight/json-schema-ref-parser": "npm:10.0.0"
+    "@stoplight/json-schema-ref-parser": "patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch"
     eslint: "npm:9.22.0"
     msw: "npm:2.7.3"
     typescript: "npm:5.8.2"
@@ -2017,6 +2017,19 @@ __metadata:
     call-me-maybe: "npm:^1.0.1"
     url: "npm:^0.11.3"
   checksum: 10c0/5252fd035999206f2ad24485349b8b4ab505443cd1d6a40f9dcb06f743a87de7c166b107998cc6c2c39249c874a634c5d0c11413f4978a8bf840961551149701
+  languageName: node
+  linkType: hard
+
+"@stoplight/json-schema-ref-parser@patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch":
+  version: 10.0.0
+  resolution: "@stoplight/json-schema-ref-parser@patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch::version=10.0.0&hash=374589"
+  dependencies:
+    "@jsdevtools/ono": "npm:^7.1.3"
+    "@stoplight/path": "npm:^1.3.2"
+    "@stoplight/yaml": "npm:^4.0.2"
+    call-me-maybe: "npm:^1.0.1"
+    url: "npm:^0.11.3"
+  checksum: 10c0/e5c12e741383878ab499fb0023af6cceca961423bb92f4a16be85830c428595ca0d460f857e4d2806e1185a02595b295e4b845a23aefe2a4c31856ea65d67afe
   languageName: node
   linkType: hard
 
@@ -9971,6 +9984,8 @@ __metadata:
   resolution: "server@workspace:apps/server"
   dependencies:
     "@cloudflare/workers-types": "npm:4.20250312.0"
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
     "@openmcp/openapi": "workspace:*"
     cloudflare-workers-sse: "npm:2.0.0"
