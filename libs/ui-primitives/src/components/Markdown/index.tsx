@@ -6,7 +6,8 @@ import reactToText from 'react-to-text';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 
-import { twJoin } from '../../tw.ts';
+import { tn } from '../../utils/tw.ts';
+import { CopyButton } from '../Button/copy-button.tsx';
 
 export const Markdown = ({ content, fallback, theme }: { content?: string; fallback?: ReactNode; theme: string }) => {
   return (
@@ -48,7 +49,7 @@ const MarkdownCode: Components['code'] = props => {
 const MarkdownFigure: Components['figure'] = ({ className, node, children, ...props }) => {
   const isCodeFigure = props['data-rehype-pretty-code-figure'] !== undefined;
 
-  const classes = twJoin(isCodeFigure && 'ak-frame ak-layer-down -mx-2 text-sm leading-relaxed', className);
+  const classes = tn(isCodeFigure && 'ak-frame ak-layer-down -mx-2 text-sm leading-relaxed', className);
 
   let figureChildren: ReactNode[] = [];
 
@@ -69,11 +70,14 @@ const MarkdownFigure: Components['figure'] = ({ className, node, children, ...pr
     }
 
     figureChildren.push(
-      <figcaption key="figcap" className="flex items-center border-b-[0.5px] px-4 py-2">
+      <figcaption key="figcap" className="flex items-center border-b-[0.5px] py-2 pr-3 pl-4">
         {codeTitle ? <div>{codeTitle}</div> : null}
-        <div
+
+        <CopyButton
           className="ml-auto"
-          onClick={() => {
+          variant="ghost"
+          size="xs"
+          onClick={(_, { copy }) => {
             const elems = React.Children.toArray(children);
             const codeElem = elems.find(
               elem => (elem as ReactElement<{ node?: HastElement }>).props?.node?.tagName === 'pre',
@@ -85,12 +89,9 @@ const MarkdownFigure: Components['figure'] = ({ className, node, children, ...pr
             }
 
             const code = reactToText(codeElem);
-            console.log(code);
-            alert('todo copy button');
+            copy(code);
           }}
-        >
-          ...Copy...
-        </div>
+        />
       </figcaption>,
     );
 

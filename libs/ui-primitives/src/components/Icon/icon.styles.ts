@@ -1,9 +1,9 @@
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
-import { makeStaticClass } from '../../make-static-class.ts';
-import { twJoin, twMergeConfig } from '../../tw.ts';
-import type { SlotProp, VariantSlots } from '../../types.ts';
+import { makeStaticClass } from '../../utils/make-static-class.ts';
+import { tn, twMergeConfig } from '../../utils/tw.ts';
+import type { SlotProp, VariantSlots } from '../../utils/types.ts';
 
 export type IconStyleProps = VariantProps<typeof iconStyle>;
 export type IconSlots = VariantSlots<typeof iconStyle.slots>;
@@ -14,7 +14,7 @@ export const iconStaticClass = makeStaticClass<IconSlots>('icon');
 export const iconStyle = tv(
   {
     slots: {
-      base: twJoin('h-[1em] !leading-none'),
+      base: tn('h-[1em] !leading-none'),
     },
 
     defaultVariants: {
@@ -27,23 +27,23 @@ export const iconStyle = tv(
 
     variants: {
       fw: {
-        true: twJoin('w-[1.25em] text-center'),
+        true: tn('w-[1.25em] text-center'),
       },
 
       spin: {
-        true: twJoin('animate-spin-slow'),
+        true: tn('fa-spin'),
       },
 
       ping: {
-        true: twJoin('animate-ping'),
+        true: tn('animate-ping'),
       },
 
       pulse: {
-        true: twJoin('animate-pulse'),
+        true: tn('fa-pulse'),
       },
 
       bounce: {
-        true: twJoin('animate-bounce'),
+        true: tn('fa-bounce'),
       },
     },
   },

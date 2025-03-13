@@ -1,4 +1,4 @@
-import { type ClassNameValue, extendTailwindMerge, twJoin as baseTwJoin } from 'tailwind-merge';
+import { type ClassNameValue, extendTailwindMerge, twJoin } from 'tailwind-merge';
 
 type ClassValue = ClassArray | ClassDictionary | string | number | bigint | null | boolean | undefined;
 type ClassDictionary = Record<string, any>;
@@ -8,11 +8,11 @@ export type TW_STR = 'TW_STR';
 
 /**
  * Use when you need cx style merging, but for non-tailwind classes, since eslint and vscode
- * are configured to check / autocomplete the `twJoin` function.
+ * are configured to check / autocomplete the `tn` function.
  */
-const cnJoin = baseTwJoin;
+const cn = twJoin;
 
-const twJoin = baseTwJoin as (...classLists: ClassNameValue[]) => TW_STR;
+const tn = twJoin as (...classLists: ClassNameValue[]) => TW_STR;
 
 /**
  * Optionally customize the twMerge config. Use this everywhere!
@@ -51,4 +51,4 @@ const twMergeConfig: Partial<Parameters<typeof extendTailwindMerge>[0]> = {
 const twMerge = extendTailwindMerge(twMergeConfig);
 
 export type { ClassNameValue };
-export { cnJoin, twJoin, twMerge, twMergeConfig };
+export { cn, tn, twMerge, twMergeConfig };

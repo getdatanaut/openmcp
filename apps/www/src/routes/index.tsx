@@ -1,11 +1,21 @@
 import { faCaretDown, faCog, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  Button,
+  ButtonGroup,
+  type ButtonProps,
+  Icon,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  type TabProps,
+  Tabs,
+  tn,
+} from '@libs/ui-primitives';
+import { Markdown } from '@libs/ui-primitives/markdown';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
-import { twMerge } from 'tailwind-merge';
 
-import { Icon, type IconProps } from '~/primitives/components/Icon/icon.tsx';
-import { Markdown } from '~/primitives/components/Markdown/index.tsx';
-import { twJoin } from '~/primitives/tw.ts';
 import { generateMockConversation, generateMockServers, type MCPServerConfig } from '~/utils/mocks.ts';
 
 export const Route = createFileRoute('/')({
@@ -19,10 +29,14 @@ function HomeRoute() {
   return (
     <div className="ak-edge flex min-h-screen divide-x-[0.5px]">
       <div className="h-screen flex-1 overflow-y-auto">
-        <div className="ak-layer-0 sticky top-0 block flex items-center gap-4 px-4 py-3">
-          <DropdownButton name="Main" />
+        <div className="ak-layer-0 sticky top-0 flex items-center gap-4 px-4 py-3">
+          <Button endIcon={faCaretDown} size="xs" variant="outline">
+            Main
+          </Button>
           <div className="ak-text/50 text-xs">{mockConversation.name}</div>
-          <Button name="Chat" icon={faPlus} className="ml-auto" />
+          <Button icon={faPlus} size="xs" variant="outline" className="ml-auto">
+            Thread
+          </Button>
         </div>
 
         <div className="flex-1 py-8 pr-px">
@@ -42,44 +56,53 @@ function HomeRoute() {
 const Sidebar = () => {
   const { sidebar } = Route.useSearch();
 
-  let sidebarContent: ReactNode;
-  switch (sidebar) {
-    case 'history':
-      sidebarContent = <ExampleHistorySidebar />;
-      break;
-    case 'servers':
-      sidebarContent = <ExampleServerSidebar />;
-      break;
-    case 'dev':
-      sidebarContent = <div>TODO</div>;
-      break;
-    case 'settings':
-      sidebarContent = <div>TODO</div>;
-  }
-
   return (
     <div className="ak-layer-[down-0.5] h-screen w-96 overflow-y-auto">
-      <div className="sticky top-0 block px-4 py-3">
-        <Tabs>
-          <Link to="." search={{ sidebar: 'history' }}>
-            <Tab name="History" isActive={sidebar === 'history'} />
-          </Link>
-          <Link to="." search={{ sidebar: 'servers' }}>
-            <Tab name="Servers" isActive={sidebar === 'servers'} />
-          </Link>
-          <Link to="." search={{ sidebar: 'dev' }}>
-            <Tab name="Dev" isActive={sidebar === 'dev'} />
-          </Link>
-          <Link to="." search={{ sidebar: 'settings' }} className="ml-auto">
-            <Tab name="Settings" isActive={sidebar === 'settings'} icon={faCog} iconOnly />
-          </Link>
-        </Tabs>
-      </div>
+      <Tabs variant="unstyled" selectedId={sidebar} selectOnMove={false}>
+        <div className="ak-layer-0 sticky top-0 block px-4 py-3">
+          <TabList render={<ButtonGroup size="xs" className="gap-2" />}>
+            <Tab id="history" render={<TabButton render={<Link to="." search={{ sidebar: 'history' }} />} />}>
+              History
+            </Tab>
+            <Tab id="servers" render={<TabButton render={<Link to="." search={{ sidebar: 'servers' }} />} />}>
+              Servers
+            </Tab>
+            <Tab id="dev" render={<TabButton render={<Link to="." search={{ sidebar: 'dev' }} />} />}>
+              Dev
+            </Tab>
+            <Tab
+              id="settings"
+              className="ml-auto"
+              render={<TabButton render={<Link to="." search={{ sidebar: 'settings' }} />} icon={faCog} />}
+            />
+          </TabList>
+        </div>
 
-      <div className="flex-1">{sidebarContent}</div>
+        <TabPanels>
+          <TabPanel tabId="history">
+            <ExampleHistorySidebar />
+          </TabPanel>
+
+          <TabPanel tabId="servers">
+            <ExampleServerSidebar />
+          </TabPanel>
+
+          <TabPanel tabId="dev">
+            <div>TODO</div>
+          </TabPanel>
+
+          <TabPanel tabId="settings">
+            <div>TODO</div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </div>
   );
 };
+
+const TabButton = (props: TabProps & ButtonProps) => (
+  <Button variant={props['aria-selected'] ? 'solid' : 'ghost'} isInteractive={!props['aria-selected']} {...props} />
+);
 
 const ExampleServerSidebar = () => {
   const installed = [...mockServers.slice(0, 3)].sort((a, b) => a.name.localeCompare(b.name));
@@ -154,9 +177,9 @@ const ChatListItem = ({
   isActive?: boolean;
   lineNumber: number;
 }) => {
-  const classes = twJoin('hover:ak-layer-[0.5] px-5 py-10');
+  const classes = tn('hover:ak-layer-[0.2] px-5 py-10');
 
-  const contentClasses = twJoin(
+  const contentClasses = tn(
     'mx-auto flex max-w-[50rem] leading-relaxed',
     role === 'user' && 'ak-text-secondary/70',
     role === 'assistant' && 'ak-text/80',
@@ -197,8 +220,8 @@ const HistorySection = ({ name, children }: { name: string; children: ReactNode 
 };
 
 const HistoryItem = ({ name, isActive }: { name: string; isActive?: boolean }) => {
-  const className = twJoin(
-    'ak-frame-xs px-3 py-2 ak-frame-sm',
+  const className = tn(
+    'ak-frame-sm px-3 py-2',
     isActive && 'ak-layer cursor-default',
     !isActive && 'hover:ak-layer cursor-pointer',
   );
@@ -226,102 +249,13 @@ const ServerListItem = ({ server, isInstalled }: { server: MCPServerConfig; isIn
         <div className="text-xs capitalize opacity-50">{server.category}</div>
       </div>
 
-      <div>{!isInstalled ? <Button name="Install" className="text-xs" /> : null}</div>
-    </div>
-  );
-};
-
-const Tabs = ({ children }: { children: ReactNode }) => {
-  return <div className="flex gap-2 text-sm">{children}</div>;
-};
-
-const Tab = ({
-  name,
-  isActive,
-  icon,
-  endIcon,
-  iconOnly,
-  className,
-}: {
-  name: string;
-  isActive?: boolean;
-  icon?: IconProps['icon'];
-  endIcon?: IconProps['icon'];
-  iconOnly?: boolean;
-  className?: string;
-}) => {
-  const classes = twJoin(
-    'ak-frame-xs px-1 py-px flex items-center gap-1 border border-transparent',
-    isActive && 'ak-layer-contrast cursor-default',
-    !isActive && 'hover:ak-layer cursor-pointer hover:border-transparent',
-    className,
-  );
-
-  const iconClasses = twJoin(!iconOnly && 'text-xs');
-
-  return (
-    <div className={classes} title={name}>
-      {icon && <Icon icon={icon} className={iconClasses} />}
-      {!iconOnly && <div>{name}</div>}
-      {endIcon && <Icon icon={endIcon} className={iconClasses} />}
-    </div>
-  );
-};
-
-const DropdownButton = ({
-  name,
-  icon,
-  iconOnly,
-  className,
-}: {
-  name: string;
-  icon?: IconProps['icon'];
-  iconOnly?: boolean;
-  className?: string;
-}) => {
-  const classes = twJoin(
-    'ak-frame-xs px-1.5 py-px items-center gap-1.5 hover:ak-layer cursor-pointer ak-edge border inline-flex text-sm',
-    className,
-  );
-
-  const iconClasses = twJoin(!iconOnly && 'text-xs');
-
-  return (
-    <div className={classes} title={name}>
-      {icon && <Icon icon={icon} className={iconClasses} />}
-      {!iconOnly && <div>{name}</div>}
-      <Icon icon={faCaretDown} className="text-xs opacity-75" />
-    </div>
-  );
-};
-
-const Button = ({
-  name,
-  icon,
-  endIcon,
-  iconOnly,
-  className,
-}: {
-  name: string;
-  icon?: IconProps['icon'];
-  endIcon?: IconProps['icon'];
-  iconOnly?: boolean;
-  className?: string;
-}) => {
-  const classes = twMerge(
-    'ak-frame-xs py-px items-center gap-1.5 hover:ak-layer-pop cursor-pointer border inline-flex text-sm',
-    iconOnly && 'px-1 py-1',
-    !iconOnly && 'px-1.5',
-    className,
-  );
-
-  const iconClasses = twJoin('text-xs');
-
-  return (
-    <div className={classes} title={name}>
-      {icon && <Icon icon={icon} className={iconClasses} />}
-      {!iconOnly && <div>{name}</div>}
-      {endIcon && <Icon icon={endIcon} className={iconClasses} />}
+      <div>
+        {!isInstalled ? (
+          <Button variant="outline" size="xs">
+            Install
+          </Button>
+        ) : null}
+      </div>
     </div>
   );
 };

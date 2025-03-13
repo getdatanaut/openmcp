@@ -12,11 +12,10 @@
   "editor.quickSuggestions": {
     "strings": true
   },
-  "tailwindCSS.validate": false,
   "tailwindCSS.rootFontSize": 14,
   "tailwindCSS.experimental.classRegex": [
     "tw`([^`]*)`",
-    ["(?:tx|cn|twMerge|twJoin)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"]
+    ["(?:tx|cn|twMerge|tn)\\(([^\\);]*)[\\);]", "[`'\"`]([^'\"`,;]*)[`'\"`]"]
   ],
   "vitest.disableWorkspaceWarning": true,
   "[typescript]": {

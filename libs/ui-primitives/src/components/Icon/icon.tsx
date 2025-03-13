@@ -1,25 +1,38 @@
 import type { IconDefinition, IconLookup, IconName, IconPrefix } from '@fortawesome/fontawesome-common-types';
 import { config, findIconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { cloneElement, type ReactElement, type RefObject, useMemo } from 'react';
+import { cloneElement, type ReactElement, type Ref, useMemo } from 'react';
 
-import { splitPropsVariants } from '../../split-props-variants.ts';
-import { cnJoin, twMerge } from '../../tw.ts';
-import { iconStaticClass, iconStyle, type IconStyleProps } from './styles.ts';
+import { splitPropsVariants } from '../../utils/split-props-variants.ts';
+import { cn, twMerge } from '../../utils/tw.ts';
+import { iconStaticClass, iconStyle, type IconStyleProps } from './icon.styles.ts';
 import { FaSvg } from './svg-icon.tsx';
 
 config.autoAddCss = false;
 
-export type IconProps = IconStyleProps & {
-  icon: IconDefinition | IconName | [IconPrefix, IconName] | IconLookup | ReactElement;
-  ref?: RefObject<HTMLInputElement>;
+// Not using the one from common-types because it's such a complex union type
+// that it can cause issues with the type inference.
+type SimpleIconName = string;
+
+export type { IconName };
+
+export interface IconProps extends IconStyleProps {
+  /**
+   * The icon to display - can be an imported font-awesome icon definition, font-awsome string name,
+   * font-awesome prefix+name tuple, or React element.
+   */
+  icon: IconDefinition | SimpleIconName | [IconPrefix, SimpleIconName] | IconLookup | ReactElement;
+
   className?: string;
-};
+  /** Fixed width - makes icons occupy the same width */
+  fw?: IconStyleProps['fw'];
+  ref?: Ref<HTMLElement>;
+}
 
 export const DEFAULT_STYLE: IconPrefix = 'fas';
 
 const IS_ELEMENT = '__ELEMENT__' as const;
 
-export const Icon = function Icon({ ref, ...originalProps }: IconProps) {
+export function Icon({ ref, ...originalProps }: IconProps) {
   const [props, variantProps] = splitPropsVariants(originalProps, iconStyle.variantKeys);
 
   const { icon, className, ...rest } = props;
@@ -32,7 +45,7 @@ export const Icon = function Icon({ ref, ...originalProps }: IconProps) {
   const isComponentIcon = iconProp === IS_ELEMENT;
 
   if (isComponentIcon) {
-    const toClone = icon as ReactElement<{ ref: RefObject<HTMLInputElement>; className?: string }>;
+    const toClone = icon as ReactElement<{ ref: Ref<HTMLElement>; className?: string }>;
     return cloneElement(toClone, { ref, className: twMerge(baseTw, toClone.props.className) });
   }
 
@@ -47,13 +60,13 @@ export const Icon = function Icon({ ref, ...originalProps }: IconProps) {
   return (
     <i
       ref={ref}
-      className={cnJoin(baseTw, iconFACX({ ...(iconProp as any), ...variantProps }))}
+      className={cn(baseTw, iconFACX({ ...(iconProp as any), ...variantProps }))}
       role="img"
       aria-hidden
       {...rest}
     />
   );
-};
+}
 
 interface IconFACXProps {
   prefix: IconPrefix;
@@ -101,7 +114,7 @@ function normalizeIconArgs(
 
   if (Array.isArray(icon)) {
     // use the first item as prefix, second as icon name
-    return { prefix: icon[0], iconName: icon[1] };
+    return { prefix: icon[0], iconName: icon[1] as IconName };
   }
 
   // if the icon is an object and has a prefix and an icon name, return it

@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@ariakit/tailwind';
+
+@import '@fortawesome/fontawesome-svg-core/styles.css';
+
+@import './components/Markdown/styles.css';
+
+@theme {
+  /*
+   * Disable colors we don't need.. clutters up the autocomplete, etc.
+   * Add specific colors back if really needed.
+   */
+  --color-red-*: initial;
+  --color-orange-*: initial;
+  --color-amber-*: initial;
+  --color-yellow-*: initial;
+  --color-lime-*: initial;
+  --color-green-*: initial;
+  --color-emerald-*: initial;
+  --color-teal-*: initial;
+  --color-cyan-*: initial;
+  --color-sky-*: initial;
+  --color-blue-*: initial;
+  --color-indigo-*: initial;
+  --color-violet-*: initial;
+  --color-purple-*: initial;
+  --color-fuchsia-*: initial;
+  --color-pink-*: initial;
+  --color-rose-*: initial;
+  --color-slate-*: initial;
+  --color-gray-*: initial;
+  --color-zinc-*: initial;
+  --color-neutral-*: initial;
+  --color-stone-*: initial;
+
+  /**
+   * Any --color-* variable is automatically accessible in ak-layer, ak-text, ak-edge, and other color utilities.
+   *
+   * Default light theme
+   */
+  --color-canvas: #f5f2ed;
+  --color-primary: #007acc;
+  --color-secondary: #ec4899;
+  --color-danger: #df2020;
+
+  /* Dracula */
+  --color-canvas: #282a36;
+  --color-primary: #50fa7b;
+  --color-secondary: #ff79c6;
+
+  /* Gruvbox */
+  /* --color-canvas: #282828;
+  --color-primary: #83a598;
+  --color-secondary: #d79921; */
+
+  /* Nord */
+  /* --color-canvas: #2e3440;
+  --color-primary: #81a1c1;
+  --color-secondary: #d8dee9; */
+
+  /* One Dark Pro */
+  /* --color-canvas: #282c34;
+  --color-primary: #61dafb;
+  --color-secondary: #e06c75; */
+
+  /* Material */
+  /* --color-canvas: #263238;
+  --color-primary: #c792ea;
+  --color-secondary: #f7cd7a; */
+
+  /* Monokai */
+  /* --color-canvas: #272822;
+  --color-primary: #f92672;
+  --color-secondary: #a6e22e; */
+
+  /** Night Owl */
+  /* --color-canvas: #011627;
+  --color-primary: #bf94e4;
+  --color-secondary: #e99173; */
+
+  /** VSCode */
+  /* --color-canvas: #1e1e1e;
+  --color-primary: #c586c0;
+  --color-secondary: #d7ba7d; */
+}
+
+/* Default dark theme */
+/* :root {
+  @variant dark {
+    --color-canvas: #0a0a0a;
+    --color-primary: #bc89bd;
+    --color-secondary: #c99c6e;
+    --color-danger: #df2020;
+  }
+} */

@@ -14,7 +14,7 @@ const ignores = [
   '.yalc',
   '.yarn',
   '.cache',
-  '.storybook/*',
+  '!.storybook',
   'build',
   'dist',
   'node_modules',
@@ -90,6 +90,7 @@ export const baseConfig = tseslint.config(
       '@typescript-eslint/no-empty-object-type': 'off',
       'dot-notation': 'off',
       '@typescript-eslint/dot-notation': 'off',
+      'no-redeclare': 'off',
     },
   },
 

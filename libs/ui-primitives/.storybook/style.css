@@ -1,0 +1,19 @@
+@import '../src/styles.css';
+
+@layer base {
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    @apply ak-layer-canvas;
+  }
+
+  * {
+    @apply ak-edge-canvas;
+  }
+
+  .using-mouse * {
+    outline: none !important;
+  }
+}

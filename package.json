@@ -44,13 +44,13 @@
     ],
     "customAttributes": [],
     "customFunctions": [
-      "tx",
-      "tw"
+      "tn",
+      "twMerge"
     ],
     "endingPosition": "absolute-with-indent",
     "tailwindFunctions": [
-      "tw",
-      "tx"
+      "tn",
+      "twMerge"
     ],
     "arrowParens": "avoid",
     "printWidth": 120,

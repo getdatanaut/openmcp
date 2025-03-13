@@ -12,21 +12,14 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@ariakit/react": "0.4.15",
-    "@ariakit/tailwind": "0.1.1",
-    "@fortawesome/fontawesome-common-types": "6.7.2",
-    "@fortawesome/fontawesome-svg-core": "6.7.2",
     "@fortawesome/free-regular-svg-icons": "6.7.2",
     "@fortawesome/free-solid-svg-icons": "6.7.2",
+    "@libs/ui-primitives": "workspace:*",
     "@tanstack/react-router": "1.114.15",
     "@tanstack/react-router-devtools": "1.114.15",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-markdown": "10.1.0",
-    "react-to-text": "2.0.1",
-    "rehype-pretty-code": "0.14.0",
-    "remark-gfm": "4.0.1",
-    "shiki": "2.5.0",
     "tailwind-merge": "3.0.2",
     "tailwind-variants": "1.0.0",
     "zod": "3.24.2"
