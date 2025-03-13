@@ -18,7 +18,7 @@
 		"@modelcontextprotocol/sdk": "1.7.0",
 		"cloudflare-workers-sse": "2.0.0",
 		"workers-mcp": "0.0.13",
-		"wrangler": "3.114.1",
+		"wrangler": "4.0.0",
 		"zod": "3.24.2"
 	}
 }

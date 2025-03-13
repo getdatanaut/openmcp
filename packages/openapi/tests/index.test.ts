@@ -32,7 +32,7 @@ describe('createMcpServer', () => {
   test.each(fixtures)('should create a MCP server for %s', async (filename, document) => {
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
-    const server = createMcpServer({ document, serverUrl });
+    const server = await createMcpServer({ document, serverUrl });
     expect(server).toBeDefined();
 
     const client = new McpClient(

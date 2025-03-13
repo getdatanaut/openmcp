@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
-    "@stoplight/http-spec": "7.1.0"
+    "@stoplight/http-spec": "7.1.0",
+    "@stoplight/json-schema-ref-parser": "10.0.0"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",

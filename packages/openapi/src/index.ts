@@ -2,10 +2,21 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { bundleOas3Service } from '@stoplight/http-spec';
+import $RefParser from '@stoplight/json-schema-ref-parser';
+import { decycle } from '@stoplight/json';
+
 import type { IHttpOperation, IHttpOperationRequest, Reference } from '@stoplight/types';
 
-export function createMcpServer({ document, serverUrl }: { document: Record<string, unknown>; serverUrl?: string }) {
-  const service = bundleOas3Service({ document });
+export async function createMcpServer({
+  document,
+  serverUrl,
+}: {
+  document: Record<string, unknown>;
+  serverUrl?: string;
+}) {
+  const result = decycle(await new $RefParser().dereference(document));
+
+  const service = bundleOas3Service({ document: result });
 
   const baseUrl = serverUrl || service.servers?.[0]?.url;
 
@@ -107,11 +118,11 @@ function isReference(value: any): value is Reference {
 }
 
 function requestParametersToTool({ path, query, headers, body }: IHttpOperationRequest<true>) {
-  const pathParams = path?.flatMap(param => (isReference(param) ? [] : parameterToTool(param))) || [];
-  const queryParams = query?.flatMap(param => (isReference(param) ? [] : parameterToTool(param))) || [];
-  const headerParams = headers?.flatMap(param => (isReference(param) ? [] : parameterToTool(param))) || [];
+  const pathParams = path?.flatMap(param => (isReference(param) ? [] : parameterToTool(param)));
+  const queryParams = query?.flatMap(param => (isReference(param) ? [] : parameterToTool(param)));
+  const headerParams = headers?.flatMap(param => (isReference(param) ? [] : parameterToTool(param)));
 
-  const bodyParam = body && isReference(body) ? [] : body?.contents?.find(param => param.schema)?.schema || {};
+  const bodyParam = body && isReference(body) ? undefined : body?.contents?.find(param => param.schema)?.schema;
 
   return {
     type: 'object',
