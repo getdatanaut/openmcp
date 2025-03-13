@@ -1,0 +1,23 @@
+{
+  "name": "@openmcp/openapi",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.7.0",
+    "@stoplight/http-spec": "7.1.0"
+  },
+  "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
+    "msw": "^2.7.3",
+    "vitest": "3.0.8"
+  }
+}

@@ -1,0 +1,1600 @@
+[
+  {
+    "description": "Returns all alerts",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "List only active alerts (use /alerts/active endpoints instead)",
+            "name": "active",
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "102997c9823a8",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "alerts_query",
+  },
+  {
+    "description": "Returns all currently active alerts",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_active",
+  },
+  {
+    "description": "Returns info on the number of active alerts",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_active_count",
+  },
+  {
+    "description": "Returns active alerts for the given NWS public zone or county",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_active_zone",
+  },
+  {
+    "description": "Returns active alerts for the given area (state or marine area)",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$ref": "#/components/schemas/16",
+            "description": "State/area ID",
+            "name": "area",
+            "type": "string",
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_active_area",
+  },
+  {
+    "description": "Returns active alerts for the given marine region",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$ref": "#/components/schemas/46",
+            "description": "Marine region ID",
+            "name": "region",
+            "type": "string",
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_active_region",
+  },
+  {
+    "description": "Returns a list of alert types",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_types",
+  },
+  {
+    "description": "Returns a specific alert",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$ref": "#/components/schemas/7",
+            "description": "Alert identifier",
+            "name": "id",
+            "type": "string",
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "alerts_single",
+  },
+  {
+    "description": "Returns metadata about a Center Weather Service Unit",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "cwsu",
+  },
+  {
+    "description": "Returns a list of Center Weather Advisories from a CWSU",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "cwas",
+  },
+  {
+    "description": "Returns a list of Center Weather Advisories from a CWSU",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Sequence number",
+            "minimum": 100,
+            "name": "sequence",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "68b3651fbc6cf",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "cwa",
+  },
+  {
+    "description": "Returns a list of SIGMET/AIRMETs",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$ref": "#/components/schemas/17",
+            "description": "ATSU identifier",
+            "name": "atsu",
+            "type": "string",
+          },
+          {
+            "$ref": "#/components/schemas/83",
+            "description": "SIGMET sequence number",
+            "name": "sequence",
+            "type": "string",
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "sigmetQuery",
+  },
+  {
+    "description": "Returns a list of SIGMET/AIRMETs for the specified ATSU",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "sigmetsByATSU",
+  },
+  {
+    "description": "Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "sigmetsByATSUByDate",
+  },
+  {
+    "description": "Returns a specific SIGMET/AIRMET",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "sigmet",
+  },
+  {
+    "description": "Returns glossary terms",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "glossary",
+  },
+  {
+    "description": "Returns raw numerical forecast data for a 2.5km grid area",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "gridpoint",
+  },
+  {
+    "description": "Returns a textual forecast for a 2.5km grid area",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "gridpoint_forecast",
+  },
+  {
+    "description": "Returns a textual hourly forecast for a 2.5km grid area",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "gridpoint_forecast_hourly",
+  },
+  {
+    "description": "Returns a list of observation stations usable for a given 2.5km grid area",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "gridpoint_stations",
+  },
+  {
+    "description": "Returns a forecast icon. Icon services in API are deprecated.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "set",
+            "type": "string",
+            "x-stoplight": {
+              "id": "2332989fe172e",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "timeOfDay",
+            "type": "string",
+            "x-stoplight": {
+              "id": "51db41a304c7c",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "first",
+            "type": "string",
+            "x-stoplight": {
+              "id": "dea3095f594bf",
+            },
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "anyOf": [
+              {
+                "enum": [
+                  "small",
+                  "medium",
+                  "large",
+                ],
+                "type": "string",
+              },
+              {
+                "maximum": 500,
+                "minimum": 10,
+                "type": "integer",
+              },
+            ],
+            "description": "Font size",
+            "name": "size",
+            "type": "string",
+            "x-stoplight": {
+              "id": "580ea6ec96f33",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Font size",
+            "maximum": 24,
+            "minimum": 2,
+            "name": "fontsize",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "f300ab9e46be6",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "icons",
+  },
+  {
+    "description": "Returns a forecast icon. Icon services in API are deprecated.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "set",
+            "type": "string",
+            "x-stoplight": {
+              "id": "2062e765de7d3",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "timeOfDay",
+            "type": "string",
+            "x-stoplight": {
+              "id": "7d8b2d71f59e9",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "first",
+            "type": "string",
+            "x-stoplight": {
+              "id": "bc749160804c8",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "second",
+            "type": "string",
+            "x-stoplight": {
+              "id": "f29ea38b07dca",
+            },
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "anyOf": [
+              {
+                "enum": [
+                  "small",
+                  "medium",
+                  "large",
+                ],
+                "type": "string",
+              },
+              {
+                "maximum": 500,
+                "minimum": 10,
+                "type": "integer",
+              },
+            ],
+            "description": "Font size",
+            "name": "size",
+            "type": "string",
+            "x-stoplight": {
+              "id": "8d691f7525d21",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Font size",
+            "maximum": 24,
+            "minimum": 2,
+            "name": "fontsize",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "ffeedce4bbe36",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "iconsDualCondition",
+  },
+  {
+    "description": "Returns a list of icon codes and textual descriptions. Icon services in API are deprecated.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "icons_summary",
+  },
+  {
+    "description": "Returns a thumbnail image for a satellite region. Image services in API are deprecated.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "enum": [
+              "a",
+              "e",
+              "g",
+              "h",
+              "p",
+              "s",
+              "w",
+            ],
+            "name": "area",
+            "type": "string",
+            "x-stoplight": {
+              "id": "63b520113b94c",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "satellite_thumbnails",
+  },
+  {
+    "description": "Returns a list of observations for a given station",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Limit",
+            "maximum": 500,
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "c13142f4a695a",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "station_observation_list",
+  },
+  {
+    "description": "Returns the latest observation for a station",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Require QC",
+            "name": "require_qc",
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "77fcd5e309a33",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "station_observation_latest",
+  },
+  {
+    "description": "Returns a single observation.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Timestamp of requested observation",
+            "format": "date-time",
+            "name": "time",
+            "type": "string",
+            "x-stoplight": {
+              "id": "ed6d412b33c45",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "station_observation_time",
+  },
+  {
+    "description": "Returns Terminal Aerodrome Forecasts for the specified airport station.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "tafs",
+  },
+  {
+    "description": "Returns a single Terminal Aerodrome Forecast.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "taf",
+  },
+  {
+    "description": "Returns a list of observation stations.",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Filter by observation station ID",
+            "items": {
+              "type": "string",
+            },
+            "name": "id",
+            "type": "array",
+            "x-stoplight": {
+              "id": "4b6b86708fd68",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Filter by state/marine area code",
+            "items": {
+              "$ref": "#/components/schemas/16",
+            },
+            "name": "state",
+            "type": "array",
+            "x-stoplight": {
+              "id": "58d425bca5026",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "obs_stations",
+  },
+  {
+    "description": "Returns metadata about a given observation station",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "obs_station",
+  },
+  {
+    "description": "Returns metadata about a NWS forecast office",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "office",
+  },
+  {
+    "description": "Returns a specific news headline for a given NWS office",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Headline record ID",
+            "name": "headlineId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "1aaaeae034bea",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "office_headline",
+  },
+  {
+    "description": "Returns a list of news headlines for a given NWS office",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "office_headlines",
+  },
+  {
+    "description": "Returns metadata about a given latitude/longitude point",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "point",
+  },
+  {
+    "description": "Returns a list of observation stations for a given point",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "point_stations",
+  },
+  {
+    "description": "Returns a list of radar servers",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Show records from specific reporting host",
+            "name": "reportingHost",
+            "type": "string",
+            "x-stoplight": {
+              "id": "100d6e34f3e8a",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "radar_servers",
+  },
+  {
+    "description": "Returns metadata about a given radar server",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Server ID",
+            "name": "id",
+            "type": "string",
+            "x-stoplight": {
+              "id": "ebde89d2d6205",
+            },
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Show records from specific reporting host",
+            "name": "reportingHost",
+            "type": "string",
+            "x-stoplight": {
+              "id": "3287082cb62b4",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "radar_server",
+  },
+  {
+    "description": "Returns a list of radar stations",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Limit results to a specific station type or types",
+            "items": {
+              "pattern": "^[A-Za-z0-9-]+$",
+              "type": "string",
+            },
+            "name": "stationType",
+            "type": "array",
+            "x-stoplight": {
+              "id": "3b158172535a2",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Show RDA and latency info from specific reporting host",
+            "name": "reportingHost",
+            "type": "string",
+            "x-stoplight": {
+              "id": "75f13efc847ac",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Show latency info from specific LDM host",
+            "name": "host",
+            "type": "string",
+            "x-stoplight": {
+              "id": "10d552f0c076c",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "radar_stations",
+  },
+  {
+    "description": "Returns metadata about a given radar station",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Radar station ID",
+            "name": "stationId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "73e7af93f1878",
+            },
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Show RDA and latency info from specific reporting host",
+            "name": "reportingHost",
+            "type": "string",
+            "x-stoplight": {
+              "id": "3557db77b9da0",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Show latency info from specific LDM host",
+            "name": "host",
+            "type": "string",
+            "x-stoplight": {
+              "id": "18923f95042e8",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "radar_station",
+  },
+  {
+    "description": "Returns metadata about a given radar station alarms",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Radar station ID",
+            "name": "stationId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "807c20cdba845",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "radar_station_alarms",
+  },
+  {
+    "description": "Returns metadata about a given radar queue",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "LDM host",
+            "name": "host",
+            "type": "string",
+            "x-stoplight": {
+              "id": "9d3619936c745",
+            },
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Record limit",
+            "maximum": 500,
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "8646bc1e3691a",
+            },
+          },
+          {
+            "$ref": "#/components/schemas/42",
+            "description": "Range for arrival time",
+            "name": "arrived",
+            "type": "string",
+          },
+          {
+            "$ref": "#/components/schemas/42",
+            "description": "Range for creation time",
+            "name": "created",
+            "type": "string",
+          },
+          {
+            "$ref": "#/components/schemas/42",
+            "description": "Range for publish time",
+            "name": "published",
+            "type": "string",
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Station identifier",
+            "name": "station",
+            "type": "string",
+            "x-stoplight": {
+              "id": "e5d8771a00b17",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Record type",
+            "name": "type",
+            "type": "string",
+            "x-stoplight": {
+              "id": "ff5db850c1070",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Originating product feed",
+            "name": "feed",
+            "type": "string",
+            "x-stoplight": {
+              "id": "a00fc97965a3f",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Resolution version",
+            "minimum": 1,
+            "name": "resolution",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "6830f984710d2",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "radar_queue",
+  },
+  {
+    "description": "Returns metadata about a given radar wind profiler",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Profiler station ID",
+            "name": "stationId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "2bf708f5fe16e",
+            },
+          },
+        ],
+        "query": [
+          {
+            "$ref": "#/components/schemas/42",
+            "description": "Time interval",
+            "name": "time",
+            "type": "string",
+          },
+          {
+            "$ref": "#/components/schemas/41",
+            "description": "Averaging interval",
+            "name": "interval",
+            "type": "string",
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "radar_profiler",
+  },
+  {
+    "description": "Returns a list of text products",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Location id",
+            "items": {
+              "type": "string",
+            },
+            "name": "location",
+            "type": "array",
+            "x-stoplight": {
+              "id": "bd98f5cd689c1",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Start time",
+            "format": "date-time",
+            "name": "start",
+            "type": "string",
+            "x-stoplight": {
+              "id": "f083b68b4f21c",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "End time",
+            "format": "date-time",
+            "name": "end",
+            "type": "string",
+            "x-stoplight": {
+              "id": "db40e33cb3844",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Issuing office",
+            "items": {
+              "pattern": "^[A-Z]{4}$",
+              "type": "string",
+            },
+            "name": "office",
+            "type": "array",
+            "x-stoplight": {
+              "id": "59c8bfbabf22f",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "WMO id code",
+            "items": {
+              "pattern": "^[A-Z]{4}\d{2}$",
+              "type": "string",
+            },
+            "name": "wmoid",
+            "type": "array",
+            "x-stoplight": {
+              "id": "b3ae3a49e999a",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Product code",
+            "items": {
+              "pattern": "^\w{3}$",
+              "type": "string",
+            },
+            "name": "type",
+            "type": "array",
+            "x-stoplight": {
+              "id": "6bfde7c63b445",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Limit",
+            "maximum": 500,
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "193f7a27034e3",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "products_query",
+  },
+  {
+    "description": "Returns a list of valid text product issuance locations",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "product_locations",
+  },
+  {
+    "description": "Returns a list of valid text product types and codes",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "product_types",
+  },
+  {
+    "description": "Returns a specific text product",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "productId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "794370bb4efb5",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "product",
+  },
+  {
+    "description": "Returns a list of text products of a given type",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "typeId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "fa465782cbb43",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "products_type",
+  },
+  {
+    "description": "Returns a list of valid text product issuance locations for a given product type",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "typeId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "a0500684e20f7",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "products_type_locations",
+  },
+  {
+    "description": "Returns a list of valid text product types for a given issuance location",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "locationId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "3cec9986cdf43",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "location_products",
+  },
+  {
+    "description": "Returns a list of text products of a given type for a given issuance location",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "typeId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "16a8fcb71ecef",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": ".",
+            "name": "locationId",
+            "type": "string",
+            "x-stoplight": {
+              "id": "665eafb2985a5",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "products_type_location",
+  },
+  {
+    "description": "Returns a list of zones",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Zone ID (forecast or county)",
+            "items": {
+              "$ref": "#/components/schemas/54",
+            },
+            "name": "id",
+            "type": "array",
+            "x-stoplight": {
+              "id": "ef142f9f6a230",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "State/marine area code",
+            "items": {
+              "$ref": "#/components/schemas/16",
+            },
+            "name": "area",
+            "type": "array",
+            "x-stoplight": {
+              "id": "83cd8f0fb0ea0",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Region code",
+            "items": {
+              "$ref": "#/components/schemas/76",
+            },
+            "name": "region",
+            "type": "array",
+            "x-stoplight": {
+              "id": "5d04a0366c8a7",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Zone type",
+            "items": {
+              "$ref": "#/components/schemas/55",
+            },
+            "name": "type",
+            "type": "array",
+            "x-stoplight": {
+              "id": "38b5508248f13",
+            },
+          },
+          {
+            "$ref": "#/components/schemas/73",
+            "description": "Point (latitude,longitude)",
+            "name": "point",
+            "type": "string",
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Include geometry in results (true/false)",
+            "name": "include_geometry",
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "4e5cc1870ff58",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Limit",
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "3971db3d59db1",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Effective date/time",
+            "format": "date-time",
+            "name": "effective",
+            "type": "string",
+            "x-stoplight": {
+              "id": "507e02697d6fd",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "zone_list",
+  },
+  {
+    "description": "Returns a list of zones of a given type",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$ref": "#/components/schemas/55",
+            "description": "Zone type",
+            "name": "type",
+            "type": "string",
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Zone ID (forecast or county)",
+            "items": {
+              "$ref": "#/components/schemas/54",
+            },
+            "name": "id",
+            "type": "array",
+            "x-stoplight": {
+              "id": "72df93d6fe954",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "State/marine area code",
+            "items": {
+              "$ref": "#/components/schemas/16",
+            },
+            "name": "area",
+            "type": "array",
+            "x-stoplight": {
+              "id": "86610db9765ad",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Region code",
+            "items": {
+              "$ref": "#/components/schemas/76",
+            },
+            "name": "region",
+            "type": "array",
+            "x-stoplight": {
+              "id": "a3a08411bde64",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Zone type",
+            "items": {
+              "$ref": "#/components/schemas/55",
+            },
+            "name": "type",
+            "type": "array",
+            "x-stoplight": {
+              "id": "3d35af54e0741",
+            },
+          },
+          {
+            "$ref": "#/components/schemas/73",
+            "description": "Point (latitude,longitude)",
+            "name": "point",
+            "type": "string",
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Include geometry in results (true/false)",
+            "name": "include_geometry",
+            "type": "boolean",
+            "x-stoplight": {
+              "id": "e15ef99303295",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Limit",
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "09d70c09c23c2",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Effective date/time",
+            "format": "date-time",
+            "name": "effective",
+            "type": "string",
+            "x-stoplight": {
+              "id": "d3d18dafcbfee",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "zone_list_type",
+  },
+  {
+    "description": "Returns metadata about a given zone",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$ref": "#/components/schemas/55",
+            "description": "Zone type",
+            "name": "type",
+            "type": "string",
+          },
+        ],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Effective date/time",
+            "format": "date-time",
+            "name": "effective",
+            "type": "string",
+            "x-stoplight": {
+              "id": "20ff8553fc3b6",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "zone",
+  },
+  {
+    "description": "Returns the current zone forecast for a given zone",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Zone type",
+            "name": "type",
+            "type": "string",
+            "x-stoplight": {
+              "id": "6db3aef3125d1",
+            },
+          },
+        ],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "zone_forecast",
+  },
+  {
+    "description": "Returns a list of observations for a given zone",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Start date/time",
+            "format": "date-time",
+            "name": "start",
+            "type": "string",
+            "x-stoplight": {
+              "id": "7daa865013d17",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "End date/time",
+            "format": "date-time",
+            "name": "end",
+            "type": "string",
+            "x-stoplight": {
+              "id": "4ff536a2f908d",
+            },
+          },
+          {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "description": "Limit",
+            "maximum": 500,
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+            "x-stoplight": {
+              "id": "9be4550ba04e7",
+            },
+          },
+        ],
+      },
+      "type": "object",
+    },
+    "name": "zone_obs",
+  },
+  {
+    "description": "Returns a list of observation stations for a given zone",
+    "inputSchema": {
+      "properties": {
+        "body": {},
+        "headers": [],
+        "path": [],
+        "query": [],
+      },
+      "type": "object",
+    },
+    "name": "zone_stations",
+  },
+]

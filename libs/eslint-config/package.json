@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.js",
+    ".": "./src/base.js",
+    "./base": "./src/base.js",
     "./react": "./src/react.js"
   },
   "dependencies": {

@@ -2,7 +2,9 @@ import { DurableObject } from 'cloudflare:workers';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { JSONRPCMessageSchema, type JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { createServer as createServer2 } from './create-server';
+
+import { createMcpServer } from '@openmcp/openapi';
+import openApiDocument from './openapi-examples/weather-gov.json';
 
 export class SessionDO extends DurableObject<Env> implements Transport {
 	private _controller: ReadableStreamDefaultController<Uint8Array> | null = null;
@@ -18,7 +20,7 @@ export class SessionDO extends DurableObject<Env> implements Transport {
 
 	constructor(ctx: DurableObjectState, env: Env) {
 		super(ctx, env);
-		this._server = createServer2();
+		this._server = createMcpServer({ document: openApiDocument as any });
 	}
 
 	private get sessionId() {

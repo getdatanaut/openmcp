@@ -10,9 +10,9 @@
 		"jsx": "react-jsx",
 
 		/* Specify what module code is generated. */
-		"module": "es2022",
+		"module": "ESNext",
 		/* Specify how TypeScript looks up a file from a given module specifier. */
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		/* Specify type package names to be included without being referenced in a source file. */
 		"types": ["@cloudflare/workers-types"],
 		/* Enable importing .json files */
@@ -38,5 +38,7 @@
 
 		/* Skip type checking all .d.ts files. */
 		"skipLibCheck": true
-	}
+	},
+	"include": ["**/*.ts"],
+	"exclude": ["node_modules", "dist"]
 }
