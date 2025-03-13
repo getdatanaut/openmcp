@@ -11,13 +11,13 @@
 		"cf-typegen": "wrangler types"
 	},
 	"devDependencies": {
-		"@cloudflare/workers-types": "4.20250214.0",
-		"@modelcontextprotocol/sdk": "1.5.0",
+		"@cloudflare/workers-types": "4.20250312.0",
+		"@modelcontextprotocol/sdk": "1.7.0",
 		"@stoplight/http-spec": "7.1.0",
 		"cloudflare-workers-sse": "2.0.0",
 		"openapi-mcp-server": "1.2.0-beta05",
 		"workers-mcp": "0.0.13",
-		"wrangler": "3.109.2",
+		"wrangler": "3.114.1",
 		"zod": "3.24.2"
 	}
 }

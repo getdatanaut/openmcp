@@ -1,0 +1,30 @@
+{
+  "name": "@openmcp/manager",
+  "version": "0.0.1",
+  "description": "Manage connections between MCP Servers and Clients through a single interface.",
+  "type": "module",
+  "exports": {
+    "./client": "./src/client.ts",
+    "./connection": "./src/connection.ts",
+    "./manager": "./src/manager.ts",
+    "./server": "./src/server.ts",
+    "./transport": "./src/transport.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.7.0"
+  },
+  "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
+    "msw": "2.7.3",
+    "vitest": "3.0.8"
+  },
+  "keywords": [
+    "mcp",
+    "model context protocol"
+  ]
+}

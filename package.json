@@ -2,7 +2,7 @@
   "name": "openmcp-mono",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "yarn@4.7.0",
   "engines": {
     "node": ">= 20"
   },
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@yarnpkg/types": "~4.0.1",
-    "nx": "20.4.4",
+    "nx": "20.5.0",
     "prettier": "3.5.3",
     "prettier-plugin-classnames": "0.7.7",
     "prettier-plugin-tailwindcss": "0.6.11",
