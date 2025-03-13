@@ -21,7 +21,7 @@
   "dependencies": {
     "@ariakit/react": "0.4.15",
     "@ariakit/react-core": "0.4.15",
-    "@ariakit/tailwind": "0.1.1",
+    "@ariakit/tailwind": "0.1.2",
     "@fortawesome/fontawesome-common-types": "6.7.2",
     "@fortawesome/fontawesome-svg-core": "6.7.2",
     "@fortawesome/free-regular-svg-icons": "6.7.2",
@@ -43,17 +43,18 @@
     "@libs/eslint-config": "workspace:*",
     "@storybook/addon-essentials": "8.6.4",
     "@storybook/addon-interactions": "8.6.4",
+    "@storybook/addon-themes": "8.6.4",
     "@storybook/blocks": "8.6.4",
     "@storybook/react": "8.6.4",
     "@storybook/react-vite": "8.6.4",
     "@storybook/test": "8.6.4",
-    "@tailwindcss/vite": "4.0.13",
+    "@tailwindcss/vite": "4.0.14",
     "@types/react": "19.0.10",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.22.0",
     "eslint-plugin-storybook": "^0.11.4",
     "storybook": "8.6.4",
-    "tailwindcss": "4.0.13",
+    "tailwindcss": "4.0.14",
     "vite": "6.2.1"
   }
 }
