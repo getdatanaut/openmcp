@@ -178,12 +178,9 @@ function formatBody(body: object, contentType: string) {
       // Multipart form data
       const formData = new FormData();
       Object.entries(body).forEach(([key, value]) => {
-        formData.append(key, value instanceof Blob ? value : String(value));
+        formData.append(key, String(value));
       });
       return formData;
-      // For multipart/form-data, let the browser set the Content-Type with boundary
-      // Set to empty string so it's overridden by the browser but still satisfies the type
-      // params.headers['Content-Type'] = '';
     } else if (contentType.includes('text/plain')) {
       // Plain text
       return typeof body === 'string' ? body : String(body);

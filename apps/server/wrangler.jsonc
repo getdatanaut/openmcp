@@ -3,22 +3,22 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "server",
   "main": "src/index.ts",
   "compatibility_flags": ["nodejs_compat"],
   "compatibility_date": "2025-03-12",
   "migrations": [
     {
-      "new_classes": ["SessionDO"],
       "tag": "v1",
+      "new_classes": ["OpenMcpOpenAPI"],
     },
   ],
   "durable_objects": {
     "bindings": [
       {
-        "class_name": "McpOpenAPI",
-        "name": "McpOpenAPI",
+        "class_name": "OpenMcpOpenAPI",
+        "name": "OpenMcpOpenAPI",
       },
     ],
   },

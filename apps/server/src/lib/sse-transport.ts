@@ -10,7 +10,6 @@ import { JSONRPCMessage, JSONRPCMessageSchema } from '@modelcontextprotocol/sdk/
 export class SSEServerTransport implements Transport {
   private _controller: ReadableStreamDefaultController<Uint8Array> | null = null;
   private _stream: ReadableStream<Uint8Array>;
-  private _sessionId: string;
   private _response: Response | null = null;
   private _encoder = new TextEncoder();
 
@@ -21,8 +20,10 @@ export class SSEServerTransport implements Transport {
   /**
    * Creates a new SSE server transport, which will direct the client to POST messages to the relative or absolute URL identified by `_endpoint`.
    */
-  constructor(private _endpoint: string) {
-    this._sessionId = crypto.randomUUID();
+  constructor(
+    private _endpoint: string,
+    private _sessionId: string,
+  ) {
     this._stream = new ReadableStream({
       start: controller => {
         this._controller = controller;
@@ -106,13 +107,13 @@ export class SSEServerTransport implements Transport {
       throw error;
     }
 
-    console.log('handleMessage', parsedMessage);
+    console.log('SSEServerTransport.handleMessage', parsedMessage);
 
     this.onmessage?.(parsedMessage);
   }
 
   async close(): Promise<void> {
-    console.log('close');
+    console.log('SSEServerTransport.close');
     this._controller?.close();
     this._controller = null;
     this.onclose?.();
@@ -123,7 +124,7 @@ export class SSEServerTransport implements Transport {
       throw new Error('Not connected');
     }
 
-    console.log('send', message);
+    console.log('SSEServerTransport.send', message);
 
     this._controller.enqueue(this._encoder.encode(`event: message\ndata: ${JSON.stringify(message)}\n\n`));
   }
@@ -134,6 +135,7 @@ export class SSEServerTransport implements Transport {
    * This can be used to route incoming POST requests.
    */
   get sessionId(): string {
+    console.log('SSEServerTransport.sessionId', this._sessionId);
     return this._sessionId;
   }
 }

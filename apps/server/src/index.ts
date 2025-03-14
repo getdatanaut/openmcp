@@ -1,29 +1,36 @@
-export { McpOpenAPI } from './mcp-openapi';
+import { Hono } from 'hono';
+import { configureMcpServer } from './middleware.ts';
 
-export default {
-  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const url = new URL(request.url);
+export { OpenMcpOpenAPI } from './mcp/openapi.ts';
 
-    const sessionId = url.searchParams.get('sessionId');
-    const openapi = url.searchParams.get('openapi');
-    const baseUrl = url.searchParams.get('baseUrl');
+const app = new Hono<{ Bindings: Env }>()
+  .use(
+    configureMcpServer('OpenMcpOpenAPI', req => {
+      const openapi = req.query('openapi');
+      const baseUrl = req.query('baseUrl');
 
-    if (!sessionId && !openapi) {
-      return new Response(JSON.stringify({ error: '"sessionId" or "openapi" query parameter is required' }), {
-        status: 400,
-      });
-    }
+      return { openapi, baseUrl };
+    }),
+  )
+  .get(
+    '/sse',
+    // @ts-expect-error -- TODO(CL): make typescript happy
+    async c => {
+      const mcpServer = c.get('OpenMcpOpenAPI');
+      const sessionId = c.get('sessionId');
 
-    const sessionDOId = sessionId
-      ? env.McpOpenAPI.idFromString(sessionId)
-      : // TODO(CL): SSE DO is only setup to stream to one client at at time right now, so currently creating a unique DO per session
-        env.McpOpenAPI.idFromName(JSON.stringify({ openapi, baseUrl, id: crypto.randomUUID() }));
-    const session = env.McpOpenAPI.get(sessionDOId);
+      return mcpServer.handleSse(sessionId);
+    },
+  )
+  .post(
+    '/messages',
+    // @ts-expect-error -- TODO(CL): make typescript happy
+    async c => {
+      const mcpServer = c.get('OpenMcpOpenAPI');
+      const sessionId = c.get('sessionId');
 
-    if (!sessionId) {
-      await session.setConfig({ openapi, baseUrl });
-    }
+      return mcpServer.handlePostMessage(sessionId, c.req.raw);
+    },
+  );
 
-    return session.fetch(request);
-  },
-} satisfies ExportedHandler<Env>;
+export default app;
