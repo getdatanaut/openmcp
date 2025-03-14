@@ -1,6 +1,7 @@
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
 import { JSONRPCMessageSchema } from '@modelcontextprotocol/sdk/types.js';
+import { inspect } from 'util';
 
 /**
  * Server transport for SSE: this will send messages over an SSE connection and receive messages from HTTP POST requests.
@@ -116,7 +117,7 @@ export class SSEServerTransport implements Transport {
       throw error;
     }
 
-    console.log('SSEServerTransport.handleMessage', parsedMessage);
+    console.log('SSEServerTransport.handleMessage', inspect(parsedMessage, { depth: 10, colors: true }));
 
     this.onmessage?.(parsedMessage);
   }
@@ -134,7 +135,7 @@ export class SSEServerTransport implements Transport {
       throw new Error('Not connected');
     }
 
-    console.log('SSEServerTransport.send', message);
+    console.log('SSEServerTransport.send', inspect(message, { depth: 10, colors: true }));
 
     this._controller.enqueue(this._encoder.encode(`event: message\ndata: ${JSON.stringify(message)}\n\n`));
   }

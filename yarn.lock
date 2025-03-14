@@ -12,6 +12,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ai-sdk/openai@npm:^1.2.5":
+  version: 1.2.5
+  resolution: "@ai-sdk/openai@npm:1.2.5"
+  dependencies:
+    "@ai-sdk/provider": "npm:1.0.11"
+    "@ai-sdk/provider-utils": "npm:2.1.13"
+  peerDependencies:
+    zod: ^3.0.0
+  checksum: 10c0/604609ad43dd3c947f6b867e8be3bea6031fb63852b0a5f00c012438580ba567744de93981af7f36f8eb3f51a5e44d446c15c567b07fd7a52252faa660db2890
+  languageName: node
+  linkType: hard
+
 "@ai-sdk/provider-utils@npm:2.1.13":
   version: 2.1.13
   resolution: "@ai-sdk/provider-utils@npm:2.1.13"
@@ -1742,7 +1754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openmcp/manager@workspace:packages/manager":
+"@openmcp/manager@workspace:*, @openmcp/manager@workspace:packages/manager":
   version: 0.0.0-use.local
   resolution: "@openmcp/manager@workspace:packages/manager"
   dependencies:
@@ -4700,6 +4712,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv-cli@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "dotenv-cli@npm:8.0.0"
+  dependencies:
+    cross-spawn: "npm:^7.0.6"
+    dotenv: "npm:^16.3.0"
+    dotenv-expand: "npm:^10.0.0"
+    minimist: "npm:^1.2.6"
+  bin:
+    dotenv: cli.js
+  checksum: 10c0/000469632758b7b44aaaa80cbbbd7f0c94dc170ec02e51aa8d8280341a0108fb7407954c23054257b77235b064033efdb8745836633eb6fd1586924953cf0528
+  languageName: node
+  linkType: hard
+
+"dotenv-expand@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "dotenv-expand@npm:10.0.0"
+  checksum: 10c0/298f5018e29cfdcb0b5f463ba8e8627749103fbcf6cf81c561119115754ed582deee37b49dfc7253028aaba875ab7aea5fa90e5dac88e511d009ab0e6677924e
+  languageName: node
+  linkType: hard
+
 "dotenv-expand@npm:~11.0.6":
   version: 11.0.7
   resolution: "dotenv-expand@npm:11.0.7"
@@ -4709,7 +4742,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.4.5, dotenv@npm:~16.4.5":
+"dotenv@npm:^16.3.0, dotenv@npm:^16.4.5, dotenv@npm:~16.4.5":
   version: 16.4.7
   resolution: "dotenv@npm:16.4.7"
   checksum: 10c0/be9f597e36a8daf834452daa1f4cc30e5375a5968f98f46d89b16b983c567398a330580c88395069a77473943c06b877d1ca25b4afafcdd6d4adb549e8293462
@@ -6290,10 +6323,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hono@npm:4.7.2":
-  version: 4.7.2
-  resolution: "hono@npm:4.7.2"
-  checksum: 10c0/2bf7a85f25048c0deb181a767cf020491be611089a51f45448018fc4fa8a33ab9d34d8d0d39fe4e05c0abd5cd338d9c973984583c27ce7dc8d8919cadd2991d9
+"hono@npm:4.7.4":
+  version: 4.7.4
+  resolution: "hono@npm:4.7.4"
+  checksum: 10c0/b189c5b75527a0b2c6669a8b2d46a2c522c9f429c08da801373b13d25b476f20e639f667a9dac2fe42074e9b6f851d542d28026f158c5728b20034b9b0e3e738
   languageName: node
   linkType: hard
 
@@ -9777,15 +9810,20 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
+    "@ai-sdk/openai": "npm:^1.2.5"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
+    "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@types/node": "npm:22.13.10"
+    ai: "npm:4.1.61"
+    dotenv-cli: "npm:^8.0.0"
     eslint: "npm:9.22.0"
-    hono: "npm:4.7.2"
+    hono: "npm:4.7.4"
     typescript: "npm:5.8.2"
     wrangler: "npm:4.0.0"
+    zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
 

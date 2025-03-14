@@ -1,0 +1,2 @@
+# This is an example of what keys you should put in `.dev.vars`
+OPENAI_API_KEY=

@@ -6,7 +6,7 @@
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "server",
   "main": "src/index.ts",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "compatibility_date": "2025-03-12",
   "migrations": [
     {

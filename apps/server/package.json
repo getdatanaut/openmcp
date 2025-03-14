@@ -4,23 +4,27 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "dotenv -e .dev.vars -- wrangler dev",
     "build": "wrangler deploy --dry-run --outdir=.output",
     "deploy": "wrangler deploy",
-    "start": "wrangler dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "typegen": "wrangler types"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^1.2.5",
+    "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
-    "hono": "4.7.2"
+    "ai": "4.1.61",
+    "hono": "4.7.4",
+    "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "@modelcontextprotocol/sdk": "1.7.0",
     "@types/node": "22.13.10",
+    "dotenv-cli": "^8.0.0",
     "eslint": "9.22.0",
     "typescript": "5.8.2",
     "wrangler": "4.0.0"

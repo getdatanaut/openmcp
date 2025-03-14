@@ -2,6 +2,12 @@
 
 ## Development
 
+Create a .dev.vars file in the root of the project
+
+```
+OPENAI_API_KEY=sk-proj-1234567890
+```
+
 Start the server in development mode:
 
 ```bash
@@ -28,4 +34,12 @@ url.searchParams.set('openapi', 'https://petstore3.swagger.io/api/v3/openapi.jso
 url.searchParams.set('baseUrl', 'https://petstore3.swagger.io/api/v3');
 
 console.log(url.toString());
+```
+
+Make a request to the manager:
+
+```bash
+curl -X POST http://localhost:8787/manager/123/threads/456/messages \
+  -H "Content-Type: application/json" \
+  -d '{"messages": [{"role": "user", "content": "getPetById '1' from https://petstore3.swagger.io/api/v3/openapi.json at https://petstore3.swagger.io/api/v3" }]}'
 ```

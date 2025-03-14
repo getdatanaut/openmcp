@@ -12,8 +12,8 @@ const app = new Hono<{ Bindings: Env }>()
   .get('/', routeSessionToMcpServerInstance, async c => {
     return c.json({
       message: 'Welcome to OpenMCP!',
-      docs: 'https://getdatanaut.ai/docs/openmcp',
-      examples: 'https://getdatanaut.ai/docs/openmcp/examples',
+      docs: 'https://datanaut.ai/docs/openmcp',
+      examples: 'https://datanaut.ai/docs/openmcp/examples',
       github: 'https://github.com/getdatanaut/openmcp',
       issues: 'https://github.com/getdatanaut/openmcp/issues',
     });
