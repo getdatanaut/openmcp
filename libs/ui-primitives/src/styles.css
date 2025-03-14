@@ -39,7 +39,7 @@
    *
    * Default light theme
    */
-  --color-canvas: #f5f2ed;
+  --color-canvas: #dfe7ed;
   --color-primary: #007acc;
   --color-secondary: #ec4899;
   --color-danger: #df2020;
@@ -48,21 +48,20 @@
 /* Default dark theme */
 :root {
   @variant dark {
-    --color-canvas: #0a0a0a;
+    --color-canvas: #0f0d13;
     --color-primary: #bc89bd;
     --color-secondary: #c99c6e;
   }
 }
 
 .theme-light {
-  --color-canvas: #f5f2ed;
+  --color-canvas: #dfe7ed;
   --color-primary: #007acc;
   --color-secondary: #ec4899;
-  --color-danger: #df2020;
 }
 
 .theme-dark {
-  --color-canvas: #0a0a0a;
+  --color-canvas: #0f0d13;
   --color-primary: #bc89bd;
   --color-secondary: #c99c6e;
 }

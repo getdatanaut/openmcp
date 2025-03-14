@@ -172,5 +172,6 @@ export { usePrevious } from './hooks/use-previous.ts';
  */
 
 export { createContext, Provider } from './utils/context.tsx';
+export { PREBUILT_THEMES } from './utils/themes.ts';
 export type { TW_STR } from './utils/tw.ts';
 export { cn, tn, twMerge } from './utils/tw.ts';

@@ -17,6 +17,9 @@
     "@libs/ui-primitives": "workspace:*",
     "@tanstack/react-router": "1.114.17",
     "@tanstack/react-router-devtools": "1.114.18",
+    "mobx": "6.13.6",
+    "mobx-persist-store": "1.1.7",
+    "mobx-react-lite": "4.1.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-markdown": "10.1.0",
@@ -25,6 +28,7 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "~7.25.9",
     "@libs/eslint-config": "workspace:*",
     "@tailwindcss/vite": "4.0.14",
     "@tanstack/router-plugin": "1.114.17",

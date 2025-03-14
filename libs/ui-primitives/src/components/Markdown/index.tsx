@@ -9,7 +9,15 @@ import remarkGfm from 'remark-gfm';
 import { tn } from '../../utils/tw.ts';
 import { CopyButton } from '../Button/copy-button.tsx';
 
-export const Markdown = ({ content, fallback, theme }: { content?: string; fallback?: ReactNode; theme: string }) => {
+export const Markdown = ({
+  content,
+  fallback,
+  codeTheme,
+}: {
+  content?: string;
+  fallback?: ReactNode;
+  codeTheme: string;
+}) => {
   return (
     <MarkdownHooks
       remarkPlugins={[remarkGfm]}
@@ -17,7 +25,7 @@ export const Markdown = ({ content, fallback, theme }: { content?: string; fallb
         [
           rehypePrettyCode,
           {
-            theme,
+            theme: codeTheme,
             keepBackground: false,
             defaultLang: {
               block: 'plaintext',
@@ -49,7 +57,7 @@ const MarkdownCode: Components['code'] = props => {
 const MarkdownFigure: Components['figure'] = ({ className, node, children, ...props }) => {
   const isCodeFigure = props['data-rehype-pretty-code-figure'] !== undefined;
 
-  const classes = tn(isCodeFigure && 'ak-frame ak-layer-down -mx-2 text-sm leading-relaxed', className);
+  const classes = tn(isCodeFigure && 'ak-frame ak-layer-[down-0.5] -mx-1.5 text-sm leading-relaxed', className);
 
   let figureChildren: ReactNode[] = [];
 

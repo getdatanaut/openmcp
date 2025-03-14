@@ -91,7 +91,7 @@
   }
 
   p > img {
-    @apply ak-frame-lg ak-frame-border ak-edge -mx-2;
+    @apply ak-frame-lg ak-frame-border ak-edge -mx-1.5;
 
     /* 12px at base 16px */
     margin-top: 0.75em;
@@ -260,7 +260,7 @@
   }
 
   table {
-    @apply -mx-2 w-full table-auto overflow-x-auto;
+    @apply w-full table-auto overflow-x-auto;
 
     /* 14px at base 16px */
     font-size: 0.875em;
