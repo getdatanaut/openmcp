@@ -17,10 +17,10 @@
     "hono": "4.7.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250312.0",
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "@modelcontextprotocol/sdk": "1.7.0",
+    "@types/node": "22.13.10",
     "eslint": "9.22.0",
     "typescript": "5.8.2",
     "wrangler": "4.0.0"

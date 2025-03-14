@@ -1,5 +1,6 @@
-import { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
-import { JSONRPCMessage, JSONRPCMessageSchema } from '@modelcontextprotocol/sdk/types.js';
+import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
+import { JSONRPCMessageSchema } from '@modelcontextprotocol/sdk/types.js';
 
 /**
  * Server transport for SSE: this will send messages over an SSE connection and receive messages from HTTP POST requests.
@@ -12,23 +13,28 @@ export class SSEServerTransport implements Transport {
   private _stream: ReadableStream<Uint8Array>;
   private _response: Response | null = null;
   private _encoder = new TextEncoder();
+  private _endpoint: string;
+  private _sessionId: string;
 
   onclose?: () => void;
+  // eslint-disable-next-line no-unused-vars
   onerror?: (error: Error) => void;
+  // eslint-disable-next-line no-unused-vars
   onmessage?: (message: JSONRPCMessage) => void;
 
   /**
    * Creates a new SSE server transport, which will direct the client to POST messages to the relative or absolute URL identified by `_endpoint`.
    */
-  constructor(
-    private _endpoint: string,
-    private _sessionId: string,
-  ) {
+  constructor(endpoint: string, sessionId: string) {
+    this._endpoint = endpoint;
+    this._sessionId = sessionId;
+
     this._stream = new ReadableStream({
       start: controller => {
         this._controller = controller;
       },
       cancel: () => {
+        console.log('SSEServerTransport.cancel');
         this._controller = null;
         this.onclose?.();
       },
@@ -42,6 +48,7 @@ export class SSEServerTransport implements Transport {
    */
   async start(): Promise<void> {
     if (this._response) {
+      console.error('SSEServerTransport.start: already started');
       throw new Error(
         'SSEServerTransport already started! If using Server class, note that connect() calls start() automatically.',
       );
@@ -76,6 +83,7 @@ export class SSEServerTransport implements Transport {
    */
   async handlePostMessage(request: Request): Promise<Response> {
     if (!this._controller) {
+      console.error('SSEServerTransport.handlePostMessage: controller not found');
       const message = 'SSE connection not established';
       return new Response(message, { status: 500 });
     }
@@ -91,6 +99,7 @@ export class SSEServerTransport implements Transport {
 
       return new Response('Accepted', { status: 202 });
     } catch (error) {
+      console.error('SSEServerTransport.handlePostMessage:', error);
       return new Response(String(error), { status: 400 });
     }
   }
@@ -121,6 +130,7 @@ export class SSEServerTransport implements Transport {
 
   async send(message: JSONRPCMessage): Promise<void> {
     if (!this._controller) {
+      console.error('SSEServerTransport.send: not connected');
       throw new Error('Not connected');
     }
 

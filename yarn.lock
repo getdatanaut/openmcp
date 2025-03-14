@@ -548,13 +548,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/workers-types@npm:4.20250312.0":
-  version: 4.20250312.0
-  resolution: "@cloudflare/workers-types@npm:4.20250312.0"
-  checksum: 10c0/78f931f1335e0009f532f190ead9b40050fcc6e943de058dcfda8395bdd8d7abc56fc50ca16fce15753c5c7881453dd10d9a062efac9e8088cb8b4e4be90a707
-  languageName: node
-  linkType: hard
-
 "@cspotcode/source-map-support@npm:0.8.1":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -9784,11 +9777,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
-    "@cloudflare/workers-types": "npm:4.20250312.0"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
     "@openmcp/openapi": "workspace:*"
+    "@types/node": "npm:22.13.10"
     eslint: "npm:9.22.0"
     hono: "npm:4.7.2"
     typescript: "npm:5.8.2"

@@ -6,6 +6,7 @@
   "exports": {
     ".": "./src/base.js",
     "./base": "./src/base.js",
+    "./node": "./src/node.js",
     "./react": "./src/react.js"
   },
   "dependencies": {

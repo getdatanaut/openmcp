@@ -1,6 +1,8 @@
+import type { MCPServerIdToDoNamespace } from '../mcp/index.ts';
+
 export const SESSION_PREFIX = 'openmcp';
 
-export type McpServerId = string;
+export type McpServerId = keyof typeof MCPServerIdToDoNamespace;
 export type EncodedSessionId = string;
 export type SessionId = `${typeof SESSION_PREFIX}_${EncodedSessionId}`;
 
@@ -40,5 +42,17 @@ export const SessionId = {
     }
 
     return { openmcp, mcpServerId, uid, doId } as const;
+  },
+
+  isValid: (
+    sessionId: SessionId | string,
+    { doId, mcpServerId }: { doId: string; mcpServerId: McpServerId },
+  ): sessionId is SessionId => {
+    try {
+      const decodedSessionId = SessionId.decode(sessionId);
+      return decodedSessionId.mcpServerId === mcpServerId && decodedSessionId.doId === doId;
+    } catch {
+      return false;
+    }
   },
 };
