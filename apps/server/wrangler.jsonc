@@ -17,8 +17,8 @@
   "durable_objects": {
     "bindings": [
       {
-        "class_name": "SessionDO",
-        "name": "SESSION_DO",
+        "class_name": "McpOpenAPI",
+        "name": "McpOpenAPI",
       },
     ],
   },

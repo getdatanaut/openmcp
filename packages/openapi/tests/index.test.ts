@@ -29,10 +29,10 @@ describe('createMcpServer', () => {
   afterAll(() => server.close());
   afterEach(() => server.resetHandlers());
 
-  test.each(fixtures)('should create a MCP server for %s', async (filename, document) => {
+  test.each(fixtures)('should create a MCP server for %s', async (filename, openapi) => {
     const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
-    const server = await createMcpServer({ document, serverUrl });
+    const server = await createMcpServer({ openapi, serverUrl });
     expect(server).toBeDefined();
 
     const client = new McpClient(

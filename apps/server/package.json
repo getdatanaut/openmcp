@@ -8,7 +8,7 @@
     "dev": "wrangler dev",
     "dev.bun": "bun run src/index-bun.ts",
     "start": "wrangler dev",
-    "cf-typegen": "wrangler types"
+    "typegen": "wrangler types"
   },
   "dependencies": {
     "@openmcp/openapi": "workspace:*"

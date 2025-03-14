@@ -4,15 +4,16 @@ import { JSONRPCMessageSchema, type JSONRPCMessage } from '@modelcontextprotocol
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import { createMcpServer } from '@openmcp/openapi';
-import openApiDocument from './openapi-examples/weather-gov.json';
 
-export class SessionDO extends DurableObject<Env> implements Transport {
+export class McpOpenAPI extends DurableObject<Env> implements Transport {
   private _controller: ReadableStreamDefaultController<Uint8Array> | null = null;
   private _stream: ReadableStream<Uint8Array> | null = null;
   private _response: Response | null = null;
   private _encoder = new TextEncoder();
   private _endpoint: string = '/messages';
   private _server?: McpServer;
+  private _openapi: string | null = null;
+  private _baseUrl: string | null = null;
 
   onclose?: () => void;
   onerror?: (error: Error) => void;
@@ -24,6 +25,22 @@ export class SessionDO extends DurableObject<Env> implements Transport {
 
   get sessionId() {
     return this.ctx.id.toString();
+  }
+
+  async setConfig({ openapi, baseUrl }: { openapi: string | null; baseUrl: string | null }) {
+    if (openapi) {
+      console.log('SessionDO.setConfig.openapi', this.sessionId, openapi);
+      this._openapi = openapi;
+    }
+
+    if (baseUrl) {
+      console.log('SessionDO.setConfig.baseUrl', this.sessionId, baseUrl);
+      this._baseUrl = baseUrl;
+    }
+
+    if (this._openapi) {
+      this._server = await createMcpServer({ openapi: this._openapi, serverUrl: this._baseUrl || undefined });
+    }
   }
 
   /**
@@ -128,10 +145,15 @@ export class SessionDO extends DurableObject<Env> implements Transport {
   override async fetch(request: Request) {
     const url = new URL(request.url);
     console.log('SessionDO.fetch', this.sessionId, request.method, url.pathname);
-    this._server = await createMcpServer({ document: openApiDocument as any });
 
     if (request.method === 'GET') {
-      await this._server.connect(this);
+      if (!this._server) {
+        throw new Error('Server not initialized');
+      }
+
+      if (!this._response) {
+        await this._server.connect(this);
+      }
       return this._response!;
     }
 

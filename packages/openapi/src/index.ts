@@ -1,6 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
+import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import { bundleOas3Service } from '@stoplight/http-spec';
 import $RefParser from '@stoplight/json-schema-ref-parser/node';
 import { decycle } from '@stoplight/json';
@@ -8,13 +9,13 @@ import { decycle } from '@stoplight/json';
 import type { IHttpOperation, IHttpOperationRequest, Reference } from '@stoplight/types';
 
 export async function createMcpServer({
-  document,
+  openapi,
   serverUrl,
 }: {
-  document: Record<string, unknown>;
+  openapi: Record<string, unknown> | string;
   serverUrl?: string;
 }) {
-  const result = decycle(await new $RefParser().dereference(document));
+  const result = decycle(await new $RefParser().dereference(openapi));
 
   const service = bundleOas3Service({ document: result });
 
@@ -32,17 +33,21 @@ export async function createMcpServer({
     },
   );
 
-  const operationTools = new Map<string, { tool: Tool; operation: IHttpOperation<true> }>();
+  const operationTools = new Map<string, { tool: Tool; operation: IHttpOperation<false> }>();
 
   for (const operation of service.operations) {
-    const request = operation.request as IHttpOperationRequest<true>;
+    const request = operation.request as IHttpOperationRequest<false>;
 
-    const toolName = operation.iid || operation.id || `${operation.method} ${operation.path}`;
+    const toolName = operation.iid || operation.id || `${operation.method.toUpperCase()} ${operation.path}`;
+    const description = [`${operation.method.toUpperCase()} ${operation.path}`, `${operation.description || ''}`]
+      .filter(Boolean)
+      .join(' - ');
+
     operationTools.set(toolName, {
-      operation,
+      operation: operation as IHttpOperation<false>,
       tool: {
         name: toolName,
-        description: operation.description || '',
+        description,
         inputSchema: requestParametersToTool(request),
       },
     });
@@ -71,6 +76,7 @@ export async function createMcpServer({
         ...(args['query'] || {}),
       },
       headers: {
+        'Content-Type': operationTool.operation.request?.body?.contents?.[0]?.mediaType || 'application/json',
         ...(args['headers'] || {}),
       },
       body: {
@@ -78,27 +84,29 @@ export async function createMcpServer({
       },
     };
 
-    const url = new URL(replacePathParameters(operationTool.operation.path, params.path), baseUrl);
+    const template = new UriTemplate(operationTool.operation.path);
+    const path = template.expand(params.path);
+    const url = new URL(`${baseUrl?.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}${path}`);
 
+    // TODO(CL): could use a proper querystring library
     Object.entries(params.query).forEach(([key, value]) => {
       if (typeof value !== 'undefined') {
         url.searchParams.set(key, String(value));
       }
     });
 
-    // TODO(CL): Correctly format body based on operation's content-type
-    let body;
-    if (Object.keys(params['body']).length) {
-      body = JSON.stringify(params['body']);
-    }
-
-    const res = await fetch(url, {
+    const res = await fetch(url.toString(), {
       method: operationTool.operation.method,
       headers: params.headers,
-      body,
+      body: formatBody(params.body, params.headers['Content-Type']),
     });
 
-    const data = await res.json();
+    let data;
+    if (res.headers.get('content-type')?.includes('application/json')) {
+      data = await res.json();
+    } else {
+      data = await res.text();
+    }
 
     return {
       content: [
@@ -117,22 +125,33 @@ function isReference(value: any): value is Reference {
   return '$ref' in value;
 }
 
-function requestParametersToTool({ path, query, headers, body }: IHttpOperationRequest<true>) {
-  const pathParams = path?.flatMap(param => (isReference(param) ? [] : parameterToTool(param)));
-  const queryParams = query?.flatMap(param => (isReference(param) ? [] : parameterToTool(param)));
-  const headerParams = headers?.flatMap(param => (isReference(param) ? [] : parameterToTool(param)));
+function requestParametersToTool({ path, query, headers, body }: IHttpOperationRequest<false>) {
+  const pathParams = parametersToTool(path);
+  const queryParams = parametersToTool(query);
+  const headerParams = parametersToTool(headers);
 
   const bodyParam = body && isReference(body) ? undefined : body?.contents?.find(param => param.schema)?.schema;
 
   return {
     type: 'object',
     properties: {
-      ...(pathParams ? { path: pathParams } : {}),
-      ...(queryParams ? { query: queryParams } : {}),
-      ...(headerParams ? { headers: headerParams } : {}),
-      ...(bodyParam ? { body: bodyParam } : {}),
+      ...(pathParams ? { path: { type: 'object', properties: pathParams } } : {}),
+      ...(queryParams ? { query: { type: 'object', properties: queryParams } } : {}),
+      ...(headerParams ? { headers: { type: 'object', properties: headerParams } } : {}),
+      ...(bodyParam ? { body: { type: 'object', properties: bodyParam } } : {}),
     },
   } as const;
+}
+
+// Turn parameters into an object with the parameter name as the key and the parameter schema as the value
+function parametersToTool(params?: { name: string; description?: string; schema?: unknown }[]) {
+  return params?.reduce(
+    (acc, param) => {
+      acc[param.name] = parameterToTool(param);
+      return acc;
+    },
+    {} as Record<string, unknown>,
+  );
 }
 
 function parameterToTool(param: { name: string; description?: string; schema?: unknown }) {
@@ -144,12 +163,32 @@ function parameterToTool(param: { name: string; description?: string; schema?: u
   };
 }
 
-function replacePathParameters(path: string, params: Record<string, unknown>): string {
-  return path.replace(/\{([^}]+)\}/g, (match, paramName) => {
-    const value = params[paramName];
-    if (value === undefined) {
-      throw new Error(`Missing required path parameter: ${paramName}`);
+function formatBody(body: object, contentType: string) {
+  if (Object.keys(body).length) {
+    if (contentType.includes('application/json')) {
+      return JSON.stringify(body);
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+      // URL encoded format
+      const formData = new URLSearchParams();
+      Object.entries(body).forEach(([key, value]) => {
+        formData.append(key, String(value));
+      });
+      return formData.toString();
+    } else if (contentType.includes('multipart/form-data')) {
+      // Multipart form data
+      const formData = new FormData();
+      Object.entries(body).forEach(([key, value]) => {
+        formData.append(key, value instanceof Blob ? value : String(value));
+      });
+      return formData;
+      // For multipart/form-data, let the browser set the Content-Type with boundary
+      // Set to empty string so it's overridden by the browser but still satisfies the type
+      // params.headers['Content-Type'] = '';
+    } else if (contentType.includes('text/plain')) {
+      // Plain text
+      return typeof body === 'string' ? body : String(body);
     }
-    return encodeURIComponent(String(value));
-  });
+
+    return JSON.stringify(body);
+  }
 }

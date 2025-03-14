@@ -25,9 +25,10 @@
     "clean": "rm -r **/node_modules && rm -r **/.nx && rm -r **/dist && rm -r **/build",
     "lint": "nx run-many --target lint",
     "lint.fix": "yarn lint --fix && prettier --ignore-path .eslintignore --write \"**/*.{ts,tsx}\";",
-    "test": "nx run-many --target test --exclude @marbemac/root",
-    "test.ch": "nx run-many --target test.ch --exclude @marbemac/root",
-    "typecheck": "nx run-many --target typecheck --exclude @marbemac/root demo"
+    "test": "nx run-many --target test",
+    "test.ch": "nx run-many --target test.ch",
+    "typecheck": "nx run-many --target typecheck demo",
+    "typegen": "nx run-many --target typegen"
   },
   "devDependencies": {
     "@yarnpkg/types": "~4.0.1",
