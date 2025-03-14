@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 
 import { routeSessionToMcpServerInstance } from './middleware.ts';
 import managerRoute from './routes/manager/route.ts';
@@ -7,6 +8,8 @@ import mcpRoute from './routes/mcp/route.ts';
 export { OpenMcpOpenAPI } from './mcp/openapi.ts';
 
 const app = new Hono<{ Bindings: Env }>()
+  // TODO(CL): need tolock down the cors to only allow the allowed origins
+  .use('*', cors())
   .route('/mcp', mcpRoute)
   .route('/manager', managerRoute)
   .get('/', routeSessionToMcpServerInstance, async c => {

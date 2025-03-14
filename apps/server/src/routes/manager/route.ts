@@ -54,13 +54,14 @@ const app = new Hono<{ Bindings: Env }>()
                   .describe('An URL to an OpenAPI document such as https://petstore3.swagger.io/api/v3/openapi.json'),
                 baseUrl: z
                   .string()
-                  .describe('The base URL for the API to call such as https://petstore3.swagger.io/api/v3'),
+                  .describe('The base URL for the API to call such as https://petstore3.swagger.io/api/v3')
+                  .optional(),
               }),
               execute: async ({ openapi, baseUrl }) => {
                 console.log('getOpenAPITools', { openapi, baseUrl });
                 const url = new URL('http://localhost:8787/mcp/openapi/sse');
                 url.searchParams.set('openapi', openapi);
-                url.searchParams.set('baseUrl', baseUrl);
+                url.searchParams.set('baseUrl', baseUrl ?? '');
 
                 const client = await experimental_createMCPClient({
                   transport: {
