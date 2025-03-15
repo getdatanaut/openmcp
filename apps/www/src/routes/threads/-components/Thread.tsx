@@ -23,8 +23,9 @@ export type ThreadProps = {
 };
 
 const openai = createOpenAI({
-  // @ts-expect-error temporary
-  apiKey: import.meta.env.VITE_OPENAI_SECRET,
+  baseURL: 'http://localhost:8787/v1',
+  // TODO(CL): AI SDK only uses base URL if apiKey is provided for whatever reason
+  apiKey: '',
 });
 
 interface ThreadContextProps {
@@ -75,7 +76,6 @@ export const ThreadInner = ({
   const chat = useChat({
     id: threadId,
     initialMessages,
-    api: '/does/not/matter',
     sendExtraMessageFields: true,
     fetch: async (input, init) => {
       const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
@@ -146,7 +146,7 @@ const conductorRun = async ({
   console.log('aiTools', aiTools);
 
   const result = streamText({
-    model: openai('gpt-4-turbo'),
+    model: openai('gpt-4o'),
     system: 'You are a helpful assistant.',
     messages,
     maxSteps: 5,

@@ -41,7 +41,21 @@ export class OpenMcpOpenAPI extends DurableObject<Env> {
       throw new Error('OpenAPI MCP Server requires an "openapi" url or document to be configured.');
     }
 
-    this.#config = { openapi, baseUrl };
+    this.#config = { openapi: openapi.trim(), baseUrl: baseUrl?.trim() };
+  }
+
+  override async fetch(request: Request): Promise<Response> {
+    const url = new URL(request.url);
+
+    if (request.method === 'GET' && url.pathname.endsWith('/sse')) {
+      return this.handleSse(url.searchParams.get('sessionId') as SessionId);
+    }
+
+    if (request.method === 'POST' && url.pathname.endsWith('/messages')) {
+      return this.handlePostMessage(url.searchParams.get('sessionId') as SessionId, request);
+    }
+
+    return new Response('Not found', { status: 404 });
   }
 
   /**

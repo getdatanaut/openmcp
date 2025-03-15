@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
 import { routeSessionToMcpServerInstance } from './middleware.ts';
+import chatCompletionsRoute from './routes/chat/completions/route.ts';
 import managerRoute from './routes/manager/route.ts';
 import mcpRoute from './routes/mcp/route.ts';
 
@@ -12,6 +13,7 @@ const app = new Hono<{ Bindings: Env }>()
   .use('*', cors())
   .route('/mcp', mcpRoute)
   .route('/manager', managerRoute)
+  .route('/v1/chat/completions', chatCompletionsRoute)
   .get('/', routeSessionToMcpServerInstance, async c => {
     return c.json({
       message: 'Welcome to OpenMCP!',

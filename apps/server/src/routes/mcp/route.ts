@@ -9,50 +9,41 @@ const app = new Hono<{ Bindings: Env; Variables: McpRouteVariables }>()
    *
    * @example GET /mcp/openapi/sse
    */
-  .get(
-    '/:mcpServerId/sse',
-    configureMcpServerById,
-    // @ts-expect-error -- TODO(CL): make typescript happy
-    async c => {
-      const mcpServer = c.get('mcpServer');
-      const sessionId = c.get('sessionId');
+  .get('/:mcpServerId/sse', configureMcpServerById, async c => {
+    const mcpServer = c.get('mcpServer');
+    const sessionId = c.get('sessionId');
+    const url = new URL(c.req.url);
+    url.searchParams.set('sessionId', sessionId);
 
-      // TODO(CL): we could offer an endpoint to configure the MCP instance without connecting too
-      // Route to the endpoint for handling this MCP Server instance
-      return mcpServer.handleSse(sessionId);
-    },
-  )
+    // TODO(CL): we could offer an endpoint to configure the MCP instance without connecting too
+    // Route to the endpoint for handling this MCP Server instance
+    return mcpServer.fetch(new Request(url.toString()));
+  })
   /**
    * Establish an SSE connection to exissting MCP instance
    *
    * @example GET /mcp/openapi/123/sse
    */
-  .get(
-    '/:mcpServerId/:doId/sse',
-    configureMcpServerByDoId,
-    // @ts-expect-error -- TODO(CL): make typescript happy
-    async c => {
-      const mcpServer = c.get('mcpServer');
-      const sessionId = c.get('sessionId');
+  .get('/:mcpServerId/:doId/sse', configureMcpServerByDoId, async c => {
+    const mcpServer = c.get('mcpServer');
+    const sessionId = c.get('sessionId');
+    const url = new URL(c.req.url);
+    url.searchParams.set('sessionId', sessionId);
 
-      return mcpServer.handleSse(sessionId);
-    },
-  )
+    return mcpServer.fetch(new Request(url.toString()));
+  })
   /**
    * Send messages to an existing MCP instance
    *
    * @example POST /mcp/openapi/123/messages
    */
-  .post(
-    '/:mcpServerId/:doId/messages',
-    configureMcpServerByDoId,
-    // @ts-expect-error -- TODO(CL): make typescript happy
-    async c => {
-      const mcpServer = c.get('mcpServer');
-      const sessionId = c.get('sessionId');
+  .post('/:mcpServerId/:doId/messages', configureMcpServerByDoId, async c => {
+    const mcpServer = c.get('mcpServer');
+    const sessionId = c.get('sessionId');
+    const url = new URL(c.req.url);
+    url.searchParams.set('sessionId', sessionId);
 
-      return mcpServer.handlePostMessage(sessionId, c.req.raw);
-    },
-  );
+    return mcpServer.fetch(new Request(url.toString(), c.req.raw));
+  });
 
 export default app;
