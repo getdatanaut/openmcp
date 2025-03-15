@@ -7,8 +7,8 @@ import { observer } from 'mobx-react-lite';
 import { type ReactNode, useEffect, useMemo } from 'react';
 import { z } from 'zod';
 
-import { CurrentManagerContext } from '~/hooks/use-current-manager.ts';
-import { RootStoreContext, useRootStore } from '~/hooks/use-root-store.ts';
+import { CurrentManagerContext, CurrentManagerProvider } from '~/hooks/use-current-manager.tsx';
+import { RootStoreContext, useRootStore } from '~/hooks/use-root-store.tsx';
 import { createRootStore } from '~/stores/root.ts';
 import { localDb } from '~/utils/local-db.ts';
 import { fallback } from '~/utils/routing.ts';
@@ -56,11 +56,11 @@ function RootComponent() {
 }
 
 const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
-  const { app, mcpManagers } = useRootStore();
+  const { app } = useRootStore();
   const themeClass = app.theme?.themeClass;
 
   return (
-    <CurrentManagerContext.Provider value={mcpManagers.managers['default']!}>
+    <CurrentManagerProvider>
       <div className={tn('flex min-h-screen', themeClass && `${themeClass} ak-layer-canvas`)}>
         {children}
 
@@ -68,7 +68,7 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
           <MainSidebar />
         </div>
       </div>
-    </CurrentManagerContext.Provider>
+    </CurrentManagerProvider>
   );
 });
 

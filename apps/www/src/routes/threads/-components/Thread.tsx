@@ -1,4 +1,3 @@
-import { createOpenAI } from '@ai-sdk/openai';
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Button, createContext, tn } from '@libs/ui-primitives';
@@ -6,12 +5,12 @@ import { Markdown } from '@libs/ui-primitives/markdown';
 import type { Manager } from '@openmcp/manager';
 import { useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
-import { jsonSchema, streamText, tool as createTool, type UIMessage } from 'ai';
+import { type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useMemo } from 'react';
 import { type FormEvent, type KeyboardEvent } from 'react';
 
-import { useRootStore } from '~/hooks/use-root-store.ts';
+import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 
 export type ThreadProps = {
@@ -21,12 +20,6 @@ export type ThreadProps = {
   threadId?: TThreadId;
   onCreated?: (props: { threadId: TThreadId }) => void;
 };
-
-const openai = createOpenAI({
-  baseURL: 'http://localhost:8787/_/llm/openai',
-  // TODO(CL): AI SDK only uses base URL if apiKey is provided for whatever reason
-  apiKey: '',
-});
 
 interface ThreadContextProps {
   threadId: TThreadId;
@@ -79,7 +72,10 @@ export const ThreadInner = ({
     sendExtraMessageFields: true,
     fetch: async (input, init) => {
       const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
-      return conductorRun({ threadId, messages: body.messages, manager });
+      const message = body.messages[0]!;
+      const history = body.messages.slice(1);
+
+      return manager.conductor.handleMessage({ threadId, message, history });
     },
   });
 
@@ -97,75 +93,6 @@ export const ThreadInner = ({
   );
 
   return <ThreadContext.Provider value={{ threadId, chat, handleSubmit }}>{children}</ThreadContext.Provider>;
-};
-
-// @TODO this will ultimately be in the manager, and swappable
-const conductorRun = async ({
-  threadId,
-  messages,
-  manager,
-}: {
-  threadId: string;
-  messages: UIMessage[];
-  manager: Manager;
-}) => {
-  // @QUESTION: when is this useful?
-  /**
-   * Most of the time the tools will be defined on the remote mpc servers right?
-   * Vs in the config passed when registering a server on the local manager.
-   * This is confusing since this only lists the tools that happened to be defined when registering the local sever,
-   * which is incomplete. Unless I'm not understanding what this does... possible lol.
-   */
-  // const tools = await manager.listTools();
-
-  // @TODO: what's up with the any[] response typing?
-  const client = manager.getClient('anonClientId')!;
-  const tools = (await client.listTools()) || [];
-
-  const aiTools = tools.reduce(
-    (acc, tool) => {
-      acc[tool.name] = createTool({
-        id: `${tool.server}.${tool.name}` as const,
-        description: tool.description,
-        parameters: jsonSchema(tool.inputSchema),
-        execute: async args => {
-          console.log('tool call', { tool, args });
-
-          const result = await client.callTool({ serverId: tool.server, name: tool.name, input: args as any });
-
-          console.log('tool result', result);
-
-          return result;
-        },
-      });
-      return acc;
-    },
-    {} as Record<string, ReturnType<typeof createTool>>,
-  );
-
-  console.log('aiTools', aiTools);
-
-  const result = streamText({
-    model: openai('gpt-4o'),
-    system: 'You are a helpful assistant.',
-    messages,
-    maxSteps: 5,
-    tools: aiTools,
-    async onFinish({ response }) {
-      const thread = await manager.threads.get({ id: threadId });
-      if (!thread) {
-        console.warn('Thread not found in conductorRun onFinish', threadId);
-        return;
-      }
-
-      void thread.addResponseMessages({
-        originalMessages: messages,
-        responseMessages: response.messages,
-      });
-    },
-  });
-
-  return result.toDataStreamResponse();
 };
 
 export const ThreadMessages = () => {

@@ -92,9 +92,7 @@ export class Connection {
    */
   public async listTools() {
     if (!this.isConnected || !this.#mcpClient) {
-      // If the client is not connected, return the tools from the server
-      const server = this.manager.getServer(this.serverId);
-      return server?.listTools();
+      return [];
     }
 
     const { tools } = await this.#mcpClient.listTools();

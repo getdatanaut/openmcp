@@ -1,4 +1,6 @@
 import { Client, type ClientConfig, type ClientId } from './client.ts';
+import type { MpcConductor, MpcConductorFactory } from './conductor/adapter.ts';
+import { defaultMpcConductorFactory } from './conductor/default.ts';
 import { Server, type ServerConfig, type ServerId, type ServerStorageData } from './server.ts';
 import type { Storage } from './storage/index.ts';
 import { createMemoryStorage } from './storage/memory.ts';
@@ -41,6 +43,11 @@ export interface ManagerOptions {
    * @default MemoryStorage
    */
   storage?: Partial<ManagerStorage>;
+
+  /**
+   * Optionally provide a Conductor implementation to handle tool orchestration
+   */
+  conductor?: MpcConductorFactory;
 }
 
 export interface ManagerStorage {
@@ -68,19 +75,21 @@ export class Manager {
   public readonly clients = new Map<ClientId, Client>();
   public readonly threads: ThreadManager;
   public readonly storage: ManagerStorage;
+  public readonly conductor: MpcConductor;
 
-  constructor(options: ManagerOptions) {
-    this.id = options.id;
-    this.transports = options.transports ?? { inMemory: {} };
+  constructor({ id, transports, storage, threads, servers, conductor }: ManagerOptions) {
+    this.id = id;
+    this.transports = transports ?? { inMemory: {} };
     this.storage = {
-      servers: options.storage?.servers ?? createMemoryStorage<ServerStorageData>(),
-      threads: options.storage?.threads ?? createMemoryStorage<ThreadStorageData>(),
-      threadMessages: options.storage?.threadMessages ?? createMemoryStorage<ThreadMessageStorageData>(),
+      servers: storage?.servers ?? createMemoryStorage<ServerStorageData>(),
+      threads: storage?.threads ?? createMemoryStorage<ThreadStorageData>(),
+      threadMessages: storage?.threadMessages ?? createMemoryStorage<ThreadMessageStorageData>(),
     };
-    this.threads = options.threads ?? createThreadManager({}, this);
+    this.threads = threads ?? createThreadManager({}, this);
+    this.conductor = conductor ? conductor(this) : defaultMpcConductorFactory({})(this);
 
-    if (options.servers) {
-      Object.entries(options.servers).forEach(([serverId, server]) => {
+    if (servers) {
+      Object.entries(servers).forEach(([serverId, server]) => {
         this.registerServer({
           ...server,
           id: serverId,
@@ -196,5 +205,9 @@ export class Manager {
 
     const tools = await Promise.all(toolPromises);
     return tools.flat();
+  }
+
+  public async close() {
+    // @TODO close / dispose of any connections or other resources
   }
 }

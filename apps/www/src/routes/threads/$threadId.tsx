@@ -3,7 +3,7 @@ import { Button } from '@libs/ui-primitives';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
 
-import { useCurrentManager } from '~/hooks/use-current-manager.ts';
+import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { ThreadId } from '~/utils/ids.ts';
 import { generateMockConversation } from '~/utils/mocks.ts';
 

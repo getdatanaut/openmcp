@@ -2,7 +2,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@libs/ui-primitives';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { useCurrentManager } from '~/hooks/use-current-manager.ts';
+import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 
 export const MainHeader = ({ title }: { title: string }) => {
   const manager = useCurrentManager();

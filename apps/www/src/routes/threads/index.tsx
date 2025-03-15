@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
-import { useCurrentManager } from '~/hooks/use-current-manager.ts';
+import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { type TThreadId } from '~/utils/ids.ts';
 
 import { Thread, ThreadChatBox } from './-components/Thread.tsx';

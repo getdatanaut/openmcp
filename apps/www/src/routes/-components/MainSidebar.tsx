@@ -18,8 +18,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { observer } from 'mobx-react-lite';
 import React, { type MouseEventHandler, type ReactNode } from 'react';
 
-import { useCurrentManager } from '~/hooks/use-current-manager.ts';
-import { useRootStore } from '~/hooks/use-root-store.ts';
+import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
+import { useRootStore } from '~/hooks/use-root-store.tsx';
 import type { TThreadId } from '~/utils/ids.ts';
 import { generateMockServers, type MCPServerConfig } from '~/utils/mocks.ts';
 
@@ -36,9 +36,6 @@ export const MainSidebar = () => {
             </Tab>
             <Tab id="servers" render={<TabButton render={<Link to="." search={{ sidebar: 'servers' }} />} />}>
               Servers
-            </Tab>
-            <Tab id="dev" render={<TabButton render={<Link to="." search={{ sidebar: 'dev' }} />} />}>
-              Dev
             </Tab>
             <Tab
               id="settings"

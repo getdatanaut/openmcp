@@ -2,7 +2,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
-// @ts-expect-error -- import plugin pretends to be a module 
+// @ts-expect-error -- import plugin pretends to be a module
 import importPlugin from 'eslint-plugin-import';
 import vitestPlugin from 'eslint-plugin-vitest';
 import prettierConfig from 'eslint-config-prettier/flat';
@@ -51,6 +51,9 @@ export const baseConfig = tseslint.config(
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      globals: {
+        console: globals.node.console,
+      },
     },
     plugins: {
       'simple-import-sort': simpleImportSort,
@@ -83,7 +86,7 @@ export const baseConfig = tseslint.config(
       },
       globals: {
         ...globals.es2015,
-      }
+      },
     },
     rules: {
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
