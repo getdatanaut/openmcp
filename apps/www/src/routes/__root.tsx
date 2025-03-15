@@ -1,17 +1,23 @@
 import '../assets/app.css';
 
 import { tn } from '@libs/ui-primitives';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRootRoute, HeadContent, Outlet, retainSearchParams } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
 import { type ReactNode, useEffect, useMemo } from 'react';
 import { z } from 'zod';
 
-import { createRootStore, RootStoreContext, useRootStore } from '~/stores/root.ts';
+import { CurrentManagerContext } from '~/hooks/use-current-manager.ts';
+import { RootStoreContext, useRootStore } from '~/hooks/use-root-store.ts';
+import { createRootStore } from '~/stores/root.ts';
+import { localDb } from '~/utils/local-db.ts';
 import { fallback } from '~/utils/routing.ts';
+
+import { MainSidebar } from './-components/MainSidebar.tsx';
 // import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 
 const rootSearchSchema = z.object({
-  sidebar: fallback(z.enum(['history', 'servers', 'dev', 'settings']), 'history'),
+  sidebar: fallback(z.enum(['history', 'servers', 'dev', 'settings']).default('history'), 'history'),
 });
 
 export const Route = createRootRoute({
@@ -25,23 +31,45 @@ export const Route = createRootRoute({
 function RootComponent() {
   useReactScan();
 
-  const rootStore = useMemo(() => createRootStore(), []);
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+      },
+    },
+  });
+
+  const rootStore = useMemo(() => createRootStore({ localDb }), []);
 
   return (
-    <RootStoreContext.Provider value={rootStore}>
-      <ThemeProvider>
-        <HeadContent />
-        <Outlet />
-      </ThemeProvider>
-    </RootStoreContext.Provider>
+    <QueryClientProvider client={queryClient}>
+      <RootStoreContext.Provider value={rootStore}>
+        <SidebarLayout>
+          <HeadContent />
+          <Outlet />
+        </SidebarLayout>
+      </RootStoreContext.Provider>
+    </QueryClientProvider>
   );
 }
 
-const ThemeProvider = observer(({ children }: { children: ReactNode }) => {
-  const { app } = useRootStore();
+const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
+  const { app, mcpManagers } = useRootStore();
   const themeClass = app.theme?.themeClass;
 
-  return <div className={tn(`min-h-screen`, themeClass && `${themeClass} ak-layer-canvas`)}>{children}</div>;
+  return (
+    <CurrentManagerContext.Provider value={mcpManagers.managers['default']!}>
+      <div className={tn('flex min-h-screen', themeClass && `${themeClass} ak-layer-canvas`)}>
+        {children}
+
+        <div className="ml-auto h-screen border-l-[0.5px]">
+          <MainSidebar />
+        </div>
+      </div>
+    </CurrentManagerContext.Provider>
+  );
 });
 
 let reactScanAdded = false;

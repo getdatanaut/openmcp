@@ -1,14 +1,10 @@
-import { createContext } from '@libs/ui-primitives';
+import type { LocalDb } from '~/utils/local-db.ts';
 
 import { AppStore } from './app.ts';
+import { McpManagersStore } from './mcp-managers.ts';
 
-export const [RootStoreContext, useRootStore] = createContext<RootStore>({
-  name: 'RootStoreContext',
-  strict: true,
-});
-
-export function createRootStore(): RootStore {
-  const rootStore = new RootStore();
+export function createRootStore({ localDb }: { localDb: LocalDb }): RootStore {
+  const rootStore = new RootStore({ localDb });
 
   if (import.meta.env.DEV && typeof window !== 'undefined') {
     // @ts-expect-error ignore
@@ -19,5 +15,12 @@ export function createRootStore(): RootStore {
 }
 
 export class RootStore {
-  app = new AppStore();
+  public readonly app = new AppStore();
+  public readonly mcpManagers: McpManagersStore;
+  public readonly db: LocalDb;
+
+  constructor({ localDb }: { localDb: LocalDb }) {
+    this.db = localDb;
+    this.mcpManagers = new McpManagersStore({ localDb });
+  }
 }

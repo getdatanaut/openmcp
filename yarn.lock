@@ -12,7 +12,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/openai@npm:^1.2.5":
+"@ai-sdk/openai@npm:1.2.5":
   version: 1.2.5
   resolution: "@ai-sdk/openai@npm:1.2.5"
   dependencies:
@@ -1550,6 +1550,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@libs/utils-ids@workspace:*, @libs/utils-ids@workspace:libs/utils-ids":
+  version: 0.0.0-use.local
+  resolution: "@libs/utils-ids@workspace:libs/utils-ids"
+  dependencies:
+    "@paralleldrive/cuid2": "npm:^2.2.2"
+    eslint: "npm:9.22.0"
+    zod: "npm:3.24.2"
+  languageName: unknown
+  linkType: soft
+
 "@mdx-js/react@npm:^3.0.0":
   version: 3.1.0
   resolution: "@mdx-js/react@npm:3.1.0"
@@ -1601,6 +1611,13 @@ __metadata:
     "@emnapi/runtime": "npm:^1.1.0"
     "@tybys/wasm-util": "npm:^0.9.0"
   checksum: 10c0/1040de49b2ef509db207e2517465dbf7fb3474f20e8ec32897672a962ff4f59872385666dac61dc9dbeae3cae5dad265d8dc3865da756adeb07d1634c67b03a1
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^1.1.5":
+  version: 1.7.1
+  resolution: "@noble/hashes@npm:1.7.1"
+  checksum: 10c0/2f8ec0338ccc92b576a0f5c16ab9c017a3a494062f1fbb569ae641c5e7eab32072f9081acaa96b5048c0898f972916c818ea63cbedda707886a4b5ffcfbf94e3
   languageName: node
   linkType: hard
 
@@ -1761,11 +1778,13 @@ __metadata:
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
+    "@oslojs/crypto": "npm:1.0.1"
     "@types/node": "npm:22.13.10"
     ai: "npm:4.1.61"
     eslint: "npm:9.22.0"
     typescript: "npm:5.8.2"
     vitest: "npm:3.0.8"
+    zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
 
@@ -1789,6 +1808,41 @@ __metadata:
   version: 1.9.0
   resolution: "@opentelemetry/api@npm:1.9.0"
   checksum: 10c0/9aae2fe6e8a3a3eeb6c1fdef78e1939cf05a0f37f8a4fae4d6bf2e09eb1e06f966ece85805626e01ba5fab48072b94f19b835449e58b6d26720ee19a58298add
+  languageName: node
+  linkType: hard
+
+"@oslojs/asn1@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/asn1@npm:1.0.0"
+  dependencies:
+    "@oslojs/binary": "npm:1.0.0"
+  checksum: 10c0/993856b931cb0087fa6a6323f09de388aa20fbab3322acdb178a7c35fcd05983c44c7a47bac7364cd96b45125c27586265e8fc9fec733d3183ffc56b6bec2634
+  languageName: node
+  linkType: hard
+
+"@oslojs/binary@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@oslojs/binary@npm:1.0.0"
+  checksum: 10c0/d416a393af23f42b50c6f8412a3a6d94a84707c2006511abce1c4bed680c22ed2247ccb442b09237fa78ca06c355875573d1c08ccba2942f292ec0534310e4f8
+  languageName: node
+  linkType: hard
+
+"@oslojs/crypto@npm:1.0.1":
+  version: 1.0.1
+  resolution: "@oslojs/crypto@npm:1.0.1"
+  dependencies:
+    "@oslojs/asn1": "npm:1.0.0"
+    "@oslojs/binary": "npm:1.0.0"
+  checksum: 10c0/a1b3e4875f3df8bf357dd2b59e1d55ced099227bbeb0975b48bf8e001002780575c5df9e7c174bcc42f89713ed9ad4a965e181e835ff569ccaa3b258781a615b
+  languageName: node
+  linkType: hard
+
+"@paralleldrive/cuid2@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "@paralleldrive/cuid2@npm:2.2.2"
+  dependencies:
+    "@noble/hashes": "npm:^1.1.5"
+  checksum: 10c0/af5826df93de437121308f4f4ce0b2eeb89b60bb57a1a6592fb89c0d40d311ad1d9f3f6a4db2cce6f2bcf572de1aa3f85704254e89b18ce61c41ebb06564c4ee
   languageName: node
   linkType: hard
 
@@ -2698,6 +2752,24 @@ __metadata:
   version: 1.114.12
   resolution: "@tanstack/history@npm:1.114.12"
   checksum: 10c0/87733ddaf8796a5106fb24e2d3240ed29a00b8a27d71ca66d12901d9ffed3811d2a3af8557776f9bd9621aa5acf63cd2504442254aa83032985c75965d249a9f
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:5.68.0":
+  version: 5.68.0
+  resolution: "@tanstack/query-core@npm:5.68.0"
+  checksum: 10c0/c57b34ee2aabffe26d6cc03039d6dc74b97a860eb343dc042ebba25cc1d177405ff1dbc911c40ed11447665fefbf735b4c03e4936dd7d74310fad30b648e0855
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:5.68.0":
+  version: 5.68.0
+  resolution: "@tanstack/react-query@npm:5.68.0"
+  dependencies:
+    "@tanstack/query-core": "npm:5.68.0"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10c0/5d9dc4e17324976fe00203bbb25893089d709051896b5c3f523939cfeb3ab70cf1c68606bf6464815ee62c7bf4af69a590a17d5e6b6f6e7bdc0e80fc370a480a
   languageName: node
   linkType: hard
 
@@ -4647,6 +4719,24 @@ __metadata:
   dependencies:
     dequal: "npm:^2.0.0"
   checksum: 10c0/e0928ab8f94c59417a2b8389c45c55ce0a02d9ac7fd74ef62d01ba48060129e1d594501b77de01f3eeafc7cb00773819b0df74d96251cf20b31c5b3071f45c0e
+  languageName: node
+  linkType: hard
+
+"dexie-react-hooks@npm:1.1.7":
+  version: 1.1.7
+  resolution: "dexie-react-hooks@npm:1.1.7"
+  peerDependencies:
+    "@types/react": ">=16"
+    dexie: ^3.2 || ^4.0.1-alpha
+    react: ">=16"
+  checksum: 10c0/3ff38e715a52bff9132b483963246ea5372a282d9257c8c2bf8891c522fa0d761d1e362bb352eb63386f49ea9a55c52e1bcc5cce2019deb1eceba40d8a88631d
+  languageName: node
+  linkType: hard
+
+"dexie@npm:4.0.11":
+  version: 4.0.11
+  resolution: "dexie@npm:4.0.11"
+  checksum: 10c0/f8f18e17fe99fd3d4bd80a4ff76c0a543be128bb65a11b6b34297c6ab2d7426989567a8eac09b0de6b483bfb776cbbb32bebe3eedcd5c572ddda80224aac1fa1
   languageName: node
   linkType: hard
 
@@ -9810,7 +9900,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
-    "@ai-sdk/openai": "npm:^1.2.5"
+    "@ai-sdk/openai": "npm:1.2.5"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
@@ -11561,18 +11651,26 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "www@workspace:apps/www"
   dependencies:
+    "@ai-sdk/openai": "npm:1.2.5"
+    "@ai-sdk/react": "npm:1.1.23"
     "@babel/plugin-proposal-decorators": "npm:~7.25.9"
     "@fortawesome/free-regular-svg-icons": "npm:6.7.2"
     "@fortawesome/free-solid-svg-icons": "npm:6.7.2"
     "@libs/eslint-config": "workspace:*"
     "@libs/ui-primitives": "workspace:*"
+    "@libs/utils-ids": "workspace:*"
+    "@openmcp/manager": "workspace:*"
     "@tailwindcss/vite": "npm:4.0.14"
+    "@tanstack/react-query": "npm:5.68.0"
     "@tanstack/react-router": "npm:1.114.17"
     "@tanstack/react-router-devtools": "npm:1.114.18"
     "@tanstack/router-plugin": "npm:1.114.17"
     "@types/react": "npm:19.0.10"
     "@types/react-dom": "npm:19.0.4"
     "@vitejs/plugin-react": "npm:4.3.4"
+    ai: "npm:4.1.61"
+    dexie: "npm:4.0.11"
+    dexie-react-hooks: "npm:1.1.7"
     eslint: "npm:9.22.0"
     mobx: "npm:6.13.6"
     mobx-persist-store: "npm:1.1.7"

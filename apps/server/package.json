@@ -12,7 +12,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^1.2.5",
+    "@ai-sdk/openai": "1.2.5",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "ai": "4.1.61",
