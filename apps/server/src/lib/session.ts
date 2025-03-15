@@ -5,13 +5,14 @@ export const SESSION_PREFIX = 'openmcp';
 export type McpServerId = keyof typeof MCPServerIdToDoNamespace;
 export type EncodedSessionId = string;
 export type SessionId = `${typeof SESSION_PREFIX}_${EncodedSessionId}`;
+const SESSION_ID_DELIMITER = '::';
 
 /**
  * Session ID is encoded as a base64 string of the form:
  *
- * `{mcpServerId}_{uid}_{doId}`
+ * `{mcpServerId}::{uid}::{doId}`
  *
- * - `mcpServerId` is the unique identifier for the MCP Server (`eg. OpenMcpOpenAPI`).
+ * - `mcpServerId` is the unique identifier for the MCP Server (`eg. openapi`).
  * - `uid` is a random UUID, used to ensure the session is unique.
  * - `doId` is the DurableObjectId for the MCP Server.
  *
@@ -24,18 +25,19 @@ export type SessionId = `${typeof SESSION_PREFIX}_${EncodedSessionId}`;
 export const SessionId = {
   encode: ({ doId, mcpServerId }: { doId: DurableObjectId; mcpServerId: McpServerId }): SessionId => {
     const uid = crypto.randomUUID();
-    const encodedSessionId = btoa(`${mcpServerId}_${uid}_${doId}`);
+    const unencodedSessionId = [mcpServerId, uid, doId].join(SESSION_ID_DELIMITER);
+    const encodedSessionId = btoa(unencodedSessionId);
     return `openmcp_${encodedSessionId}`;
   },
 
   decode: (sessionId: SessionId | string) => {
-    const [openmcp, sessionKey] = sessionId.split('_');
+    const [openmcp, encodedSessionId] = sessionId.split('_');
 
-    if (!sessionKey || openmcp !== SESSION_PREFIX) {
+    if (!encodedSessionId || openmcp !== SESSION_PREFIX) {
       throw new Error('Invalid session ID');
     }
 
-    const [mcpServerId, uid, doId] = atob(sessionKey).split('_');
+    const [mcpServerId, uid, doId] = atob(encodedSessionId).split(SESSION_ID_DELIMITER);
 
     if (!mcpServerId || !uid || !doId) {
       throw new Error('MCP Server not found');
