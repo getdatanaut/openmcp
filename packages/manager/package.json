@@ -4,6 +4,7 @@
   "description": "Manage connections between MCP Servers and Clients through a single interface.",
   "type": "module",
   "exports": {
+    ".": "./src/index.ts",
     "./client": "./src/client.ts",
     "./connection": "./src/connection.ts",
     "./manager": "./src/manager.ts",
@@ -14,14 +15,16 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "vitest",
+    "test": "vitest run",
+    "test.watch": "vitest watch",
     "typecheck": "tsc",
     "lint": "eslint ."
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
-    "ai": "4.1.61"
     "@oslojs/crypto": "1.0.1",
+    "ai": "4.1.61",
+    "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",

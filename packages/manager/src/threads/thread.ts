@@ -1,10 +1,4 @@
-import {
-  appendResponseMessages,
-  type CoreAssistantMessage,
-  type CoreToolMessage,
-  type Message,
-  type UIMessage,
-} from 'ai';
+import { appendResponseMessages, type CoreAssistantMessage, type CoreToolMessage, type UIMessage } from 'ai';
 
 import type { ClientId } from '../client.ts';
 import type { Manager } from '../manager.ts';
@@ -12,19 +6,22 @@ import type { Manager } from '../manager.ts';
 export type ThreadId = string;
 export type ThreadMessageId = string;
 
-export type ThreadMessage = Message & {
+export interface ThreadMessageStorageData extends UIMessage {
   id: ThreadMessageId;
   threadId: ThreadId;
-};
+}
 
 export interface ThreadOptions {
   id: ThreadId;
   clientId: ClientId;
+  name: string;
 }
 
 export interface ThreadStorageData {
   id: ThreadId;
+  // @QUESTION clientId basically userId?
   clientId: ClientId;
+  name: string;
 }
 
 type ResponseMessage = (CoreAssistantMessage | CoreToolMessage) & {
@@ -41,24 +38,26 @@ export function createThread(options: ThreadOptions, manager: Manager) {
 export class Thread {
   public readonly id: ThreadId;
   public readonly clientId: ClientId;
+  public readonly name: string;
 
   #manager: Manager;
 
   static deserialize(data: ThreadStorageData, manager: Manager): Thread {
-    const thread = new Thread({ id: data.id, clientId: data.clientId }, manager);
-    return thread;
+    return new Thread(data, manager);
   }
 
   static serialize(thread: Thread): ThreadStorageData {
     return {
       id: thread.id,
       clientId: thread.clientId,
+      name: thread.name,
     };
   }
 
   constructor(options: ThreadOptions, manager: Manager) {
     this.id = options.id;
     this.clientId = options.clientId;
+    this.name = options.name;
     this.#manager = manager;
   }
 
@@ -69,22 +68,27 @@ export class Thread {
     return this.#manager.storage;
   }
 
-  public async listMessages() {
-    return this.storage.threadMessages.select(message => message.threadId === this.id);
-  }
+  public listMessages = async () => {
+    return this.storage.threadMessages.select({ threadId: this.id });
+  };
 
-  public async addMessage(message: UIMessage) {
+  public addMessage = async (message: UIMessage) => {
     await this.storage.threadMessages.insert({
       ...message,
       threadId: this.id,
     });
-  }
+  };
 
-  public async addResponseMessages(responseMessages: ResponseMessage[]) {
-    const originalMessages = await this.listMessages();
-
+  public addResponseMessages = async ({
+    originalMessages,
+    responseMessages,
+  }: {
+    originalMessages: UIMessage[];
+    responseMessages: ResponseMessage[];
+  }) => {
     const messages = appendResponseMessages({ messages: originalMessages, responseMessages }).map(message => ({
       ...message,
+      parts: message.parts ?? [],
       threadId: this.id,
     }));
 
@@ -93,17 +97,17 @@ export class Thread {
         acc[message.id] = message;
         return acc;
       },
-      {} as Record<ThreadMessageId, ThreadMessage>,
+      {} as Record<ThreadMessageId, ThreadMessageStorageData>,
     );
 
     for (const originalMessage of originalMessages) {
       if (!messageObject[originalMessage.id]) {
-        await this.storage.threadMessages.delete(originalMessage.id);
+        await this.storage.threadMessages.delete({ id: originalMessage.id });
       }
     }
 
     for (const message of messages) {
-      await this.storage.threadMessages.upsert(message.id, message);
+      await this.storage.threadMessages.upsert({ id: message.id }, message);
     }
-  }
+  };
 }

@@ -66,9 +66,7 @@ export interface ServerConfig {
   createServer?: (config: z.infer<ServerConfig['configSchema']>) => McpServer;
 }
 
-export interface ServerStorageData {
-  servers: Pick<Server, 'id' | 'name' | 'version' | 'transport' | 'capabilities' | 'configSchema'>;
-}
+export type ServerStorageData = Pick<Server, 'id' | 'name' | 'version' | 'transport' | 'capabilities' | 'configSchema'>;
 
 /**
  * Create a server configuration

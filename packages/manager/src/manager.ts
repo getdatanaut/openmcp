@@ -3,11 +3,10 @@ import { Server, type ServerConfig, type ServerId, type ServerStorageData } from
 import type { Storage } from './storage/index.ts';
 import { createMemoryStorage } from './storage/memory.ts';
 import { createThreadManager, type ThreadManager, type ThreadStorageData } from './threads/index.ts';
+import type { ThreadMessageStorageData } from './threads/thread.ts';
 import type { TransportConfigs } from './transport.ts';
 
 export type ManagerId = string;
-
-export interface ManagerStorageData extends ThreadStorageData, ServerStorageData {}
 
 export interface ManagerOptions {
   /**
@@ -41,7 +40,13 @@ export interface ManagerOptions {
    *
    * @default MemoryStorage
    */
-  storage?: Storage<ManagerStorageData>;
+  storage?: Partial<ManagerStorage>;
+}
+
+export interface ManagerStorage {
+  servers: Storage<ServerStorageData>;
+  threads: Storage<ThreadStorageData>;
+  threadMessages: Storage<ThreadMessageStorageData>;
 }
 
 /**
@@ -55,24 +60,23 @@ export function createManager(options: ManagerOptions) {
  * The Manager maintains knowledge of registered servers,
  * connected clients, and server<->client connections.
  */
+// @QUESTION rename to MCPManager? (or McpManager)
 export class Manager {
   public readonly id: ManagerId;
   public readonly transports: ManagerOptions['transports'];
   public readonly servers = new Map<ServerId, Server>();
   public readonly clients = new Map<ClientId, Client>();
   public readonly threads: ThreadManager;
-  public readonly storage: Storage<ManagerStorageData>;
+  public readonly storage: ManagerStorage;
 
   constructor(options: ManagerOptions) {
     this.id = options.id;
     this.transports = options.transports ?? { inMemory: {} };
-    this.storage =
-      options.storage ??
-      createMemoryStorage<ManagerStorageData>({
-        threads: [],
-        threadMessages: [],
-        servers: [],
-      });
+    this.storage = {
+      servers: options.storage?.servers ?? createMemoryStorage<ServerStorageData>(),
+      threads: options.storage?.threads ?? createMemoryStorage<ThreadStorageData>(),
+      threadMessages: options.storage?.threadMessages ?? createMemoryStorage<ThreadMessageStorageData>(),
+    };
     this.threads = options.threads ?? createThreadManager({}, this);
 
     if (options.servers) {

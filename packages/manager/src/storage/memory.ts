@@ -1,23 +1,12 @@
 import { type StorageItem, type StorageTable } from './index.ts';
 
-export function createMemoryStorage<Shape = Record<string, StorageItem>>(
-  initialData: {
-    [key in keyof Shape]: Array<Shape[key]> | undefined;
-  },
+export function createMemoryStorage<Shape extends StorageItem>(
+  initialData?: Shape[],
   options?: {
     primaryKey?: keyof StorageItem;
   },
 ) {
-  return Object.entries(initialData).reduce(
-    (acc, [key, value]) => {
-      acc[key] = MemoryStorage.create(value as StorageItem[], options);
-      return acc;
-    },
-    {} as {
-      // @ts-expect-error will fix the typings late
-      [key in keyof Shape]: MemoryStorage<Shape[key]>;
-    },
-  );
+  return MemoryStorage.create(initialData, options);
 }
 
 export class MemoryStorage<T extends StorageItem> implements StorageTable<T> {
@@ -50,7 +39,7 @@ export class MemoryStorage<T extends StorageItem> implements StorageTable<T> {
     this.index.set(pkValue, row);
   }
 
-  async upsert(id: string | number, newData: T): Promise<void> {
+  async upsert({ id }: { id: string | number }, newData: T): Promise<void> {
     const row = this.index.get(String(id));
     if (row) {
       Object.assign(row, newData);
@@ -59,7 +48,7 @@ export class MemoryStorage<T extends StorageItem> implements StorageTable<T> {
     }
   }
 
-  async update(id: string | number, newData: Partial<T>): Promise<void> {
+  async update({ id }: { id: string | number }, newData: Partial<T>): Promise<void> {
     const row = this.index.get(String(id));
     if (!row) {
       throw new Error(`Row with ${String(this.primaryKey)} ${id} not found`);
@@ -67,7 +56,7 @@ export class MemoryStorage<T extends StorageItem> implements StorageTable<T> {
     Object.assign(row, newData);
   }
 
-  async delete(id: string | number): Promise<void> {
+  async delete({ id }: { id: string | number }): Promise<void> {
     const pkValue = String(id);
     const index = this.rows.findIndex(row => String(row[this.primaryKey]) === pkValue);
     if (index === -1) {
@@ -77,11 +66,13 @@ export class MemoryStorage<T extends StorageItem> implements StorageTable<T> {
     this.index.delete(pkValue);
   }
 
-  async select(predicate?: (row: T) => boolean): Promise<T[]> {
-    return predicate ? this.rows.filter(predicate) : this.rows;
+  async select(where?: Partial<T>): Promise<T[]> {
+    return where
+      ? this.rows.filter(row => Object.entries(where).every(([key, value]) => row[key] === value))
+      : this.rows;
   }
 
-  async getById(id: string | number): Promise<T | undefined> {
+  async getById({ id }: { id: string | number }): Promise<T | undefined> {
     return this.index.get(String(id));
   }
 }

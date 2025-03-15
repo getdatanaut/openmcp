@@ -1,9 +1,11 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { ServerStorageData } from 'src/server.ts';
 import { createMemoryStorage } from 'src/storage/memory.ts';
+import type { ThreadMessageStorageData, ThreadStorageData } from 'src/threads/thread.ts';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { createManager, Manager, type ManagerStorageData } from '../src/manager.ts';
+import { createManager, Manager } from '../src/manager.ts';
 
 describe('createManager()', () => {
   it('should create a manager with servers', async () => {
@@ -46,32 +48,28 @@ describe('createManager()', () => {
   });
 
   it('should initialize with servers from storage', async () => {
-    const storage = createMemoryStorage<ManagerStorageData>({
-      servers: [
-        {
-          id: 'test',
-          name: 'Test Server',
-          version: '1.0.0',
-          transport: {
-            type: 'inMemory',
-            config: {},
-          },
-          capabilities: {
-            tools: {},
-          },
-          configSchema: z.object({}),
-        },
-      ],
-      threads: [],
-      threadMessages: [],
-    });
-
     const manager = createManager({
       id: 'test',
       transports: {
         inMemory: {},
       },
-      storage,
+      storage: {
+        servers: createMemoryStorage<ServerStorageData>([
+          {
+            id: 'test',
+            name: 'Test Server',
+            version: '1.0.0',
+            transport: {
+              type: 'inMemory',
+              config: {},
+            },
+            capabilities: {
+              tools: {},
+            },
+            configSchema: z.object({}),
+          },
+        ]),
+      },
     });
 
     await manager.intialize();
@@ -86,37 +84,38 @@ describe('createManager()', () => {
   });
 
   it('should initialize with threads from storage', async () => {
-    const storage = createMemoryStorage<ManagerStorageData>({
-      servers: [],
-      threads: [
-        {
-          id: 'test',
-          clientId: 'test',
-        },
-      ],
-      threadMessages: [
-        {
-          id: 'test',
-          threadId: 'test',
-          role: 'user',
-          content: 'test',
-        },
-        {
-          id: 'test2',
-          threadId: 'test',
-          role: 'assistant',
-          content: 'test2',
-        },
-      ],
-    });
-
     const manager = createManager({
       id: 'test',
       transports: {
         inMemory: {},
       },
-      storage,
+      storage: {
+        threads: createMemoryStorage<ThreadStorageData>([
+          {
+            id: 'test',
+            clientId: 'test',
+            name: 'Test Thread',
+          },
+        ]),
+        threadMessages: createMemoryStorage<ThreadMessageStorageData>([
+          {
+            id: 'test',
+            threadId: 'test',
+            role: 'user',
+            content: 'test',
+            parts: [],
+          },
+          {
+            id: 'test2',
+            threadId: 'test',
+            role: 'assistant',
+            content: 'test2',
+            parts: [],
+          },
+        ]),
+      },
     });
+
     await manager.intialize();
 
     expect(manager).toBeDefined();
@@ -131,7 +130,7 @@ describe('createManager()', () => {
       }),
     ]);
 
-    const thread = await manager.threads.get('test');
+    const thread = await manager.threads.get({ id: 'test' });
     expect(await thread?.listMessages()).toEqual([
       expect.objectContaining({
         id: 'test',

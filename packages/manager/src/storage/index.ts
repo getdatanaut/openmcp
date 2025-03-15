@@ -1,25 +1,23 @@
 export type StorageItem = Record<string, any>;
 
-export type Storage<T = Record<string, StorageItem>> = {
-  [K in keyof T]: StorageTable<T[K]>;
-};
+export type Storage<T extends StorageItem> = StorageTable<T>;
 
-export interface StorageTable<T = StorageItem> {
+export interface StorageTable<T extends StorageItem> {
   /** Inserts a new row into the table */
   insert(row: T): Promise<void>;
 
   /** Creates or updates a row by its primary key */
-  upsert(id: string | number, row: T): Promise<void>;
+  upsert({ id }: { id: string }, row: T): Promise<void>;
 
   /** Updates an existing row by its primary key */
-  update(id: string | number, row: Partial<T>): Promise<void>;
+  update({ id }: { id: string }, row: Partial<T>): Promise<void>;
 
   /** Deletes a row by its primary key */
-  delete(id: string | number): Promise<void>;
+  delete({ id }: { id: string }): Promise<void>;
 
   /** Retrieves rows matching a predicate */
-  select(predicate?: (row: T) => boolean): Promise<T[]>;
+  select(where?: Partial<T>): Promise<T[]>;
 
   /** Retrieves a row by its primary key */
-  getById(id: string | number): Promise<T | undefined>;
+  getById({ id }: { id: string }): Promise<T | undefined>;
 }
