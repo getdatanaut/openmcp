@@ -17,7 +17,7 @@ export class AppStore {
     });
   }
 
-  public currentThemeId = '';
+  public currentThemeId = 'dark';
 
   get theme() {
     return this.prebuiltThemes.find(theme => theme.id === this.currentThemeId);

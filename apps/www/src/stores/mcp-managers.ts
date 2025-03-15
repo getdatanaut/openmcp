@@ -1,5 +1,6 @@
 import { createManager, type Manager, type ManagerId, type ManagerStorage } from '@openmcp/manager';
 import { makeAutoObservable } from 'mobx';
+import { z } from 'zod';
 
 import { type LocalDb } from '~/utils/local-db.ts';
 
@@ -18,7 +19,27 @@ export class McpManagersStore {
       },
     });
 
-    makeAutoObservable(m);
+    m.registerServer({
+      id: 'petstore',
+      name: 'Petstore',
+      version: '1.0.0',
+      transport: {
+        type: 'sse',
+        config: {
+          url: 'http://localhost:8787/mcp/openapi/sse?openapi=https://petstore3.swagger.io/api/v3/openapi.json&baseUrl=https://petstore3.swagger.io/api/v3',
+        },
+      },
+      configSchema: z.object({}),
+    });
+
+    const client = m.registerClient({
+      id: 'anonClientId',
+      servers: {
+        petstore: {},
+      },
+    });
+
+    void client.connectServer('petstore');
 
     this.managers['default'] = m;
   }

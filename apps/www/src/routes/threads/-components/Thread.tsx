@@ -6,7 +6,7 @@ import { Markdown } from '@libs/ui-primitives/markdown';
 import type { Manager } from '@openmcp/manager';
 import { useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
-import { streamText, type UIMessage } from 'ai';
+import { jsonSchema, streamText, tool as createTool, type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useMemo } from 'react';
 import { type FormEvent, type KeyboardEvent } from 'react';
@@ -99,8 +99,8 @@ export const ThreadInner = ({
   return <ThreadContext.Provider value={{ threadId, chat, handleSubmit }}>{children}</ThreadContext.Provider>;
 };
 
-// @TODO this will ultimately be in the manager
-const conductorRun = ({
+// @TODO this will ultimately be in the manager, and swappable
+const conductorRun = async ({
   threadId,
   messages,
   manager,
@@ -109,10 +109,48 @@ const conductorRun = ({
   messages: UIMessage[];
   manager: Manager;
 }) => {
+  // @QUESTION: when is this useful?
+  /**
+   * Most of the time the tools will be defined on the remote mpc servers right?
+   * Vs in the config passed when registering a server on the local manager.
+   * This is confusing since this only lists the tools that happened to be defined when registering the local sever,
+   * which is incomplete. Unless I'm not understanding what this does... possible lol.
+   */
+  // const tools = await manager.listTools();
+
+  // @TODO: what's up with the any[] response typing?
+  const client = manager.getClient('anonClientId')!;
+  const tools = (await client.listTools()) || [];
+
+  const aiTools = tools.reduce(
+    (acc, tool) => {
+      acc[tool.name] = createTool({
+        id: `${tool.server}.${tool.name}` as const,
+        description: tool.description,
+        parameters: jsonSchema(tool.inputSchema),
+        execute: async args => {
+          console.log('tool call', { tool, args });
+
+          const result = await client.callTool({ serverId: tool.server, name: tool.name, input: args as any });
+
+          console.log('tool result', result);
+
+          return result;
+        },
+      });
+      return acc;
+    },
+    {} as Record<string, ReturnType<typeof createTool>>,
+  );
+
+  console.log('aiTools', aiTools);
+
   const result = streamText({
     model: openai('gpt-4-turbo'),
     system: 'You are a helpful assistant.',
     messages,
+    maxSteps: 5,
+    tools: aiTools,
     async onFinish({ response }) {
       const thread = await manager.threads.get({ id: threadId });
       if (!thread) {
@@ -153,7 +191,7 @@ const ThreadMessage = observer(
     lineNumber: number;
   }) => {
     const { app } = useRootStore();
-    const classes = tn('hover:ak-layer-[0.2] px-14');
+    const classes = tn('hover:ak-layer-[0.2] px-12');
 
     const containerClasses = tn(
       'relative flex border-l-[0.5px] py-14',

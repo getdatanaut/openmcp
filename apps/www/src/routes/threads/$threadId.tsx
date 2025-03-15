@@ -30,12 +30,14 @@ const ThreadRouteComponent = () => {
   return (
     <div className="h-screen flex-1 overflow-y-auto">
       <div className="ak-layer-0 sticky top-0 z-10 flex h-12 items-center border-b-[0.5px]">
-        <div className="flex h-full w-14 items-center justify-center">
-          <Button icon={faPlus} size="xs" variant="solid" intent="primary" render={<Link to="/threads" />} />
-        </div>
+        <div className="flex h-full w-12 items-center justify-center" />
 
         <div className="flex h-full flex-1 items-center gap-4 border-l-[0.5px] px-4">
-          <div className="mx-auto text-sm">{mockConversation.name}</div>
+          <div className="text-sm opacity-75">{mockConversation.name}</div>
+
+          <Button icon={faPlus} size="xs" variant="outline" className="ml-auto" render={<Link to="/threads" />}>
+            Thread
+          </Button>
         </div>
       </div>
 
