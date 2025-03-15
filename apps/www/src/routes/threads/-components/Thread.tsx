@@ -23,7 +23,7 @@ export type ThreadProps = {
 };
 
 const openai = createOpenAI({
-  baseURL: 'http://localhost:8787/v1',
+  baseURL: 'http://localhost:8787/_/llm/openai',
   // TODO(CL): AI SDK only uses base URL if apiKey is provided for whatever reason
   apiKey: '',
 });

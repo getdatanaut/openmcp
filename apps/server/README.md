@@ -5,8 +5,8 @@
 Create a `.dev.vars` file in the root of the project using `.dev.vars.example` as a template.
 
 ```
-OPENAI_API_KEY=sk-proj-1234567890
-OPENAI_API_BASE_URL=https://api.openai.com/v1
+OPENAI_LLM_API_URL=https://api.openai.com/v1
+OPENAI_LLM_API_KEY=sk-proj-1234567890
 ```
 
 Start the server in development mode:
