@@ -18,7 +18,7 @@
     "check-constraints": "yarn constraints",
     "doctor": "yarn dlx @yarnpkg/doctor",
     "--dev--": "",
-    "dev": "nx run-many --target dev --projects www api-event-ingestor worker bull-board --output-style stream --parallel 4",
+    "dev": "nx run-many --target dev --projects www server --output-style stream --parallel 4",
     "docker.up": "docker compose -f ./docker/docker-compose.yml up -d",
     "docker.down": "docker compose -f ./docker/docker-compose.yml down --remove-orphans",
     "docker.nuke": "yarn docker.down -v",
@@ -26,8 +26,7 @@
     "lint": "nx run-many --target lint",
     "lint.fix": "yarn lint --fix && prettier --ignore-path .eslintignore --write \"**/*.{ts,tsx}\";",
     "test": "nx run-many --target test",
-    "test.ch": "nx run-many --target test.ch",
-    "typecheck": "nx run-many --target typecheck demo",
+    "typecheck": "nx run-many --target typecheck",
     "typegen": "nx run-many --target typegen"
   },
   "devDependencies": {
