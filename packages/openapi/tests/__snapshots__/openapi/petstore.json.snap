@@ -4,15 +4,86 @@
     "inputSchema": {
       "properties": {
         "body": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "properties": {
-              "category": {
+            "category": {
+              "properties": {
+                "id": {
+                  "examples": [
+                    1,
+                  ],
+                  "format": "int64",
+                  "maximum": 9007199254740991,
+                  "minimum": -9007199254740991,
+                  "type": "integer",
+                  "x-stoplight": {
+                    "explicitProperties": [
+                      "type",
+                      "format",
+                      "examples",
+                    ],
+                  },
+                },
+                "name": {
+                  "examples": [
+                    "Dogs",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+              "x-swagger-router-model": "io.swagger.petstore.model.Category",
+              "xml": {
+                "name": "category",
+              },
+            },
+            "id": {
+              "examples": [
+                10,
+              ],
+              "format": "int64",
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
+                ],
+              },
+            },
+            "name": {
+              "examples": [
+                "doggie",
+              ],
+              "type": "string",
+            },
+            "photoUrls": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+            "status": {
+              "description": "pet status in the store",
+              "enum": [
+                "available",
+                "pending",
+                "sold",
+              ],
+              "type": "string",
+            },
+            "tags": {
+              "items": {
                 "properties": {
                   "id": {
-                    "examples": [
-                      1,
-                    ],
                     "format": "int64",
                     "maximum": 9007199254740991,
                     "minimum": -9007199254740991,
@@ -21,111 +92,37 @@
                       "explicitProperties": [
                         "type",
                         "format",
-                        "examples",
                       ],
                     },
                   },
                   "name": {
-                    "examples": [
-                      "Dogs",
-                    ],
                     "type": "string",
                   },
                 },
                 "type": "object",
-                "x-swagger-router-model": "io.swagger.petstore.model.Category",
+                "x-swagger-router-model": "io.swagger.petstore.model.Tag",
                 "xml": {
-                  "name": "category",
+                  "name": "tag",
                 },
               },
-              "id": {
-                "examples": [
-                  10,
-                ],
-                "format": "int64",
-                "maximum": 9007199254740991,
-                "minimum": -9007199254740991,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
               },
-              "name": {
-                "examples": [
-                  "doggie",
-                ],
-                "type": "string",
-              },
-              "photoUrls": {
-                "items": {
-                  "type": "string",
-                  "xml": {
-                    "name": "photoUrl",
-                  },
-                },
-                "type": "array",
-                "xml": {
-                  "wrapped": true,
-                },
-              },
-              "status": {
-                "description": "pet status in the store",
-                "enum": [
-                  "available",
-                  "pending",
-                  "sold",
-                ],
-                "type": "string",
-              },
-              "tags": {
-                "items": {
-                  "properties": {
-                    "id": {
-                      "format": "int64",
-                      "maximum": 9007199254740991,
-                      "minimum": -9007199254740991,
-                      "type": "integer",
-                      "x-stoplight": {
-                        "explicitProperties": [
-                          "type",
-                          "format",
-                        ],
-                      },
-                    },
-                    "name": {
-                      "type": "string",
-                    },
-                  },
-                  "type": "object",
-                  "x-swagger-router-model": "io.swagger.petstore.model.Tag",
-                  "xml": {
-                    "name": "tag",
-                  },
-                },
-                "type": "array",
-                "xml": {
-                  "wrapped": true,
-                },
-              },
-            },
-            "required": [
-              "name",
-              "photoUrls",
-            ],
-            "type": "object",
-            "x-stoplight": {
-              "id": "46ca4efce8c47",
-            },
-            "x-swagger-router-model": "io.swagger.petstore.model.Pet",
-            "xml": {
-              "name": "pet",
             },
           },
+          "required": [
+            "name",
+            "photoUrls",
+          ],
           "type": "object",
+          "x-stoplight": {
+            "id": "46ca4efce8c47",
+          },
+          "x-swagger-router-model": "io.swagger.petstore.model.Pet",
+          "xml": {
+            "name": "pet",
+          },
         },
         "headers": {
           "properties": {},
@@ -149,15 +146,86 @@
     "inputSchema": {
       "properties": {
         "body": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "properties": {
-              "category": {
+            "category": {
+              "properties": {
+                "id": {
+                  "examples": [
+                    1,
+                  ],
+                  "format": "int64",
+                  "maximum": 9007199254740991,
+                  "minimum": -9007199254740991,
+                  "type": "integer",
+                  "x-stoplight": {
+                    "explicitProperties": [
+                      "type",
+                      "format",
+                      "examples",
+                    ],
+                  },
+                },
+                "name": {
+                  "examples": [
+                    "Dogs",
+                  ],
+                  "type": "string",
+                },
+              },
+              "type": "object",
+              "x-swagger-router-model": "io.swagger.petstore.model.Category",
+              "xml": {
+                "name": "category",
+              },
+            },
+            "id": {
+              "examples": [
+                10,
+              ],
+              "format": "int64",
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
+                ],
+              },
+            },
+            "name": {
+              "examples": [
+                "doggie",
+              ],
+              "type": "string",
+            },
+            "photoUrls": {
+              "items": {
+                "type": "string",
+                "xml": {
+                  "name": "photoUrl",
+                },
+              },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
+              },
+            },
+            "status": {
+              "description": "pet status in the store",
+              "enum": [
+                "available",
+                "pending",
+                "sold",
+              ],
+              "type": "string",
+            },
+            "tags": {
+              "items": {
                 "properties": {
                   "id": {
-                    "examples": [
-                      1,
-                    ],
                     "format": "int64",
                     "maximum": 9007199254740991,
                     "minimum": -9007199254740991,
@@ -166,111 +234,37 @@
                       "explicitProperties": [
                         "type",
                         "format",
-                        "examples",
                       ],
                     },
                   },
                   "name": {
-                    "examples": [
-                      "Dogs",
-                    ],
                     "type": "string",
                   },
                 },
                 "type": "object",
-                "x-swagger-router-model": "io.swagger.petstore.model.Category",
+                "x-swagger-router-model": "io.swagger.petstore.model.Tag",
                 "xml": {
-                  "name": "category",
+                  "name": "tag",
                 },
               },
-              "id": {
-                "examples": [
-                  10,
-                ],
-                "format": "int64",
-                "maximum": 9007199254740991,
-                "minimum": -9007199254740991,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
+              "type": "array",
+              "xml": {
+                "wrapped": true,
               },
-              "name": {
-                "examples": [
-                  "doggie",
-                ],
-                "type": "string",
-              },
-              "photoUrls": {
-                "items": {
-                  "type": "string",
-                  "xml": {
-                    "name": "photoUrl",
-                  },
-                },
-                "type": "array",
-                "xml": {
-                  "wrapped": true,
-                },
-              },
-              "status": {
-                "description": "pet status in the store",
-                "enum": [
-                  "available",
-                  "pending",
-                  "sold",
-                ],
-                "type": "string",
-              },
-              "tags": {
-                "items": {
-                  "properties": {
-                    "id": {
-                      "format": "int64",
-                      "maximum": 9007199254740991,
-                      "minimum": -9007199254740991,
-                      "type": "integer",
-                      "x-stoplight": {
-                        "explicitProperties": [
-                          "type",
-                          "format",
-                        ],
-                      },
-                    },
-                    "name": {
-                      "type": "string",
-                    },
-                  },
-                  "type": "object",
-                  "x-swagger-router-model": "io.swagger.petstore.model.Tag",
-                  "xml": {
-                    "name": "tag",
-                  },
-                },
-                "type": "array",
-                "xml": {
-                  "wrapped": true,
-                },
-              },
-            },
-            "required": [
-              "name",
-              "photoUrls",
-            ],
-            "type": "object",
-            "x-stoplight": {
-              "id": "36c0180bea4c8",
-            },
-            "x-swagger-router-model": "io.swagger.petstore.model.Pet",
-            "xml": {
-              "name": "pet",
             },
           },
+          "required": [
+            "name",
+            "photoUrls",
+          ],
           "type": "object",
+          "x-stoplight": {
+            "id": "36c0180bea4c8",
+          },
+          "x-swagger-router-model": "io.swagger.petstore.model.Pet",
+          "xml": {
+            "name": "pet",
+          },
         },
         "headers": {
           "properties": {},
@@ -508,15 +502,12 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "contentMediaType": "application/octet-stream",
-            "type": "string",
-            "x-stoplight": {
-              "id": "ca0e1dfd50216",
-            },
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "contentMediaType": "application/octet-stream",
+          "type": "string",
+          "x-stoplight": {
+            "id": "ca0e1dfd50216",
           },
-          "type": "object",
         },
         "headers": {
           "properties": {},
@@ -588,87 +579,84 @@
     "inputSchema": {
       "properties": {
         "body": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "properties": {
-              "complete": {
-                "type": "boolean",
-              },
-              "id": {
-                "examples": [
-                  10,
+            "complete": {
+              "type": "boolean",
+            },
+            "id": {
+              "examples": [
+                10,
+              ],
+              "format": "int64",
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
                 ],
-                "format": "int64",
-                "maximum": 9007199254740991,
-                "minimum": -9007199254740991,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
-              },
-              "petId": {
-                "examples": [
-                  198772,
-                ],
-                "format": "int64",
-                "maximum": 9007199254740991,
-                "minimum": -9007199254740991,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
-              },
-              "quantity": {
-                "examples": [
-                  7,
-                ],
-                "format": "int32",
-                "maximum": 2147483647,
-                "minimum": -2147483648,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
-              },
-              "shipDate": {
-                "format": "date-time",
-                "type": "string",
-              },
-              "status": {
-                "description": "Order Status",
-                "enum": [
-                  "placed",
-                  "approved",
-                  "delivered",
-                ],
-                "examples": [
-                  "approved",
-                ],
-                "type": "string",
               },
             },
-            "type": "object",
-            "x-stoplight": {
-              "id": "adb85f28a25b4",
+            "petId": {
+              "examples": [
+                198772,
+              ],
+              "format": "int64",
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
+                ],
+              },
             },
-            "x-swagger-router-model": "io.swagger.petstore.model.Order",
-            "xml": {
-              "name": "order",
+            "quantity": {
+              "examples": [
+                7,
+              ],
+              "format": "int32",
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
+                ],
+              },
+            },
+            "shipDate": {
+              "format": "date-time",
+              "type": "string",
+            },
+            "status": {
+              "description": "Order Status",
+              "enum": [
+                "placed",
+                "approved",
+                "delivered",
+              ],
+              "examples": [
+                "approved",
+              ],
+              "type": "string",
             },
           },
           "type": "object",
+          "x-stoplight": {
+            "id": "adb85f28a25b4",
+          },
+          "x-swagger-router-model": "io.swagger.petstore.model.Order",
+          "xml": {
+            "name": "order",
+          },
         },
         "headers": {
           "properties": {},
@@ -768,8 +756,112 @@
     "inputSchema": {
       "properties": {
         "body": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
+            "email": {
+              "examples": [
+                "john@email.com",
+              ],
+              "type": "string",
+            },
+            "firstName": {
+              "examples": [
+                "John",
+              ],
+              "type": "string",
+            },
+            "id": {
+              "examples": [
+                10,
+              ],
+              "format": "int64",
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
+                ],
+              },
+            },
+            "lastName": {
+              "examples": [
+                "James",
+              ],
+              "type": "string",
+            },
+            "password": {
+              "examples": [
+                12345,
+              ],
+              "type": "string",
+            },
+            "phone": {
+              "examples": [
+                12345,
+              ],
+              "type": "string",
+            },
+            "userStatus": {
+              "description": "User Status",
+              "examples": [
+                1,
+              ],
+              "format": "int32",
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "description",
+                  "examples",
+                ],
+              },
+            },
+            "username": {
+              "examples": [
+                "theUser",
+              ],
+              "type": "string",
+            },
+          },
+          "type": "object",
+          "x-stoplight": {
+            "id": "d3bf5ceb7dd53",
+          },
+          "x-swagger-router-model": "io.swagger.petstore.model.User",
+          "xml": {
+            "name": "user",
+          },
+        },
+        "headers": {
+          "properties": {},
+          "type": "object",
+        },
+        "path": {
+          "properties": {},
+          "type": "object",
+        },
+        "query": {
+          "properties": {},
+          "type": "object",
+        },
+      },
+      "type": "object",
+    },
+    "name": "createUser",
+  },
+  {
+    "description": "POST /user/createWithList - Creates list of users with given input array",
+    "inputSchema": {
+      "properties": {
+        "body": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "items": {
             "properties": {
               "email": {
                 "examples": [
@@ -843,125 +935,15 @@
               },
             },
             "type": "object",
-            "x-stoplight": {
-              "id": "d3bf5ceb7dd53",
-            },
             "x-swagger-router-model": "io.swagger.petstore.model.User",
             "xml": {
               "name": "user",
             },
           },
-          "type": "object",
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
-    "name": "createUser",
-  },
-  {
-    "description": "POST /user/createWithList - Creates list of users with given input array",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "items": {
-              "properties": {
-                "email": {
-                  "examples": [
-                    "john@email.com",
-                  ],
-                  "type": "string",
-                },
-                "firstName": {
-                  "examples": [
-                    "John",
-                  ],
-                  "type": "string",
-                },
-                "id": {
-                  "examples": [
-                    10,
-                  ],
-                  "format": "int64",
-                  "maximum": 9007199254740991,
-                  "minimum": -9007199254740991,
-                  "type": "integer",
-                  "x-stoplight": {
-                    "explicitProperties": [
-                      "type",
-                      "format",
-                      "examples",
-                    ],
-                  },
-                },
-                "lastName": {
-                  "examples": [
-                    "James",
-                  ],
-                  "type": "string",
-                },
-                "password": {
-                  "examples": [
-                    12345,
-                  ],
-                  "type": "string",
-                },
-                "phone": {
-                  "examples": [
-                    12345,
-                  ],
-                  "type": "string",
-                },
-                "userStatus": {
-                  "description": "User Status",
-                  "examples": [
-                    1,
-                  ],
-                  "format": "int32",
-                  "maximum": 2147483647,
-                  "minimum": -2147483648,
-                  "type": "integer",
-                  "x-stoplight": {
-                    "explicitProperties": [
-                      "type",
-                      "format",
-                      "description",
-                      "examples",
-                    ],
-                  },
-                },
-                "username": {
-                  "examples": [
-                    "theUser",
-                  ],
-                  "type": "string",
-                },
-              },
-              "type": "object",
-              "x-swagger-router-model": "io.swagger.petstore.model.User",
-              "xml": {
-                "name": "user",
-              },
-            },
-            "type": "array",
-            "x-stoplight": {
-              "id": "f9502f2781910",
-            },
+          "type": "array",
+          "x-stoplight": {
+            "id": "f9502f2781910",
           },
-          "type": "object",
         },
         "headers": {
           "properties": {},
@@ -1077,90 +1059,87 @@
     "inputSchema": {
       "properties": {
         "body": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
           "properties": {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "properties": {
-              "email": {
-                "examples": [
-                  "john@email.com",
+            "email": {
+              "examples": [
+                "john@email.com",
+              ],
+              "type": "string",
+            },
+            "firstName": {
+              "examples": [
+                "John",
+              ],
+              "type": "string",
+            },
+            "id": {
+              "examples": [
+                10,
+              ],
+              "format": "int64",
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "examples",
                 ],
-                "type": "string",
-              },
-              "firstName": {
-                "examples": [
-                  "John",
-                ],
-                "type": "string",
-              },
-              "id": {
-                "examples": [
-                  10,
-                ],
-                "format": "int64",
-                "maximum": 9007199254740991,
-                "minimum": -9007199254740991,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
-              },
-              "lastName": {
-                "examples": [
-                  "James",
-                ],
-                "type": "string",
-              },
-              "password": {
-                "examples": [
-                  12345,
-                ],
-                "type": "string",
-              },
-              "phone": {
-                "examples": [
-                  12345,
-                ],
-                "type": "string",
-              },
-              "userStatus": {
-                "description": "User Status",
-                "examples": [
-                  1,
-                ],
-                "format": "int32",
-                "maximum": 2147483647,
-                "minimum": -2147483648,
-                "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "description",
-                    "examples",
-                  ],
-                },
-              },
-              "username": {
-                "examples": [
-                  "theUser",
-                ],
-                "type": "string",
               },
             },
-            "type": "object",
-            "x-stoplight": {
-              "id": "7f1a521684de5",
+            "lastName": {
+              "examples": [
+                "James",
+              ],
+              "type": "string",
             },
-            "x-swagger-router-model": "io.swagger.petstore.model.User",
-            "xml": {
-              "name": "user",
+            "password": {
+              "examples": [
+                12345,
+              ],
+              "type": "string",
+            },
+            "phone": {
+              "examples": [
+                12345,
+              ],
+              "type": "string",
+            },
+            "userStatus": {
+              "description": "User Status",
+              "examples": [
+                1,
+              ],
+              "format": "int32",
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "type": "integer",
+              "x-stoplight": {
+                "explicitProperties": [
+                  "type",
+                  "format",
+                  "description",
+                  "examples",
+                ],
+              },
+            },
+            "username": {
+              "examples": [
+                "theUser",
+              ],
+              "type": "string",
             },
           },
           "type": "object",
+          "x-stoplight": {
+            "id": "7f1a521684de5",
+          },
+          "x-swagger-router-model": "io.swagger.petstore.model.User",
+          "xml": {
+            "name": "user",
+          },
         },
         "headers": {
           "properties": {},

@@ -138,7 +138,7 @@ function requestParametersToTool({ path, query, headers, body }: IHttpOperationR
       ...(pathParams ? { path: { type: 'object', properties: pathParams } } : {}),
       ...(queryParams ? { query: { type: 'object', properties: queryParams } } : {}),
       ...(headerParams ? { headers: { type: 'object', properties: headerParams } } : {}),
-      ...(bodyParam ? { body: { type: 'object', properties: bodyParam } } : {}),
+      ...(bodyParam ? { body: bodyParam } : {}),
     },
   } as const;
 }
@@ -160,7 +160,7 @@ function parameterToTool(param: { name: string; description?: string; schema?: u
     description: param.description || '',
     type: 'string',
     ...(param.schema ? param.schema : {}),
-  };
+  } as const;
 }
 
 function formatBody(body: object, contentType: string) {
