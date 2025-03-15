@@ -21,6 +21,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
     "ai": "4.1.61"
+    "@oslojs/crypto": "1.0.1",
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",

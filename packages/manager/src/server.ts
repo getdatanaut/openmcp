@@ -1,7 +1,6 @@
-import { createHash } from 'node:crypto';
-
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { sha256 } from '@oslojs/crypto/sha2';
 import type { z } from 'zod';
 
 import type { ToolName } from './connection.ts';
@@ -154,7 +153,14 @@ export class Server {
     input: z.infer<ServerCapabilities['tools'][T]['inputSchema']>;
     config: z.infer<ServerConfig['configSchema']>;
   }) {
-    const clientId = createHash('sha256').update(JSON.stringify(toolConfig)).digest('hex');
+    /** Don't use node:crypto - must work in all environments */
+    const encoder = new TextEncoder();
+    const data = encoder.encode(JSON.stringify(toolConfig));
+    const hashBytes = sha256(data);
+    const clientId = Array.from(hashBytes)
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
     const mcpClient = new McpClient({
       name: `${this.id}-${toolConfig.name}-${clientId}`,
       version: this.version,
