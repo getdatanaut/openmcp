@@ -16,7 +16,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { observer } from 'mobx-react-lite';
-import React, { type ReactNode } from 'react';
+import React, { type MouseEventHandler, type ReactNode } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.ts';
 import { useRootStore } from '~/hooks/use-root-store.ts';
@@ -209,7 +209,10 @@ const ExampleHistorySidebar = () => {
             isActive={thread.id === activeThreadId}
             {...thread}
             id={thread.id as TThreadId}
-            handleDelete={() => deleteThread({ id: thread.id })}
+            handleDelete={e => {
+              e.preventDefault();
+              deleteThread({ id: thread.id });
+            }}
           />
         ))}
       </HistorySection>
@@ -247,7 +250,7 @@ const ThreadListItem = ({
 }: {
   id: TThreadId;
   name: string;
-  handleDelete: () => void;
+  handleDelete: MouseEventHandler<HTMLElement>;
   isActive: boolean;
 }) => {
   const className = tn(
