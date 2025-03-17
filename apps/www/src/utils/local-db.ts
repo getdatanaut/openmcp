@@ -1,10 +1,15 @@
-import type { DefaultMpcConductorSettings } from '@openmcp/manager';
-import type { ThreadMessageStorageData, ThreadStorageData } from '@openmcp/manager/threads';
+import type {
+  ClientServerStorageData,
+  DefaultMpcConductorSettings,
+  ServerStorageData,
+  ThreadMessageStorageData,
+  ThreadStorageData,
+} from '@openmcp/manager';
 import { Dexie, type EntityTable } from 'dexie';
 
 export type LocalDb = typeof localDb;
 
-export interface ManagerStorageData {
+export interface MpcManagerStorageData {
   id: string;
   // @TODO option to store manager configuration remotely, so can use outside of local clients (e.g. via api)
   isRemote?: boolean;
@@ -12,25 +17,20 @@ export interface ManagerStorageData {
 }
 
 const localDb = new Dexie('datanaut') as Dexie & {
-  threads: EntityTable<
-    ThreadStorageData,
-    'id' // primary key "id" (for the typings only)
-  >;
-  threadMessages: EntityTable<
-    ThreadMessageStorageData,
-    'id' // primary key "id" (for the typings only)
-  >;
-  mpcManagers: EntityTable<
-    ManagerStorageData,
-    'id' // primary key "id" (for the typings only)
-  >;
+  servers: EntityTable<ServerStorageData, 'id'>;
+  clientServers: EntityTable<ClientServerStorageData, 'id'>;
+  threads: EntityTable<ThreadStorageData, 'id'>;
+  threadMessages: EntityTable<ThreadMessageStorageData, 'id'>;
+  mpcManagers: EntityTable<MpcManagerStorageData, 'id'>;
 };
 
 // Primary key and indexed props only
 localDb.version(1).stores({
-  threads: '++id, clientId',
-  threadMessages: '++id, threadId',
-  mpcManagers: '++id',
+  servers: 'id',
+  clientServers: 'id, clientId, serverId',
+  threads: 'id, clientId',
+  threadMessages: 'id, threadId',
+  mpcManagers: 'id',
 });
 
 export { localDb };

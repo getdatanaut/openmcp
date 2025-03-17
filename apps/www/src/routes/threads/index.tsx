@@ -1,3 +1,4 @@
+import { tn } from '@libs/ui-primitives';
 import { createFileRoute } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
@@ -25,7 +26,7 @@ function RouteComponent() {
     <div className="flex min-h-full w-full flex-col items-center justify-center gap-4">
       <Thread onCreated={onCreated} manager={manager}>
         <div className="ak-layer-[down-0.4] sticky w-full max-w-[50rem] border">
-          <ThreadChatBox />
+          <ThreadChatBox className={tn('pr-4')} inputClassName={tn('pl-6')} />
         </div>
       </Thread>
     </div>

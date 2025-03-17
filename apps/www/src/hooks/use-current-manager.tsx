@@ -1,11 +1,11 @@
 import { createContext } from '@libs/ui-primitives';
-import { type Manager } from '@openmcp/manager';
+import { type MpcManager } from '@openmcp/manager';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { type ReactNode, useEffect, useState } from 'react';
 
 import { useRootStore } from './use-root-store.tsx';
 
-export const [CurrentManagerContext, useCurrentManager] = createContext<Manager>({
+export const [CurrentManagerContext, useCurrentManager] = createContext<MpcManager>({
   name: 'CurrentManagerContext',
   strict: true,
 });
@@ -17,11 +17,11 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
   const { mcpManagers } = useRootStore();
   const { db } = useRootStore();
 
-  const [currentManager, setCurrentManager] = useState<Manager | null>(null);
+  const [currentManager, setCurrentManager] = useState<MpcManager | null>(null);
 
   // https://stackoverflow.com/a/73528448
   const [config, configLoaded] = useLiveQuery(
-    () => db.mpcManagers.get('default').then(friend => [friend, true]),
+    () => db.mpcManagers.get('default').then(m => [m, true]),
     [], // deps...
     [], // default result: makes 'loaded' undefined while loading
   );
@@ -42,7 +42,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
       return;
     }
 
-    const manager = mcpManagers.create({ id: config.id, conductor: config.conductor });
+    const manager = mcpManagers.add({ id: config.id, conductor: config.conductor });
 
     setCurrentManager(prevManager => {
       if (prevManager) {

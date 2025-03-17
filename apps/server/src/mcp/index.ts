@@ -10,7 +10,7 @@ export const MCPServerIdToDoNamespace = {
 /**
  * Map of MCP Server ID to function for extracting the MCP config from the request
  */
-export const MCPServerConfigs = {
+export const McpServerConfigs = {
   [OpenMcpOpenAPI.mcpServerId]: getOpenMcpOpenAPIConfigFromRequest,
 } as const;
 

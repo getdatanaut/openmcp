@@ -1,5 +1,6 @@
 import { faCaretDown, faCog, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
+  Avatar,
   Button,
   ButtonGroup,
   type ButtonProps,
@@ -12,22 +13,22 @@ import {
   Tabs,
   tn,
 } from '@libs/ui-primitives';
-import { useMutation } from '@tanstack/react-query';
+import type { Server } from '@openmcp/manager';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
-import { useLiveQuery } from 'dexie-react-hooks';
 import { observer } from 'mobx-react-lite';
 import React, { type MouseEventHandler, type ReactNode } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
-import type { TThreadId } from '~/utils/ids.ts';
-import { generateMockServers, type MCPServerConfig } from '~/utils/mocks.ts';
+import { ClientServerId, type TThreadId } from '~/utils/ids.ts';
+import { generateMockServers } from '~/utils/mocks.ts';
 
 export const MainSidebar = () => {
   const { sidebar } = useSearch({ strict: false });
 
   return (
-    <div className="ak-layer-[down-0.4] h-screen w-96 overflow-y-auto">
+    <div className="ak-layer-[down-0.4] h-screen w-72 overflow-y-auto lg:w-96">
       <Tabs variant="unstyled" selectedId={sidebar} selectOnMove={false}>
         <div className="ak-layer-0 sticky top-0 flex h-12 items-center border-b-[0.5px] px-4">
           <TabList render={<ButtonGroup size="xs" className="flex-1 gap-2" />}>
@@ -35,7 +36,7 @@ export const MainSidebar = () => {
               History
             </Tab>
             <Tab id="servers" render={<TabButton render={<Link to="." search={{ sidebar: 'servers' }} />} />}>
-              Servers
+              Agents
             </Tab>
             <Tab
               id="settings"
@@ -47,7 +48,7 @@ export const MainSidebar = () => {
 
         <TabPanels>
           <TabPanel tabId="history">
-            <ExampleHistorySidebar />
+            <ThreadHistory />
           </TabPanel>
 
           <TabPanel tabId="servers">
@@ -148,45 +149,17 @@ const TabButton = (props: TabProps & ButtonProps) => (
   <Button variant={props['aria-selected'] ? 'solid' : 'ghost'} isInteractive={!props['aria-selected']} {...props} />
 );
 
-const mockServers = generateMockServers();
-
-const ExampleServerSidebar = () => {
-  const installed = [...mockServers.slice(0, 3)].sort((a, b) => a.name.localeCompare(b.name));
-  const notInstalled = [...mockServers.slice(3)].sort((a, b) => a.name.localeCompare(b.name));
-
-  return (
-    <>
-      <SidebarSection name="Installed">
-        <div className="px-2 py-3">
-          <ServerList>
-            {installed.map(server => (
-              <ServerListItem key={server.name} server={server} isInstalled />
-            ))}
-          </ServerList>
-        </div>
-      </SidebarSection>
-
-      <SidebarSection name="Not Installed">
-        <div className="px-2 py-3">
-          <ServerList>
-            {notInstalled.map(server => (
-              <ServerListItem key={server.name} server={server} />
-            ))}
-          </ServerList>
-        </div>
-      </SidebarSection>
-    </>
-  );
-};
-
-const ExampleHistorySidebar = () => {
-  const { db } = useRootStore();
+const ThreadHistory = () => {
   const manager = useCurrentManager();
+  const queryClient = useQueryClient();
 
   const { threadId: activeThreadId } = useParams({ strict: false });
   const navigate = useNavigate();
 
-  const threads = useLiveQuery(() => db.threads.toArray());
+  const { data: threads } = useQuery({
+    queryKey: ['threads'],
+    queryFn: () => manager.threads.findMany(),
+  });
 
   const { mutate: deleteThread } = useMutation({
     mutationFn: manager.threads.delete,
@@ -194,6 +167,9 @@ const ExampleHistorySidebar = () => {
       if (id === activeThreadId) {
         void navigate({ to: '/threads' });
       }
+
+      // @TODO rework react query usage to consolidate query options into one spot, best practices
+      void queryClient.invalidateQueries({ queryKey: ['threads'] });
     },
   });
 
@@ -247,11 +223,11 @@ const ThreadListItem = ({
 }: {
   id: TThreadId;
   name: string;
-  handleDelete: MouseEventHandler<HTMLElement>;
+  handleDelete?: MouseEventHandler<HTMLElement>;
   isActive: boolean;
 }) => {
   const className = tn(
-    'ak-frame-sm flex items-center px-3 py-2',
+    'ak-frame-sm group flex items-center px-3 py-2',
     isActive && 'ak-layer cursor-default',
     !isActive && 'hover:ak-layer cursor-pointer',
   );
@@ -260,47 +236,194 @@ const ThreadListItem = ({
     <Link className={className} title={name} to="/threads/$threadId" params={{ threadId: id }}>
       <div className="truncate text-sm">{name}</div>
 
-      <Button
-        variant="ghost"
-        size="xs"
-        icon={faTimes}
-        onClick={handleDelete}
-        className="ml-auto"
-        title="Delete thread"
-      />
+      {handleDelete ? (
+        <Button
+          variant="ghost"
+          size="xs"
+          icon={faTimes}
+          onClick={handleDelete}
+          className="invisible ml-auto group-hover:visible"
+          title="Delete thread"
+        />
+      ) : null}
     </Link>
   );
 };
+
+const ExampleServerSidebar = () => {
+  return (
+    <>
+      <InstalledServers />
+      <AvailableServers />
+    </>
+  );
+};
+
+const InstalledServers = () => {
+  const manager = useCurrentManager();
+  const queryClient = useQueryClient();
+
+  const { data: clientServers } = useQuery({
+    queryKey: ['clientServers'],
+    queryFn: () => manager.clientServers.findMany(),
+  });
+
+  const { data: servers } = useQuery({
+    queryKey: ['servers'],
+    queryFn: () => manager.servers.findMany(),
+  });
+
+  const { mutate: deleteClientServer } = useMutation({
+    mutationFn: manager.clientServers.delete,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['clientServers'] });
+    },
+  });
+
+  let content;
+  if (!servers || !clientServers) {
+    content = <div className="invisible text-sm">prevents layout shift</div>;
+  } else {
+    const combined = clientServers.map(cs => {
+      const server = servers.find(s => s.id === cs.serverId);
+
+      return {
+        clientServer: cs,
+        server,
+      };
+    });
+
+    const sorted = combined.sort((a, b) => (a.server?.name || '').localeCompare(b.server?.name || ''));
+
+    if (sorted.length === 0) {
+      content = <div className="pl-2 text-sm opacity-50">Add some below...</div>;
+    } else {
+      content = (
+        <ServerList>
+          {sorted.map(({ clientServer, server }) => {
+            if (!server) {
+              // @TODO: show item w button to cleanup client that is missing server config?
+              console.warn(`Server ${clientServer.serverId} not found for client server ${clientServer.id}`);
+              return null;
+            }
+
+            return (
+              <ServerListItem
+                key={clientServer.id}
+                server={server}
+                handleDelete={() => deleteClientServer({ id: clientServer.id })}
+              />
+            );
+          })}
+        </ServerList>
+      );
+    }
+  }
+
+  return (
+    <SidebarSection name="Installed">
+      <div className="px-3 py-4">{content}</div>
+    </SidebarSection>
+  );
+};
+
+const AvailableServers = observer(() => {
+  const { app } = useRootStore();
+  const manager = useCurrentManager();
+  const queryClient = useQueryClient();
+
+  const { data: servers } = useQuery({
+    queryKey: ['servers'],
+    queryFn: () => generateMockServers(),
+  });
+
+  const sorted = (servers || []).sort((a, b) => a.name.localeCompare(b.name));
+
+  const { mutate: createClientServer } = useMutation({
+    mutationFn: manager.clientServers.create,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['clientServers'] });
+    },
+  });
+
+  return (
+    <SidebarSection name="Available">
+      <div className="px-3 py-4">
+        <ServerList>
+          {sorted.map(server => (
+            <ServerListItem
+              key={server.id}
+              server={server}
+              handleAdd={e => {
+                e.preventDefault();
+                createClientServer({
+                  id: ClientServerId.generate(),
+                  clientId: app.currentUserId,
+                  serverId: server.id,
+                  serverConfig: {},
+                });
+              }}
+            />
+          ))}
+        </ServerList>
+      </div>
+    </SidebarSection>
+  );
+});
 
 const ServerList = ({ children }: { children: ReactNode }) => {
   return <div className="flex flex-col gap-px">{children}</div>;
 };
 
-const ServerListItem = observer(({ server, isInstalled }: { server: MCPServerConfig; isInstalled?: boolean }) => {
-  const { app } = useRootStore();
+const ServerListItem = observer(
+  ({
+    server,
+    handleAdd,
+    handleDelete,
+  }: {
+    server: Server;
+    handleAdd?: MouseEventHandler<HTMLElement>;
+    handleDelete?: MouseEventHandler<HTMLElement>;
+  }) => {
+    const { app } = useRootStore();
 
-  return (
-    <div className="ak-frame-xs hover:ak-layer flex cursor-pointer items-center gap-4 px-3 py-3">
-      <div className="pt-px">
-        <img
-          src={app.currentThemeId === 'light' ? server.icon.light : server.icon.dark}
-          alt={server.name}
-          className="ak-frame-xs h-10 w-10"
-        />
-      </div>
+    const icon = app.currentThemeId === 'light' ? server.presentation?.icon?.light : server.presentation?.icon?.dark;
+    const iconElem = icon ? (
+      <img src={icon} alt={server.name} className="ak-frame-xs h-10 w-10" />
+    ) : (
+      <Avatar name={server.name} size="lg" />
+    );
 
-      <div className="flex flex-1 flex-col">
-        <div>{server.name}</div>
-        <div className="text-xs capitalize opacity-50">{server.category}</div>
-      </div>
+    return (
+      <div className="ak-frame-xs hover:ak-layer group flex cursor-pointer items-center gap-4 p-2">
+        <div className="pt-px">{iconElem}</div>
 
-      <div>
-        {!isInstalled ? (
-          <Button variant="outline" size="xs">
-            Install
-          </Button>
-        ) : null}
+        <div className="flex flex-1 flex-col">
+          <div>{server.name}</div>
+          {server.presentation?.category ? (
+            <div className="text-xs capitalize opacity-50">{server.presentation.category}</div>
+          ) : null}
+        </div>
+
+        <div>
+          {handleAdd ? (
+            <Button variant="outline" size="xs" onClick={handleAdd}>
+              Add
+            </Button>
+          ) : null}
+
+          {handleDelete ? (
+            <Button
+              className="invisible group-hover:visible"
+              variant="ghost"
+              size="xs"
+              icon={faTimes}
+              title="Delete server"
+              onClick={handleDelete}
+            />
+          ) : null}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);

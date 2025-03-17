@@ -1779,9 +1779,11 @@ __metadata:
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
     "@oslojs/crypto": "npm:1.0.1"
+    "@types/json-schema": "npm:7.0.15"
     "@types/node": "npm:22.13.10"
     ai: "npm:4.1.61"
     eslint: "npm:9.22.0"
+    type-fest: "npm:^4.35.0"
     typescript: "npm:5.8.2"
     vitest: "npm:3.0.8"
     zod: "npm:3.24.2"
@@ -3089,7 +3091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:^7.0.15, @types/json-schema@npm:^7.0.4":
+"@types/json-schema@npm:7.0.15, @types/json-schema@npm:^7.0.15, @types/json-schema@npm:^7.0.4":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 10c0/a996a745e6c5d60292f36731dd41341339d4eeed8180bb09226e5c8d23759067692b1d88e5d91d72ee83dfc00d3aca8e7bd43ea120516c17922cbcb7c3e252db
@@ -10816,7 +10818,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.26.1":
+"type-fest@npm:^4.26.1, type-fest@npm:^4.35.0":
   version: 4.37.0
   resolution: "type-fest@npm:4.37.0"
   checksum: 10c0/5bad189f66fbe3431e5d36befa08cab6010e56be68b7467530b7ef94c3cf81ef775a8ac3047c8bbda4dd3159929285870357498d7bc1df062714f9c5c3a84926
@@ -11665,6 +11667,7 @@ __metadata:
     "@tanstack/react-router": "npm:1.114.17"
     "@tanstack/react-router-devtools": "npm:1.114.18"
     "@tanstack/router-plugin": "npm:1.114.17"
+    "@types/json-schema": "npm:7.0.15"
     "@types/react": "npm:19.0.10"
     "@types/react-dom": "npm:19.0.4"
     "@vitejs/plugin-react": "npm:4.3.4"

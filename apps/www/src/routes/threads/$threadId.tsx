@@ -1,11 +1,10 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Button } from '@libs/ui-primitives';
+import { Button, tn } from '@libs/ui-primitives';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { ThreadId } from '~/utils/ids.ts';
-import { generateMockConversation } from '~/utils/mocks.ts';
 
 import { Thread, ThreadChatBox, ThreadMessages } from './-components/Thread.tsx';
 
@@ -20,20 +19,18 @@ export const Route = createFileRoute('/threads/$threadId')({
   },
 });
 
-const mockConversation = generateMockConversation();
-
 function ThreadRoute() {
   return <ThreadRouteComponent />;
 }
 
 const ThreadRouteComponent = () => {
   return (
-    <div className="h-screen flex-1 overflow-y-auto">
-      <div className="ak-layer-0 sticky top-0 z-10 flex h-12 items-center border-b-[0.5px]">
+    <div className="flex h-screen flex-1 flex-col overflow-y-auto">
+      <div className="ak-layer-0 sticky top-0 z-10 flex h-12 shrink-0 items-center border-b-[0.5px]">
         <div className="flex h-full w-12 items-center justify-center" />
 
         <div className="flex h-full flex-1 items-center gap-4 border-l-[0.5px] px-4">
-          <div className="text-sm opacity-75">{mockConversation.name}</div>
+          <div className="text-sm opacity-75">New Thread</div>
 
           <Button icon={faPlus} size="xs" variant="outline" className="ml-auto" render={<Link to="/threads" />}>
             Thread
@@ -51,7 +48,7 @@ const ThreadWrapper = observer(() => {
   const manager = useCurrentManager();
 
   return (
-    <div className="flex-1 pr-px">
+    <div className="flex flex-1 flex-col pr-px">
       <Thread
         manager={manager}
         threadId={threadId}
@@ -61,8 +58,8 @@ const ThreadWrapper = observer(() => {
       >
         <ThreadMessages />
         <div className="ak-layer-[down-0.4] sticky bottom-0 border-t-[0.5px]">
-          <div className="mx-auto max-w-[50rem]">
-            <ThreadChatBox />
+          <div className="mx-auto max-w-[60rem]">
+            <ThreadChatBox inputClassName={tn('py-8')} />
           </div>
         </div>
       </Thread>

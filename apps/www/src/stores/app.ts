@@ -3,6 +3,9 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 
 export class AppStore {
+  // @TODO: random generate for anon users, store in local storage
+  public currentUserId = 'anon-user-id';
+
   constructor() {
     makeAutoObservable(this);
 

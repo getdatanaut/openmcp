@@ -1,22 +1,23 @@
 import {
-  createManager,
+  type ClientServerStorageData,
+  createMpcManager,
   defaultMpcConductorFactory,
   type DefaultMpcConductorSettings,
-  type Manager,
-  type ManagerId,
-  type ManagerStorage,
+  type MpcManager,
+  type MpcManagerId,
+  type MpcManagerStorage,
   type Storage,
 } from '@openmcp/manager';
 import { makeAutoObservable } from 'mobx';
-import { z } from 'zod';
 
-import { type LocalDb, type ManagerStorageData } from '~/utils/local-db.ts';
+import { type LocalDb, type MpcManagerStorageData } from '~/utils/local-db.ts';
+import { generateMockServers } from '~/utils/mocks.ts';
 
 export class McpManagersStore {
-  public managers: Record<ManagerId, Manager> = {};
+  public managers: Record<MpcManagerId, MpcManager> = {};
 
   #localDb: LocalDb;
-  #mcpManagersStorage: Storage<ManagerStorageData>;
+  #mcpManagersStorage: Storage<MpcManagerStorageData>;
 
   constructor({ localDb }: { localDb: LocalDb }) {
     makeAutoObservable(this);
@@ -25,40 +26,22 @@ export class McpManagersStore {
     this.#mcpManagersStorage = initLocalMpcManagerStorage({ db: localDb });
   }
 
-  public create({ id, conductor }: { id: string; conductor?: DefaultMpcConductorSettings }) {
-    const m = createManager({
+  public add({ id, conductor }: { id: string; conductor?: DefaultMpcConductorSettings }) {
+    const m = createMpcManager({
       id,
       conductor: defaultMpcConductorFactory({
         llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_LLM_PROXY_URL}/${provider}`,
         settings: conductor,
       }),
       storage: {
+        servers: initServerStorage({ db: this.#localDb }),
+        clientServers: initLocalClientServerStorage({ db: this.#localDb }),
         threads: initLocalThreadStorage({ db: this.#localDb }),
         threadMessages: initLocalThreadMessageStorage({ db: this.#localDb }),
       },
     });
 
-    m.registerServer({
-      id: 'petstore',
-      name: 'Petstore',
-      version: '1.0.0',
-      transport: {
-        type: 'sse',
-        config: {
-          url: 'http://localhost:8787/mcp/openapi/sse?openapi=https://petstore3.swagger.io/api/v3/openapi.json&baseUrl=https://petstore3.swagger.io/api/v3',
-        },
-      },
-      configSchema: z.object({}),
-    });
-
-    const client = m.registerClient({
-      id: 'anonClientId',
-      servers: {
-        petstore: {},
-      },
-    });
-
-    void client.connectServer('petstore');
+    this.managers[id] = m;
 
     return m;
   }
@@ -68,6 +51,59 @@ export class McpManagersStore {
     await this.#mcpManagersStorage.insert({ id, conductor });
   }
 }
+
+const initServerStorage = ({ db }: { db: LocalDb }) => {
+  return {
+    insert: async row => {
+      throw new Error('Not available in the local manager.');
+    },
+    upsert: async ({ id }, row) => {
+      throw new Error('Not available in the local manager.');
+    },
+    update: async ({ id }, row) => {
+      throw new Error('Not available in the local manager.');
+    },
+    delete: async ({ id }) => {
+      throw new Error('Not available in the local manager.');
+    },
+    findMany: async where => {
+      return generateMockServers();
+    },
+    getById: async ({ id }) => {
+      return generateMockServers().find(server => server.id === id);
+    },
+  } satisfies MpcManagerStorage['servers'];
+};
+
+const initLocalClientServerStorage = ({ db }: { db: LocalDb }) => {
+  return {
+    insert: async row => {
+      await db.clientServers.add(row);
+    },
+    upsert: async ({ id }, row) => {
+      await db.clientServers.put({ ...row, id });
+    },
+    update: async ({ id }, row) => {
+      await db.clientServers.update(id, row);
+    },
+    delete: async ({ id }) => {
+      await db.clientServers.delete(id);
+    },
+    findMany: async where => {
+      let res: ClientServerStorageData[];
+      if (where && Object.keys(where).length > 0) {
+        res = await db.clientServers.where(where).toArray();
+      } else {
+        res = await db.clientServers.toArray();
+      }
+      return res;
+    },
+    getById: async ({ id }) => {
+      const res = await db.clientServers.get(id);
+      return res;
+    },
+  } satisfies MpcManagerStorage['clientServers'];
+};
 
 const initLocalThreadStorage = ({ db }: { db: LocalDb }) => {
   return {
@@ -86,17 +122,20 @@ const initLocalThreadStorage = ({ db }: { db: LocalDb }) => {
         await db.threadMessages.where('threadId').equals(id).delete();
       });
     },
-    // @TODO update to list, or findMany/findOne
-    select: async where => {
-      const res = await db.threads.where(where || {}).toArray();
+    findMany: async where => {
+      let res;
+      if (where && Object.keys(where).length > 0) {
+        res = await db.threads.where(where).toArray();
+      } else {
+        res = await db.threads.toArray();
+      }
       return res;
     },
-    // @TODO update to get
     getById: async ({ id }) => {
       const res = await db.threads.get(id);
       return res;
     },
-  } satisfies ManagerStorage['threads'];
+  } satisfies MpcManagerStorage['threads'];
 };
 
 const initLocalThreadMessageStorage = ({ db }: { db: LocalDb }) => {
@@ -113,15 +152,20 @@ const initLocalThreadMessageStorage = ({ db }: { db: LocalDb }) => {
     delete: async ({ id }) => {
       await db.threadMessages.delete(id);
     },
-    select: async where => {
-      const res = await db.threadMessages.where(where || {}).toArray();
+    findMany: async where => {
+      let res;
+      if (where && Object.keys(where).length > 0) {
+        res = await db.threadMessages.where(where).toArray();
+      } else {
+        res = await db.threadMessages.toArray();
+      }
       return res;
     },
     getById: async ({ id }) => {
       const res = await db.threadMessages.get(id);
       return res;
     },
-  } satisfies ManagerStorage['threadMessages'];
+  } satisfies MpcManagerStorage['threadMessages'];
 };
 
 const initLocalMpcManagerStorage = ({ db }: { db: LocalDb }) => {
@@ -138,13 +182,18 @@ const initLocalMpcManagerStorage = ({ db }: { db: LocalDb }) => {
     delete: async ({ id }) => {
       await db.mpcManagers.delete(id);
     },
-    select: async where => {
-      const res = await db.mpcManagers.where(where || {}).toArray();
+    findMany: async where => {
+      let res;
+      if (where && Object.keys(where).length > 0) {
+        res = await db.mpcManagers.where(where).toArray();
+      } else {
+        res = await db.mpcManagers.toArray();
+      }
       return res;
     },
     getById: async ({ id }) => {
       const res = await db.mpcManagers.get(id);
       return res;
     },
-  } satisfies Storage<ManagerStorageData>;
+  } satisfies Storage<MpcManagerStorageData>;
 };

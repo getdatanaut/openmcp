@@ -1,9 +1,9 @@
-// /**
-//  * Avatar
-//  */
+/**
+ * Avatar
+ */
 
-// export type { AvatarOptions, AvatarProps } from './components/Avatar/avatar.tsx';
-// export { Avatar, AvatarContext, useAvatarContext } from './components/Avatar/avatar.tsx';
+export type { AvatarOptions, AvatarProps } from './components/Avatar/avatar.tsx';
+export { Avatar, AvatarContext, useAvatarContext } from './components/Avatar/avatar.tsx';
 
 /**
  * Button

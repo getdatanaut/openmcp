@@ -6,6 +6,54 @@
 
 @import './components/Markdown/styles.css';
 
+@utility h-block-xs {
+  @apply h-6;
+}
+
+@utility h-block-sm {
+  @apply h-8;
+}
+
+@utility h-block-md {
+  @apply h-10;
+}
+
+@utility h-block-lg {
+  @apply h-12;
+}
+
+@utility h-block-xl {
+  @apply h-18;
+}
+
+@utility h-block-2xl {
+  @apply h-24;
+}
+
+@utility w-block-xs {
+  @apply w-6;
+}
+
+@utility w-block-sm {
+  @apply w-8;
+}
+
+@utility w-block-md {
+  @apply w-10;
+}
+
+@utility w-block-lg {
+  @apply w-12;
+}
+
+@utility w-block-xl {
+  @apply w-18;
+}
+
+@utility w-block-2xl {
+  @apply w-24;
+}
+
 @theme {
   /*
    * Disable colors we don't need.. clutters up the autocomplete, etc.

@@ -1,9 +1,9 @@
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
-import { Button, createContext, tn } from '@libs/ui-primitives';
+import { Button, createContext, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
 import { Markdown } from '@libs/ui-primitives/markdown';
-import type { Manager } from '@openmcp/manager';
-import { useQuery } from '@tanstack/react-query';
+import type { MpcManager } from '@openmcp/manager';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
@@ -15,7 +15,7 @@ import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 
 export type ThreadProps = {
   children: ReactNode;
-  manager: Manager;
+  manager: MpcManager;
   loadingFallback?: ReactNode;
   threadId?: TThreadId;
   onCreated?: (props: { threadId: TThreadId }) => void;
@@ -58,50 +58,67 @@ export interface ThreadInnerProps extends Omit<ThreadProps, 'threadId' | 'loadin
   initialMessages?: UIMessage[];
 }
 
-export const ThreadInner = ({
-  isNewThread,
-  threadId,
-  children,
-  manager,
-  onCreated,
-  initialMessages,
-}: ThreadInnerProps) => {
-  const chat = useChat({
-    id: threadId,
-    initialMessages,
-    sendExtraMessageFields: true,
-    fetch: async (input, init) => {
-      const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
-      const message = body.messages[0]!;
-      const history = body.messages.slice(1);
+export const ThreadInner = observer(
+  ({ isNewThread, threadId, children, manager, onCreated, initialMessages }: ThreadInnerProps) => {
+    const { app } = useRootStore();
+    const queryClient = useQueryClient();
 
-      return manager.conductor.handleMessage({ threadId, message, history });
-    },
-  });
+    const chat = useChat({
+      id: threadId,
+      initialMessages,
+      sendExtraMessageFields: true,
+      onError(error) {
+        console.error('Error in thread', error);
+        // @TODO error handling
+        alert('Error in thread, see console for details');
+      },
+      fetch: async (input, init) => {
+        const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
+        const message = body.messages[0]!;
+        const history = body.messages.slice(1);
 
-  const handleSubmit = useCallback(
-    async e => {
-      e.preventDefault();
-      if (isNewThread) {
-        await manager.threads.create({ id: threadId, clientId: 'test', name: 'New Chat' });
-        onCreated?.({ threadId });
-      }
+        return manager.conductor.handleMessage({
+          clientId: app.currentUserId,
+          threadId,
+          message,
+          history,
+        });
+      },
+    });
 
-      chat.handleSubmit(e);
-    },
-    [manager.threads.create, chat.handleSubmit, threadId, isNewThread],
-  );
+    const { mutateAsync: createThread } = useMutation({
+      mutationFn: manager.threads.create,
+      onSuccess: () => {
+        // @TODO rework react query usage to consolidate query options into one spot, best practices
+        void queryClient.invalidateQueries({ queryKey: ['threads'] });
+      },
+    });
 
-  return <ThreadContext.Provider value={{ threadId, chat, handleSubmit }}>{children}</ThreadContext.Provider>;
-};
+    const handleSubmit = useCallback(
+      async e => {
+        e.preventDefault();
+
+        if (isNewThread) {
+          await createThread({ id: threadId, clientId: app.currentUserId, name: 'New Thread' });
+          onCreated?.({ threadId });
+        }
+
+        chat.handleSubmit(e);
+      },
+      [createThread, chat.handleSubmit, threadId, isNewThread, app.currentUserId],
+    );
+
+    return <ThreadContext.Provider value={{ threadId, chat, handleSubmit }}>{children}</ThreadContext.Provider>;
+  },
+);
 
 export const ThreadMessages = () => {
   const { chat } = useThreadContext();
 
   return (
-    <div className="flex flex-col divide-y-[0.5px]">
+    <div className="flex flex-1 flex-col divide-y-[0.5px]">
       {chat.messages.map((message, index) => (
-        <ThreadMessage key={index} lineNumber={index + 1} {...message} />
+        <ThreadMessage key={index} lineNumber={index + 1} isLast={index === chat.messages.length - 1} {...message} />
       ))}
     </div>
   );
@@ -113,32 +130,34 @@ const ThreadMessage = observer(
     role,
     isActive,
     lineNumber,
+    isLast,
   }: UIMessage & {
     isActive?: boolean;
     lineNumber: number;
+    isLast: boolean;
   }) => {
     const { app } = useRootStore();
-    const classes = tn('hover:ak-layer-[0.2] px-12');
+    const classes = tn('px-12', isLast && 'flex-1');
 
     const containerClasses = tn(
-      'relative flex border-l-[0.5px] py-14',
+      'relative flex h-full border-l-[0.5px] py-14',
       role === 'user' && 'ak-text-secondary/70',
       role === 'assistant' && 'ak-text/80',
     );
 
-    const contentClasses = tn('mx-auto w-full max-w-[50rem] leading-relaxed');
+    const contentClasses = tn('mx-auto w-full max-w-[60rem] leading-relaxed');
 
     return (
       <div className={classes}>
         <div className={containerClasses}>
           {lineNumber > 1 ? (
-            <div className="ak-layer-0 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
+            <div className="ak-layer-0 absolute top-1.5 left-[3px] -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
               <div className="opacity-60">{lineNumber}</div>
             </div>
           ) : null}
 
           <div className={contentClasses}>
-            <div className="dn-prose min-w-0 flex-1">
+            <div className="dn-prose min-w-0 flex-1 px-10">
               <Markdown codeTheme={app.theme?.codeTheme ?? 'github-dark'} content={content} />
             </div>
           </div>
@@ -148,7 +167,15 @@ const ThreadMessage = observer(
   },
 );
 
-export const ThreadChatBox = ({ disabled }: { disabled?: boolean }) => {
+export const ThreadChatBox = ({
+  disabled,
+  inputClassName,
+  className,
+}: {
+  disabled?: boolean;
+  inputClassName?: TW_STR;
+  className?: TW_STR;
+}) => {
   const { chat, handleSubmit } = useThreadContext();
 
   const value = chat.input;
@@ -163,13 +190,16 @@ export const ThreadChatBox = ({ disabled }: { disabled?: boolean }) => {
   };
 
   return (
-    <form className="flex w-full items-center gap-3 pr-5" onSubmit={handleSubmit}>
+    <form className={twMerge('flex w-full items-center gap-3 pr-12', className)} onSubmit={handleSubmit}>
       <input
         id="message"
         name="message"
         type="text"
         placeholder="Ask anything"
-        className="caret-secondary flex-1 py-6 pl-6 focus:outline-none"
+        className={twMerge(
+          'caret-secondary focus:placeholder:ak-text-secondary flex-1 py-6 pl-10 focus:outline-none',
+          inputClassName,
+        )}
         value={value}
         onChange={chat.handleInputChange}
         onKeyDown={onKeyDown}

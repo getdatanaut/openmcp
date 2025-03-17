@@ -1,10 +1,9 @@
 import { type ReactNode, type Ref } from 'react';
 
-import type { Options } from '../../utils/types.ts';
 import { useTabsInternalContext } from './internal-context.tsx';
 import { tabsStaticClass } from './tabs.styles.ts';
 
-export interface TabPanelsProps extends Options {
+export interface TabPanelsProps {
   className?: string;
   children?: ReactNode;
   ref?: Ref<HTMLDivElement>;

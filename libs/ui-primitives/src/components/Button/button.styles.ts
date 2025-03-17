@@ -48,15 +48,15 @@ export const buttonStyle = tv(
       },
       size: {
         xs: {
-          base: tn('h-6 gap-1 px-1.5 text-sm font-normal'),
+          base: tn('h-block-xs gap-1 px-1.5 text-sm font-normal'),
           icon: tn('text-[0.9em]'),
         },
         sm: {
-          base: tn('h-8 gap-1 px-2.5 text-sm font-normal'),
+          base: tn('h-block-sm gap-1 px-2.5 text-sm font-normal'),
           icon: tn('text-[0.9em]'),
         },
-        md: tn('h-10 gap-1.5 px-3.5'),
-        lg: tn('ak-frame h-12 gap-2 px-5'),
+        md: tn('h-block-md gap-1.5 px-3.5'),
+        lg: tn('ak-frame h-block-lg gap-2 px-5'),
       },
       fullWidth: {
         true: tn('w-full'),

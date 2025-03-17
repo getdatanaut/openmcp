@@ -1,7 +1,7 @@
 import { createMiddleware } from 'hono/factory';
 
 import { SessionId } from '../../lib/session.ts';
-import { isMcpServerId, MCPServerConfigs, MCPServerIdToDoNamespace } from '../../mcp/index.ts';
+import { isMcpServerId, McpServerConfigs, MCPServerIdToDoNamespace } from '../../mcp/index.ts';
 import { type OpenMcpOpenAPI } from '../../mcp/openapi.ts';
 import type { Variables as MiddlewareVariables } from '../../middleware.ts';
 
@@ -20,7 +20,7 @@ export const configureMcpServerById = createMiddleware<{
   }
 
   // Extract the server config from the request
-  const config = MCPServerConfigs[mcpServerId](c.req);
+  const config = McpServerConfigs[mcpServerId](c.req);
   if (!config) {
     return c.json({ error: 'Missing required configuration for MCP Server' }, { status: 400 });
   }
