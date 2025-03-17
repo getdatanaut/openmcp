@@ -4,14 +4,7 @@
   "description": "Manage connections between MCP Servers and Clients through a single interface.",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./connection": "./src/connection.ts",
-    "./manager": "./src/manager.ts",
-    "./server": "./src/server.ts",
-    "./storage": "./src/storage/index.ts",
-    "./transport": "./src/transport.ts",
-    "./threads": "./src/threads/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "build": "tsc",
@@ -29,8 +22,10 @@
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
+    "@types/json-schema": "7.0.15",
     "@types/node": "22.13.10",
     "eslint": "9.22.0",
+    "type-fest": "^4.35.0",
     "typescript": "5.8.2",
     "vitest": "3.0.8"
   },

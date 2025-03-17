@@ -1,4 +1,4 @@
-import { type StorageItem, type StorageTable } from './index.ts';
+import type { StorageItem, StorageTable } from './index.ts';
 
 export function createMemoryStorage<Shape extends StorageItem>(
   initialData?: Shape[],
@@ -66,7 +66,7 @@ export class MemoryStorage<T extends StorageItem> implements StorageTable<T> {
     this.index.delete(pkValue);
   }
 
-  async select(where?: Partial<T>): Promise<T[]> {
+  async findMany(where?: Partial<T>): Promise<T[]> {
     return where
       ? this.rows.filter(row => Object.entries(where).every(([key, value]) => row[key] === value))
       : this.rows;

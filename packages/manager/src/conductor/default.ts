@@ -1,7 +1,7 @@
 import { createOpenAI, type OpenAIProvider, type OpenAIProviderSettings } from '@ai-sdk/openai';
 import { jsonSchema, type LanguageModelV1, streamText, tool as createTool } from 'ai';
 
-import type { Manager } from '../manager.ts';
+import type { MpcManager } from '../manager.ts';
 import type { MpcConductor, MpcConductorFactory } from './adapter.ts';
 
 export interface DefaultMpcConductorSettings {
@@ -26,7 +26,7 @@ interface MpcSupervisor {
 }
 
 export function defaultMpcConductorFactory(config: DefaultMpcConductorOptions): MpcConductorFactory {
-  return (manager: Manager) => new DefaultMpcConductor(config, manager);
+  return (manager: MpcManager) => new DefaultMpcConductor(config, manager);
 }
 
 /**
@@ -36,9 +36,9 @@ export class DefaultMpcConductor implements MpcConductor {
   #supervisor: MpcSupervisor;
   #settings: DefaultMpcConductorSettings;
   #llmProxyUrl?: DefaultMpcConductorOptions['llmProxyUrl'];
-  #manager: Manager;
+  #manager: MpcManager;
 
-  constructor(options: DefaultMpcConductorOptions, manager: Manager) {
+  constructor(options: DefaultMpcConductorOptions, manager: MpcManager) {
     this.#manager = manager;
     this.#llmProxyUrl = options.llmProxyUrl;
     this.#settings = options.settings ?? {};
@@ -46,21 +46,10 @@ export class DefaultMpcConductor implements MpcConductor {
   }
 
   // @QUESTION: what happens if end user sends message, then immediately sends another one without waiting for the first one to finish?
-  public handleMessage: MpcConductor['handleMessage'] = async ({ threadId, message, history = [] }) => {
-    // @QUESTION: when is this useful?
-    /**
-     * Most of the time the tools will be defined on the remote mpc servers right?
-     * Vs in the config passed when registering a server on the local manager.
-     * This is confusing since this only lists the tools that happened to be defined when registering the local sever,
-     * which is incomplete. Unless I'm not understanding what this does... possible lol.
-     */
-    // const tools = await manager.listTools();
-
-    const client = this.#manager.getClient('anonClientId')!;
-
-    // @TODO client implementation should probaby cache the tools, and use the mpc notification spec to update them
+  public handleMessage: MpcConductor['handleMessage'] = async ({ clientId, threadId, message, history = [] }) => {
+    // @TODO this implementation should probaby cache the tools, and use the mpc notification spec or something to update them (although now w stateless protocol maybe not)
     // right now we're fetching all of the tools on every message
-    const tools = (await client.listTools()) || [];
+    const tools = await this.#manager.clientServers.toolsByClientId({ clientId, lazyConnect: true });
 
     const aiTools = tools.reduce(
       (acc, tool) => {
@@ -69,15 +58,7 @@ export class DefaultMpcConductor implements MpcConductor {
           id: `${tool.server}.${tool.name}` as const,
           description: tool.description,
           parameters: jsonSchema(tool.inputSchema as any),
-          execute: async args => {
-            console.log('tool call', { tool, args });
-
-            const result = await client.callTool({ serverId: tool.server, name: tool.name, input: args as any });
-
-            console.log('tool result', result);
-
-            return result;
-          },
+          execute: tool.execute,
         });
 
         return acc;
@@ -93,17 +74,20 @@ export class DefaultMpcConductor implements MpcConductor {
       messages,
       maxSteps: 5,
       tools: aiTools,
-      onFinish: async ({ response }) => {
-        const thread = await this.#manager.threads.get({ id: threadId });
-        if (!thread) {
-          console.warn('Thread not found in conductorRun onFinish', threadId);
-          return;
+      onFinish: async opts => {
+        /** If a threadId was provided, store the response messages in the thread */
+        if (threadId) {
+          const { response } = opts;
+          const thread = await this.#manager.threads.get({ id: threadId });
+          if (thread) {
+            await thread.addResponseMessages({
+              originalMessages: messages,
+              responseMessages: response.messages,
+            });
+          } else {
+            console.warn('Thread not found in conductorRun onFinish', { clientId, threadId });
+          }
         }
-
-        void thread.addResponseMessages({
-          originalMessages: messages,
-          responseMessages: response.messages,
-        });
       },
     });
 
@@ -121,7 +105,7 @@ export class DefaultMpcConductor implements MpcConductor {
       // Our default settings
       ({
         provider: 'openai',
-        languageModelId: 'gpt-4-turbo',
+        languageModelId: 'gpt-4o',
       } satisfies DefaultMpcConductorSettings['supervisor']);
 
     const settings = this.#settings.providers?.[supervisor.provider]?.settings;
@@ -132,11 +116,10 @@ export class DefaultMpcConductor implements MpcConductor {
         : this.#llmProxyUrl;
 
     const finalSettings = {
-      apiKey: '', // ai-sdk does not send requests if apiKey is not provided
+      // ai-sdk does not send requests if apiKey is not provided
+      apiKey: '',
       ...settings,
-      /**
-       * Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
-       */
+      // Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
       baseURL: settings?.baseURL ?? (settings?.apiKey ? undefined : llmProxyUrl),
     };
 

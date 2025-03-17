@@ -13,7 +13,8 @@ export interface TransportConfigs {
   inMemory: InMemoryTransportConfig;
 }
 
-export type TransportConfig<T extends TransportType> = {
+// @TODO we can prob simplify this to just be Record<TransportType, TransportConfigs[TransportType]>
+export type TransportConfig<T extends TransportType = TransportType> = {
   type: T;
   config: TransportConfigs[T];
 };

@@ -16,7 +16,7 @@ export interface StorageTable<T extends StorageItem> {
   delete({ id }: { id: string }): Promise<void>;
 
   /** Retrieves rows matching a predicate */
-  select(where?: Partial<T>): Promise<T[]>;
+  findMany(where?: Partial<T>): Promise<T[]>;
 
   /** Retrieves a row by its primary key */
   getById({ id }: { id: string }): Promise<T | undefined>;

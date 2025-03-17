@@ -1,48 +1,29 @@
-import { Client, type ClientConfig, type ClientId } from './client.ts';
+import { type ClientServerManager, type ClientServerStorageData, createClientServerManager } from './client-servers.ts';
 import type { MpcConductor, MpcConductorFactory } from './conductor/adapter.ts';
 import { defaultMpcConductorFactory } from './conductor/default.ts';
-import { Server, type ServerConfig, type ServerId, type ServerStorageData } from './server.ts';
+import { createServerManager, type ServerManager, type ServerStorageData } from './servers.ts';
 import type { Storage } from './storage/index.ts';
 import { createMemoryStorage } from './storage/memory.ts';
-import { createThreadManager, type ThreadManager, type ThreadStorageData } from './threads/index.ts';
-import type { ThreadMessageStorageData } from './threads/thread.ts';
-import type { TransportConfigs } from './transport.ts';
+import {
+  createThreadManager,
+  type ThreadManager,
+  type ThreadMessageStorageData,
+  type ThreadStorageData,
+} from './threads.ts';
+import type { MpcManagerId } from './types.ts';
 
-export type ManagerId = string;
-
-export interface ManagerOptions {
+export interface MpcManagerOptions {
   /**
    * A unique identifier for this manager
    */
-  id: ManagerId;
-
-  /**
-   * Transports available for clients to connect to this manager
-   *
-   * @default InMemoryTransport
-   */
-  transports?: Partial<TransportConfigs>;
-
-  /**
-   * Optionally register servers during manager creation.
-   *
-   * This is equivalent to calling `manager.registerServer()` for each server.
-   */
-  servers?: {
-    [id: ServerId]: Omit<ServerConfig, 'id'>;
-  };
-
-  /**
-   * Optionally provide a ThreadManager
-   */
-  threads?: ThreadManager;
+  id?: MpcManagerId;
 
   /**
    * Optionally provide a Storage implementation to persist manager state
    *
    * @default MemoryStorage
    */
-  storage?: Partial<ManagerStorage>;
+  storage?: Partial<MpcManagerStorage>;
 
   /**
    * Optionally provide a Conductor implementation to handle tool orchestration
@@ -50,8 +31,9 @@ export interface ManagerOptions {
   conductor?: MpcConductorFactory;
 }
 
-export interface ManagerStorage {
+export interface MpcManagerStorage {
   servers: Storage<ServerStorageData>;
+  clientServers: Storage<ClientServerStorageData>;
   threads: Storage<ThreadStorageData>;
   threadMessages: Storage<ThreadMessageStorageData>;
 }
@@ -59,152 +41,34 @@ export interface ManagerStorage {
 /**
  * Creates new Manager instance.
  */
-export function createManager(options: ManagerOptions) {
-  return new Manager(options);
+export function createMpcManager(options?: MpcManagerOptions) {
+  return new MpcManager(options);
 }
 
 /**
- * The Manager maintains knowledge of registered servers,
- * connected clients, and server<->client connections.
+ * The MpcManager maintains knowledge of registered servers,
+ * connected clients, server<->client connections, thread, and messages.
  */
-// @QUESTION rename to MCPManager? (or McpManager)
-export class Manager {
-  public readonly id: ManagerId;
-  public readonly transports: ManagerOptions['transports'];
-  public readonly servers = new Map<ServerId, Server>();
-  public readonly clients = new Map<ClientId, Client>();
+export class MpcManager {
+  public readonly id: MpcManagerId;
+  public readonly servers: ServerManager;
+  public readonly clientServers: ClientServerManager;
   public readonly threads: ThreadManager;
-  public readonly storage: ManagerStorage;
+  public readonly storage: MpcManagerStorage;
   public readonly conductor: MpcConductor;
 
-  constructor({ id, transports, storage, threads, servers, conductor }: ManagerOptions) {
-    this.id = id;
-    this.transports = transports ?? { inMemory: {} };
+  constructor({ id, storage, conductor }: MpcManagerOptions = {}) {
+    this.id = id ?? 'no-id';
     this.storage = {
       servers: storage?.servers ?? createMemoryStorage<ServerStorageData>(),
+      clientServers: storage?.clientServers ?? createMemoryStorage<ClientServerStorageData>(),
       threads: storage?.threads ?? createMemoryStorage<ThreadStorageData>(),
       threadMessages: storage?.threadMessages ?? createMemoryStorage<ThreadMessageStorageData>(),
     };
-    this.threads = threads ?? createThreadManager({}, this);
+    this.servers = createServerManager({ manager: this });
+    this.clientServers = createClientServerManager({ manager: this });
+    this.threads = createThreadManager({ manager: this });
     this.conductor = conductor ? conductor(this) : defaultMpcConductorFactory({})(this);
-
-    if (servers) {
-      Object.entries(servers).forEach(([serverId, server]) => {
-        this.registerServer({
-          ...server,
-          id: serverId,
-        });
-      });
-    }
-  }
-
-  /**
-   * Initialize the Manager by loading all registered servers from the storage.
-   */
-  public async intialize() {
-    const servers = await this.storage.servers.select();
-    for (const server of servers) {
-      this.registerServer(server);
-    }
-  }
-
-  /**
-   * Register an MCP Server to allow clients connections to it.
-   *
-   * This method does not create a connection to the Server.
-   *
-   * Clients can configure the server using `manager.registerClient(clientConfig)` or `client.configureServer(config)` methods.
-   *
-   * Clients can connect to the server using `manager.connectClient(clientConfig)` or `client.connectServer(config)` methods.
-   */
-  public registerServer(serverConfig: ServerConfig) {
-    const server = new Server(serverConfig, this);
-    this.servers.set(serverConfig.id, server);
-
-    return server;
-  }
-
-  /**
-   * Register a Client, and optionally configure MCP Servers for it.
-   *
-   * This method does not create a connection to the Server.
-   *
-   * Connect to Servers using `manager.connectClient(clientConfig)` or `client.connectServer(serverId, config)`
-   */
-  public registerClient(clientConfig: ClientConfig) {
-    const client = new Client(clientConfig, this);
-    this.clients.set(clientConfig.id, client);
-
-    // Configure MCP Servers using the client's config
-    if (clientConfig.servers) {
-      for (const [serverId, userConfig] of Object.entries(clientConfig.servers)) {
-        client.configureServer(serverId, userConfig);
-      }
-    }
-
-    return client;
-  }
-
-  /**
-   * Connect a Client, and optionally connect MCP Servers for it.
-   */
-  public async connectClient(clientConfig: ClientConfig) {
-    const client = this.registerClient(clientConfig);
-
-    // Connect to MCP Servers using the client's config
-    if (clientConfig.servers) {
-      for (const [serverId, userConfig] of Object.entries(clientConfig.servers)) {
-        await client.connectServer(serverId, userConfig);
-      }
-    }
-
-    return client;
-  }
-
-  /**
-   * List all registered servers.
-   */
-  public listServers() {
-    return Array.from(this.servers.values());
-  }
-
-  /**
-   * Get a server by id.
-   */
-  public getServer(id: ServerId) {
-    return this.servers.get(id);
-  }
-
-  /**
-   * List all registered clients.
-   */
-  public listClients() {
-    return Array.from(this.clients.values());
-  }
-
-  /**
-   * Get a client by id.
-   */
-  public getClient(id: ClientId) {
-    return this.clients.get(id);
-  }
-
-  /**
-   * Get available tools defined by registered Servers.
-   *
-   * If `options.servers` is provided, only tools from the specified servers will be returned.
-   */
-  public async listTools(options?: { servers?: ServerId[] }) {
-    const toolPromises = this.listServers().map(async server => {
-      if (options?.servers && !options.servers.includes(server.id)) {
-        return [];
-      }
-
-      return server.listTools();
-    });
-
-    const tools = await Promise.all(toolPromises);
-    return tools.flat();
   }
 
   public async close() {
