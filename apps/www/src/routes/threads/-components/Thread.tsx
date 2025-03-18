@@ -74,8 +74,8 @@ export const ThreadInner = observer(
       },
       fetch: async (input, init) => {
         const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
-        const message = body.messages[0]!;
-        const history = body.messages.slice(1);
+        const message = body.messages[body.messages.length - 1]!;
+        const history = body.messages.slice(0, -1);
 
         return manager.conductor.handleMessage({
           clientId: app.currentUserId,
