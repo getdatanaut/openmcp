@@ -155,9 +155,7 @@ const ThreadMessage = ({
         ) : null}
 
         <div className={contentClasses}>
-          <div className="dn-prose min-w-0 flex-1 px-10">
-            <Markdown content={content} />
-          </div>
+          <Markdown content={content} className="min-w-0 flex-1" />
         </div>
       </div>
     </div>

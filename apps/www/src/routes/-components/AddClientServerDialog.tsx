@@ -86,9 +86,7 @@ const AddClientServerDialogForm = ({
     <JsonSchemaForm schema={server.configSchema} form={form}>
       <DialogBody className="flex flex-col gap-8">
         {server.presentation?.description ? (
-          <div className="text-sm font-light">
-            <Markdown content={server.presentation.description} />
-          </div>
+          <Markdown content={server.presentation.description} className="text-sm font-light" />
         ) : null}
 
         <JsonSchemaFormFields />
