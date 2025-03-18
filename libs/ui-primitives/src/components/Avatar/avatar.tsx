@@ -8,7 +8,7 @@ import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
 import { type AvatarSlotProps, avatarStaticClass, avatarStyle, type AvatarStyleProps } from './avatar.styles.ts';
 
-export interface AvatarOptions extends Options, AvatarStyleProps, AvatarSlotProps {
+export interface AvatarProps extends Options, AvatarStyleProps, AvatarSlotProps {
   /**
    * The name of the entity in the avatar.
    *
@@ -73,8 +73,6 @@ export interface AvatarOptions extends Options, AvatarStyleProps, AvatarSlotProp
 
   ref?: Ref<HTMLSpanElement>;
 }
-
-export type AvatarProps = AvatarOptions;
 
 export const [AvatarContext, useAvatarContext] = createContext<ContextValue<AvatarProps, HTMLSpanElement>>({
   name: 'AvatarContext',

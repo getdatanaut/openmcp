@@ -15,7 +15,7 @@
     "@ai-sdk/openai": "1.2.5",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
-    "ai": "4.1.61",
+    "ai": "4.1.62",
     "hono": "4.7.4",
     "zod": "3.24.2"
   },

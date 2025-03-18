@@ -351,19 +351,9 @@ const AvailableServers = observer(() => {
       <div className="px-3 py-4">
         <ServerList>
           {sorted.map(server => (
-            <ServerListItem
-              key={server.id}
-              server={server}
-              handleAdd={e => {
-                e.preventDefault();
-                createClientServer({
-                  id: ClientServerId.generate(),
-                  clientId: app.currentUserId,
-                  serverId: server.id,
-                  serverConfig: {},
-                });
-              }}
-            />
+            <Link key={server.id} to="." search={prev => ({ ...prev, server: server.id })}>
+              <ServerListItem server={server} handleAdd={() => {}} />
+            </Link>
           ))}
         </ServerList>
       </div>

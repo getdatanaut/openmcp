@@ -32,7 +32,13 @@ const ThreadRouteComponent = () => {
         <div className="flex h-full flex-1 items-center gap-4 border-l-[0.5px] px-4">
           <div className="text-sm opacity-75">New Thread</div>
 
-          <Button icon={faPlus} size="xs" variant="outline" className="ml-auto" render={<Link to="/threads" />}>
+          <Button
+            icon={faPlus}
+            size="xs"
+            variant="outline"
+            className="ml-auto"
+            render={<Link to="/threads" activeOptions={{ exact: true }} />}
+          >
             Thread
           </Button>
         </div>

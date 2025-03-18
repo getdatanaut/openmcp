@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import { buttonGroupStaticClass, buttonGroupStyle, type ButtonGroupStyleProps } from './button.styles.ts';

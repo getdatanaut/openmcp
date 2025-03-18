@@ -3,6 +3,7 @@ import { tv } from 'tailwind-variants';
 
 // import { focusStyles, inputFocusStyles } from '../../utils/focus.ts';
 import { makeStaticClass } from '../../utils/make-static-class.ts';
+import { focusStyles, formSizes } from '../../utils/styles.ts';
 import { tn, twMergeConfig } from '../../utils/tw.ts';
 import type { SlotProp, VariantSlots } from '../../utils/types.ts';
 
@@ -16,7 +17,8 @@ export const buttonStyle = tv(
   {
     slots: {
       base: tn(
-        `group ak-frame-xs placeholder-shown:text-muted relative inline-flex max-w-full cursor-pointer appearance-none items-center justify-center font-medium whitespace-nowrap select-none motion-safe:transition`,
+        `group placeholder-shown:text-muted relative inline-flex max-w-full cursor-pointer appearance-none items-center justify-center whitespace-nowrap select-none motion-safe:transition`,
+        focusStyles,
       ),
 
       icon: tn('[display:inherit]'),
@@ -48,15 +50,15 @@ export const buttonStyle = tv(
       },
       size: {
         xs: {
-          base: tn('h-block-xs gap-1 px-1.5 text-sm font-normal'),
+          base: tn('font-normal', formSizes.xs),
           icon: tn('text-[0.9em]'),
         },
         sm: {
-          base: tn('h-block-sm gap-1 px-2.5 text-sm font-normal'),
+          base: tn('font-normal', formSizes.sm),
           icon: tn('text-[0.9em]'),
         },
-        md: tn('h-block-md gap-1.5 px-3.5'),
-        lg: tn('ak-frame h-block-lg gap-2 px-5'),
+        md: tn('font-medium', formSizes.md),
+        lg: tn('font-medium', formSizes.lg),
       },
       fullWidth: {
         true: tn('w-full'),
@@ -83,17 +85,17 @@ export const buttonStyle = tv(
       {
         variant: 'solid',
         intent: 'neutral',
-        class: tn('ak-layer-contrast'),
+        class: tn('ak-layer-contrast ak-outline'),
       },
       {
         variant: 'solid',
         intent: 'primary',
-        class: tn('ak-layer-contrast-primary'),
+        class: tn('ak-layer-contrast-primary ak-outline-primary'),
       },
       {
         variant: 'solid',
         intent: 'danger',
-        class: tn('ak-layer-contrast-danger'),
+        class: tn('ak-layer-contrast-danger ak-outline-danger'),
       },
       // solid / interactive
       {
@@ -108,17 +110,17 @@ export const buttonStyle = tv(
       {
         variant: 'outline',
         intent: 'neutral',
-        class: tn('ak-edge-contrast border'),
+        class: tn('ak-outline-canvas border'),
       },
       {
         variant: 'outline',
         intent: 'primary',
-        class: tn('ak-edge-contrast-primary ak-text-primary border'),
+        class: tn('ak-outline-primary ak-text-primary border'),
       },
       {
         variant: 'outline',
         intent: 'danger',
-        class: tn('ak-edge-contrast-danger ak-text-danger border'),
+        class: tn('ak-outline-danger ak-text-danger border'),
       },
       // outline / interactive
       {
@@ -150,17 +152,17 @@ export const buttonStyle = tv(
       {
         variant: 'soft',
         intent: 'neutral',
-        class: tn('ak-light:ak-layer-down ak-layer'),
+        class: tn('ak-light:ak-layer-down ak-layer ak-outline'),
       },
       {
         variant: 'soft',
         intent: 'primary',
-        class: tn('ak-layer-mix-primary/20 ak-text-primary'),
+        class: tn('ak-layer-mix-primary/20 ak-text-primary ak-outline-primary'),
       },
       {
         variant: 'soft',
         intent: 'danger',
-        class: tn('ak-layer-mix-danger/20 ak-text-danger'),
+        class: tn('ak-layer-mix-danger/20 ak-text-danger ak-outline-danger'),
       },
       // soft / interactive
       {
@@ -192,17 +194,17 @@ export const buttonStyle = tv(
       {
         variant: 'ghost',
         intent: 'neutral',
-        class: tn(''),
+        class: tn('ak-outline-canvas'),
       },
       {
         variant: 'ghost',
         intent: 'primary',
-        class: tn('ak-text-primary'),
+        class: tn('ak-outline-primary ak-text-primary'),
       },
       {
         variant: 'ghost',
         intent: 'danger',
-        class: tn('ak-text-danger'),
+        class: tn('ak-outline-danger ak-text-danger'),
       },
       // ghost / interactive
       {

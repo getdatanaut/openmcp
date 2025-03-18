@@ -15,11 +15,23 @@ export const generateMockServers = () => {
         },
       },
       presentation: {
+        description:
+          'This is a sample server Petstore server. You can find out more about Swagger at http://swagger.io or on irc.freenode.net, #swagger. For this sample, you can use the api key `special-key` to test the authorization filters.',
         category: 'fun',
         developer: 'Datanaut',
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
       },
-      configSchema: {},
+      configSchema: {
+        properties: {
+          apiKey: {
+            type: 'string',
+            title: 'API Key',
+            description: 'The API key for the MCP Server',
+            format: 'secret',
+          },
+        },
+        required: ['apiKey'],
+      },
     },
     {
       id: 'srv_pokemon',
@@ -32,11 +44,12 @@ export const generateMockServers = () => {
         },
       },
       presentation: {
+        description:
+          "All the Pokémon data you'll ever need in one place, easily accessible through a modern free open-source `RESTful API`.",
         category: 'fun',
         developer: 'Datanaut',
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
       },
-      configSchema: {},
     },
   ] as const satisfies ServerStorageData[];
 };

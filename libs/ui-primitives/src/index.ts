@@ -2,7 +2,7 @@
  * Avatar
  */
 
-export type { AvatarOptions, AvatarProps } from './components/Avatar/avatar.tsx';
+export type { AvatarProps } from './components/Avatar/avatar.tsx';
 export { Avatar, AvatarContext, useAvatarContext } from './components/Avatar/avatar.tsx';
 
 /**
@@ -21,40 +21,48 @@ export { ButtonGroup } from './components/Button/button-group.tsx';
 // export type { CardOptions, CardProps } from './components/Card/card.tsx';
 // export { Card } from './components/Card/card.tsx';
 
-// /**
-//  * Dialog
-//  */
+/**
+ * Dialog
+ */
 
-// export type { DialogProps } from './components/Dialog/dialog.tsx';
-// export { Dialog, DialogContext, DialogSlot, useDialogContext } from './components/Dialog/dialog.tsx';
-// export type { DialogBodyOptions, DialogBodyProps } from './components/Dialog/dialog-body.tsx';
-// export { DialogBody } from './components/Dialog/dialog-body.tsx';
-// export type { DialogFooterOptions, DialogFooterProps } from './components/Dialog/dialog-footer.tsx';
-// export { DialogFooter } from './components/Dialog/dialog-footer.tsx';
-// export type { DialogHeaderOptions, DialogHeaderProps } from './components/Dialog/dialog-header.tsx';
-// export { DialogHeader } from './components/Dialog/dialog-header.tsx';
+export type { DialogProps } from './components/Dialog/dialog.tsx';
+export { Dialog, DialogContext, DialogDismiss, DialogSlot, useDialogContext } from './components/Dialog/dialog.tsx';
+export type { DialogBodyProps } from './components/Dialog/dialog-body.tsx';
+export { DialogBody } from './components/Dialog/dialog-body.tsx';
+export type { DialogFooterProps } from './components/Dialog/dialog-footer.tsx';
+export { DialogFooter } from './components/Dialog/dialog-footer.tsx';
+export type { DialogHeaderProps } from './components/Dialog/dialog-header.tsx';
+export { DialogHeader } from './components/Dialog/dialog-header.tsx';
 
-// /**
-//  * Forms
-//  */
+/**
+ * Forms
+ */
 
-// export type { FormFieldProps, FormInputProps, FormProps, FormSelectProps } from './components/Form/form.tsx';
-// export {
-//   Form,
-//   FormContext,
-//   FormField,
-//   FormInput,
-//   FormSelect,
-//   useFormContext,
-//   useFormStore,
-// } from './components/Form/form.tsx';
+export type {
+  FormFieldProps,
+  FormInputProps,
+  FormProps,
+  FormStore,
+  // FormSelectProps
+} from './components/Form/form.tsx';
+export {
+  Form,
+  FormButton,
+  FormContext,
+  FormField,
+  FormInput,
+  FormReset,
+  // FormSelect,
+  useFormContext,
+  useFormStore,
+} from './components/Form/form.tsx';
 
-// /**
-//  * Heading
-//  */
+/**
+ * Heading
+ */
 
-// export type { HeadingOptions, HeadingProps } from './components/Heading/heading.tsx';
-// export { Heading, HeadingContext, useHeadingContext } from './components/Heading/heading.tsx';
+export type { HeadingOptions, HeadingProps } from './components/Heading/heading.tsx';
+export { Heading, HeadingContext, useHeadingContext } from './components/Heading/heading.tsx';
 
 // /**
 //  * ClientOnly
@@ -76,12 +84,12 @@ export { ButtonGroup } from './components/Button/button-group.tsx';
 export type { IconProps } from './components/Icon/icon.tsx';
 export { Icon } from './components/Icon/icon.tsx';
 
-// /**
-//  * Input
-//  */
+/**
+ * Input
+ */
 
-// export type { InputOptions, InputProps } from './components/Input/input.tsx';
-// export { Input, InputContext, useInputContext } from './components/Input/input.tsx';
+export type { InputOptions, InputProps } from './components/Input/input.tsx';
+export { Input, InputContext, useInputContext } from './components/Input/input.tsx';
 
 // /**
 //  * Keyboard
@@ -90,12 +98,12 @@ export { Icon } from './components/Icon/icon.tsx';
 // export type { KeyboardOptions, KeyboardProps } from './components/Keyboard/keyboard.tsx';
 // export { Keyboard, KeyboardContext, useKeyboardContext } from './components/Keyboard/keyboard.tsx';
 
-// /**
-//  * Label
-//  */
+/**
+ * Label
+ */
 
-// export type { LabelOptions, LabelProps } from './components/Label/label.tsx';
-// export { Label, LabelContext, useLabelContext } from './components/Label/label.tsx';
+export type { LabelOptions, LabelProps } from './components/Label/label.tsx';
+export { Label, LabelContext, useLabelContext } from './components/Label/label.tsx';
 
 // /**
 //  * Menu

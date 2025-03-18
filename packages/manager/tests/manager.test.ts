@@ -14,7 +14,6 @@ describe('createManager()', () => {
         type: 'inMemory',
         config: {},
       },
-      configSchema: {},
     });
 
     expect(manager).toBeDefined();

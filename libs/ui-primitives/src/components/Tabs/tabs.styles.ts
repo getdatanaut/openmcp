@@ -2,6 +2,7 @@ import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
 import { makeStaticClass } from '../../utils/make-static-class.ts';
+import { focusStyles } from '../../utils/styles.ts';
 import { tn, twMergeConfig } from '../../utils/tw.ts';
 import type { SlotProp, VariantSlots } from '../../utils/types.ts';
 
@@ -26,7 +27,7 @@ export const tabsStyle = tv(
 
       panels: tn(),
 
-      panel: tn(), // focusStyles
+      panel: tn(focusStyles),
     },
 
     defaultVariants: {
@@ -44,22 +45,20 @@ export const tabsStyle = tv(
           tab: tn(
             'relative flex shrink-0 cursor-default items-center justify-center outline-none select-none',
             'px-1.5 text-base',
-            // @TODO
-            // 'text-muted aria-selected:text-fg hover:text-fg',
-            'ak-text/20',
-            'aria-selected:before:h-[2px]',
-            'aria-selected:before:absolute',
-            'aria-selected:before:bottom-0',
-            'aria-selected:before:inset-x-0',
-            'aria-selected:before:ak-layer-primary',
+            'ak-text/20 selected:ak-text hover:ak-text',
+            'selected:before:h-[2px]',
+            'selected:before:absolute',
+            'selected:before:bottom-0',
+            'selected:before:inset-x-0',
+            'selected:before:ak-layer-primary',
           ),
 
           tabInner: tn(
             triggerInnerSharedTx,
             'group-hover:ak-layer',
-            // 'group-focus-visible:ak-edge-primary group-focus-visible:shadow-[0_0_0_2px]',
-            'group-aria-selected:font-medium',
-            'group-aria-selected:tracking-[-0.01em]',
+            'group-focus-visible:ak-edge-primary group-focus-visible:border',
+            'group-selected:font-medium',
+            'group-selected:tracking-[-0.01em]',
           ),
 
           /**

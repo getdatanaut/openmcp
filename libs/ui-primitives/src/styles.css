@@ -6,6 +6,64 @@
 
 @import './components/Markdown/styles.css';
 
+/**
+ * New variants, some of which are helpers for ariakit selectors (https://ariakit.org/guide/styling)
+ */
+
+/* https://larsmagnus.co/blog/focus-visible-within-the-missing-pseudo-class */
+@custom-variant focus-visible-within (&:has(:focus-visible));
+
+@custom-variant supports-backdrop-blur (@supports (backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0)));
+@custom-variant backdrop (&[data-backdrop]);
+@custom-variant open (&[data-open]);
+@custom-variant enter (&[data-enter]);
+@custom-variant leave (&[data-leave]);
+@custom-variant checked (&[aria-checked="true"]);
+@custom-variant expanded (&[aria-expanded="true"]);
+@custom-variant hover (&:hover, &[aria-expanded="true"]);
+@custom-variant selected (&[aria-selected="true"]);
+@custom-variant group-selected (&:is(:where(.group)[aria-selected="true"] *));
+@custom-variant invalid (&[aria-invalid="true"]);
+@custom-variant placeholder-shown (&:placeholder-shown, &[data-placeholder="true"]);
+@custom-variant disabled (&:disabled, &[aria-disabled="true"]);
+@custom-variant group-active-item (:merge(.group)[data-active-item] &);
+@custom-variant active (&:active, &.active, &[data-active], &[data-active-item]);
+@custom-variant focus-visible (&:focus-visible, &[data-focus-visible]);
+
+/**
+ * Custom utilities
+ */
+
+@utility reset-a {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+}
+
+@utility reset-button {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  font-size: inherit;
+  font-family: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+
+@utility fa-fw {
+  position: relative;
+  &::before {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
 @utility h-block-xs {
   @apply h-6;
 }
@@ -53,6 +111,10 @@
 @utility w-block-2xl {
   @apply w-24;
 }
+
+/**
+ * Themes
+ */
 
 @theme {
   /*
@@ -160,4 +222,277 @@
   --color-canvas: #1e1e1e;
   --color-primary: #c586c0;
   --color-secondary: #d7ba7d;
+}
+
+/**
+ * Custom animations
+ */
+
+/* Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideUpAndFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideUpAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+}
+
+@keyframes slideDownAndFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideDownAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.97);
+  }
+}
+
+@keyframes slideLeftAndFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideLeftAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.97);
+  }
+}
+
+@keyframes slideRightAndFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideRightAndFadeOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(4px) scale(0.97);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--content-height);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes dialogContentShow {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+}
+
+@keyframes dialogContentHide {
+  from {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(5px) scale(0.99);
+  }
+}
+
+/* Animation utilities */
+@utility animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-fade-out {
+  animation: fadeOut 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-up-fade-in {
+  animation: slideUpAndFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-slide-up-fade-out {
+  animation: slideUpAndFadeOut 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-down-fade-in {
+  animation: slideDownAndFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-slide-down-fade-out {
+  animation: slideDownAndFadeOut 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-left-fade-in {
+  animation: slideLeftAndFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-slide-left-fade-out {
+  animation: slideLeftAndFadeOut 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-right-fade-in {
+  animation: slideRightAndFadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-slide-right-fade-out {
+  animation: slideRightAndFadeOut 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-down {
+  animation: slideDown 200ms cubic-bezier(0.87, 0, 0.13, 1);
+}
+
+@utility animate-slide-up {
+  animation: slideUp 200ms cubic-bezier(0.87, 0, 0.13, 1) forwards;
+}
+
+@utility animate-overlay-show {
+  animation: fadeIn 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-overlay-hide {
+  animation: fadeOut 150ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-dialog-content-show {
+  animation: dialogContentShow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@utility animate-dialog-content-hide {
+  animation: dialogContentHide 100ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Component animation utilities */
+@utility animate-popper {
+  &[data-open='true'] {
+    &[data-side='top'] {
+      @apply motion-safe:animate-slide-up-fade-in;
+    }
+    &[data-side='bottom'] {
+      @apply motion-safe:animate-slide-down-fade-in;
+    }
+    &[data-side='left'] {
+      @apply motion-safe:animate-slide-left-fade-in;
+    }
+    &[data-side='right'] {
+      @apply motion-safe:animate-slide-right-fade-in;
+    }
+  }
+
+  &[data-leave] {
+    &[data-side='top'] {
+      @apply motion-safe:animate-slide-down-fade-out;
+    }
+    &[data-side='bottom'] {
+      @apply motion-safe:animate-slide-up-fade-out;
+    }
+    &[data-side='left'] {
+      @apply motion-safe:animate-slide-right-fade-out;
+    }
+    &[data-side='right'] {
+      @apply motion-safe:animate-slide-left-fade-out;
+    }
+  }
+}
+
+@utility animate-overlay {
+  &[data-open='true'] {
+    @apply motion-safe:animate-overlay-show;
+  }
+
+  &[data-leave] {
+    @apply motion-safe:animate-overlay-hide;
+  }
+}
+
+@utility animate-dialog-content {
+  &[data-open='true'] {
+    @apply motion-safe:animate-dialog-content-show;
+  }
+
+  &[data-leave] {
+    @apply motion-safe:animate-dialog-content-hide;
+  }
 }

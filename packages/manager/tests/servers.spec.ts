@@ -53,7 +53,6 @@ describe('Server', () => {
         name: 'Test Server',
         version: '1.0.0',
         transport: { type: 'inMemory', config: {} },
-        configSchema: {},
       });
 
       await server.callTool({ name: 'ping', input: {}, config: {} });
@@ -69,7 +68,6 @@ describe('Server', () => {
         name: 'Test Server',
         version: '1.0.0',
         transport: { type: 'inMemory', config: {} },
-        configSchema: {},
       });
 
       await expect(server.callTool({ name: 'ping', input: {}, config: {} })).rejects.toThrow();

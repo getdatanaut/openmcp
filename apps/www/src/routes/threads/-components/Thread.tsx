@@ -1,7 +1,6 @@
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Button, createContext, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
-import { Markdown } from '@libs/ui-primitives/markdown';
 import type { MpcManager } from '@openmcp/manager';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
@@ -10,6 +9,7 @@ import { observer } from 'mobx-react-lite';
 import { useCallback, useMemo } from 'react';
 import { type FormEvent, type KeyboardEvent } from 'react';
 
+import { Markdown } from '~/components/Markdown.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 
@@ -124,48 +124,45 @@ export const ThreadMessages = () => {
   );
 };
 
-const ThreadMessage = observer(
-  ({
-    content,
-    role,
-    isActive,
-    lineNumber,
-    isLast,
-  }: UIMessage & {
-    isActive?: boolean;
-    lineNumber: number;
-    isLast: boolean;
-  }) => {
-    const { app } = useRootStore();
-    const classes = tn('px-12', isLast && 'flex-1');
+const ThreadMessage = ({
+  content,
+  role,
+  isActive,
+  lineNumber,
+  isLast,
+}: UIMessage & {
+  isActive?: boolean;
+  lineNumber: number;
+  isLast: boolean;
+}) => {
+  const classes = tn('px-12', isLast && 'flex-1');
 
-    const containerClasses = tn(
-      'relative flex h-full border-l-[0.5px] py-14',
-      role === 'user' && 'ak-text-secondary/70',
-      role === 'assistant' && 'ak-text/80',
-    );
+  const containerClasses = tn(
+    'relative flex h-full border-l-[0.5px] py-14',
+    role === 'user' && 'ak-text-secondary/70',
+    role === 'assistant' && 'ak-text/80',
+  );
 
-    const contentClasses = tn('mx-auto w-full max-w-[60rem] leading-relaxed');
+  const contentClasses = tn('mx-auto w-full max-w-[60rem] leading-relaxed');
 
-    return (
-      <div className={classes}>
-        <div className={containerClasses}>
-          {lineNumber > 1 ? (
-            <div className="ak-layer-0 absolute top-1.5 left-[3px] -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
-              <div className="opacity-60">{lineNumber}</div>
-            </div>
-          ) : null}
+  return (
+    <div className={classes}>
+      <div className={containerClasses}>
+        {lineNumber > 1 ? (
+          <div className="ak-layer-0 absolute top-1.5 left-[3px] -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
+            <div className="opacity-60">{lineNumber}</div>
+          </div>
+        ) : null}
 
-          <div className={contentClasses}>
-            <div className="dn-prose min-w-0 flex-1 px-10">
-              <Markdown codeTheme={app.theme?.codeTheme ?? 'github-dark'} content={content} />
-            </div>
+        <div className={contentClasses}>
+          <div className="dn-prose min-w-0 flex-1 px-10">
+            <Markdown content={content} />
           </div>
         </div>
       </div>
-    );
-  },
-);
+    </div>
+  );
+};
 
 export const ThreadChatBox = ({
   disabled,

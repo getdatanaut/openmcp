@@ -1,7 +1,6 @@
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { sha256 } from '@oslojs/crypto/sha2';
-import type { JSONSchema7 } from 'json-schema';
 
 import type { MpcManager } from './manager.ts';
 import { createTransport, type TransportConfig, type TransportConfigs } from './transport.ts';
@@ -116,16 +115,42 @@ export interface ServerStorageData {
   version: string;
 
   /**
-   * Schema used to validate the configuration when a Client connects to the MCP Server.
+   * JSONSchema7 subset used to validate the configuration when a Client connects to the MCP Server.
+   *
+   * Can also be used by host apps to render a UI for the server configuration.
    *
    * @example
    * ```ts
-   * configSchema: z.object({
-   *   apiKey: z.string(),
-   * });
+   * configSchema: {
+   *   properties: {
+   *     apiKey: {
+   *       type: 'string',
+   *       title: 'API Key',
+   *       description: 'The API key for the MCP Server',
+   *     },
+   *   },
+   *   required: ['apiKey'],
+   * };
    * ```
    */
-  configSchema: JSONSchema7;
+  configSchema?: {
+    type?: 'object';
+
+    properties: Record<
+      string,
+      {
+        type: 'string' | 'number' | 'boolean';
+        title?: string;
+        description?: string;
+        default?: string | number | boolean;
+        enum?: string[];
+        format?: 'secret' | string;
+        example?: string | number | boolean;
+      }
+    >;
+
+    required?: string[];
+  };
 
   /**
    * Transport configuration for how the Client should connect to the underlying MCP Server.
@@ -136,6 +161,9 @@ export interface ServerStorageData {
    * Optional information that can be helpful for presentational/ui purposes.
    */
   presentation?: {
+    /** Description of the server - markdown allowed. */
+    description?: string;
+
     category?: string;
     developer?: string;
     sourceUrl?: string;
