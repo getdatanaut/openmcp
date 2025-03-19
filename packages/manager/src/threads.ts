@@ -51,6 +51,12 @@ export class ThreadManager {
     await this.storage.delete({ id });
   };
 
+  public update = async ({ id }: { id: ThreadId }, data: Partial<ThreadStorageData>) => {
+    await this.storage.update({ id }, data);
+
+    return this.storage.getById({ id });
+  };
+
   public listMessages = async ({ id }: { id: ThreadId }) => {
     return this.#manager.storage.threadMessages.findMany({ threadId: id });
   };

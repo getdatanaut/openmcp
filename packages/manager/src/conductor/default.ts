@@ -1,5 +1,6 @@
 import { createOpenAI, type OpenAIProvider, type OpenAIProviderSettings } from '@ai-sdk/openai';
-import { jsonSchema, type LanguageModelV1, streamText, tool as createTool } from 'ai';
+import { generateObject, jsonSchema, type LanguageModelV1, streamText, tool as createTool } from 'ai';
+import { z } from 'zod';
 
 import type { MpcManager } from '../manager.ts';
 import type { MpcConductor, MpcConductorFactory } from './adapter.ts';
@@ -47,9 +48,52 @@ export class DefaultMpcConductor implements MpcConductor {
 
   // @QUESTION: what happens if end user sends message, then immediately sends another one without waiting for the first one to finish?
   public handleMessage: MpcConductor['handleMessage'] = async ({ clientId, threadId, message, history = [] }) => {
+    const messages = [...history, message];
+
     // @TODO this implementation should probaby cache the tools, and use the mpc notification spec or something to update them (although now w stateless protocol maybe not)
     // right now we're fetching all of the tools on every message
     const tools = await this.#manager.clientServers.toolsByClientId({ clientId, lazyConnect: true });
+    const allToolNames = tools.map(t => t.name);
+
+    const toolsByServer = tools.reduce(
+      (acc, tool) => {
+        acc[tool.server] = acc[tool.server] || [];
+        acc[tool.server]!.push(tool);
+        return acc;
+      },
+      {} as Record<string, typeof tools>,
+    );
+
+    const { object: llmObject } = await generateObject({
+      model: this.#supervisor.model,
+      system: `Select the tools you might need based on the user's request.
+
+The tools available are:
+
+${Object.entries(toolsByServer)
+  .map(([server, tools]) => {
+    return `## ${server}
+${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}`;
+  })
+  .join('\n')}`,
+      messages,
+      schema: z.object({
+        selectedTools: z
+          .array(z.enum(allToolNames as [string, ...string[]]))
+          .describe("The tools you might need based on the user's request."),
+        summaryOfAllTools: z.string().describe('A general summary of all tools available.'),
+        confidence: z
+          .number()
+          .min(0)
+          .max(1)
+          .describe('A number between 0 and 1 indicating the confidence in the tools selected.'),
+
+        // TODO(CL): we could move this to a different generateObject call, since it only needs to happen once
+        title: z.string().describe('Create a concise subject title that summarizes the previous messages'),
+      }),
+    });
+
+    console.log('LLM selected tools:', llmObject);
 
     const aiTools = tools.reduce(
       (acc, tool) => {
@@ -66,14 +110,20 @@ export class DefaultMpcConductor implements MpcConductor {
       {} as Record<string, ReturnType<typeof createTool>>,
     );
 
-    const messages = [...history, message];
+    const selectedToolNames = llmObject.selectedTools.length > 0 ? llmObject.selectedTools : allToolNames;
 
     const result = streamText({
       model: this.#supervisor.model,
-      system: 'You are a helpful assistant.',
+      system: `You are a helpful assistant with access to tools the user has enabled.
+
+Here is a summary of all the available tools:
+${llmObject.summaryOfAllTools}
+`,
       messages,
       maxSteps: 5,
       tools: aiTools,
+      // Abitrarily limit to 50 tools
+      experimental_activeTools: selectedToolNames.slice(0, 50),
       onFinish: async opts => {
         /** If a threadId was provided, store the response messages in the thread */
         if (threadId) {
@@ -84,6 +134,14 @@ export class DefaultMpcConductor implements MpcConductor {
               originalMessages: messages,
               responseMessages: response.messages,
             });
+
+            if (thread.name === 'New Thread' && llmObject.title) {
+              try {
+                await this.#manager.threads.update({ id: threadId }, { name: llmObject.title });
+              } catch (error) {
+                console.error('Error generating thread name', error);
+              }
+            }
           } else {
             console.warn('Thread not found in conductorRun onFinish', { clientId, threadId });
           }

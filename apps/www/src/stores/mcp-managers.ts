@@ -27,7 +27,7 @@ export class McpManagersStore {
   }
 
   public add({ id, conductor }: { id: string; conductor?: DefaultMpcConductorSettings }) {
-    const m = createMpcManager({
+    const manager = createMpcManager({
       id,
       conductor: defaultMpcConductorFactory({
         llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_LLM_PROXY_URL}/${provider}`,
@@ -41,9 +41,9 @@ export class McpManagersStore {
       },
     });
 
-    this.managers[id] = m;
+    this.managers[id] = manager;
 
-    return m;
+    return manager;
   }
 
   // async ok (vs flow) because we're not updating any local state
