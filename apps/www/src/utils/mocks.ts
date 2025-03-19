@@ -67,7 +67,7 @@ export const generateMockServers = () => {
         },
       },
       presentation: {
-        category: 'fun',
+        category: 'communication',
         developer: 'Datanaut',
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
       },
@@ -83,6 +83,38 @@ export const generateMockServers = () => {
         },
       },
     },
+
+    // {
+    //   id: 'mcp_github',
+    //   name: 'Github',
+    //   version: '1.0.0',
+    //   presentation: {
+    //     category: 'developer',
+    //     developer: 'Anthropic',
+    //     sourceUrl: 'https://github.com/modelcontextprotocol/servers/tree/main/src/github',
+    //   },
+    //   transport: {
+    //     type: 'stdio',
+    //     config: {
+    //       command: 'docker',
+    //       args: ['run', '-i', '--rm', '-e', 'GITHUB_PERSONAL_ACCESS_TOKEN', 'mcp/github'],
+    //       env: {
+    //         GITHUB_PERSONAL_ACCESS_TOKEN: '{{GITHUB_PERSONAL_ACCESS_TOKEN}}',
+    //       },
+    //     }
+    //   },
+    //   configSchema: {
+    //     type: 'object',
+    //     properties: {
+    //       GITHUB_PERSONAL_ACCESS_TOKEN: {
+    //         type: 'string',
+    //         description: 'Github personal access token',
+    //         format: 'secret',
+    //         default: import.meta.env['GITHUB_PERSONAL_ACCESS_TOKEN'],
+    //       },
+    //     },
+    //   },
+    // },
   ] as const satisfies ServerStorageData[];
 };
 
@@ -101,19 +133,7 @@ export const generateMockServers = () => {
 //       },
 //       transport: {},
 //     },
-//     {
-//       id: 'mcp_github',
-//       name: 'Github',
-//       category: 'developer',
-//       requiresAuth: true,
-//       developer: 'MCP',
-//       sourceUrl: 'https://github.com/modelcontextprotocol/servers/tree/main/src/github',
-//       icon: {
-//         dark: '/logos/github-dark.svg',
-//         light: '/logos/github-light.svg',
-//       },
-//       transport: {},
-//     },
+
 //     {
 //       id: 'mcp_fetch',
 //       name: 'Fetch',
