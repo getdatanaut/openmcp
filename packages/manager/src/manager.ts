@@ -73,5 +73,6 @@ export class MpcManager {
 
   public async close() {
     // @TODO close / dispose of any connections or other resources
+    await this.clientServers.close();
   }
 }

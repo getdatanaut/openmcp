@@ -21,7 +21,7 @@ import React, { type MouseEventHandler, type ReactNode } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
-import { ClientServerId, type TThreadId } from '~/utils/ids.ts';
+import { type TThreadId } from '~/utils/ids.ts';
 import { generateMockServers } from '~/utils/mocks.ts';
 
 export const MainSidebar = () => {

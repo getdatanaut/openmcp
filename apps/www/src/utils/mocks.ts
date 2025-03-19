@@ -5,7 +5,7 @@ import type { ServerStorageData } from '@openmcp/manager';
 export const generateMockServers = () => {
   return [
     {
-      id: 'srv_petstore',
+      id: 'mcp_petstore',
       name: 'Petstore',
       version: '1.0.0',
       transport: {
@@ -34,7 +34,7 @@ export const generateMockServers = () => {
       },
     },
     {
-      id: 'srv_pokemon',
+      id: 'mcp_pokemon',
       name: 'Pokemon',
       version: '1.0.0',
       transport: {
@@ -51,13 +51,45 @@ export const generateMockServers = () => {
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
       },
     },
+    {
+      id: 'mcp_slack',
+      name: 'Slack',
+      version: '1.0.0',
+      transport: {
+        type: 'sse',
+        config: {
+          url: 'http://localhost:8787/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json&baseUrl=https://slack.com/api',
+          requestInit: {
+            headers: {
+              'x-openmcp': '{"headers":{"Authorization":"Bearer {{token}}"}}',
+            },
+          },
+        },
+      },
+      presentation: {
+        category: 'fun',
+        developer: 'Datanaut',
+        sourceUrl: 'https://github.com/getdatanaut/openmcp',
+      },
+      configSchema: {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+            description: 'OAuth token for the Slack API',
+            format: 'secret',
+            default: import.meta.env['VITE_SLACK_AUTH_TOKEN'],
+          },
+        },
+      },
+    },
   ] as const satisfies ServerStorageData[];
 };
 
 // export const generateMockServers = () => {
 //   return [
 //     {
-//       id: 'srv_stripe',
+//       id: 'mcp_stripe',
 //       name: 'Stripe',
 //       category: 'finance',
 //       requiresAuth: true,
@@ -70,7 +102,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_github',
+//       id: 'mcp_github',
 //       name: 'Github',
 //       category: 'developer',
 //       requiresAuth: true,
@@ -83,7 +115,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_fetch',
+//       id: 'mcp_fetch',
 //       name: 'Fetch',
 //       category: 'utilities',
 //       requiresAuth: false,
@@ -96,7 +128,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_memory',
+//       id: 'mcp_memory',
 //       name: 'Memory',
 //       category: 'utilities',
 //       requiresAuth: false,
@@ -109,7 +141,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_linear',
+//       id: 'mcp_linear',
 //       name: 'Linear',
 //       category: 'productivity',
 //       requiresAuth: true,
@@ -122,7 +154,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_slack',
+//       id: 'mcp_slack',
 //       name: 'Slack',
 //       category: 'communication',
 //       requiresAuth: true,
@@ -135,7 +167,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_obsidian',
+//       id: 'mcp_obsidian',
 //       name: 'Obsidian',
 //       category: 'productivity',
 //       requiresAuth: true,
@@ -148,7 +180,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_rember',
+//       id: 'mcp_rember',
 //       name: 'Rember',
 //       category: 'productivity',
 //       requiresAuth: true,
@@ -161,7 +193,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_browser',
+//       id: 'mcp_browser',
 //       name: 'Browser',
 //       category: 'utilities',
 //       requiresAuth: false,
@@ -174,7 +206,7 @@ export const generateMockServers = () => {
 //       transport: {},
 //     },
 //     {
-//       id: 'srv_hn',
+//       id: 'mcp_hn',
 //       name: 'Hacker News',
 //       category: 'social',
 //       requiresAuth: false,

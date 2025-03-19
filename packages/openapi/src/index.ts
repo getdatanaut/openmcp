@@ -2,22 +2,37 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
-import { bundleOas3Service } from '@stoplight/http-spec';
+import { bundleOas3Service, bundleOas2Service } from '@stoplight/http-spec';
 import $RefParser from '@stoplight/json-schema-ref-parser/node';
-import { decycle } from '@stoplight/json';
+import { traverse } from '@stoplight/json';
+import { unset } from 'lodash';
 
-import type { IHttpOperation, IHttpOperationRequest, Reference } from '@stoplight/types';
+import type { IHttpOperation, IHttpOperationRequest } from '@stoplight/types';
+import { inspect } from 'node:util';
 
-export async function createMcpServer({
-  openapi,
-  serverUrl,
-}: {
-  openapi: Record<string, unknown> | string;
-  serverUrl?: string;
-}) {
-  const result = decycle(await new $RefParser().dereference(openapi));
+/**
+ * Allow the client to override parameters for tool calls
+ */
+export type ClientConfig = {
+  path?: Record<string, unknown>;
+  query?: Record<string, unknown>;
+  headers?: Record<string, unknown>;
+  body?: Record<string, unknown>;
+};
 
-  const service = bundleOas3Service({ document: result });
+export async function createMcpServer(
+  {
+    openapi,
+    serverUrl,
+    debug = false,
+  }: {
+    openapi: Record<string, unknown> | string;
+    serverUrl?: string;
+    debug?: boolean;
+  },
+  getClientConfig?: () => Promise<ClientConfig>,
+) {
+  const service = await bundleOasService(openapi);
 
   const baseUrl = serverUrl || service.servers?.[0]?.url;
 
@@ -66,21 +81,26 @@ export async function createMcpServer({
     }
 
     const args = request.params.arguments || {};
+    const clientConfig = await getClientConfig?.();
 
     // TODO(CL): inject request headers based on operation's content-type
     const params = {
       path: {
         ...(args['path'] || {}),
+        ...(clientConfig?.path || {}),
       },
       query: {
         ...(args['query'] || {}),
+        ...(clientConfig?.query || {}),
       },
       headers: {
         'Content-Type': operationTool.operation.request?.body?.contents?.[0]?.mediaType || 'application/json',
         ...(args['headers'] || {}),
+        ...(clientConfig?.headers || {}),
       },
       body: {
         ...(args['body'] || {}),
+        ...(clientConfig?.body || {}),
       },
     };
 
@@ -94,6 +114,25 @@ export async function createMcpServer({
         url.searchParams.set(key, String(value));
       }
     });
+
+    if (debug) {
+      console.log(
+        'openapi.callTool',
+        request.params.name,
+        inspect(
+          {
+            url: url.toString(),
+            method: operationTool.operation.method,
+            headers: params.headers,
+            body: formatBody(params.body, params.headers['Content-Type']),
+          },
+          {
+            depth: 10,
+            colors: true,
+          },
+        ),
+      );
+    }
 
     const res = await fetch(url.toString(), {
       method: operationTool.operation.method,
@@ -121,31 +160,38 @@ export async function createMcpServer({
   return server;
 }
 
-function isReference(value: any): value is Reference {
-  return '$ref' in value;
+async function bundleOasService(openapi: Record<string, unknown> | string) {
+  const result = await new $RefParser().dereference(openapi);
+
+  if ('openapi' in result) {
+    return bundleOas3Service({ document: result });
+  } else {
+    return bundleOas2Service({ document: result });
+  }
 }
 
 function requestParametersToTool({ path, query, headers, body }: IHttpOperationRequest<false>) {
   const pathParams = parametersToTool(path);
   const queryParams = parametersToTool(query);
   const headerParams = parametersToTool(headers);
-
-  const bodyParam = body && isReference(body) ? undefined : body?.contents?.find(param => param.schema)?.schema;
+  const bodyParam = body?.contents?.find(param => param.schema)?.schema;
 
   return {
     type: 'object',
-    properties: {
+    properties: removeExtraProperties({
       ...(pathParams ? { path: { type: 'object', properties: pathParams } } : {}),
       ...(queryParams ? { query: { type: 'object', properties: queryParams } } : {}),
       ...(headerParams ? { headers: { type: 'object', properties: headerParams } } : {}),
       ...(bodyParam ? { body: bodyParam } : {}),
-    },
+    }),
   } as const;
 }
 
 // Turn parameters into an object with the parameter name as the key and the parameter schema as the value
 function parametersToTool(params?: { name: string; description?: string; schema?: unknown }[]) {
-  return params?.reduce(
+  if (!params?.length) return;
+
+  return params.reduce(
     (acc, param) => {
       acc[param.name] = parameterToTool(param);
       return acc;
@@ -163,6 +209,9 @@ function parameterToTool(param: { name: string; description?: string; schema?: u
   } as const;
 }
 
+/**
+ * Format body based on the content type
+ */
 function formatBody(body: object, contentType: string) {
   if (Object.keys(body).length) {
     if (contentType.includes('application/json')) {
@@ -188,4 +237,19 @@ function formatBody(body: object, contentType: string) {
 
     return JSON.stringify(body);
   }
+}
+
+/**
+ * Remove properties that are not not needed such as x-stoplight, $schema, etc.
+ */
+function removeExtraProperties<T>(obj: T): T {
+  traverse(obj, {
+    onProperty({ parent, property }) {
+      if (/^x-/.test(String(property)) || property === '$schema') {
+        unset(parent, property);
+      }
+    },
+  });
+
+  return obj;
 }

@@ -3,32 +3,20 @@
     "description": "GET /alerts - Returns all alerts",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "active": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "List only active alerts (use /alerts/active endpoints instead)",
               "name": "active",
               "type": "boolean",
-              "x-stoplight": {
-                "id": "102997c9823a8",
-              },
             },
             "area": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "State/territory code or marine area code
 This parameter is incompatible with the following parameters: point, region, region_type, zone
 ",
               "items": {
                 "description": "State/territory codes and marine area codes",
+                "key": "AreaCode",
                 "oneOf": [
                   {
                     "enum": [
@@ -92,6 +80,7 @@ This parameter is incompatible with the following parameters: point, region, reg
                       "FM",
                       "MH",
                     ],
+                    "key": "StateTerritoryCode",
                     "type": "string",
                   },
                   {
@@ -129,18 +118,15 @@ This parameter is incompatible with the following parameters: point, region, reg
                       "PZ",
                       "SL",
                     ],
+                    "key": "MarineAreaCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "area",
               "type": "array",
-              "x-stoplight": {
-                "id": "05bbc99b9414d",
-              },
             },
             "certainty": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Certainty (observed, likely, possible, unlikely, unknown)",
               "items": {
                 "enum": [
@@ -150,16 +136,13 @@ This parameter is incompatible with the following parameters: point, region, reg
                   "Unlikely",
                   "Unknown",
                 ],
+                "key": "AlertCertainty",
                 "type": "string",
               },
               "name": "certainty",
               "type": "array",
-              "x-stoplight": {
-                "id": "057d0accddd0d",
-              },
             },
             "code": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Event code",
               "items": {
                 "pattern": "^\w{3}$",
@@ -167,31 +150,19 @@ This parameter is incompatible with the following parameters: point, region, reg
               },
               "name": "code",
               "type": "array",
-              "x-stoplight": {
-                "id": "53799853c2394",
-              },
             },
             "cursor": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Pagination cursor",
               "name": "cursor",
               "type": "string",
-              "x-stoplight": {
-                "id": "93465936a01a6",
-              },
             },
             "end": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "End time",
               "format": "date-time",
               "name": "end",
               "type": "string",
-              "x-stoplight": {
-                "id": "8c618a425c3ce",
-              },
             },
             "event": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Event name",
               "items": {
                 "pattern": "^[A-Za-z0-9 ]+$",
@@ -199,24 +170,16 @@ This parameter is incompatible with the following parameters: point, region, reg
               },
               "name": "event",
               "type": "array",
-              "x-stoplight": {
-                "id": "f8f5beeb204c8",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": 500,
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "cbfa4e5a3e2d8",
-              },
             },
             "message_type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Message type (alert, update, cancel)",
               "items": {
                 "enum": [
@@ -228,24 +191,16 @@ This parameter is incompatible with the following parameters: point, region, reg
               },
               "name": "message_type",
               "type": "array",
-              "x-stoplight": {
-                "id": "09660c489b536",
-              },
             },
             "point": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Point (latitude,longitude)
 This parameter is incompatible with the following parameters: area, region, region_type, zone
 ",
               "name": "point",
               "pattern": "^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$",
               "type": "string",
-              "x-stoplight": {
-                "id": "0c888950e15e8",
-              },
             },
             "region": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Marine region code
 This parameter is incompatible with the following parameters: area, point, region_type, zone
 ",
@@ -266,16 +221,13 @@ This parameter is incompatible with the following parameters: area, point, regio
                   "PA",
                   "PI",
                 ],
+                "key": "MarineRegionCode",
                 "type": "string",
               },
               "name": "region",
               "type": "array",
-              "x-stoplight": {
-                "id": "75e767b8a173a",
-              },
             },
             "region_type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Region type (land or marine)
 This parameter is incompatible with the following parameters: area, point, region, zone
 ",
@@ -285,12 +237,8 @@ This parameter is incompatible with the following parameters: area, point, regio
               ],
               "name": "region_type",
               "type": "string",
-              "x-stoplight": {
-                "id": "b29170b7d2c2e",
-              },
             },
             "severity": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Severity (extreme, severe, moderate, minor, unknown)",
               "items": {
                 "enum": [
@@ -300,26 +248,19 @@ This parameter is incompatible with the following parameters: area, point, regio
                   "Minor",
                   "Unknown",
                 ],
+                "key": "AlertSeverity",
                 "type": "string",
               },
               "name": "severity",
               "type": "array",
-              "x-stoplight": {
-                "id": "37be07c5581c5",
-              },
             },
             "start": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Start time",
               "format": "date-time",
               "name": "start",
               "type": "string",
-              "x-stoplight": {
-                "id": "8f5150b2da83b",
-              },
             },
             "status": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Status (actual, exercise, system, test, draft)",
               "items": {
                 "enum": [
@@ -333,12 +274,8 @@ This parameter is incompatible with the following parameters: area, point, regio
               },
               "name": "status",
               "type": "array",
-              "x-stoplight": {
-                "id": "186dc295c7638",
-              },
             },
             "urgency": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Urgency (immediate, expected, future, past, unknown)",
               "items": {
                 "enum": [
@@ -348,16 +285,13 @@ This parameter is incompatible with the following parameters: area, point, regio
                   "Past",
                   "Unknown",
                 ],
+                "key": "AlertUrgency",
                 "type": "string",
               },
               "name": "urgency",
               "type": "array",
-              "x-stoplight": {
-                "id": "e16f1930ebf6c",
-              },
             },
             "zone": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone ID (forecast or county)
 This parameter is incompatible with the following parameters: area, point, region, region_type
 ",
@@ -366,14 +300,12 @@ This parameter is incompatible with the following parameters: area, point, regio
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
 ",
+                "key": "NWSZoneID",
                 "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
                 "type": "string",
               },
               "name": "zone",
               "type": "array",
-              "x-stoplight": {
-                "id": "9de0369904a3d",
-              },
             },
           },
           "type": "object",
@@ -387,23 +319,15 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /alerts/active - Returns all currently active alerts",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "area": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "State/territory code or marine area code
 This parameter is incompatible with the following parameters: point, region, region_type, zone
 ",
               "items": {
                 "description": "State/territory codes and marine area codes",
+                "key": "AreaCode",
                 "oneOf": [
                   {
                     "enum": [
@@ -467,6 +391,7 @@ This parameter is incompatible with the following parameters: point, region, reg
                       "FM",
                       "MH",
                     ],
+                    "key": "StateTerritoryCode",
                     "type": "string",
                   },
                   {
@@ -504,18 +429,15 @@ This parameter is incompatible with the following parameters: point, region, reg
                       "PZ",
                       "SL",
                     ],
+                    "key": "MarineAreaCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "area",
               "type": "array",
-              "x-stoplight": {
-                "id": "314c2ce285fb0",
-              },
             },
             "certainty": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Certainty (observed, likely, possible, unlikely, unknown)",
               "items": {
                 "enum": [
@@ -525,16 +447,13 @@ This parameter is incompatible with the following parameters: point, region, reg
                   "Unlikely",
                   "Unknown",
                 ],
+                "key": "AlertCertainty",
                 "type": "string",
               },
               "name": "certainty",
               "type": "array",
-              "x-stoplight": {
-                "id": "b91dd375acf37",
-              },
             },
             "code": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Event code",
               "items": {
                 "pattern": "^\w{3}$",
@@ -542,12 +461,8 @@ This parameter is incompatible with the following parameters: point, region, reg
               },
               "name": "code",
               "type": "array",
-              "x-stoplight": {
-                "id": "e566326b72454",
-              },
             },
             "event": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Event name",
               "items": {
                 "pattern": "^[A-Za-z0-9 ]+$",
@@ -555,24 +470,16 @@ This parameter is incompatible with the following parameters: point, region, reg
               },
               "name": "event",
               "type": "array",
-              "x-stoplight": {
-                "id": "81852ea3417e7",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": 500,
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "3dc7e8c18d279",
-              },
             },
             "message_type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Message type (alert, update, cancel)",
               "items": {
                 "enum": [
@@ -584,24 +491,16 @@ This parameter is incompatible with the following parameters: point, region, reg
               },
               "name": "message_type",
               "type": "array",
-              "x-stoplight": {
-                "id": "e74ccb713daac",
-              },
             },
             "point": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Point (latitude,longitude)
 This parameter is incompatible with the following parameters: area, region, region_type, zone
 ",
               "name": "point",
               "pattern": "^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$",
               "type": "string",
-              "x-stoplight": {
-                "id": "1da0c3ec78708",
-              },
             },
             "region": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Marine region code
 This parameter is incompatible with the following parameters: area, point, region_type, zone
 ",
@@ -622,16 +521,13 @@ This parameter is incompatible with the following parameters: area, point, regio
                   "PA",
                   "PI",
                 ],
+                "key": "MarineRegionCode",
                 "type": "string",
               },
               "name": "region",
               "type": "array",
-              "x-stoplight": {
-                "id": "7e3504c51dd7d",
-              },
             },
             "region_type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Region type (land or marine)
 This parameter is incompatible with the following parameters: area, point, region, zone
 ",
@@ -641,12 +537,8 @@ This parameter is incompatible with the following parameters: area, point, regio
               ],
               "name": "region_type",
               "type": "string",
-              "x-stoplight": {
-                "id": "337c5317d8b3a",
-              },
             },
             "severity": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Severity (extreme, severe, moderate, minor, unknown)",
               "items": {
                 "enum": [
@@ -656,16 +548,13 @@ This parameter is incompatible with the following parameters: area, point, regio
                   "Minor",
                   "Unknown",
                 ],
+                "key": "AlertSeverity",
                 "type": "string",
               },
               "name": "severity",
               "type": "array",
-              "x-stoplight": {
-                "id": "6c717621f15a4",
-              },
             },
             "status": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Status (actual, exercise, system, test, draft)",
               "items": {
                 "enum": [
@@ -679,12 +568,8 @@ This parameter is incompatible with the following parameters: area, point, regio
               },
               "name": "status",
               "type": "array",
-              "x-stoplight": {
-                "id": "1e9908c7e7f57",
-              },
             },
             "urgency": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Urgency (immediate, expected, future, past, unknown)",
               "items": {
                 "enum": [
@@ -694,16 +579,13 @@ This parameter is incompatible with the following parameters: area, point, regio
                   "Past",
                   "Unknown",
                 ],
+                "key": "AlertUrgency",
                 "type": "string",
               },
               "name": "urgency",
               "type": "array",
-              "x-stoplight": {
-                "id": "a2e73901151a2",
-              },
             },
             "zone": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone ID (forecast or county)
 This parameter is incompatible with the following parameters: area, point, region, region_type
 ",
@@ -712,14 +594,12 @@ This parameter is incompatible with the following parameters: area, point, regio
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
 ",
+                "key": "NWSZoneID",
                 "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
                 "type": "string",
               },
               "name": "zone",
               "type": "array",
-              "x-stoplight": {
-                "id": "40765056a6f6f",
-              },
             },
           },
           "type": "object",
@@ -732,20 +612,7 @@ The third letter will be Z for public/fire zone or C for county.
   {
     "description": "GET /alerts/active/count - Returns info on the number of active alerts",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "alerts_active_count",
@@ -754,14 +621,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /alerts/active/zone/{zoneId} - Returns active alerts for the given NWS public zone or county",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "zoneId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
@@ -769,15 +631,8 @@ The third letter will be Z for public/fire zone or C for county.
               "name": "zoneId",
               "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "cde4f0234bebb",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -789,14 +644,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /alerts/active/area/{area} - Returns active alerts for the given area (state or marine area)",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "area": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "State/territory codes and marine area codes",
               "name": "area",
               "oneOf": [
@@ -862,6 +712,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "FM",
                     "MH",
                   ],
+                  "key": "StateTerritoryCode",
                   "type": "string",
                 },
                 {
@@ -899,19 +750,13 @@ The third letter will be Z for public/fire zone or C for county.
                     "PZ",
                     "SL",
                   ],
+                  "key": "MarineAreaCode",
                   "type": "string",
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "ba58e7a7c64ae",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -923,14 +768,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /alerts/active/region/{region} - Returns active alerts for the given marine region",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "region": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Marine region code. These are groups of marine areas combined.
 * AL: Alaska waters (PK)
 * AT: Atlantic Ocean (AM, AN)
@@ -949,15 +789,8 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "region",
               "type": "string",
-              "x-stoplight": {
-                "id": "8fa962ca730f9",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -968,20 +801,7 @@ The third letter will be Z for public/fire zone or C for county.
   {
     "description": "GET /alerts/types - Returns a list of alert types",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "alerts_types",
@@ -990,26 +810,14 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /alerts/{id} - Returns a specific alert",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "id": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "The identifier of the alert message.",
               "name": "id",
               "type": "string",
-              "x-stoplight": {
-                "id": "6421d8fb1c69a",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1021,14 +829,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/cwsus/{cwsuId} - Returns metadata about a Center Weather Service Unit",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "cwsuId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a Center Weather Service Unit (CWSU).",
               "enum": [
                 "ZAB",
@@ -1056,15 +859,8 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "cwsuId",
               "type": "string",
-              "x-stoplight": {
-                "id": "c444a659a90c3",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1076,14 +872,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/cwsus/{cwsuId}/cwas - Returns a list of Center Weather Advisories from a CWSU",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "cwsuId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a Center Weather Service Unit (CWSU).",
               "enum": [
                 "ZAB",
@@ -1111,15 +902,8 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "cwsuId",
               "type": "string",
-              "x-stoplight": {
-                "id": "a8a1f3f15540a",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1131,14 +915,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/cwsus/{cwsuId}/cwas/{date}/{sequence} - Returns a list of Center Weather Advisories from a CWSU",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "cwsuId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a Center Weather Service Unit (CWSU).",
               "enum": [
                 "ZAB",
@@ -1166,35 +945,20 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "cwsuId",
               "type": "string",
-              "x-stoplight": {
-                "id": "a2850523a30a5",
-              },
             },
             "date": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Date (in YYYY-MM-DD format).",
               "format": "date",
               "name": "date",
               "type": "string",
-              "x-stoplight": {
-                "id": "11db4e24d40d4",
-              },
             },
             "sequence": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Sequence number",
               "minimum": 100,
               "name": "sequence",
               "type": "integer",
-              "x-stoplight": {
-                "id": "68b3651fbc6cf",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1206,64 +970,36 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/sigmets - Returns a list of SIGMET/AIRMETs",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "atsu": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ATSU Identifier",
               "name": "atsu",
               "pattern": "^[A-Z]{3,4}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "e0275bca20288",
-              },
             },
             "date": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Date (in YYYY-MM-DD format).",
               "format": "date",
               "name": "date",
               "type": "string",
-              "x-stoplight": {
-                "id": "e34b8214e5775",
-              },
             },
             "end": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "End time",
               "format": "date-time",
               "name": "end",
               "type": "string",
-              "x-stoplight": {
-                "id": "88e9f7231c182",
-              },
             },
             "sequence": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "SIGMET sequence number",
               "name": "sequence",
               "type": "string",
-              "x-stoplight": {
-                "id": "2a819767d217a",
-              },
             },
             "start": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Start time",
               "format": "date-time",
               "name": "start",
               "type": "string",
-              "x-stoplight": {
-                "id": "3003785e2ece8",
-              },
             },
           },
           "type": "object",
@@ -1277,27 +1013,15 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/sigmets/{atsu} - Returns a list of SIGMET/AIRMETs for the specified ATSU",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "atsu": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ATSU Identifier",
               "name": "atsu",
               "pattern": "^[A-Z]{3,4}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "d12fa0c1334b6",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1309,37 +1033,21 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/sigmets/{atsu}/{date} - Returns a list of SIGMET/AIRMETs for the specified ATSU for the specified date",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "atsu": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ATSU Identifier",
               "name": "atsu",
               "pattern": "^[A-Z]{3,4}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "c6f70ce719e03",
-              },
             },
             "date": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Date (in YYYY-MM-DD format).",
               "format": "date",
               "name": "date",
               "type": "string",
-              "x-stoplight": {
-                "id": "6af55be2cf3c6",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1351,47 +1059,27 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /aviation/sigmets/{atsu}/{date}/{time} - Returns a specific SIGMET/AIRMET",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "atsu": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ATSU Identifier",
               "name": "atsu",
               "pattern": "^[A-Z]{3,4}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "fe46ccb3d9624",
-              },
             },
             "date": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Date (in YYYY-MM-DD format).",
               "format": "date",
               "name": "date",
               "type": "string",
-              "x-stoplight": {
-                "id": "c236b7d04256c",
-              },
             },
             "time": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time (in HHMM format). This is always specified in UTC (Zulu) time.",
               "name": "time",
               "pattern": "^([01][0-9]|2[0-3])[0-5][0-9]$",
               "type": "string",
-              "x-stoplight": {
-                "id": "e5b8fee9817db",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1402,20 +1090,7 @@ The third letter will be Z for public/fire zone or C for county.
   {
     "description": "GET /glossary - Returns glossary terms",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "glossary",
@@ -1424,14 +1099,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /gridpoints/{wfo}/{x},{y} - Returns raw numerical forecast data for a 2.5km grid area",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "wfo": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a NWS office.",
               "enum": [
                 "AKQ",
@@ -1568,35 +1238,20 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "wfo",
               "type": "string",
-              "x-stoplight": {
-                "id": "ac4e64482de37",
-              },
             },
             "x": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid X coordinate",
               "minimum": 0,
               "name": "x",
               "type": "integer",
-              "x-stoplight": {
-                "id": "4b3cdcc90ac4c",
-              },
             },
             "y": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid Y coordinate",
               "minimum": 0,
               "name": "y",
               "type": "integer",
-              "x-stoplight": {
-                "id": "434c820a094ab",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1611,7 +1266,6 @@ The third letter will be Z for public/fire zone or C for county.
         "headers": {
           "properties": {
             "Feature-Flags": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Enable future and experimental features (see documentation for more info):
 * forecast_temperature_qv: Represent temperature as QuantitativeValue
 * forecast_wind_speed_qv: Represent wind speed as QuantitativeValue
@@ -1625,9 +1279,6 @@ The third letter will be Z for public/fire zone or C for county.
               },
               "name": "Feature-Flags",
               "type": "array",
-              "x-stoplight": {
-                "id": "a617b51463584",
-              },
             },
           },
           "type": "object",
@@ -1635,7 +1286,6 @@ The third letter will be Z for public/fire zone or C for county.
         "path": {
           "properties": {
             "wfo": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a NWS office.",
               "enum": [
                 "AKQ",
@@ -1772,29 +1422,18 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "wfo",
               "type": "string",
-              "x-stoplight": {
-                "id": "d1d02145fecba",
-              },
             },
             "x": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid X coordinate",
               "minimum": 0,
               "name": "x",
               "type": "integer",
-              "x-stoplight": {
-                "id": "98ec4b6b3e2d1",
-              },
             },
             "y": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid Y coordinate",
               "minimum": 0,
               "name": "y",
               "type": "integer",
-              "x-stoplight": {
-                "id": "040275fc08e74",
-              },
             },
           },
           "type": "object",
@@ -1802,7 +1441,6 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "units": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": "us",
               "description": "Denotes the units used in the textual portions of the forecast.",
               "enum": [
@@ -1811,9 +1449,6 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "units",
               "type": "string",
-              "x-stoplight": {
-                "id": "3d68c0ab0552a",
-              },
             },
           },
           "type": "object",
@@ -1830,7 +1465,6 @@ The third letter will be Z for public/fire zone or C for county.
         "headers": {
           "properties": {
             "Feature-Flags": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Enable future and experimental features (see documentation for more info):
 * forecast_temperature_qv: Represent temperature as QuantitativeValue
 * forecast_wind_speed_qv: Represent wind speed as QuantitativeValue
@@ -1844,9 +1478,6 @@ The third letter will be Z for public/fire zone or C for county.
               },
               "name": "Feature-Flags",
               "type": "array",
-              "x-stoplight": {
-                "id": "3256f0ed7ecc0",
-              },
             },
           },
           "type": "object",
@@ -1854,7 +1485,6 @@ The third letter will be Z for public/fire zone or C for county.
         "path": {
           "properties": {
             "wfo": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a NWS office.",
               "enum": [
                 "AKQ",
@@ -1991,29 +1621,18 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "wfo",
               "type": "string",
-              "x-stoplight": {
-                "id": "06e12199738ba",
-              },
             },
             "x": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid X coordinate",
               "minimum": 0,
               "name": "x",
               "type": "integer",
-              "x-stoplight": {
-                "id": "77503c621a35b",
-              },
             },
             "y": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid Y coordinate",
               "minimum": 0,
               "name": "y",
               "type": "integer",
-              "x-stoplight": {
-                "id": "7699d22bd9ed4",
-              },
             },
           },
           "type": "object",
@@ -2021,7 +1640,6 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "units": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": "us",
               "description": "Denotes the units used in the textual portions of the forecast.",
               "enum": [
@@ -2030,9 +1648,6 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "units",
               "type": "string",
-              "x-stoplight": {
-                "id": "49196b4663838",
-              },
             },
           },
           "type": "object",
@@ -2046,14 +1661,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /gridpoints/{wfo}/{x},{y}/stations - Returns a list of observation stations usable for a given 2.5km grid area",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "wfo": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Three-letter identifier for a NWS office.",
               "enum": [
                 "AKQ",
@@ -2190,29 +1800,18 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "wfo",
               "type": "string",
-              "x-stoplight": {
-                "id": "57d1aa75434ec",
-              },
             },
             "x": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid X coordinate",
               "minimum": 0,
               "name": "x",
               "type": "integer",
-              "x-stoplight": {
-                "id": "5942ca22afe37",
-              },
             },
             "y": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Forecast grid Y coordinate",
               "minimum": 0,
               "name": "y",
               "type": "integer",
-              "x-stoplight": {
-                "id": "d4b9fe6c307a4",
-              },
             },
           },
           "type": "object",
@@ -2220,25 +1819,17 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "cursor": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Pagination cursor",
               "name": "cursor",
               "type": "string",
-              "x-stoplight": {
-                "id": "fbc576382de58",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": 500,
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "db8f8e9309326",
-              },
             },
           },
           "type": "object",
@@ -2252,38 +1843,22 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /icons/{set}/{timeOfDay}/{first} - Returns a forecast icon. Icon services in API are deprecated.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "first": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "first",
               "type": "string",
-              "x-stoplight": {
-                "id": "dea3095f594bf",
-              },
             },
             "set": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "set",
               "type": "string",
-              "x-stoplight": {
-                "id": "2332989fe172e",
-              },
             },
             "timeOfDay": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "timeOfDay",
               "type": "string",
-              "x-stoplight": {
-                "id": "51db41a304c7c",
-              },
             },
           },
           "type": "object",
@@ -2291,18 +1866,13 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "fontsize": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Font size",
               "maximum": 24,
               "minimum": 2,
               "name": "fontsize",
               "type": "integer",
-              "x-stoplight": {
-                "id": "f300ab9e46be6",
-              },
             },
             "size": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "anyOf": [
                 {
                   "enum": [
@@ -2321,9 +1891,6 @@ The third letter will be Z for public/fire zone or C for county.
               "description": "Font size",
               "name": "size",
               "type": "string",
-              "x-stoplight": {
-                "id": "580ea6ec96f33",
-              },
             },
           },
           "type": "object",
@@ -2337,47 +1904,27 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /icons/{set}/{timeOfDay}/{first}/{second} - Returns a forecast icon. Icon services in API are deprecated.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "first": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "first",
               "type": "string",
-              "x-stoplight": {
-                "id": "bc749160804c8",
-              },
             },
             "second": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "second",
               "type": "string",
-              "x-stoplight": {
-                "id": "f29ea38b07dca",
-              },
             },
             "set": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "set",
               "type": "string",
-              "x-stoplight": {
-                "id": "2062e765de7d3",
-              },
             },
             "timeOfDay": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "timeOfDay",
               "type": "string",
-              "x-stoplight": {
-                "id": "7d8b2d71f59e9",
-              },
             },
           },
           "type": "object",
@@ -2385,18 +1932,13 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "fontsize": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Font size",
               "maximum": 24,
               "minimum": 2,
               "name": "fontsize",
               "type": "integer",
-              "x-stoplight": {
-                "id": "ffeedce4bbe36",
-              },
             },
             "size": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "anyOf": [
                 {
                   "enum": [
@@ -2415,9 +1957,6 @@ The third letter will be Z for public/fire zone or C for county.
               "description": "Font size",
               "name": "size",
               "type": "string",
-              "x-stoplight": {
-                "id": "8d691f7525d21",
-              },
             },
           },
           "type": "object",
@@ -2430,20 +1969,7 @@ The third letter will be Z for public/fire zone or C for county.
   {
     "description": "GET /icons - Returns a list of icon codes and textual descriptions. Icon services in API are deprecated.",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "icons_summary",
@@ -2452,14 +1978,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /thumbnails/satellite/{area} - Returns a thumbnail image for a satellite region. Image services in API are deprecated.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "area": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "enum": [
                 "a",
@@ -2472,15 +1993,8 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "area",
               "type": "string",
-              "x-stoplight": {
-                "id": "63b520113b94c",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -2492,20 +2006,12 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations/{stationId}/observations - Returns a list of observations for a given station",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Observation station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "e4adebecf8a66",
-              },
             },
           },
           "type": "object",
@@ -2513,35 +2019,23 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "end": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "End time",
               "format": "date-time",
               "name": "end",
               "type": "string",
-              "x-stoplight": {
-                "id": "54371d3ee7b9a",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "c13142f4a695a",
-              },
             },
             "start": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Start time",
               "format": "date-time",
               "name": "start",
               "type": "string",
-              "x-stoplight": {
-                "id": "07b9e63acc6e7",
-              },
             },
           },
           "type": "object",
@@ -2555,20 +2049,12 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations/{stationId}/observations/latest - Returns the latest observation for a station",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Observation station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "611150c2e8caf",
-              },
             },
           },
           "type": "object",
@@ -2576,13 +2062,9 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "require_qc": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Require QC",
               "name": "require_qc",
               "type": "boolean",
-              "x-stoplight": {
-                "id": "77fcd5e309a33",
-              },
             },
           },
           "type": "object",
@@ -2596,36 +2078,20 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations/{stationId}/observations/{time} - Returns a single observation.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Observation station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "9c14e478fd258",
-              },
             },
             "time": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Timestamp of requested observation",
               "format": "date-time",
               "name": "time",
               "type": "string",
-              "x-stoplight": {
-                "id": "ed6d412b33c45",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -2637,26 +2103,14 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations/{stationId}/tafs - Returns Terminal Aerodrome Forecasts for the specified airport station.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Observation station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "4a02ad84cc54f",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -2668,46 +2122,26 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations/{stationId}/tafs/{date}/{time} - Returns a single Terminal Aerodrome Forecast.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "date": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Date (in YYYY-MM-DD format).",
               "format": "date",
               "name": "date",
               "type": "string",
-              "x-stoplight": {
-                "id": "57e71358d2c1f",
-              },
             },
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Observation station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "e0f4645a7b7fa",
-              },
             },
             "time": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time (in HHMM format). This is always specified in UTC (Zulu) time.",
               "name": "time",
               "pattern": "^([01][0-9]|2[0-3])[0-5][0-9]$",
               "type": "string",
-              "x-stoplight": {
-                "id": "fb9ee35576971",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -2719,54 +2153,34 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations - Returns a list of observation stations.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "cursor": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Pagination cursor",
               "name": "cursor",
               "type": "string",
-              "x-stoplight": {
-                "id": "2fda9d8e87c3b",
-              },
             },
             "id": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Filter by observation station ID",
               "items": {
                 "type": "string",
               },
               "name": "id",
               "type": "array",
-              "x-stoplight": {
-                "id": "4b6b86708fd68",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": 500,
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "48c3e93d048e5",
-              },
             },
             "state": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Filter by state/marine area code",
               "items": {
                 "description": "State/territory codes and marine area codes",
+                "key": "AreaCode",
                 "oneOf": [
                   {
                     "enum": [
@@ -2830,6 +2244,7 @@ The third letter will be Z for public/fire zone or C for county.
                       "FM",
                       "MH",
                     ],
+                    "key": "StateTerritoryCode",
                     "type": "string",
                   },
                   {
@@ -2867,15 +2282,13 @@ The third letter will be Z for public/fire zone or C for county.
                       "PZ",
                       "SL",
                     ],
+                    "key": "MarineAreaCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "state",
               "type": "array",
-              "x-stoplight": {
-                "id": "58d425bca5026",
-              },
             },
           },
           "type": "object",
@@ -2889,26 +2302,14 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /stations/{stationId} - Returns metadata about a given observation station",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Observation station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "f58de1b291908",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -2920,14 +2321,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /offices/{officeId} - Returns metadata about a NWS forecast office",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "officeId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "NWS office ID",
               "name": "officeId",
               "oneOf": [
@@ -3066,6 +2462,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "ONA",
                     "ONP",
                   ],
+                  "key": "NWSForecastOfficeId",
                   "type": "string",
                 },
                 {
@@ -3078,6 +2475,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "SRH",
                     "WRH",
                   ],
+                  "key": "NWSRegionalHQId",
                   "type": "string",
                 },
                 {
@@ -3085,19 +2483,13 @@ The third letter will be Z for public/fire zone or C for county.
                   "enum": [
                     "NWS",
                   ],
+                  "key": "NWSNationalHQId",
                   "type": "string",
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "9a4cb331085c0",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -3109,23 +2501,14 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /offices/{officeId}/headlines/{headlineId} - Returns a specific news headline for a given NWS office",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "headlineId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Headline record ID",
               "name": "headlineId",
               "type": "string",
-              "x-stoplight": {
-                "id": "1aaaeae034bea",
-              },
             },
             "officeId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "NWS office ID",
               "name": "officeId",
               "oneOf": [
@@ -3264,6 +2647,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "ONA",
                     "ONP",
                   ],
+                  "key": "NWSForecastOfficeId",
                   "type": "string",
                 },
                 {
@@ -3276,6 +2660,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "SRH",
                     "WRH",
                   ],
+                  "key": "NWSRegionalHQId",
                   "type": "string",
                 },
                 {
@@ -3283,19 +2668,13 @@ The third letter will be Z for public/fire zone or C for county.
                   "enum": [
                     "NWS",
                   ],
+                  "key": "NWSNationalHQId",
                   "type": "string",
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "f2f36e6b3fc03",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -3307,14 +2686,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /offices/{officeId}/headlines - Returns a list of news headlines for a given NWS office",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "officeId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "NWS office ID",
               "name": "officeId",
               "oneOf": [
@@ -3453,6 +2827,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "ONA",
                     "ONP",
                   ],
+                  "key": "NWSForecastOfficeId",
                   "type": "string",
                 },
                 {
@@ -3465,6 +2840,7 @@ The third letter will be Z for public/fire zone or C for county.
                     "SRH",
                     "WRH",
                   ],
+                  "key": "NWSRegionalHQId",
                   "type": "string",
                 },
                 {
@@ -3472,19 +2848,13 @@ The third letter will be Z for public/fire zone or C for county.
                   "enum": [
                     "NWS",
                   ],
+                  "key": "NWSNationalHQId",
                   "type": "string",
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "c27b383370a7a",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -3496,27 +2866,15 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /points/{point} - Returns metadata about a given latitude/longitude point",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "point": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Point (latitude, longitude)",
               "name": "point",
               "pattern": "^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$",
               "type": "string",
-              "x-stoplight": {
-                "id": "4606ea584e89c",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -3528,27 +2886,15 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /points/{point}/stations - Returns a list of observation stations for a given point",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "point": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Point (latitude, longitude)",
               "name": "point",
               "pattern": "^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$",
               "type": "string",
-              "x-stoplight": {
-                "id": "c649796162de9",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -3560,24 +2906,12 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /radar/servers - Returns a list of radar servers",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "reportingHost": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Show records from specific reporting host",
               "name": "reportingHost",
               "type": "string",
-              "x-stoplight": {
-                "id": "100d6e34f3e8a",
-              },
             },
           },
           "type": "object",
@@ -3591,20 +2925,12 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /radar/servers/{id} - Returns metadata about a given radar server",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "id": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Server ID",
               "name": "id",
               "type": "string",
-              "x-stoplight": {
-                "id": "ebde89d2d6205",
-              },
             },
           },
           "type": "object",
@@ -3612,13 +2938,9 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "reportingHost": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Show records from specific reporting host",
               "name": "reportingHost",
               "type": "string",
-              "x-stoplight": {
-                "id": "3287082cb62b4",
-              },
             },
           },
           "type": "object",
@@ -3632,36 +2954,19 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /radar/stations - Returns a list of radar stations",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "host": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Show latency info from specific LDM host",
               "name": "host",
               "type": "string",
-              "x-stoplight": {
-                "id": "10d552f0c076c",
-              },
             },
             "reportingHost": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Show RDA and latency info from specific reporting host",
               "name": "reportingHost",
               "type": "string",
-              "x-stoplight": {
-                "id": "75f13efc847ac",
-              },
             },
             "stationType": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Limit results to a specific station type or types",
               "items": {
                 "pattern": "^[A-Za-z0-9-]+$",
@@ -3669,9 +2974,6 @@ The third letter will be Z for public/fire zone or C for county.
               },
               "name": "stationType",
               "type": "array",
-              "x-stoplight": {
-                "id": "3b158172535a2",
-              },
             },
           },
           "type": "object",
@@ -3685,20 +2987,12 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /radar/stations/{stationId} - Returns metadata about a given radar station",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Radar station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "73e7af93f1878",
-              },
             },
           },
           "type": "object",
@@ -3706,22 +3000,14 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "host": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Show latency info from specific LDM host",
               "name": "host",
               "type": "string",
-              "x-stoplight": {
-                "id": "18923f95042e8",
-              },
             },
             "reportingHost": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Show RDA and latency info from specific reporting host",
               "name": "reportingHost",
               "type": "string",
-              "x-stoplight": {
-                "id": "3557db77b9da0",
-              },
             },
           },
           "type": "object",
@@ -3735,26 +3021,14 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /radar/stations/{stationId}/alarms - Returns metadata about a given radar station alarms",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Radar station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "807c20cdba845",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -3766,20 +3040,12 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /radar/queues/{host} - Returns metadata about a given radar queue",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "host": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "LDM host",
               "name": "host",
               "type": "string",
-              "x-stoplight": {
-                "id": "9d3619936c745",
-              },
             },
           },
           "type": "object",
@@ -3787,7 +3053,6 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "arrived": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time interval in ISO 8601 format. This can be one of:
 
     1. Start and end time
@@ -3820,12 +3085,8 @@ The string "NOW" can also be used in place of a start/end time.
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "b773cb46a0c4a",
-              },
             },
             "created": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time interval in ISO 8601 format. This can be one of:
 
     1. Start and end time
@@ -3858,32 +3119,20 @@ The string "NOW" can also be used in place of a start/end time.
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "2f11c48113cd1",
-              },
             },
             "feed": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Originating product feed",
               "name": "feed",
               "type": "string",
-              "x-stoplight": {
-                "id": "a00fc97965a3f",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Record limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "8646bc1e3691a",
-              },
             },
             "published": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time interval in ISO 8601 format. This can be one of:
 
     1. Start and end time
@@ -3916,37 +3165,22 @@ The string "NOW" can also be used in place of a start/end time.
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "5cb3e8e3e8cbd",
-              },
             },
             "resolution": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Resolution version",
               "minimum": 1,
               "name": "resolution",
               "type": "integer",
-              "x-stoplight": {
-                "id": "6830f984710d2",
-              },
             },
             "station": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Station identifier",
               "name": "station",
               "type": "string",
-              "x-stoplight": {
-                "id": "e5d8771a00b17",
-              },
             },
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Record type",
               "name": "type",
               "type": "string",
-              "x-stoplight": {
-                "id": "ff5db850c1070",
-              },
             },
           },
           "type": "object",
@@ -3960,20 +3194,12 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /radar/profilers/{stationId} - Returns metadata about a given radar wind profiler",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "stationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Profiler station ID",
               "name": "stationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "2bf708f5fe16e",
-              },
             },
           },
           "type": "object",
@@ -3981,7 +3207,6 @@ The string "NOW" can also be used in place of a start/end time.
         "query": {
           "properties": {
             "interval": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time duration in ISO 8601 format.",
               "examples": [
                 "P2DT12H",
@@ -3989,12 +3214,8 @@ The string "NOW" can also be used in place of a start/end time.
               "name": "interval",
               "pattern": "^P(\d+Y)?(\d+M)?(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?$",
               "type": "string",
-              "x-stoplight": {
-                "id": "dbd8c8fcedd0d",
-              },
             },
             "time": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "A time interval in ISO 8601 format. This can be one of:
 
     1. Start and end time
@@ -4027,9 +3248,6 @@ The string "NOW" can also be used in place of a start/end time.
                 },
               ],
               "type": "string",
-              "x-stoplight": {
-                "id": "2492f88894e7a",
-              },
             },
           },
           "type": "object",
@@ -4043,51 +3261,30 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /products - Returns a list of text products",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "end": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "End time",
               "format": "date-time",
               "name": "end",
               "type": "string",
-              "x-stoplight": {
-                "id": "db40e33cb3844",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "193f7a27034e3",
-              },
             },
             "location": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Location id",
               "items": {
                 "type": "string",
               },
               "name": "location",
               "type": "array",
-              "x-stoplight": {
-                "id": "bd98f5cd689c1",
-              },
             },
             "office": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Issuing office",
               "items": {
                 "pattern": "^[A-Z]{4}$",
@@ -4095,22 +3292,14 @@ The string "NOW" can also be used in place of a start/end time.
               },
               "name": "office",
               "type": "array",
-              "x-stoplight": {
-                "id": "59c8bfbabf22f",
-              },
             },
             "start": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Start time",
               "format": "date-time",
               "name": "start",
               "type": "string",
-              "x-stoplight": {
-                "id": "f083b68b4f21c",
-              },
             },
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Product code",
               "items": {
                 "pattern": "^\w{3}$",
@@ -4118,12 +3307,8 @@ The string "NOW" can also be used in place of a start/end time.
               },
               "name": "type",
               "type": "array",
-              "x-stoplight": {
-                "id": "6bfde7c63b445",
-              },
             },
             "wmoid": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "WMO id code",
               "items": {
                 "pattern": "^[A-Z]{4}\d{2}$",
@@ -4131,9 +3316,6 @@ The string "NOW" can also be used in place of a start/end time.
               },
               "name": "wmoid",
               "type": "array",
-              "x-stoplight": {
-                "id": "b3ae3a49e999a",
-              },
             },
           },
           "type": "object",
@@ -4146,20 +3328,7 @@ The string "NOW" can also be used in place of a start/end time.
   {
     "description": "GET /products/locations - Returns a list of valid text product issuance locations",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "product_locations",
@@ -4167,20 +3336,7 @@ The string "NOW" can also be used in place of a start/end time.
   {
     "description": "GET /products/types - Returns a list of valid text product types and codes",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "product_types",
@@ -4189,26 +3345,14 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /products/{productId} - Returns a specific text product",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "productId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "productId",
               "type": "string",
-              "x-stoplight": {
-                "id": "794370bb4efb5",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -4220,26 +3364,14 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /products/types/{typeId} - Returns a list of text products of a given type",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "typeId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "typeId",
               "type": "string",
-              "x-stoplight": {
-                "id": "fa465782cbb43",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -4251,26 +3383,14 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /products/types/{typeId}/locations - Returns a list of valid text product issuance locations for a given product type",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "typeId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "typeId",
               "type": "string",
-              "x-stoplight": {
-                "id": "a0500684e20f7",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -4282,26 +3402,14 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /products/locations/{locationId}/types - Returns a list of valid text product types for a given issuance location",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "locationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "locationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "3cec9986cdf43",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -4313,35 +3421,19 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /products/types/{typeId}/locations/{locationId} - Returns a list of text products of a given type for a given issuance location",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "locationId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "locationId",
               "type": "string",
-              "x-stoplight": {
-                "id": "665eafb2985a5",
-              },
             },
             "typeId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": ".",
               "name": "typeId",
               "type": "string",
-              "x-stoplight": {
-                "id": "16a8fcb71ecef",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -4353,21 +3445,13 @@ The string "NOW" can also be used in place of a start/end time.
     "description": "GET /zones - Returns a list of zones",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "area": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "State/marine area code",
               "items": {
                 "description": "State/territory codes and marine area codes",
+                "key": "AreaCode",
                 "oneOf": [
                   {
                     "enum": [
@@ -4431,6 +3515,7 @@ The string "NOW" can also be used in place of a start/end time.
                       "FM",
                       "MH",
                     ],
+                    "key": "StateTerritoryCode",
                     "type": "string",
                   },
                   {
@@ -4468,76 +3553,55 @@ The string "NOW" can also be used in place of a start/end time.
                       "PZ",
                       "SL",
                     ],
+                    "key": "MarineAreaCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "area",
               "type": "array",
-              "x-stoplight": {
-                "id": "83cd8f0fb0ea0",
-              },
             },
             "effective": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Effective date/time",
               "format": "date-time",
               "name": "effective",
               "type": "string",
-              "x-stoplight": {
-                "id": "507e02697d6fd",
-              },
             },
             "id": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone ID (forecast or county)",
               "items": {
                 "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
 ",
+                "key": "NWSZoneID",
                 "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
                 "type": "string",
               },
               "name": "id",
               "type": "array",
-              "x-stoplight": {
-                "id": "ef142f9f6a230",
-              },
             },
             "include_geometry": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Include geometry in results (true/false)",
               "name": "include_geometry",
               "type": "boolean",
-              "x-stoplight": {
-                "id": "4e5cc1870ff58",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Limit",
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "3971db3d59db1",
-              },
             },
             "point": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Point (latitude,longitude)",
               "name": "point",
               "pattern": "^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$",
               "type": "string",
-              "x-stoplight": {
-                "id": "1b3bd58e712c5",
-              },
             },
             "region": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Region code",
               "items": {
+                "key": "RegionCode",
                 "oneOf": [
                   {
                     "description": "Land region code. These correspond to the six NWS regional headquarters:
@@ -4556,6 +3620,7 @@ The third letter will be Z for public/fire zone or C for county.
                       "SR",
                       "WR",
                     ],
+                    "key": "LandRegionCode",
                     "type": "string",
                   },
                   {
@@ -4575,18 +3640,15 @@ The third letter will be Z for public/fire zone or C for county.
                       "PA",
                       "PI",
                     ],
+                    "key": "MarineRegionCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "region",
               "type": "array",
-              "x-stoplight": {
-                "id": "5d04a0366c8a7",
-              },
             },
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone type",
               "items": {
                 "enum": [
@@ -4599,13 +3661,11 @@ The third letter will be Z for public/fire zone or C for county.
                   "fire",
                   "county",
                 ],
+                "key": "NWSZoneType",
                 "type": "string",
               },
               "name": "type",
               "type": "array",
-              "x-stoplight": {
-                "id": "38b5508248f13",
-              },
             },
           },
           "type": "object",
@@ -4619,14 +3679,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /zones/{type} - Returns a list of zones of a given type",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone type",
               "enum": [
                 "land",
@@ -4640,9 +3695,6 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "type",
               "type": "string",
-              "x-stoplight": {
-                "id": "852a077229b1b",
-              },
             },
           },
           "type": "object",
@@ -4650,10 +3702,10 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "area": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "State/marine area code",
               "items": {
                 "description": "State/territory codes and marine area codes",
+                "key": "AreaCode",
                 "oneOf": [
                   {
                     "enum": [
@@ -4717,6 +3769,7 @@ The third letter will be Z for public/fire zone or C for county.
                       "FM",
                       "MH",
                     ],
+                    "key": "StateTerritoryCode",
                     "type": "string",
                   },
                   {
@@ -4754,76 +3807,55 @@ The third letter will be Z for public/fire zone or C for county.
                       "PZ",
                       "SL",
                     ],
+                    "key": "MarineAreaCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "area",
               "type": "array",
-              "x-stoplight": {
-                "id": "86610db9765ad",
-              },
             },
             "effective": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Effective date/time",
               "format": "date-time",
               "name": "effective",
               "type": "string",
-              "x-stoplight": {
-                "id": "d3d18dafcbfee",
-              },
             },
             "id": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone ID (forecast or county)",
               "items": {
                 "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
 ",
+                "key": "NWSZoneID",
                 "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
                 "type": "string",
               },
               "name": "id",
               "type": "array",
-              "x-stoplight": {
-                "id": "72df93d6fe954",
-              },
             },
             "include_geometry": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Include geometry in results (true/false)",
               "name": "include_geometry",
               "type": "boolean",
-              "x-stoplight": {
-                "id": "e15ef99303295",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Limit",
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "09d70c09c23c2",
-              },
             },
             "point": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Point (latitude,longitude)",
               "name": "point",
               "pattern": "^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$",
               "type": "string",
-              "x-stoplight": {
-                "id": "2aeed68a62e07",
-              },
             },
             "region": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Region code",
               "items": {
+                "key": "RegionCode",
                 "oneOf": [
                   {
                     "description": "Land region code. These correspond to the six NWS regional headquarters:
@@ -4842,6 +3874,7 @@ The third letter will be Z for public/fire zone or C for county.
                       "SR",
                       "WR",
                     ],
+                    "key": "LandRegionCode",
                     "type": "string",
                   },
                   {
@@ -4861,18 +3894,15 @@ The third letter will be Z for public/fire zone or C for county.
                       "PA",
                       "PI",
                     ],
+                    "key": "MarineRegionCode",
                     "type": "string",
                   },
                 ],
               },
               "name": "region",
               "type": "array",
-              "x-stoplight": {
-                "id": "a3a08411bde64",
-              },
             },
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone type",
               "items": {
                 "enum": [
@@ -4885,13 +3915,11 @@ The third letter will be Z for public/fire zone or C for county.
                   "fire",
                   "county",
                 ],
+                "key": "NWSZoneType",
                 "type": "string",
               },
               "name": "type",
               "type": "array",
-              "x-stoplight": {
-                "id": "3d35af54e0741",
-              },
             },
           },
           "type": "object",
@@ -4905,14 +3933,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /zones/{type}/{zoneId} - Returns metadata about a given zone",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone type",
               "enum": [
                 "land",
@@ -4926,12 +3949,8 @@ The third letter will be Z for public/fire zone or C for county.
               ],
               "name": "type",
               "type": "string",
-              "x-stoplight": {
-                "id": "056cbe6160837",
-              },
             },
             "zoneId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
@@ -4939,9 +3958,6 @@ The third letter will be Z for public/fire zone or C for county.
               "name": "zoneId",
               "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "2cb94e5d9d805",
-              },
             },
           },
           "type": "object",
@@ -4949,14 +3965,10 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "effective": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Effective date/time",
               "format": "date-time",
               "name": "effective",
               "type": "string",
-              "x-stoplight": {
-                "id": "20ff8553fc3b6",
-              },
             },
           },
           "type": "object",
@@ -4970,23 +3982,14 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /zones/{type}/{zoneId}/forecast - Returns the current zone forecast for a given zone",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "type": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Zone type",
               "name": "type",
               "type": "string",
-              "x-stoplight": {
-                "id": "6db3aef3125d1",
-              },
             },
             "zoneId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
@@ -4994,15 +3997,8 @@ The third letter will be Z for public/fire zone or C for county.
               "name": "zoneId",
               "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "bd1f60be1dce1",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -5014,14 +4010,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /zones/forecast/{zoneId}/observations - Returns a list of observations for a given zone",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "zoneId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
@@ -5029,9 +4020,6 @@ The third letter will be Z for public/fire zone or C for county.
               "name": "zoneId",
               "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "069dfcb7c806e",
-              },
             },
           },
           "type": "object",
@@ -5039,35 +4027,23 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "end": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "End date/time",
               "format": "date-time",
               "name": "end",
               "type": "string",
-              "x-stoplight": {
-                "id": "4ff536a2f908d",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "9be4550ba04e7",
-              },
             },
             "start": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Start date/time",
               "format": "date-time",
               "name": "start",
               "type": "string",
-              "x-stoplight": {
-                "id": "7daa865013d17",
-              },
             },
           },
           "type": "object",
@@ -5081,14 +4057,9 @@ The third letter will be Z for public/fire zone or C for county.
     "description": "GET /zones/forecast/{zoneId}/stations - Returns a list of observation stations for a given zone",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "zoneId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "UGC identifier for a NWS forecast zone or county.
 The first two letters will correspond to either a state code or marine area code (see #/components/schemas/StateTerritoryCode and #/components/schemas/MarineAreaCode for lists of valid letter combinations).
 The third letter will be Z for public/fire zone or C for county.
@@ -5096,9 +4067,6 @@ The third letter will be Z for public/fire zone or C for county.
               "name": "zoneId",
               "pattern": "^(A[KLMNRSZ]|C[AOT]|D[CE]|F[LM]|G[AMU]|I[ADLN]|K[SY]|L[ACEHMOS]|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[AHKMRSWZ]|S[CDL]|T[NX]|UT|V[AIT]|W[AIVY]|[HR]I)[CZ]\d{3}$",
               "type": "string",
-              "x-stoplight": {
-                "id": "62888f513a4f5",
-              },
             },
           },
           "type": "object",
@@ -5106,25 +4074,17 @@ The third letter will be Z for public/fire zone or C for county.
         "query": {
           "properties": {
             "cursor": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Pagination cursor",
               "name": "cursor",
               "type": "string",
-              "x-stoplight": {
-                "id": "5c0aee7e37cd5",
-              },
             },
             "limit": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": 500,
               "description": "Limit",
               "maximum": 500,
               "minimum": 1,
               "name": "limit",
               "type": "integer",
-              "x-stoplight": {
-                "id": "0547cf2a3651c",
-              },
             },
           },
           "type": "object",

@@ -40,7 +40,7 @@ beforeEach<CTX>(async ctx => {
     },
 
     inMemoryServerFactories: {
-      srv_ping_pong: ctx.pingServerFactory,
+      mcp_ping_pong: ctx.pingServerFactory,
     },
   });
 });
@@ -49,7 +49,7 @@ describe('Server', () => {
   describe('callTool()', () => {
     it<CTX>('should work', async ({ serverManager, pingToolExecutor }) => {
       const server = await serverManager.create({
-        id: 'srv_ping_pong',
+        id: 'mcp_ping_pong',
         name: 'Test Server',
         version: '1.0.0',
         transport: { type: 'inMemory', config: {} },
@@ -64,7 +64,7 @@ describe('Server', () => {
       serverManager,
     }) => {
       const server = await serverManager.create({
-        id: 'srv_random', // this id is not registered in the inMemoryServerFactories
+        id: 'mcp_random', // this id is not registered in the inMemoryServerFactories
         name: 'Test Server',
         version: '1.0.0',
         transport: { type: 'inMemory', config: {} },

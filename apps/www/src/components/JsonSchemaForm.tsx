@@ -70,6 +70,7 @@ export const JsonSchemaFormFields = () => {
         required={schema?.required?.includes(key)}
         placeholder={prop.example !== undefined ? String(prop.example) : undefined}
         type={prop.format === 'secret' ? 'password' : 'text'}
+        defaultValue={prop.default !== undefined ? String(prop.default) : undefined}
         autoComplete={prop.format === 'secret' ? 'off' : undefined}
         autoFocus={index === 0}
       />

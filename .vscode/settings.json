@@ -2,6 +2,7 @@
   "editor.formatOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.preferences.importModuleSpecifierEnding": "js",
+  "eslint.runtime": "node",
   "files.associations": {
     "wrangler.json": "jsonc",
     "*.css": "tailwindcss"

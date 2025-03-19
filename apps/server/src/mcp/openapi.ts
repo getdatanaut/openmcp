@@ -1,4 +1,4 @@
-import { createMcpServer } from '@openmcp/openapi';
+import { type ClientConfig, createMcpServer } from '@openmcp/openapi';
 import { DurableObject } from 'cloudflare:workers';
 import type { HonoRequest } from 'hono';
 
@@ -16,7 +16,7 @@ export class OpenMcpOpenAPI extends DurableObject<Env> {
   static readonly mcpServerId = 'openapi';
 
   #endpoint: string;
-  #sessions: Map<SessionId, SSEServerTransport> = new Map();
+  #sessions: Map<SessionId, { transport: SSEServerTransport; config?: ClientConfig }> = new Map();
   #config?: { openapi: string; baseUrl?: string };
 
   constructor(ctx: DurableObjectState, env: Env) {
@@ -48,7 +48,7 @@ export class OpenMcpOpenAPI extends DurableObject<Env> {
     const url = new URL(request.url);
 
     if (request.method === 'GET' && url.pathname.endsWith('/sse')) {
-      return this.handleSse(url.searchParams.get('sessionId') as SessionId);
+      return this.handleSse(url.searchParams.get('sessionId') as SessionId, request);
     }
 
     if (request.method === 'POST' && url.pathname.endsWith('/messages')) {
@@ -63,13 +63,18 @@ export class OpenMcpOpenAPI extends DurableObject<Env> {
    *
    * This should be called when a SSE request is made to establish a connection to the server.
    */
-  async handleSse(sessionId: SessionId): Promise<Response> {
+  async handleSse(sessionId: SessionId, request: Request): Promise<Response> {
     console.log('OpenMcpOpenAPI.handleSse:', sessionId);
     const config = this.#config;
     if (!config) {
       throw new Error('Server not initialized');
     }
-    const server = await createMcpServer({ openapi: config.openapi, serverUrl: config.baseUrl });
+
+    const server = await createMcpServer({ openapi: config.openapi, serverUrl: config.baseUrl }, () => {
+      const session = this.#sessions.get(sessionId);
+      return Promise.resolve(session?.config || {});
+    });
+
     const transport = new SSEServerTransport(this.#endpoint, sessionId);
 
     transport.onerror = error => {
@@ -84,7 +89,7 @@ export class OpenMcpOpenAPI extends DurableObject<Env> {
 
     await server.connect(transport);
 
-    this.#sessions.set(sessionId, transport);
+    this.#sessions.set(sessionId, { transport });
 
     return transport.getResponse() ?? new Response('SSE connection not established', { status: 500 });
   }
@@ -97,17 +102,30 @@ export class OpenMcpOpenAPI extends DurableObject<Env> {
   async handlePostMessage(sessionId: SessionId, request: Request): Promise<Response> {
     console.log('OpenMcpOpenAPI.handlePostMessage:', sessionId);
 
-    const transport = this.#sessions.get(sessionId);
-    if (!transport) {
+    const session = this.#sessions.get(sessionId);
+    if (!session?.transport) {
       console.error('OpenMcpOpenAPI.handlePostMessage: transport not found for session', sessionId);
       return new Response('SSE connection not established', { status: 500 });
     }
 
-    return transport.handlePostMessage(request);
+    const userConfigHeader = request.headers.get('x-openmcp');
+    const clientConfig = userConfigHeader ? safeParse(userConfigHeader) : {};
+
+    this.#sessions.set(sessionId, { transport: session.transport, config: clientConfig });
+
+    return session.transport.handlePostMessage(request);
   }
 
   async #close(sessionId: SessionId) {
     console.log('OpenMcpOpenAPI.close', sessionId);
     this.#sessions.delete(sessionId);
+  }
+}
+
+function safeParse(value: string) {
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    return null;
   }
 }

@@ -25,8 +25,8 @@ afterEach<CTX>(() => {
   vi.resetAllMocks();
 });
 
-const PING_PONG_SERVER_ID = 'srv_ping_pong';
-const PING_PONG_SERVERV2_ID = 'srv_ping_pong_v2';
+const PING_PONG_SERVER_ID = 'mcp_ping_pong';
+const PING_PONG_SERVERV2_ID = 'mcp_ping_pong_v2';
 
 beforeEach<CTX>(async ctx => {
   ctx.pingToolExecutor = vi.fn<ToolCallback>((...args) => {

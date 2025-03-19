@@ -4,9 +4,10 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
+          "key": "Pet",
           "properties": {
             "category": {
+              "key": "Category",
               "properties": {
                 "id": {
                   "examples": [
@@ -16,13 +17,6 @@
                   "maximum": 9007199254740991,
                   "minimum": -9007199254740991,
                   "type": "integer",
-                  "x-stoplight": {
-                    "explicitProperties": [
-                      "type",
-                      "format",
-                      "examples",
-                    ],
-                  },
                 },
                 "name": {
                   "examples": [
@@ -32,7 +26,6 @@
                 },
               },
               "type": "object",
-              "x-swagger-router-model": "io.swagger.petstore.model.Category",
               "xml": {
                 "name": "category",
               },
@@ -45,13 +38,6 @@
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "name": {
               "examples": [
@@ -88,19 +74,12 @@
                     "maximum": 9007199254740991,
                     "minimum": -9007199254740991,
                     "type": "integer",
-                    "x-stoplight": {
-                      "explicitProperties": [
-                        "type",
-                        "format",
-                      ],
-                    },
                   },
                   "name": {
                     "type": "string",
                   },
                 },
                 "type": "object",
-                "x-swagger-router-model": "io.swagger.petstore.model.Tag",
                 "xml": {
                   "name": "tag",
                 },
@@ -116,25 +95,9 @@
             "photoUrls",
           ],
           "type": "object",
-          "x-stoplight": {
-            "id": "46ca4efce8c47",
-          },
-          "x-swagger-router-model": "io.swagger.petstore.model.Pet",
           "xml": {
             "name": "pet",
           },
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
         },
       },
       "type": "object",
@@ -146,9 +109,10 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
+          "key": "Pet",
           "properties": {
             "category": {
+              "key": "Category",
               "properties": {
                 "id": {
                   "examples": [
@@ -158,13 +122,6 @@
                   "maximum": 9007199254740991,
                   "minimum": -9007199254740991,
                   "type": "integer",
-                  "x-stoplight": {
-                    "explicitProperties": [
-                      "type",
-                      "format",
-                      "examples",
-                    ],
-                  },
                 },
                 "name": {
                   "examples": [
@@ -174,7 +131,6 @@
                 },
               },
               "type": "object",
-              "x-swagger-router-model": "io.swagger.petstore.model.Category",
               "xml": {
                 "name": "category",
               },
@@ -187,13 +143,6 @@
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "name": {
               "examples": [
@@ -230,19 +179,12 @@
                     "maximum": 9007199254740991,
                     "minimum": -9007199254740991,
                     "type": "integer",
-                    "x-stoplight": {
-                      "explicitProperties": [
-                        "type",
-                        "format",
-                      ],
-                    },
                   },
                   "name": {
                     "type": "string",
                   },
                 },
                 "type": "object",
-                "x-swagger-router-model": "io.swagger.petstore.model.Tag",
                 "xml": {
                   "name": "tag",
                 },
@@ -258,25 +200,9 @@
             "photoUrls",
           ],
           "type": "object",
-          "x-stoplight": {
-            "id": "36c0180bea4c8",
-          },
-          "x-swagger-router-model": "io.swagger.petstore.model.Pet",
           "xml": {
             "name": "pet",
           },
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
         },
       },
       "type": "object",
@@ -287,18 +213,9 @@
     "description": "GET /pet/findByStatus - Multiple status values can be provided with comma separated strings",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "status": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "default": "available",
               "description": "Status values that need to be considered for filter",
               "enum": [
@@ -308,9 +225,6 @@
               ],
               "name": "status",
               "type": "string",
-              "x-stoplight": {
-                "id": "498d63cbc8abb",
-              },
             },
           },
           "type": "object",
@@ -324,27 +238,15 @@
     "description": "GET /pet/findByTags - Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "tags": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Tags to filter by",
               "items": {
                 "type": "string",
               },
               "name": "tags",
               "type": "array",
-              "x-stoplight": {
-                "id": "bf91a7dc52ec1",
-              },
             },
           },
           "type": "object",
@@ -358,33 +260,17 @@
     "description": "GET /pet/{petId} - Returns a single pet",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "petId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ID of pet to return",
               "format": "int64",
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "name": "petId",
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                ],
-                "id": "f84bc77a37ba7",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -396,27 +282,15 @@
     "description": "POST /pet/{petId}",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "petId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ID of pet that needs to be updated",
               "format": "int64",
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "name": "petId",
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                ],
-                "id": "681f50de37435",
-              },
             },
           },
           "type": "object",
@@ -424,22 +298,14 @@
         "query": {
           "properties": {
             "name": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Name of pet that needs to be updated",
               "name": "name",
               "type": "string",
-              "x-stoplight": {
-                "id": "4b23151b8b73d",
-              },
             },
             "status": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Status of pet that needs to be updated",
               "name": "status",
               "type": "string",
-              "x-stoplight": {
-                "id": "3d717567f9932",
-              },
             },
           },
           "type": "object",
@@ -456,13 +322,9 @@
         "headers": {
           "properties": {
             "api_key": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "",
               "name": "api_key",
               "type": "string",
-              "x-stoplight": {
-                "id": "ec87274119889",
-              },
             },
           },
           "type": "object",
@@ -470,26 +332,14 @@
         "path": {
           "properties": {
             "petId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Pet id to delete",
               "format": "int64",
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "name": "petId",
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                ],
-                "id": "cb384a6bffa7c",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -502,34 +352,18 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
           "contentMediaType": "application/octet-stream",
           "type": "string",
-          "x-stoplight": {
-            "id": "ca0e1dfd50216",
-          },
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
         },
         "path": {
           "properties": {
             "petId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ID of pet to update",
               "format": "int64",
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "name": "petId",
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                ],
-                "id": "378f86b8f72e4",
-              },
             },
           },
           "type": "object",
@@ -537,13 +371,9 @@
         "query": {
           "properties": {
             "additionalMetadata": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "Additional Metadata",
               "name": "additionalMetadata",
               "type": "string",
-              "x-stoplight": {
-                "id": "0b4b97340eb2d",
-              },
             },
           },
           "type": "object",
@@ -556,20 +386,7 @@
   {
     "description": "GET /store/inventory - Returns a map of status codes to quantities",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "getInventory",
@@ -579,7 +396,7 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
+          "key": "Order",
           "properties": {
             "complete": {
               "type": "boolean",
@@ -592,13 +409,6 @@
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "petId": {
               "examples": [
@@ -608,13 +418,6 @@
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "quantity": {
               "examples": [
@@ -624,13 +427,6 @@
               "maximum": 2147483647,
               "minimum": -2147483648,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "shipDate": {
               "format": "date-time",
@@ -650,25 +446,9 @@
             },
           },
           "type": "object",
-          "x-stoplight": {
-            "id": "adb85f28a25b4",
-          },
-          "x-swagger-router-model": "io.swagger.petstore.model.Order",
           "xml": {
             "name": "order",
           },
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
         },
       },
       "type": "object",
@@ -679,33 +459,17 @@
     "description": "GET /store/order/{orderId} - For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "orderId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ID of order that needs to be fetched",
               "format": "int64",
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "name": "orderId",
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                ],
-                "id": "e53c5df8e9a3c",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -717,33 +481,17 @@
     "description": "DELETE /store/order/{orderId} - For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "orderId": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "ID of the order that needs to be deleted",
               "format": "int64",
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "name": "orderId",
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                ],
-                "id": "447a1a8d6c3b5",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -756,7 +504,7 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
+          "key": "User",
           "properties": {
             "email": {
               "examples": [
@@ -778,13 +526,6 @@
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "lastName": {
               "examples": [
@@ -813,14 +554,6 @@
               "maximum": 2147483647,
               "minimum": -2147483648,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "description",
-                  "examples",
-                ],
-              },
             },
             "username": {
               "examples": [
@@ -830,25 +563,9 @@
             },
           },
           "type": "object",
-          "x-stoplight": {
-            "id": "d3bf5ceb7dd53",
-          },
-          "x-swagger-router-model": "io.swagger.petstore.model.User",
           "xml": {
             "name": "user",
           },
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
         },
       },
       "type": "object",
@@ -860,8 +577,8 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
           "items": {
+            "key": "User",
             "properties": {
               "email": {
                 "examples": [
@@ -883,13 +600,6 @@
                 "maximum": 9007199254740991,
                 "minimum": -9007199254740991,
                 "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "examples",
-                  ],
-                },
               },
               "lastName": {
                 "examples": [
@@ -918,14 +628,6 @@
                 "maximum": 2147483647,
                 "minimum": -2147483648,
                 "type": "integer",
-                "x-stoplight": {
-                  "explicitProperties": [
-                    "type",
-                    "format",
-                    "description",
-                    "examples",
-                  ],
-                },
               },
               "username": {
                 "examples": [
@@ -935,27 +637,11 @@
               },
             },
             "type": "object",
-            "x-swagger-router-model": "io.swagger.petstore.model.User",
             "xml": {
               "name": "user",
             },
           },
           "type": "array",
-          "x-stoplight": {
-            "id": "f9502f2781910",
-          },
-        },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
         },
       },
       "type": "object",
@@ -966,33 +652,17 @@
     "description": "GET /user/login",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
         "query": {
           "properties": {
             "password": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "The password for login in clear text",
               "name": "password",
               "type": "string",
-              "x-stoplight": {
-                "id": "bef0bbc9aff66",
-              },
             },
             "username": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "The user name for login",
               "name": "username",
               "type": "string",
-              "x-stoplight": {
-                "id": "846de15be668f",
-              },
             },
           },
           "type": "object",
@@ -1005,20 +675,7 @@
   {
     "description": "GET /user/logout",
     "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
-        "path": {
-          "properties": {},
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
-          "type": "object",
-        },
-      },
+      "properties": {},
       "type": "object",
     },
     "name": "logoutUser",
@@ -1027,26 +684,14 @@
     "description": "GET /user/{username}",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "username": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "The name that needs to be fetched. Use user1 for testing. ",
               "name": "username",
               "type": "string",
-              "x-stoplight": {
-                "id": "a8c1cc622103e",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1059,7 +704,7 @@
     "inputSchema": {
       "properties": {
         "body": {
-          "$schema": "http://json-schema.org/draft-07/schema#",
+          "key": "User",
           "properties": {
             "email": {
               "examples": [
@@ -1081,13 +726,6 @@
               "maximum": 9007199254740991,
               "minimum": -9007199254740991,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "examples",
-                ],
-              },
             },
             "lastName": {
               "examples": [
@@ -1116,14 +754,6 @@
               "maximum": 2147483647,
               "minimum": -2147483648,
               "type": "integer",
-              "x-stoplight": {
-                "explicitProperties": [
-                  "type",
-                  "format",
-                  "description",
-                  "examples",
-                ],
-              },
             },
             "username": {
               "examples": [
@@ -1133,34 +763,18 @@
             },
           },
           "type": "object",
-          "x-stoplight": {
-            "id": "7f1a521684de5",
-          },
-          "x-swagger-router-model": "io.swagger.petstore.model.User",
           "xml": {
             "name": "user",
           },
         },
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "username": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "name that needs to be updated",
               "name": "username",
               "type": "string",
-              "x-stoplight": {
-                "id": "ff85f1dfddb9a",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },
@@ -1172,26 +786,14 @@
     "description": "DELETE /user/{username} - This can only be done by the logged in user.",
     "inputSchema": {
       "properties": {
-        "headers": {
-          "properties": {},
-          "type": "object",
-        },
         "path": {
           "properties": {
             "username": {
-              "$schema": "http://json-schema.org/draft-07/schema#",
               "description": "The name that needs to be deleted",
               "name": "username",
               "type": "string",
-              "x-stoplight": {
-                "id": "22ab4849b1a18",
-              },
             },
           },
-          "type": "object",
-        },
-        "query": {
-          "properties": {},
           "type": "object",
         },
       },

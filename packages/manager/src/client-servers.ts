@@ -93,7 +93,12 @@ export class ClientServerManager {
    * Disconnect from all MCP Servers for a given client.
    */
   public async disconnectClient({ clientId }: { clientId: ClientId }) {
+    const clientServers = await this.findMany({ clientId });
     // Ok to grab from memory instead of storage, since any connected client servers will be in memory
+    await Promise.all(clientServers.map(server => server.disconnect()));
+  }
+
+  public async close() {
     await Promise.all(Array.from(this.#clientServers.values()).map(server => server.disconnect()));
   }
 }
@@ -196,7 +201,10 @@ export class ClientServer {
     /**
      * Connect the MCP Client and MCP Server using the server's defined transport
      */
-    const { clientTransport, serverTransport } = createTransport(server.transport.type, server.transport.config);
+    const { clientTransport, serverTransport } = createTransport(
+      server.transport.type,
+      replaceVariables(server.transport.config, this.serverConfig),
+    );
 
     // Connect to the MCP Server _before_ connecting the MCP Client,
     // otherwise the MCP Client will fail to find the MCP Server.
@@ -266,4 +274,8 @@ export class ClientServer {
     this.#mcpServer = undefined;
     this.#mcpClient = undefined;
   }
+}
+
+function replaceVariables<T = Record<string, unknown>>(config: T, variables: Record<string, any>): T {
+  return JSON.parse(JSON.stringify(config).replace(/\{\{([^}]+)\}\}/g, (match, p1) => variables[p1] || match)) as T;
 }
