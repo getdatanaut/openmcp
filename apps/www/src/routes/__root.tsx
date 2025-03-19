@@ -2,7 +2,7 @@ import '../assets/app.css';
 
 import { DialogContext, tn } from '@libs/ui-primitives';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { createRootRoute, HeadContent, Outlet, retainSearchParams } from '@tanstack/react-router';
+import { createRootRoute, HeadContent, Outlet, retainSearchParams, useNavigate } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
@@ -84,7 +84,7 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
 
 const GlobalModals = () => {
   const { server } = Route.useSearch();
-  const navigate = Route.useNavigate();
+  const navigate = useNavigate();
 
   return (
     <>
