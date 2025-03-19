@@ -1,14 +1,14 @@
+import { inspect } from 'node:util';
+
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
-import { bundleOas3Service, bundleOas2Service } from '@stoplight/http-spec';
-import $RefParser from '@stoplight/json-schema-ref-parser/node';
+import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';
 import { traverse } from '@stoplight/json';
-import { unset } from 'lodash';
-
+import $RefParser from '@stoplight/json-schema-ref-parser/node';
 import type { IHttpOperation, IHttpOperationRequest } from '@stoplight/types';
-import { inspect } from 'node:util';
+import { unset } from 'lodash';
 
 /**
  * Allow the client to override parameters for tool calls

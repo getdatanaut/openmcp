@@ -2,7 +2,7 @@ import type { OpenMcpDurableObject } from './durable-object.ts';
 import { SessionId } from './utils/session.ts';
 
 export { OpenMcpDurableObject } from './durable-object.ts';
-export { getOpenMcpOpenAPIConfig,OpenMcpOpenAPI } from './mcp/openapi.ts';
+export { getOpenMcpOpenAPIConfig, OpenMcpOpenAPI } from './mcp/openapi.ts';
 
 /**
  * Route a request to the appropriate OpenMcp Server
