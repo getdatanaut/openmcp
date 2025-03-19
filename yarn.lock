@@ -12,23 +12,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ai-sdk/openai@npm:1.2.5":
-  version: 1.2.5
-  resolution: "@ai-sdk/openai@npm:1.2.5"
+"@ai-sdk/openai@npm:1.2.6":
+  version: 1.2.6
+  resolution: "@ai-sdk/openai@npm:1.2.6"
   dependencies:
-    "@ai-sdk/provider": "npm:1.0.11"
-    "@ai-sdk/provider-utils": "npm:2.1.13"
+    "@ai-sdk/provider": "npm:1.0.12"
+    "@ai-sdk/provider-utils": "npm:2.1.14"
   peerDependencies:
     zod: ^3.0.0
-  checksum: 10c0/604609ad43dd3c947f6b867e8be3bea6031fb63852b0a5f00c012438580ba567744de93981af7f36f8eb3f51a5e44d446c15c567b07fd7a52252faa660db2890
+  checksum: 10c0/d19e8418dc601ff1896c2817fff9273d76bd581f2a4023469dd696a2716c01f8102ed951100f773ed999d89badb7659add5cce68abcdf0ff9d47ad7e0f697752
   languageName: node
   linkType: hard
 
-"@ai-sdk/provider-utils@npm:2.1.13":
-  version: 2.1.13
-  resolution: "@ai-sdk/provider-utils@npm:2.1.13"
+"@ai-sdk/provider-utils@npm:2.1.14":
+  version: 2.1.14
+  resolution: "@ai-sdk/provider-utils@npm:2.1.14"
   dependencies:
-    "@ai-sdk/provider": "npm:1.0.11"
+    "@ai-sdk/provider": "npm:1.0.12"
     eventsource-parser: "npm:^3.0.0"
     nanoid: "npm:^3.3.8"
     secure-json-parse: "npm:^2.7.0"
@@ -37,25 +37,25 @@ __metadata:
   peerDependenciesMeta:
     zod:
       optional: true
-  checksum: 10c0/b3f6c600fefe2e5719e75c00ac1e35da1826c0127fb48a9a0895b5a6844d6900c7bea85020f7d7c11e8c0217782af4ebe84379d82cb05824b6c69437592d3dab
+  checksum: 10c0/6dd1e5856f814ab6a8b6c63ae25bef806fc1ed07c844a0212430b869398c14ff7bd2ff9a28fc365210eb4da537efd5be2885bdec39a0c33d98b29cf5c2101f1a
   languageName: node
   linkType: hard
 
-"@ai-sdk/provider@npm:1.0.11":
-  version: 1.0.11
-  resolution: "@ai-sdk/provider@npm:1.0.11"
+"@ai-sdk/provider@npm:1.0.12":
+  version: 1.0.12
+  resolution: "@ai-sdk/provider@npm:1.0.12"
   dependencies:
     json-schema: "npm:^0.4.0"
-  checksum: 10c0/38e52160a0413495d8644f227a7977ec2a24aaba866d656362bf4739ba13612d435c61b26d861d39bb223fa4a72d0907f44a46ea4f211f40c891ff77a36fa84b
+  checksum: 10c0/e65e3b3f86c0654126d4f22ee273f8210d3cd8c022c5a3e56842aa8fcd37648541ce892346b56bf8d7764deba6cd51d4221fb01d20c9a7d9cbfeb381ffb43ec4
   languageName: node
   linkType: hard
 
-"@ai-sdk/react@npm:1.1.23":
-  version: 1.1.23
-  resolution: "@ai-sdk/react@npm:1.1.23"
+"@ai-sdk/react@npm:1.1.24":
+  version: 1.1.24
+  resolution: "@ai-sdk/react@npm:1.1.24"
   dependencies:
-    "@ai-sdk/provider-utils": "npm:2.1.13"
-    "@ai-sdk/ui-utils": "npm:1.1.19"
+    "@ai-sdk/provider-utils": "npm:2.1.14"
+    "@ai-sdk/ui-utils": "npm:1.1.20"
     swr: "npm:^2.2.5"
     throttleit: "npm:2.1.0"
   peerDependencies:
@@ -66,23 +66,23 @@ __metadata:
       optional: true
     zod:
       optional: true
-  checksum: 10c0/761a43114a77d095bcd40e087514bffb90b37dead46650d5aa1897ac6499df4f467cc26a389bbd6c55475c560a3f32aeb88a8bc3136c0edd72c40c6fe9739027
+  checksum: 10c0/453dccd6267baf06370163e087d177808e33743f69fc17ae918496d074ff66f29f1823b5ecc4411074e4e8cad0c81bb44244649fc2a3005263335f14faebc964
   languageName: node
   linkType: hard
 
-"@ai-sdk/ui-utils@npm:1.1.19":
-  version: 1.1.19
-  resolution: "@ai-sdk/ui-utils@npm:1.1.19"
+"@ai-sdk/ui-utils@npm:1.1.20":
+  version: 1.1.20
+  resolution: "@ai-sdk/ui-utils@npm:1.1.20"
   dependencies:
-    "@ai-sdk/provider": "npm:1.0.11"
-    "@ai-sdk/provider-utils": "npm:2.1.13"
+    "@ai-sdk/provider": "npm:1.0.12"
+    "@ai-sdk/provider-utils": "npm:2.1.14"
     zod-to-json-schema: "npm:^3.24.1"
   peerDependencies:
     zod: ^3.0.0
   peerDependenciesMeta:
     zod:
       optional: true
-  checksum: 10c0/b3fcfab3681a27098c509df5bb72a8320da4e01799c62ecdca3874135c60fa2beb23195ffbdee20ba948a8ded92511bbe216ed50e825f86d9ec552ece429b8a0
+  checksum: 10c0/1d36237bb886f45644c14be307174ccad16a20b165a0a94a524ef3bd0f200c302c853ca66941aee9f6b9a16afb1034ac906e75933281ba9a4a51b7936f36b66a
   languageName: node
   linkType: hard
 
@@ -557,6 +557,13 @@ __metadata:
   version: 1.20250317.0
   resolution: "@cloudflare/workerd-windows-64@npm:1.20250317.0"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@cloudflare/workers-types@npm:^4.20250319.0":
+  version: 4.20250319.0
+  resolution: "@cloudflare/workers-types@npm:4.20250319.0"
+  checksum: 10c0/033b013b6f4bcd785d1c87ad6b63ae9cb6adc98e112cd67734883292cb50b70904d99e6ff5609e3e6697e2ed7365045ea6605d86071bf70efe7d146ab6eca543
   languageName: node
   linkType: hard
 
@@ -1528,7 +1535,7 @@ __metadata:
     "@storybook/react-vite": "npm:8.6.7"
     "@storybook/test": "npm:8.6.7"
     "@tailwindcss/vite": "npm:4.0.14"
-    "@types/react": "npm:19.0.11"
+    "@types/react": "npm:19.0.12"
     "@vitejs/plugin-react": "npm:4.3.4"
     copy-to-clipboard-ultralight: "npm:1.0.15"
     eslint: "npm:9.22.0"
@@ -1776,6 +1783,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openmcp/cloudflare@workspace:*, @openmcp/cloudflare@workspace:packages/cloudflare":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/cloudflare@workspace:packages/cloudflare"
+  dependencies:
+    "@cloudflare/workers-types": "npm:^4.20250319.0"
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    "@modelcontextprotocol/sdk": "npm:1.7.0"
+    "@openmcp/openapi": "workspace:*"
+    eslint: "npm:9.22.0"
+    typescript: "npm:5.8.2"
+    vitest: "npm:3.0.9"
+    wrangler: "npm:4.2.0"
+  peerDependencies:
+    "@cloudflare/workers-types": ^4.20240729.0
+  languageName: unknown
+  linkType: soft
+
 "@openmcp/manager@workspace:*, @openmcp/manager@workspace:packages/manager":
   version: 0.0.0-use.local
   resolution: "@openmcp/manager@workspace:packages/manager"
@@ -1785,7 +1810,7 @@ __metadata:
     "@modelcontextprotocol/sdk": "npm:1.7.0"
     "@oslojs/crypto": "npm:1.0.1"
     "@types/node": "npm:22.13.10"
-    ai: "npm:4.1.62"
+    ai: "npm:4.1.63"
     eslint: "npm:9.22.0"
     type-fest: "npm:^4.37.0"
     typescript: "npm:5.8.2"
@@ -3149,12 +3174,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:19.0.11":
-  version: 19.0.11
-  resolution: "@types/react@npm:19.0.11"
+"@types/react@npm:19.0.12":
+  version: 19.0.12
+  resolution: "@types/react@npm:19.0.12"
   dependencies:
     csstype: "npm:^3.0.2"
-  checksum: 10c0/386cdde579b60e22160d6894a985655742703346bdc71fed9809f8f90ca87e2dd0252e86b81f92621a2c1de8d0fbf35e3963996db8c451cc670570061ed62f29
+  checksum: 10c0/c814b6af5c0fbcf5c65d031b1c9bf98c5b857e015254d95811f2851b27b869c3d31c6f35dab127dc6921a3dbda0b0622c6323d493a14b31b231a6a58c41c5e84
   languageName: node
   linkType: hard
 
@@ -3727,14 +3752,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ai@npm:4.1.62":
-  version: 4.1.62
-  resolution: "ai@npm:4.1.62"
+"ai@npm:4.1.63":
+  version: 4.1.63
+  resolution: "ai@npm:4.1.63"
   dependencies:
-    "@ai-sdk/provider": "npm:1.0.11"
-    "@ai-sdk/provider-utils": "npm:2.1.13"
-    "@ai-sdk/react": "npm:1.1.23"
-    "@ai-sdk/ui-utils": "npm:1.1.19"
+    "@ai-sdk/provider": "npm:1.0.12"
+    "@ai-sdk/provider-utils": "npm:2.1.14"
+    "@ai-sdk/react": "npm:1.1.24"
+    "@ai-sdk/ui-utils": "npm:1.1.20"
     "@opentelemetry/api": "npm:1.9.0"
     eventsource-parser: "npm:^3.0.0"
     jsondiffpatch: "npm:0.6.0"
@@ -3746,7 +3771,7 @@ __metadata:
       optional: true
     zod:
       optional: true
-  checksum: 10c0/1256da283d899cdba1a27a0412e6a2bba6f6e093129f06e8927f055fd99459f638289b404784d19e0eb21011161d9a6f1e43be00554e947a5e563c33dc8765b0
+  checksum: 10c0/61baba39e19385974c1a77d21f5088102319571776644d0a3cd8953acf51acf277fdaebbf9f710cae76b9d50f8525e95e904de5465263625699de595d0e1a5b5
   languageName: node
   linkType: hard
 
@@ -8184,9 +8209,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"miniflare@npm:4.20250317.0":
-  version: 4.20250317.0
-  resolution: "miniflare@npm:4.20250317.0"
+"miniflare@npm:4.20250317.1":
+  version: 4.20250317.1
+  resolution: "miniflare@npm:4.20250317.1"
   dependencies:
     "@cspotcode/source-map-support": "npm:0.8.1"
     acorn: "npm:8.14.0"
@@ -8201,7 +8226,7 @@ __metadata:
     zod: "npm:3.22.3"
   bin:
     miniflare: bootstrap.js
-  checksum: 10c0/ebb2ddb286d1ec390f77f40b14e47046e9acfa123903d33452024505ee26e16199a2cd66e6eb07bde5569076de086338d0d138c2eea3dc481963eae328f08cb9
+  checksum: 10c0/f877fbf1daa24e554a41ece9312db904b7a4ece964a40f8d77f2ff35dbbbb170f79ac9064aa6dd4d44a3340da762fc23f253e39a8e753b67bc7ede68bc2a3681
   languageName: node
   linkType: hard
 
@@ -10032,19 +10057,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
-    "@ai-sdk/openai": "npm:1.2.5"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
-    "@modelcontextprotocol/sdk": "npm:1.7.0"
+    "@openmcp/cloudflare": "workspace:*"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@types/node": "npm:22.13.10"
-    ai: "npm:4.1.62"
     dotenv-cli: "npm:^8.0.0"
     eslint: "npm:9.22.0"
     hono: "npm:4.7.4"
     typescript: "npm:5.8.2"
-    wrangler: "npm:4.1.0"
+    wrangler: "npm:4.2.0"
     zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
@@ -11730,16 +11753,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wrangler@npm:4.1.0":
-  version: 4.1.0
-  resolution: "wrangler@npm:4.1.0"
+"wrangler@npm:4.2.0":
+  version: 4.2.0
+  resolution: "wrangler@npm:4.2.0"
   dependencies:
     "@cloudflare/kv-asset-handler": "npm:0.4.0"
     "@cloudflare/unenv-preset": "npm:2.0.2"
     blake3-wasm: "npm:2.1.5"
     esbuild: "npm:0.24.2"
     fsevents: "npm:~2.3.2"
-    miniflare: "npm:4.20250317.0"
+    miniflare: "npm:4.20250317.1"
     path-to-regexp: "npm:6.3.0"
     sharp: "npm:^0.33.5"
     unenv: "npm:2.0.0-rc.14"
@@ -11757,7 +11780,7 @@ __metadata:
   bin:
     wrangler: bin/wrangler.js
     wrangler2: bin/wrangler.js
-  checksum: 10c0/57c2b9ae78c06dacf7f8ea481ab6f2c73e10df3161dfd5c8e67a031b871cb722e8f0f2c91f3e88d7e9a889133e1ed5929d6bac1b79b672b6967149219b815ba0
+  checksum: 10c0/506247f071ea90367ecfff0d3567044819a412ea387cfe296f9e2df3f4cb3ea953514d331f83605b2f75236b1accbff34801c70dad7be717bad31006035d48d0
   languageName: node
   linkType: hard
 
@@ -11835,8 +11858,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "www@workspace:apps/www"
   dependencies:
-    "@ai-sdk/openai": "npm:1.2.5"
-    "@ai-sdk/react": "npm:1.1.23"
+    "@ai-sdk/openai": "npm:1.2.6"
+    "@ai-sdk/react": "npm:1.1.24"
     "@ariakit/react": "npm:0.4.15"
     "@babel/plugin-proposal-decorators": "npm:~7.25.9"
     "@fortawesome/free-regular-svg-icons": "npm:6.7.2"
@@ -11850,10 +11873,10 @@ __metadata:
     "@tanstack/react-router": "npm:1.114.25"
     "@tanstack/react-router-devtools": "npm:1.114.25"
     "@tanstack/router-plugin": "npm:1.114.25"
-    "@types/react": "npm:19.0.11"
+    "@types/react": "npm:19.0.12"
     "@types/react-dom": "npm:19.0.4"
     "@vitejs/plugin-react": "npm:4.3.4"
-    ai: "npm:4.1.62"
+    ai: "npm:4.1.63"
     dexie: "npm:4.0.11"
     dexie-react-hooks: "npm:1.1.7"
     eslint: "npm:9.22.0"

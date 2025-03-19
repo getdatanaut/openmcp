@@ -16,7 +16,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
     "@oslojs/crypto": "1.0.1",
-    "ai": "4.1.62",
+    "ai": "4.1.63",
     "zod": "3.24.2"
   },
   "devDependencies": {

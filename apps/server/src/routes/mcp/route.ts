@@ -1,49 +1,46 @@
+import { getOpenMcpOpenAPIConfig, routeOpenMcpRequest } from '@openmcp/cloudflare';
 import { Hono } from 'hono';
 
-import { configureMcpServerByDoId, configureMcpServerById, type McpRouteVariables } from './middleware.ts';
-
-const app = new Hono<{ Bindings: Env; Variables: McpRouteVariables }>()
+const app = new Hono<{ Bindings: Env }>()
   /**
    * Configure a new MCP instance,
    * then route to establish an SSE connection to it
    *
    * @example GET /mcp/openapi/sse
    */
-  .get('/:mcpServerId/sse', configureMcpServerById, async c => {
-    const mcpServer = c.get('mcpServer');
-    const sessionId = c.get('sessionId');
-    const url = new URL(c.req.url);
-    url.searchParams.set('sessionId', sessionId);
-
-    // TODO(CL): we could offer an endpoint to configure the MCP instance without connecting too
-    // Route to the endpoint for handling this MCP Server instance
-    return mcpServer.fetch(new Request(url.toString()));
+  .get('/:mcpServerId/sse', async c => {
+    return routeOpenMcpRequest(c.req.raw, {
+      openapi: {
+        namespace: c.env.OpenMcpOpenAPI,
+        getMcpConfig: getOpenMcpOpenAPIConfig,
+      },
+    });
   })
   /**
    * Establish an SSE connection to exissting MCP instance
    *
    * @example GET /mcp/openapi/123/sse
    */
-  .get('/:mcpServerId/:doId/sse', configureMcpServerByDoId, async c => {
-    const mcpServer = c.get('mcpServer');
-    const sessionId = c.get('sessionId');
-    const url = new URL(c.req.url);
-    url.searchParams.set('sessionId', sessionId);
-
-    return mcpServer.fetch(new Request(url.toString()));
+  .get('/:mcpServerId/:doId/sse', async c => {
+    return routeOpenMcpRequest(c.req.raw, {
+      openapi: {
+        namespace: c.env.OpenMcpOpenAPI,
+        getMcpConfig: getOpenMcpOpenAPIConfig,
+      },
+    });
   })
   /**
    * Send messages to an existing MCP instance
    *
    * @example POST /mcp/openapi/123/messages
    */
-  .post('/:mcpServerId/:doId/messages', configureMcpServerByDoId, async c => {
-    const mcpServer = c.get('mcpServer');
-    const sessionId = c.get('sessionId');
-    const url = new URL(c.req.url);
-    url.searchParams.set('sessionId', sessionId);
-
-    return mcpServer.fetch(new Request(url.toString(), c.req.raw));
+  .post('/:mcpServerId/:doId/messages', async c => {
+    return routeOpenMcpRequest(c.req.raw, {
+      openapi: {
+        namespace: c.env.OpenMcpOpenAPI,
+        getMcpConfig: getOpenMcpOpenAPIConfig,
+      },
+    });
   });
 
 export default app;

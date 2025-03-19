@@ -12,21 +12,19 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
-    "@ai-sdk/openai": "1.2.5",
+    "@openmcp/cloudflare": "workspace:*",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
-    "ai": "4.1.62",
     "hono": "4.7.4",
     "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "@modelcontextprotocol/sdk": "1.7.0",
     "@types/node": "22.13.10",
     "dotenv-cli": "^8.0.0",
     "eslint": "9.22.0",
     "typescript": "5.8.2",
-    "wrangler": "4.1.0"
+    "wrangler": "4.2.0"
   }
 }

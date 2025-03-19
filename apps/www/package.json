@@ -12,8 +12,8 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@ai-sdk/openai": "1.2.5",
-    "@ai-sdk/react": "1.1.23",
+    "@ai-sdk/openai": "1.2.6",
+    "@ai-sdk/react": "1.1.24",
     "@ariakit/react": "0.4.15",
     "@fortawesome/free-regular-svg-icons": "6.7.2",
     "@fortawesome/free-solid-svg-icons": "6.7.2",
@@ -23,7 +23,7 @@
     "@tanstack/react-query": "5.69.0",
     "@tanstack/react-router": "1.114.25",
     "@tanstack/react-router-devtools": "1.114.25",
-    "ai": "4.1.62",
+    "ai": "4.1.63",
     "dexie": "4.0.11",
     "dexie-react-hooks": "1.1.7",
     "mobx": "6.13.7",
@@ -41,7 +41,7 @@
     "@libs/eslint-config": "workspace:*",
     "@tailwindcss/vite": "4.0.14",
     "@tanstack/router-plugin": "1.114.25",
-    "@types/react": "19.0.11",
+    "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.22.0",

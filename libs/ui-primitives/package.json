@@ -49,7 +49,7 @@
     "@storybook/react-vite": "8.6.7",
     "@storybook/test": "8.6.7",
     "@tailwindcss/vite": "4.0.14",
-    "@types/react": "19.0.11",
+    "@types/react": "19.0.12",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.22.0",
     "eslint-plugin-storybook": "^0.11.6",

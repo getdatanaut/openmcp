@@ -24,6 +24,7 @@ export type StdioTransportConfig = StdioServerParameters;
 export type SseTransportConfig = {
   url: string;
   eventSourceInit?: EventSourceInit;
+  // eslint-disable-next-line no-undef
   requestInit?: RequestInit;
 };
 

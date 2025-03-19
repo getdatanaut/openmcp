@@ -1,0 +1,29 @@
+{
+  "name": "@openmcp/cloudflare",
+  "version": "0.0.1",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "typecheck": "tsc"
+  },
+  "peerDependencies": {
+    "@cloudflare/workers-types": "^4.20240729.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.7.0",
+    "@openmcp/openapi": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250319.0",
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
+    "eslint": "9.22.0",
+    "typescript": "5.8.2",
+    "vitest": "3.0.9",
+    "wrangler": "4.2.0"
+  }
+}

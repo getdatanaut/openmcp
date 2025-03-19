@@ -34,7 +34,6 @@ export class SSEServerTransport implements Transport {
         this._controller = controller;
       },
       cancel: () => {
-        console.log('SSEServerTransport.cancel');
         this._controller = null;
         this.onclose?.();
       },
@@ -120,7 +119,6 @@ export class SSEServerTransport implements Transport {
   }
 
   async close(): Promise<void> {
-    console.log('SSEServerTransport.close');
     this._controller?.close();
     this._controller = null;
     this.onclose?.();
@@ -141,7 +139,6 @@ export class SSEServerTransport implements Transport {
    * This can be used to route incoming POST requests.
    */
   get sessionId(): string {
-    console.log('SSEServerTransport.sessionId', this._sessionId);
     return this._sessionId;
   }
 }

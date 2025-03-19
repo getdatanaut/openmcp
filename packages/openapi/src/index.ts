@@ -30,7 +30,7 @@ export async function createMcpServer(
     serverUrl?: string;
     debug?: boolean;
   },
-  getClientConfig?: () => Promise<ClientConfig>,
+  getClientConfig?: () => Promise<ClientConfig> | ClientConfig,
 ) {
   const service = await bundleOasService(openapi);
 

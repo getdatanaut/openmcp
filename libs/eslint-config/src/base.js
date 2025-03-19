@@ -85,7 +85,10 @@ export const baseConfig = tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
       globals: {
+        // @QUESTION: new way of defining globals for eslint is kind of annoying. Is it really needed if we just need the types?
         ...globals.es2015,
+        ...globals.node,
+        ...globals.browser,
       },
     },
     rules: {
