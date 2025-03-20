@@ -39,7 +39,7 @@
   }
 
   * {
-    @apply ak-edge;
+    @apply ak-edge selection:ak-layer-mix-primary/40;
   }
 
   a {
