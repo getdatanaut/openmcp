@@ -8,7 +8,7 @@ import { tn } from '../../utils/tw.ts';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
 import { type ButtonSlotProps, buttonStaticClass, buttonStyle, type ButtonStyleProps } from './button.styles.ts';
 
-type AKProps = AK.ButtonOptions & Pick<AK.ButtonProps, 'onClick' | 'title' | 'type'>;
+type AKProps = AK.ButtonOptions & Pick<AK.ButtonProps, 'onClick' | 'title' | 'type' | 'tabIndex'>;
 
 export interface ButtonProps extends AKProps, ButtonStyleProps, ButtonSlotProps {
   children?: ReactNode;

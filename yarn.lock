@@ -11993,6 +11993,7 @@ __metadata:
     "@ai-sdk/openai": "npm:1.2.6"
     "@ai-sdk/react": "npm:1.1.24"
     "@ariakit/react": "npm:0.4.15"
+    "@ariakit/react-core": "npm:0.4.15"
     "@babel/plugin-proposal-decorators": "npm:~7.25.9"
     "@fortawesome/free-regular-svg-icons": "npm:6.7.2"
     "@fortawesome/free-solid-svg-icons": "npm:6.7.2"

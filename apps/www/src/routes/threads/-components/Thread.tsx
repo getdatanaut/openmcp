@@ -151,7 +151,7 @@ export const ThreadMessages = ({ className, style }: { className?: string; style
           <ThreadMessage key={index} lineNumber={index + 1} isLast={index === chat.messages.length - 1} {...message} />
         ))}
       </div>
-      <div className="fixed top-0 bottom-0 left-12 border-l-[0.5px]" />
+      <div className="fixed top-0 bottom-0 left-12 -z-10 border-l-[0.5px]" />
       <div ref={messagesEndRef} />
     </>
   );

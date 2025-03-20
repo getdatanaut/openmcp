@@ -38,10 +38,13 @@ const AddClientServerDialogContent = ({ serverId, close }: { serverId: TMcpServe
   const manager = useCurrentManager();
   const queryClient = useQueryClient();
 
-  const { data: server } = useQuery({
-    queryKey: ['servers', serverId],
-    queryFn: () => manager.servers.get({ id: serverId }),
+  const { data: servers } = useQuery({
+    queryKey: ['servers'],
+    queryFn: () => manager.servers.findMany({}),
+    staleTime: 1000 * 60 * 60 * 24,
   });
+
+  const server = servers?.find(server => server.id === serverId);
 
   const { mutateAsync: createClientServer } = useMutation({
     mutationFn: (values: Record<string, string | number | boolean>) => {

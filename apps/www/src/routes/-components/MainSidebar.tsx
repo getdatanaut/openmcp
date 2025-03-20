@@ -1,3 +1,5 @@
+import { createElement } from '@ariakit/react-core/utils/system';
+import type { Options } from '@ariakit/react-core/utils/types';
 import { faCaretDown, faCog, faTimes } from '@fortawesome/free-solid-svg-icons';
 import {
   Avatar,
@@ -19,7 +21,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { formatDate, isThisWeek, isToday, isYesterday } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React, { type MouseEventHandler, type ReactNode, useEffect } from 'react';
+import React, { type MouseEventHandler, type ReactNode, type Ref, useEffect } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
@@ -310,6 +312,7 @@ const InstalledServers = () => {
   const { data: servers } = useQuery({
     queryKey: ['servers'],
     queryFn: () => manager.servers.findMany(),
+    staleTime: 1000 * 60 * 60 * 24,
   });
 
   const { mutate: deleteClientServer } = useMutation({
@@ -381,9 +384,12 @@ const AvailableServers = observer(() => {
       <div className="px-3 py-4">
         <ServerList>
           {sorted.map(server => (
-            <Link key={server.id} to="." search={prev => ({ ...prev, server: server.id as TMcpServerId })}>
-              <ServerListItem server={server} handleAdd={() => {}} />
-            </Link>
+            <ServerListItem
+              key={server.id}
+              server={server}
+              handleAdd={() => {}}
+              render={<Link to="." search={prev => ({ ...prev, server: server.id as TMcpServerId })} />}
+            />
           ))}
         </ServerList>
       </div>
@@ -400,11 +406,14 @@ const ServerListItem = observer(
     server,
     handleAdd,
     handleDelete,
+    ref,
+    ...otherProps
   }: {
     server: Server;
     handleAdd?: MouseEventHandler<HTMLElement>;
     handleDelete?: MouseEventHandler<HTMLElement>;
-  }) => {
+    ref?: Ref<HTMLElement>;
+  } & Options) => {
     const { app } = useRootStore();
 
     const icon = app.currentThemeId === 'light' ? server.presentation?.icon?.light : server.presentation?.icon?.dark;
@@ -414,8 +423,9 @@ const ServerListItem = observer(
       <Avatar name={server.name} size="lg" />
     );
 
-    return (
-      <div className="ak-frame-xs hover:ak-layer-pop group flex cursor-pointer items-center gap-4 p-2">
+    const className = tn('ak-frame-xs hover:ak-layer-pop group flex cursor-pointer items-center gap-4 p-2');
+    const children = (
+      <>
         <div className="pt-px">{iconElem}</div>
 
         <div className="flex flex-1 flex-col">
@@ -427,7 +437,13 @@ const ServerListItem = observer(
 
         <div>
           {handleAdd ? (
-            <Button variant="outline" size="xs" onClick={handleAdd}>
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={handleAdd}
+              // Right now clicking on server list item is the same thing as clicking add, so no point in tabbing to it
+              tabIndex={-1}
+            >
               Add
             </Button>
           ) : null}
@@ -443,7 +459,9 @@ const ServerListItem = observer(
             />
           ) : null}
         </div>
-      </div>
+      </>
     );
+
+    return createElement('div', { ...otherProps, ref, className, children });
   },
 );
