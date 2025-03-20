@@ -6,11 +6,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useMemo } from 'react';
-import { type FormEvent, type KeyboardEvent } from 'react';
+import { type CSSProperties, type FormEvent, type KeyboardEvent, type RefObject, useCallback, useMemo } from 'react';
 
 import { Markdown } from '~/components/Markdown.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
+import { useScrollToBottom } from '~/hooks/use-scroll-to-bottom.tsx';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 
 export type ThreadProps = {
@@ -18,12 +18,16 @@ export type ThreadProps = {
   manager: MpcManager;
   loadingFallback?: ReactNode;
   threadId?: TThreadId;
+  scrollContainerRef?: RefObject<HTMLDivElement | null>;
   onCreated?: (props: { threadId: TThreadId }) => void;
 };
 
 interface ThreadContextProps {
   threadId: TThreadId;
   chat: UseChatHelpers;
+  scrollContainerRef?: RefObject<HTMLDivElement | null>;
+  messagesContainerRef?: RefObject<HTMLDivElement | null>;
+  messagesEndRef?: RefObject<HTMLDivElement | null>;
   handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
 }
 
@@ -59,9 +63,15 @@ export interface ThreadInnerProps extends Omit<ThreadProps, 'threadId' | 'loadin
 }
 
 export const ThreadInner = observer(
-  ({ isNewThread, threadId, children, manager, onCreated, initialMessages }: ThreadInnerProps) => {
+  ({ isNewThread, threadId, children, manager, onCreated, initialMessages, scrollContainerRef }: ThreadInnerProps) => {
     const { app } = useRootStore();
     const queryClient = useQueryClient();
+
+    const { containerRef, endRef, scrollToBottom } = useScrollToBottom<HTMLDivElement>({
+      resetKey: threadId,
+      scrollContainerRef,
+      graceAmount: app.chatboxHeight,
+    });
 
     const chat = useChat({
       id: threadId,
@@ -108,24 +118,41 @@ export const ThreadInner = observer(
           onCreated?.({ threadId });
         }
 
+        // When user submits a message, all good to start scrolling again
+        scrollToBottom();
+
         chat.handleSubmit(e);
       },
-      [createThread, chat.handleSubmit, threadId, isNewThread, app.currentUserId],
+      [isNewThread, scrollToBottom, chat, createThread, threadId, app.currentUserId, onCreated],
     );
 
-    return <ThreadContext.Provider value={{ threadId, chat, handleSubmit }}>{children}</ThreadContext.Provider>;
+    return (
+      <ThreadContext.Provider
+        value={{ threadId, chat, handleSubmit, messagesContainerRef: containerRef, messagesEndRef: endRef }}
+      >
+        {children}
+      </ThreadContext.Provider>
+    );
   },
 );
 
-export const ThreadMessages = () => {
-  const { chat } = useThreadContext();
+export const ThreadMessages = ({ className, style }: { className?: string; style?: CSSProperties }) => {
+  const { chat, messagesContainerRef, messagesEndRef } = useThreadContext();
 
   return (
-    <div className="flex flex-1 flex-col divide-y-[0.5px]">
-      {chat.messages.map((message, index) => (
-        <ThreadMessage key={index} lineNumber={index + 1} isLast={index === chat.messages.length - 1} {...message} />
-      ))}
-    </div>
+    <>
+      <div
+        className={twMerge('flex flex-1 flex-col divide-y-[0.5px]', className)}
+        style={style}
+        ref={messagesContainerRef}
+      >
+        {chat.messages.map((message, index) => (
+          <ThreadMessage key={index} lineNumber={index + 1} isLast={index === chat.messages.length - 1} {...message} />
+        ))}
+      </div>
+      <div className="fixed top-0 bottom-0 left-12 border-l-[0.5px]" />
+      <div ref={messagesEndRef} />
+    </>
   );
 };
 
@@ -142,8 +169,13 @@ const ThreadMessage = ({
 }) => {
   const classes = tn('px-12', isLast && 'flex-1');
 
+  // const containerClasses = tn(
+  //   'relative flex h-full border-l-[0.5px] py-14',
+  //   role === 'user' && 'ak-text-secondary/70',
+  //   role === 'assistant' && 'ak-text/80',
+  // );
   const containerClasses = tn(
-    'relative flex h-full border-l-[0.5px] py-14',
+    'relative flex h-full py-14',
     role === 'user' && 'ak-text-secondary/70',
     role === 'assistant' && 'ak-text/80',
   );
@@ -154,7 +186,7 @@ const ThreadMessage = ({
     <div className={classes}>
       <div className={containerClasses}>
         {lineNumber > 1 ? (
-          <div className="ak-layer-0 absolute top-1.5 left-[3px] -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
+          <div className="ak-layer-0 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
             <div className="opacity-60">{lineNumber}</div>
           </div>
         ) : null}
@@ -190,14 +222,14 @@ export const ThreadChatBox = ({
   };
 
   return (
-    <form className={twMerge('flex w-full items-center gap-3 pr-12', className)} onSubmit={handleSubmit}>
+    <form className={twMerge('flex w-full items-center gap-3', className)} onSubmit={handleSubmit}>
       <input
         id="message"
         name="message"
         type="text"
         placeholder="Ask anything"
         className={twMerge(
-          'caret-secondary focus:placeholder:ak-text-secondary flex-1 py-6 pl-10 focus:outline-none',
+          'caret-secondary focus:placeholder:ak-text-secondary flex-1 py-5 pl-2 focus:outline-none',
           inputClassName,
         )}
         value={value}
@@ -207,7 +239,7 @@ export const ThreadChatBox = ({
         autoFocus
       />
 
-      <Button type="submit" icon={faArrowUp} variant="solid" intent={value ? 'primary' : 'neutral'} disabled={!value} />
+      <Button type="submit" icon={faArrowUp} variant="solid" intent="primary" disabled={!value} />
     </form>
   );
 };

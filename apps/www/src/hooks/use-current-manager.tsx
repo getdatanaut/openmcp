@@ -51,10 +51,11 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
 
       return manager;
     });
-  }, [configLoaded, config]);
+  }, [configLoaded, config, mcpManagers]);
 
   if (!currentManager) {
-    return <div className="flex min-h-screen w-full items-center justify-center opacity-75">Loading...</div>;
+    // Should be basically instant, so just rendering nothing rather than a flash of text
+    return null;
   }
 
   return <CurrentManagerContext.Provider value={currentManager}>{children}</CurrentManagerContext.Provider>;

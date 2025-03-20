@@ -24,12 +24,6 @@ export const PREBUILT_THEMES = [
     codeTheme: 'github-dark',
   },
   {
-    id: 'nord',
-    name: 'Nord',
-    themeClass: 'theme-nord',
-    codeTheme: 'nord',
-  },
-  {
     id: 'onedark',
     name: 'One Dark',
     themeClass: 'theme-onedark',

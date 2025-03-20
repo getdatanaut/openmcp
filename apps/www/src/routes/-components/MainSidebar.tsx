@@ -12,23 +12,33 @@ import {
   type TabProps,
   Tabs,
   tn,
+  twMerge,
 } from '@libs/ui-primitives';
 import type { Server, ThreadStorageData } from '@openmcp/manager';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { formatDate, isThisWeek, isToday, isYesterday } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React, { type MouseEventHandler, type ReactNode } from 'react';
+import React, { type MouseEventHandler, type ReactNode, useEffect } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
+import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
 
-export const MainSidebar = () => {
+export const MainSidebar = ({ className }: { className?: string }) => {
   const { sidebar } = useSearch({ strict: false });
 
+  const { app } = useRootStore();
+
+  const [ref, { width }] = useElementSize();
+
+  useEffect(() => {
+    app.setSidebarWidth(width);
+  }, [width, app]);
+
   return (
-    <div className="ak-layer-[down-0.4] h-screen w-72 overflow-y-auto lg:w-96">
+    <div ref={ref} className={twMerge('ak-layer-[down-0.4] h-screen overflow-y-auto', className)}>
       <Tabs variant="unstyled" selectedId={sidebar} selectOnMove={false}>
         <div className="ak-layer-0 sticky top-0 flex h-12 items-center border-b-[0.5px] px-4">
           <TabList render={<ButtonGroup size="xs" className="flex-1 gap-2" />}>
@@ -52,7 +62,7 @@ export const MainSidebar = () => {
           </TabPanel>
 
           <TabPanel tabId="servers">
-            <ExampleServerSidebar />
+            <ServersSidebar />
           </TabPanel>
 
           <TabPanel tabId="dev">
@@ -60,7 +70,7 @@ export const MainSidebar = () => {
           </TabPanel>
 
           <TabPanel tabId="settings">
-            <ExampleSettingsSidebar />
+            <SettingsSidebar />
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -68,7 +78,7 @@ export const MainSidebar = () => {
   );
 };
 
-const ExampleSettingsSidebar = observer(() => {
+const SettingsSidebar = observer(() => {
   const { app } = useRootStore();
 
   return (
@@ -279,7 +289,7 @@ const ThreadListItem = ({
   );
 };
 
-const ExampleServerSidebar = () => {
+const ServersSidebar = () => {
   return (
     <>
       <InstalledServers />

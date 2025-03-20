@@ -28,6 +28,14 @@ export function TabPanel({ className, ref, ...props }: TabPanelProps) {
   const wasOpen = tabId && previousTabId === tabId;
 
   return (
-    <AK.TabPanel ref={ref} id={id} tabId={tabId} {...props} data-was-open={wasOpen || undefined} className={panelTw} />
+    <AK.TabPanel
+      ref={ref}
+      id={id}
+      tabId={tabId}
+      tabIndex={-1} // Just allow focus to pass through to whatever is tabbable inside of the panel
+      {...props}
+      data-was-open={wasOpen || undefined}
+      className={panelTw}
+    />
   );
 }

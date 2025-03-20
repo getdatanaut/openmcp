@@ -188,12 +188,6 @@
   --color-secondary: #d79921;
 }
 
-.theme-nord {
-  --color-canvas: #2e3440;
-  --color-primary: #81a1c1;
-  --color-secondary: #d8dee9;
-}
-
 .theme-onedark {
   --color-canvas: #282c34;
   --color-primary: #61dafb;

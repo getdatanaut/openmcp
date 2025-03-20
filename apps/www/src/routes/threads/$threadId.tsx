@@ -2,8 +2,11 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button, tn } from '@libs/ui-primitives';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
+import { type Ref, type RefObject, useEffect, useRef } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
+import { useElementSize } from '~/hooks/use-element-size.tsx';
+import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ThreadId } from '~/utils/ids.ts';
 
 import { Thread, ThreadChatBox, ThreadMessages } from './-components/Thread.tsx';
@@ -23,9 +26,15 @@ function ThreadRoute() {
   return <ThreadRouteComponent />;
 }
 
-const ThreadRouteComponent = () => {
+const ThreadRouteComponent = observer(() => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log('Thread route component mounted');
+  }, []);
+
   return (
-    <div className="flex h-screen flex-1 flex-col overflow-y-auto">
+    <div className="flex h-screen flex-1 flex-col overflow-y-auto" ref={scrollContainerRef}>
       <div className="ak-layer-0 sticky top-0 z-10 flex h-12 shrink-0 items-center border-b-[0.5px]">
         <div className="flex h-full w-12 items-center justify-center" />
 
@@ -44,31 +53,45 @@ const ThreadRouteComponent = () => {
         </div>
       </div>
 
-      <ThreadWrapper />
+      <ThreadWrapper scrollContainerRef={scrollContainerRef} />
     </div>
   );
-};
+});
 
-const ThreadWrapper = observer(() => {
+const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: RefObject<HTMLDivElement | null> }) => {
   const { threadId } = Route.useParams();
   const manager = useCurrentManager();
+  const { app } = useRootStore();
 
   return (
-    <div className="flex flex-1 flex-col pr-px">
-      <Thread
-        manager={manager}
-        threadId={threadId}
-        loadingFallback={
-          <div className="flex min-h-screen w-full items-center justify-center opacity-50">Loading...</div>
-        }
-      >
-        <ThreadMessages />
-        <div className="ak-layer-[down-0.4] sticky bottom-0 border-t-[0.5px]">
-          <div className="mx-auto max-w-[60rem]">
-            <ThreadChatBox inputClassName={tn('py-8')} />
-          </div>
-        </div>
-      </Thread>
+    <Thread manager={manager} threadId={threadId} scrollContainerRef={scrollContainerRef}>
+      <ThreadMessages style={{ paddingBottom: app.chatboxHeight }} />
+      <ThreadChatBoxWrapper />
+    </Thread>
+  );
+});
+
+const ThreadChatBoxWrapper = observer(() => {
+  const { app } = useRootStore();
+
+  const [ref, { height }] = useElementSize();
+
+  useEffect(() => {
+    app.setChatboxHeight(height);
+  }, [height, app]);
+
+  return (
+    <div
+      className="ak-layer-[0.7] fixed bottom-0 w-full max-w-[60rem] rounded-t-lg px-2.5 pt-2.5"
+      ref={ref}
+      style={{
+        left: '50%',
+        transform: `translateX(calc(-50% - ${app.sidebarWidth / 2}px))`,
+      }}
+    >
+      <div className="ak-layer mx-auto rounded-t-md border-x-[0.5px] border-t-[0.5px] border-b-[0.5px] px-4">
+        <ThreadChatBox />
+      </div>
     </div>
   );
 });

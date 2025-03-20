@@ -39,7 +39,11 @@
   }
 
   * {
-    @apply ak-edge-canvas;
+    @apply ak-edge;
+  }
+
+  a {
+    @apply focus:ak-outline-primary;
   }
 
   .using-mouse * {

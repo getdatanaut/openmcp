@@ -71,7 +71,7 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
             {children}
 
             <div className="ml-auto h-screen border-l-[0.5px]">
-              <MainSidebar />
+              <MainSidebar className="w-72 lg:w-96" />
             </div>
           </div>
 

@@ -22,7 +22,6 @@ const preview: Preview = {
         dark: 'theme-dark',
         dracula: 'theme-dracula',
         gruvbox: 'theme-gruvbox',
-        nord: 'theme-nord',
         onedark: 'theme-onedark',
         material: 'theme-material',
         monokai: 'theme-monokai',

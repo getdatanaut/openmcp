@@ -3,12 +3,11 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 
 export class AppStore {
-  // @TODO: random generate for anon users, store in local storage
-  public currentUserId = 'anon-user-id';
+  // @TODO: random generate for anon users, store in local storage? or just keep hardcoded to "anon-user-id"..
+  public readonly currentUserId = 'anon-user-id';
 
   constructor() {
     makeAutoObservable(this);
-
     void makePersistable(this, {
       name: 'AppStore',
       properties: ['currentThemeId'],
@@ -19,6 +18,38 @@ export class AppStore {
       });
     });
   }
+
+  /**
+   * Sidebar
+   */
+
+  private _sidebarWidth = 0;
+
+  get sidebarWidth() {
+    return this._sidebarWidth;
+  }
+
+  setSidebarWidth(width: number) {
+    this._sidebarWidth = width;
+  }
+
+  /**
+   * Chatbox
+   */
+
+  private _chatboxHeight = 0;
+
+  get chatboxHeight() {
+    return this._chatboxHeight;
+  }
+
+  setChatboxHeight(height: number) {
+    this._chatboxHeight = height;
+  }
+
+  /**
+   * Theme
+   */
 
   public currentThemeId = 'dark';
 
