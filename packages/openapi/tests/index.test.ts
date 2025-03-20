@@ -1,12 +1,13 @@
-import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { afterAll, beforeAll, describe, expect, test, afterEach } from 'vitest';
-import { http, HttpResponse } from 'msw';
-import { setupServer } from 'msw/node';
-
-import { createMcpServer } from '../src/index.ts';
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+
+import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
+import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
+import { http, HttpResponse } from 'msw';
+import { setupServer } from 'msw/node';
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
+
+import { createMcpServer } from '../src/index.ts';
 
 const fixtureDir = resolve(__dirname, '__fixtures__/openapi');
 const fixtures = readdirSync(fixtureDir)

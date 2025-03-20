@@ -13,9 +13,10 @@ import {
   Tabs,
   tn,
 } from '@libs/ui-primitives';
-import type { Server } from '@openmcp/manager';
+import type { Server, ThreadStorageData } from '@openmcp/manager';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
+import { formatDate, isThisWeek, isToday, isYesterday } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import React, { type MouseEventHandler, type ReactNode } from 'react';
 
@@ -173,22 +174,51 @@ const ThreadHistory = () => {
     },
   });
 
+  const sortedThreads = threads?.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const groupedThreads =
+    sortedThreads?.reduce(
+      (acc, thread) => {
+        const date = thread.createdAt ? new Date(thread.createdAt) : new Date();
+
+        let name = '';
+        if (isToday(date)) {
+          name = 'Today';
+        } else if (isYesterday(date)) {
+          name = 'Yesterday';
+        } else if (isThisWeek(date)) {
+          name = 'This Week';
+        } else {
+          name = formatDate(date, 'PP');
+        }
+
+        acc[name] = {
+          date,
+          name,
+          threads: [...(acc[name]?.threads || []), thread],
+        };
+        return acc;
+      },
+      {} as Record<string, { name: string; date: Date; threads: ThreadStorageData[] }>,
+    ) || {};
+
   return (
     <div className="flex flex-col gap-8 px-3.5 py-8">
-      <HistorySection name="Previous 30 Days">
-        {threads?.map(thread => (
-          <ThreadListItem
-            key={thread.id}
-            isActive={thread.id === activeThreadId}
-            {...thread}
-            id={thread.id as TThreadId}
-            handleDelete={e => {
-              e.preventDefault();
-              deleteThread({ id: thread.id });
-            }}
-          />
-        ))}
-      </HistorySection>
+      {Object.values(groupedThreads).map(groupedThread => (
+        <HistorySection key={groupedThread.name} name={groupedThread.name}>
+          {groupedThread.threads?.map(thread => (
+            <ThreadListItem
+              key={thread.id}
+              isActive={thread.id === activeThreadId}
+              {...thread}
+              id={thread.id as TThreadId}
+              handleDelete={e => {
+                e.preventDefault();
+                deleteThread({ id: thread.id });
+              }}
+            />
+          ))}
+        </HistorySection>
+      ))}
     </div>
   );
 };

@@ -81,6 +81,7 @@ export const generateMockServers = () => {
             default: import.meta.env['VITE_SLACK_AUTH_TOKEN'],
           },
         },
+        required: ['token'],
       },
     },
 

@@ -99,7 +99,12 @@ export const ThreadInner = observer(
         e.preventDefault();
 
         if (isNewThread) {
-          await createThread({ id: threadId, clientId: app.currentUserId, name: 'New Thread' });
+          await createThread({
+            id: threadId,
+            clientId: app.currentUserId,
+            name: 'New Thread',
+            createdAt: new Date().toISOString(),
+          });
           onCreated?.({ threadId });
         }
 

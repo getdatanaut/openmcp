@@ -70,11 +70,11 @@ export interface ThreadMessageStorageData extends UIMessage {
   id: ThreadMessageId;
   threadId: ThreadId;
 }
-
 export interface ThreadStorageData {
   id: ThreadId;
   clientId: ClientId;
   name: string;
+  createdAt: string;
 }
 
 export interface ThreadOptions {
@@ -101,6 +101,7 @@ export class Thread {
   public readonly id: ThreadId;
   public readonly clientId: ClientId;
   public readonly name: string;
+  public readonly createdAt: string;
 
   #manager: ThreadOptions['manager'];
 
@@ -113,6 +114,7 @@ export class Thread {
       id: thread.id,
       clientId: thread.clientId,
       name: thread.name,
+      createdAt: thread.createdAt,
     } satisfies ThreadStorageData;
   }
 
@@ -120,6 +122,7 @@ export class Thread {
     this.id = data.id;
     this.clientId = data.clientId;
     this.name = data.name;
+    this.createdAt = data.createdAt;
     this.#manager = options.manager;
   }
 
