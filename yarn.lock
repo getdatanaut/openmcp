@@ -1801,6 +1801,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@openmcp/directory@workspace:*, @openmcp/directory@workspace:packages/directory":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/directory@workspace:packages/directory"
+  dependencies:
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    "@openmcp/manager": "workspace:*"
+    "@types/node": "npm:22.13.10"
+    eslint: "npm:9.22.0"
+    typescript: "npm:5.8.2"
+  languageName: unknown
+  linkType: soft
+
 "@openmcp/manager@workspace:*, @openmcp/manager@workspace:packages/manager":
   version: 0.0.0-use.local
   resolution: "@openmcp/manager@workspace:packages/manager"
@@ -10067,6 +10080,7 @@ __metadata:
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@openmcp/cloudflare": "workspace:*"
+    "@openmcp/directory": "workspace:*"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@types/node": "npm:22.13.10"

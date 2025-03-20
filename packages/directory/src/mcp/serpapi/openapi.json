@@ -1,0 +1,327 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "SerpAPI Search API",
+    "version": "1.0.0",
+    "description": "API for retrieving search engine results."
+  },
+  "servers": [
+    {
+      "url": "https://serpapi.com"
+    }
+  ],
+  "paths": {
+    "/search": {
+      "get": {
+        "summary": "Perform a search",
+        "description": "Retrieves search engine results based on the provided query and parameters.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Your API key for authenticating with SerpAPI."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The search query string."
+          },
+          {
+            "name": "location",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The geographical location to tailor the search results (e.g., \"Austin, Texas, United States\")."
+          },
+          {
+            "name": "hl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The host language for the search (e.g., \"en\" for English)."
+          },
+          {
+            "name": "gl",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The geographical location code (e.g., \"us\" for United States)."
+          },
+          {
+            "name": "google_domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Google domain to use for the search (e.g., \"google.com\")."
+          },
+          {
+            "name": "num",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The number of search results to return (e.g., 10)."
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The starting result number for pagination (e.g., 0 for the first result)."
+          },
+          {
+            "name": "safe",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "off"
+              ]
+            },
+            "description": "Whether to enable safe search (\"active\" to filter explicit content, \"off\" to disable)."
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter criteria for the search results (specific values depend on SerpAPI implementation)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with search results.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchResponse"
+                },
+                "examples": {
+                  "searchExample": {
+                    "summary": "Example search response",
+                    "value": {
+                      "search_metadata": {
+                        "id": "search_id",
+                        "status": "Success",
+                        "json_endpoint": "https://serpapi.com/searches/search_id.json",
+                        "created_at": "2023-01-01T00:00:00Z",
+                        "processed_at": "2023-01-01T00:00:01Z",
+                        "google_url": "https://www.google.com/search?q=example",
+                        "total_time_taken": 0.5
+                      },
+                      "search_parameters": {
+                        "q": "example",
+                        "location": "Austin, Texas, United States",
+                        "hl": "en",
+                        "gl": "us",
+                        "google_domain": "google.com",
+                        "num": 10,
+                        "start": 0,
+                        "safe": "off",
+                        "filter": "0"
+                      },
+                      "search_information": {
+                        "total_results": 1000000,
+                        "time_taken_displayed": 0.3
+                      },
+                      "organic_results": [
+                        {
+                          "position": 1,
+                          "title": "Example Domain",
+                          "link": "https://www.example.com",
+                          "displayed_link": "https://www.example.com",
+                          "snippet": "This domain is for use in illustrative examples in documents.",
+                          "cached_page_link": "https://webcache.googleusercontent.com/search?q=cache:example.com",
+                          "date": "Jan 1, 2023"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, such as missing required parameters (e.g., \"q\" or \"api_key\")."
+          },
+          "401": {
+            "description": "Unauthorized, due to an invalid or missing API key."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "api_key"
+      }
+    },
+    "schemas": {
+      "SearchResponse": {
+        "type": "object",
+        "properties": {
+          "search_metadata": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Unique identifier for the search request."
+              },
+              "status": {
+                "type": "string",
+                "description": "Status of the search request (e.g., \"Success\")."
+              },
+              "json_endpoint": {
+                "type": "string",
+                "description": "URL to the JSON endpoint of this search."
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the search was initiated."
+              },
+              "processed_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp when the search was completed."
+              },
+              "google_url": {
+                "type": "string",
+                "description": "The equivalent Google search URL."
+              },
+              "total_time_taken": {
+                "type": "number",
+                "description": "Total time (in seconds) taken to process the search."
+              }
+            }
+          },
+          "search_parameters": {
+            "type": "object",
+            "properties": {
+              "q": {
+                "type": "string",
+                "description": "The search query used."
+              },
+              "location": {
+                "type": "string",
+                "description": "The location parameter used."
+              },
+              "hl": {
+                "type": "string",
+                "description": "The host language used."
+              },
+              "gl": {
+                "type": "string",
+                "description": "The geographical location code used."
+              },
+              "google_domain": {
+                "type": "string",
+                "description": "The Google domain used."
+              },
+              "num": {
+                "type": "integer",
+                "description": "Number of results requested."
+              },
+              "start": {
+                "type": "integer",
+                "description": "Starting result number for pagination."
+              },
+              "safe": {
+                "type": "string",
+                "description": "Safe search setting applied."
+              },
+              "filter": {
+                "type": "string",
+                "description": "Filter criteria applied."
+              }
+            }
+          },
+          "search_information": {
+            "type": "object",
+            "properties": {
+              "total_results": {
+                "type": "integer",
+                "description": "Total number of search results available."
+              },
+              "time_taken_displayed": {
+                "type": "number",
+                "description": "Time (in seconds) taken to display the results."
+              }
+            }
+          },
+          "organic_results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrganicResult"
+            },
+            "description": "List of organic search results."
+          }
+        }
+      },
+      "OrganicResult": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "description": "The position of this result in the search results list."
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the search result."
+          },
+          "link": {
+            "type": "string",
+            "description": "The URL of the search result."
+          },
+          "displayed_link": {
+            "type": "string",
+            "description": "The URL as displayed in the search results."
+          },
+          "snippet": {
+            "type": "string",
+            "description": "A brief excerpt from the search result content."
+          },
+          "cached_page_link": {
+            "type": "string",
+            "description": "URL to the cached version of the page, if available."
+          },
+          "date": {
+            "type": "string",
+            "description": "Publication date of the result, if applicable."
+          }
+        }
+      }
+    }
+  }
+}

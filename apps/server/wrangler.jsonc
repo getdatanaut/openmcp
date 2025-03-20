@@ -28,4 +28,12 @@
   "alias": {
     "jsonc-parser": "../../node_modules/@stoplight/json/node_modules/jsonc-parser/lib/esm/main.js",
   },
+  "rules": [
+    {
+      "type": "Text",
+      "globs": ["**/packages/directory/**/openapi.json"],
+      "fallthrough": true,
+    },
+  ],
+  "base_dir": "../../",
 }

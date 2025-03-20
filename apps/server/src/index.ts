@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 
+import directoryRoute from './routes/directory/route.ts';
 import llmProxyRoute from './routes/llm/route.ts';
 import mcpRoute from './routes/mcp/route.ts';
 
@@ -11,6 +12,7 @@ const app = new Hono<{ Bindings: Env }>()
   .use('*', cors())
   .route('/mcp', mcpRoute)
   .route('/_/llm', llmProxyRoute)
+  .route('/directory', directoryRoute)
   .get('/', async c => {
     return c.json({
       message: 'Welcome to OpenMCP!',

@@ -6,24 +6,27 @@ import {
   type MpcManager,
   type MpcManagerId,
   type MpcManagerStorage,
+  type ServerStorageData,
   type Storage,
 } from '@openmcp/manager';
+import type { QueryClient } from '@tanstack/react-query';
 import { makeAutoObservable } from 'mobx';
 
 import { type LocalDb, type MpcManagerStorageData } from '~/utils/local-db.ts';
-import { generateMockServers } from '~/utils/mocks.ts';
 
 export class McpManagersStore {
   public managers: Record<MpcManagerId, MpcManager> = {};
 
   #localDb: LocalDb;
   #mcpManagersStorage: Storage<MpcManagerStorageData>;
+  #queryClient: QueryClient;
 
-  constructor({ localDb }: { localDb: LocalDb }) {
+  constructor({ localDb, queryClient }: { localDb: LocalDb; queryClient: QueryClient }) {
     makeAutoObservable(this);
 
     this.#localDb = localDb;
     this.#mcpManagersStorage = initLocalMpcManagerStorage({ db: localDb });
+    this.#queryClient = queryClient;
   }
 
   public add({ id, conductor }: { id: string; conductor?: DefaultMpcConductorSettings }) {
@@ -34,7 +37,7 @@ export class McpManagersStore {
         settings: conductor,
       }),
       storage: {
-        servers: initServerStorage({ db: this.#localDb }),
+        servers: initServerStorage({ db: this.#localDb, queryClient: this.#queryClient }),
         clientServers: initLocalClientServerStorage({ db: this.#localDb }),
         threads: initLocalThreadStorage({ db: this.#localDb }),
         threadMessages: initLocalThreadMessageStorage({ db: this.#localDb }),
@@ -52,7 +55,7 @@ export class McpManagersStore {
   }
 }
 
-const initServerStorage = ({ db }: { db: LocalDb }) => {
+const initServerStorage = ({ db, queryClient }: { db: LocalDb; queryClient: QueryClient }) => {
   return {
     insert: async row => {
       throw new Error('Not available in the local manager.');
@@ -67,10 +70,13 @@ const initServerStorage = ({ db }: { db: LocalDb }) => {
       throw new Error('Not available in the local manager.');
     },
     findMany: async where => {
-      return generateMockServers();
+      return queryClient.fetchQuery({
+        queryKey: ['directory'],
+        queryFn: () => fetch(`${import.meta.env.VITE_API_URL}/directory`).then(res => res.json()),
+      });
     },
     getById: async ({ id }) => {
-      return generateMockServers().find(server => server.id === id);
+      return queryClient.getQueryData<ServerStorageData[]>(['directory'])?.find(server => server.id === id);
     },
   } satisfies MpcManagerStorage['servers'];
 };

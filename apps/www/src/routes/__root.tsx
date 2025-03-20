@@ -43,7 +43,7 @@ function RootComponent() {
     },
   });
 
-  const rootStore = useMemo(() => createRootStore({ localDb }), []);
+  const rootStore = useMemo(() => createRootStore({ localDb, queryClient }), []);
 
   return (
     <QueryClientProvider client={queryClient}>
