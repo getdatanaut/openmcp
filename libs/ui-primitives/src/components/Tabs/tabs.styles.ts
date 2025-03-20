@@ -55,7 +55,7 @@ export const tabsStyle = tv(
 
           tabInner: tn(
             triggerInnerSharedTx,
-            'group-hover:ak-layer',
+            'group-hover:ak-layer-hover',
             'group-focus-visible:ak-edge-primary group-focus-visible:border',
             'group-selected:font-medium',
             'group-selected:tracking-[-0.01em]',

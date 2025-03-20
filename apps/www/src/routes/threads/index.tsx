@@ -24,11 +24,13 @@ function RouteComponent() {
 
   return (
     <div className="flex min-h-full w-full flex-col items-center justify-center gap-4">
-      <Thread onCreated={onCreated} manager={manager}>
-        <div className="ak-layer-[down-0.4] sticky w-full max-w-[50rem] border">
-          <ThreadChatBox className={tn('pr-4')} inputClassName={tn('pl-6')} />
-        </div>
-      </Thread>
+      <div className="ak-layer-pop-[0.7] w-full max-w-[50rem] rounded-lg p-2.5">
+        <Thread onCreated={onCreated} manager={manager}>
+          <div className="ak-layer rounded-md border-[0.5px] px-4 shadow-2xs">
+            <ThreadChatBox />
+          </div>
+        </Thread>
+      </div>
     </div>
   );
 }

@@ -85,7 +85,7 @@ export const buttonStyle = tv(
       {
         variant: 'solid',
         intent: 'neutral',
-        class: tn('ak-layer-contrast ak-outline'),
+        class: tn('ak-layer-contrast-8 ak-outline'),
       },
       {
         variant: 'solid',
@@ -99,11 +99,11 @@ export const buttonStyle = tv(
       },
       // solid / interactive
       {
-        variant: ['solid'],
+        variant: 'solid',
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-pop active:ak-layer-pop-2'),
+        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
       },
 
       // outline / intent
@@ -129,7 +129,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('ak-light:hover:ak-layer-down ak-light:active:ak-layer-down-2 hover:ak-layer active:ak-layer-2'),
+        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
       },
       {
         variant: 'outline',
@@ -152,7 +152,7 @@ export const buttonStyle = tv(
       {
         variant: 'soft',
         intent: 'neutral',
-        class: tn('ak-light:ak-layer-down ak-layer ak-outline'),
+        class: tn('ak-layer-pop ak-outline'),
       },
       {
         variant: 'soft',
@@ -171,7 +171,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-pop active:ak-layer-pop-2'),
+        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
       },
       {
         variant: 'soft',
@@ -213,7 +213,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-pop active:ak-layer-pop-2'),
+        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
       },
       {
         variant: 'ghost',

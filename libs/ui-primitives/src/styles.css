@@ -149,7 +149,7 @@
    *
    * Default light theme
    */
-  --color-canvas: #dfe7ed;
+  --color-canvas: oklch(99.06% 0.0017 247.84);
   --color-primary: #007acc;
   --color-secondary: #ec4899;
   --color-danger: #df2020;
@@ -165,7 +165,7 @@
 }
 
 .theme-light {
-  --color-canvas: #dfe7ed;
+  --color-canvas: oklch(99.06% 0.0017 247.84);
   --color-primary: #007acc;
   --color-secondary: #ec4899;
 }

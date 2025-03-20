@@ -125,7 +125,7 @@ const ThemeListItem = observer(({ id, name, themeClass }: { id: string; name: st
       role="button"
       aria-pressed={isActive}
     >
-      <div className="ak-layer-canvas ak-frame-xs hover:ak-layer flex cursor-pointer items-center border-[0.5px] py-1 pr-3 pl-3">
+      <div className="ak-layer-canvas ak-frame-xs hover:ak-layer-hover flex cursor-pointer items-center border-[0.5px] py-1 pr-3 pl-3">
         <div>{name}</div>
         <div className="ml-auto flex gap-1.5">
           {ribbonClasses.map((ribbonClass, index) => {
@@ -235,7 +235,7 @@ const ThreadHistory = () => {
 const SidebarSection = ({ name, children }: { name: string; children: ReactNode }) => {
   return (
     <div>
-      <div className="ak-layer-down flex items-center gap-2 px-4 py-1.5 text-sm">
+      <div className="ak-layer-pop flex items-center gap-2 px-4 py-1.5 text-sm">
         <Icon icon={faCaretDown} className="text-xs" />
         <div>{name}</div>
       </div>
@@ -267,8 +267,8 @@ const ThreadListItem = ({
 }) => {
   const className = tn(
     'ak-frame-sm group flex items-center px-3 py-2',
-    isActive && 'ak-layer cursor-default',
-    !isActive && 'hover:ak-layer cursor-pointer',
+    isActive && 'ak-layer-pop cursor-default',
+    !isActive && 'hover:ak-layer-pop cursor-pointer',
   );
 
   return (
@@ -415,7 +415,7 @@ const ServerListItem = observer(
     );
 
     return (
-      <div className="ak-frame-xs hover:ak-layer group flex cursor-pointer items-center gap-4 p-2">
+      <div className="ak-frame-xs hover:ak-layer-pop group flex cursor-pointer items-center gap-4 p-2">
         <div className="pt-px">{iconElem}</div>
 
         <div className="flex flex-1 flex-col">

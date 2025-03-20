@@ -78,14 +78,14 @@ const ThreadChatBoxWrapper = observer(() => {
 
   return (
     <div
-      className="ak-layer-[0.7] fixed bottom-0 w-full max-w-[60rem] rounded-t-lg px-2.5 pt-2.5"
+      className="ak-layer-pop-[0.7] fixed bottom-0 w-full max-w-[60rem] rounded-t-lg px-2.5 pt-2.5"
       ref={ref}
       style={{
         left: '50%',
         transform: `translateX(calc(-50% - ${app.sidebarWidth / 2}px))`,
       }}
     >
-      <div className="ak-layer mx-auto rounded-t-md border-x-[0.5px] border-t-[0.5px] border-b-[0.5px] px-4">
+      <div className="ak-layer mx-auto rounded-t-md border-x-[0.5px] border-t-[0.5px] px-4 shadow-sm">
         <ThreadChatBox />
       </div>
     </div>
