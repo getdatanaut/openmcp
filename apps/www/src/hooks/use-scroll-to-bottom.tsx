@@ -1,13 +1,13 @@
 import { type RefObject, useCallback, useEffect, useRef } from 'react';
 
-export function useScrollToBottom<T extends HTMLElement>(
+export function useScrollToBottom(
   props: {
     /** The container that has overflow-y set on it */
-    scrollContainerRef?: RefObject<T | null>;
+    scrollContainerRef?: RefObject<HTMLDivElement | null>;
     /** The child container - scrollToBottom will watch the hight of this container for changes, and scroll to endRef when it changes */
-    containerRef?: RefObject<T | null>;
+    containerRef?: RefObject<HTMLDivElement | null>;
     /** The ref to element positioned at the bottom of scrollContainerRef */
-    endRef?: RefObject<T | null>;
+    endRef?: RefObject<HTMLDivElement | null>;
     /** The number of pixels at the bottom of the container to consider for auto scrolling */
     graceAmount?: number;
     /** The key to reset the scroll state */
@@ -16,8 +16,8 @@ export function useScrollToBottom<T extends HTMLElement>(
 ) {
   const { scrollContainerRef, graceAmount = 50 } = props;
 
-  let containerRef = useRef<T | null>(null);
-  let endRef = useRef<T | null>(null);
+  let containerRef = useRef<HTMLDivElement | null>(null);
+  let endRef = useRef<HTMLDivElement | null>(null);
   let canAutoScroll = useRef(true);
   let prevScrollTop = useRef(0);
 

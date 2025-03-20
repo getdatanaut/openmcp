@@ -7,6 +7,7 @@ import type { ReactNode } from '@tanstack/react-router';
 import { type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
 import { type CSSProperties, type FormEvent, type KeyboardEvent, type RefObject, useCallback, useMemo } from 'react';
+import TextareaAutosize from 'react-textarea-autosize';
 
 import { Markdown } from '~/components/Markdown.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
@@ -67,7 +68,7 @@ export const ThreadInner = observer(
     const { app } = useRootStore();
     const queryClient = useQueryClient();
 
-    const { containerRef, endRef, scrollToBottom } = useScrollToBottom<HTMLDivElement>({
+    const { containerRef, endRef, scrollToBottom } = useScrollToBottom({
       resetKey: threadId,
       scrollContainerRef,
       graceAmount: app.chatboxHeight,
@@ -212,24 +213,23 @@ export const ThreadChatBox = ({
 
   const value = chat.input;
 
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (disabled) return;
 
-    if (e.key === 'Enter' && e.metaKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      chat.handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
+      handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
     }
   };
 
   return (
     <form className={twMerge('flex w-full items-center gap-3', className)} onSubmit={handleSubmit}>
-      <input
+      <TextareaAutosize
         id="message"
         name="message"
-        type="text"
         placeholder="Ask anything"
         className={twMerge(
-          'caret-secondary focus:placeholder:ak-text-secondary flex-1 py-5 pl-2 focus:outline-none',
+          'caret-secondary focus:placeholder:ak-text-secondary flex-1 resize-none py-5 pl-2 focus:outline-none',
           inputClassName,
         )}
         value={value}

@@ -29,10 +29,6 @@ function ThreadRoute() {
 const ThreadRouteComponent = observer(() => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    console.log('Thread route component mounted');
-  }, []);
-
   return (
     <div className="flex h-screen flex-1 flex-col overflow-y-auto" ref={scrollContainerRef}>
       <div className="ak-layer-0 sticky top-0 z-10 flex h-12 shrink-0 items-center border-b-[0.5px]">
