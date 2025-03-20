@@ -20,6 +20,10 @@ export const generateMockServers = () => {
         category: 'fun',
         developer: 'Datanaut',
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
+        icon: {
+          light: 'https://www.petco.com/favicon.ico',
+          dark: 'https://www.petco.com/favicon.ico',
+        },
       },
       configSchema: {
         properties: {
@@ -49,6 +53,10 @@ export const generateMockServers = () => {
         category: 'fun',
         developer: 'Datanaut',
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
+        icon: {
+          light: 'https://www.pokemon.com/favicon.ico',
+          dark: 'https://www.pokemon.com/favicon.ico',
+        },
       },
     },
     {
@@ -70,6 +78,10 @@ export const generateMockServers = () => {
         category: 'communication',
         developer: 'Datanaut',
         sourceUrl: 'https://github.com/getdatanaut/openmcp',
+        icon: {
+          light: 'https://www.slack.com/favicon.ico',
+          dark: 'https://www.slack.com/favicon.ico',
+        },
       },
       configSchema: {
         type: 'object',
@@ -82,6 +94,44 @@ export const generateMockServers = () => {
           },
         },
         required: ['token'],
+      },
+    },
+    {
+      id: 'mcp_firecrawl',
+      name: 'Firecrawl',
+      version: '1.0.0',
+      transport: {
+        type: 'sse',
+        config: {
+          url: 'http://localhost:8787/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/mendableai/firecrawl/refs/heads/main/apps/api/v1-openapi.json&baseUrl=https://api.firecrawl.dev/v1',
+          requestInit: {
+            headers: {
+              'x-openmcp': '{"headers":{"Authorization":"Bearer {{apiKey}}"}}',
+            },
+          },
+        },
+      },
+      presentation: {
+        category: 'web scraping',
+        developer: 'Datanaut',
+        icon: {
+          light: 'https://www.firecrawl.dev/favicon.ico',
+          dark: 'https://www.firecrawl.dev/favicon.ico',
+        },
+        sourceUrl: 'https://github.com/getdatanaut/openmcp',
+      },
+      configSchema: {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            description:
+              'API key for your Firecrawl account. https://docs.firecrawl.dev/api-reference/introduction#authentication',
+            format: 'secret',
+            default: import.meta.env['VITE_FIRECRAWL_AUTH_TOKEN'],
+          },
+        },
+        required: ['apiKey'],
       },
     },
 

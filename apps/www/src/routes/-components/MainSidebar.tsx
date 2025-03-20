@@ -22,8 +22,7 @@ import React, { type MouseEventHandler, type ReactNode } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
-import { type TThreadId } from '~/utils/ids.ts';
-import { generateMockServers } from '~/utils/mocks.ts';
+import { type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
 
 export const MainSidebar = () => {
   const { sidebar } = useSearch({ strict: false });
@@ -358,30 +357,21 @@ const InstalledServers = () => {
 };
 
 const AvailableServers = observer(() => {
-  const { app } = useRootStore();
   const manager = useCurrentManager();
-  const queryClient = useQueryClient();
 
   const { data: servers } = useQuery({
     queryKey: ['servers'],
-    queryFn: () => generateMockServers(),
+    queryFn: () => manager.servers.findMany(),
   });
 
   const sorted = (servers || []).sort((a, b) => a.name.localeCompare(b.name));
-
-  const { mutate: createClientServer } = useMutation({
-    mutationFn: manager.clientServers.create,
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['clientServers'] });
-    },
-  });
 
   return (
     <SidebarSection name="Available">
       <div className="px-3 py-4">
         <ServerList>
           {sorted.map(server => (
-            <Link key={server.id} to="." search={prev => ({ ...prev, server: server.id })}>
+            <Link key={server.id} to="." search={prev => ({ ...prev, server: server.id as TMcpServerId })}>
               <ServerListItem server={server} handleAdd={() => {}} />
             </Link>
           ))}
