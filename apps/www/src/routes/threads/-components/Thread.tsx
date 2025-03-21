@@ -119,16 +119,11 @@ export const ThreadMessages = ({ className, style }: { className?: string; style
 
   return (
     <>
-      <div
-        className={twMerge('flex flex-1 flex-col divide-y-[0.5px]', className)}
-        style={style}
-        ref={messagesContainerRef}
-      >
+      <div className={twMerge('flex flex-1 flex-col', className)} style={style} ref={messagesContainerRef}>
         {chat.messages.map((message, index) => (
-          <ThreadMessage key={index} lineNumber={index + 1} isLast={index === chat.messages.length - 1} {...message} />
+          <ThreadMessage key={index} lineNumber={index + 1} isFirst={index === 0} {...message} />
         ))}
       </div>
-      <div className="fixed top-0 bottom-0 left-12 -z-10 border-l-[0.5px]" />
       <div ref={messagesEndRef} />
     </>
   );
@@ -139,22 +134,17 @@ const ThreadMessage = ({
   role,
   isActive,
   lineNumber,
-  isLast,
+  isFirst,
 }: UIMessage & {
   isActive?: boolean;
   lineNumber: number;
-  isLast: boolean;
+  isFirst: boolean;
 }) => {
-  const classes = tn('px-12', isLast && 'flex-1');
+  const classes = tn('ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
 
-  // const containerClasses = tn(
-  //   'relative flex h-full border-l-[0.5px] py-14',
-  //   role === 'user' && 'ak-text-secondary/70',
-  //   role === 'assistant' && 'ak-text/80',
-  // );
   const containerClasses = tn(
-    'relative flex h-full py-14',
-    role === 'user' && 'ak-text-secondary/70',
+    'relative flex h-full py-14 pr-12',
+    role === 'user' && 'ak-text-secondary/80',
     role === 'assistant' && 'ak-text/80',
   );
 
@@ -164,7 +154,7 @@ const ThreadMessage = ({
     <div className={classes}>
       <div className={containerClasses}>
         {lineNumber > 1 ? (
-          <div className="ak-layer-0 absolute top-0 left-0 -translate-x-1/2 -translate-y-1/2 border-[0.5px] px-1 text-sm font-light">
+          <div className="ak-layer-0 ak-edge/2 absolute top-0 left-0 z-10 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-xs border-[0.5px] px-1 text-sm font-light">
             <div className="opacity-60">{lineNumber}</div>
           </div>
         ) : null}
@@ -206,7 +196,7 @@ export const ThreadChatBox = ({
         name="message"
         placeholder="Ask anything"
         className={twMerge(
-          'caret-secondary focus:placeholder:ak-text-secondary flex-1 resize-none py-5 pl-2 focus:outline-none',
+          'caret-secondary focus:placeholder:ak-text-secondary max-h-[30rem] flex-1 resize-none py-5 pl-2 focus:outline-none',
           inputClassName,
         )}
         value={value}

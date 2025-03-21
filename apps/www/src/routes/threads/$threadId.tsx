@@ -1,10 +1,9 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Button, tn } from '@libs/ui-primitives';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
-import { type Ref, type RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 
+import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
@@ -32,33 +31,17 @@ const ThreadRouteComponent = observer(() => {
   const manager = useCurrentManager();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const { data: thread, isPending: isThreadPending } = useQuery({
+  const { data: thread } = useQuery({
     queryKey: ['thread', threadId],
     queryFn: () => manager.threads.get({ id: threadId }),
   });
 
   return (
-    <div className="flex h-screen flex-1 flex-col overflow-y-auto" ref={scrollContainerRef}>
-      <div className="ak-layer-0 sticky top-0 z-10 flex h-12 shrink-0 items-center border-b-[0.5px]">
-        <div className="flex h-full w-12 items-center justify-center" />
-
-        <div className="flex h-full flex-1 items-center gap-4 border-l-[0.5px] px-4">
-          <div className="text-sm opacity-75">{thread?.name || ''}</div>
-
-          <Button
-            icon={faPlus}
-            size="xs"
-            variant="outline"
-            className="ml-auto"
-            render={<Link to="/threads" activeOptions={{ exact: true }} />}
-          >
-            Thread
-          </Button>
-        </div>
+    <CanvasLayout header={<div className="mx-auto text-sm opacity-75">{thread?.name || ''}</div>}>
+      <div className="flex flex-1 flex-col overflow-y-auto" ref={scrollContainerRef}>
+        <ThreadWrapper scrollContainerRef={scrollContainerRef} />
       </div>
-
-      <ThreadWrapper scrollContainerRef={scrollContainerRef} />
-    </div>
+    </CanvasLayout>
   );
 });
 
@@ -97,16 +80,11 @@ const ThreadChatBoxWrapper = observer(() => {
   }, [height, app]);
 
   return (
-    <div
-      className="ak-layer-pop-[0.7] fixed bottom-0 w-full max-w-[60rem] rounded-t-lg px-2.5 pt-2.5"
-      ref={ref}
-      style={{
-        left: '50%',
-        transform: `translateX(calc(-50% - ${app.sidebarWidth / 2}px))`,
-      }}
-    >
-      <div className="ak-layer mx-auto rounded-t-md border-x-[0.5px] border-t-[0.5px] px-4 shadow-sm">
-        <ThreadChatBox />
+    <div className="absolute bottom-0 left-1/2 w-full max-w-[60rem] -translate-x-1/2" ref={ref}>
+      <div className="ak-layer-pop-[0.5] -mx-2 w-full rounded-t-lg px-2 pt-2">
+        <div className="ak-layer-[0.7] rounded-t-md border-x-[0.5px] border-t-[0.5px] px-4 shadow-xs">
+          <ThreadChatBox />
+        </div>
       </div>
     </div>
   );

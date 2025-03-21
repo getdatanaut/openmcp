@@ -10,7 +10,7 @@ export class AppStore {
     makeAutoObservable(this);
     void makePersistable(this, {
       name: 'AppStore',
-      properties: ['currentThemeId'],
+      properties: ['currentThemeId', 'sidebarCollapsed'],
       storage: typeof window !== 'undefined' ? window.localStorage : undefined,
     }).then(() => {
       runInAction(() => {
@@ -23,6 +23,7 @@ export class AppStore {
    * Sidebar
    */
 
+  public sidebarCollapsed = false;
   private _sidebarWidth = 0;
 
   get sidebarWidth() {
@@ -31,6 +32,19 @@ export class AppStore {
 
   setSidebarWidth(width: number) {
     this._sidebarWidth = width;
+  }
+
+  setSidebarCollapsed(collapsed: boolean) {
+    this.sidebarCollapsed = collapsed;
+  }
+
+  /**
+   * Main Canvas
+   */
+
+  public canvasHasHeader = true;
+  setCanvasHasHeader(hasHeader: boolean) {
+    this.canvasHasHeader = hasHeader;
   }
 
   /**

@@ -66,13 +66,13 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
   return (
     <CurrentManagerProvider>
       <DialogContext value={{ portalElement: rootRef, backdrop: 'blur' }}>
-        <div className={tn('min-h-screen', themeClass && `${themeClass} ak-layer-canvas`)} ref={setRootRef}>
-          <div className="isolate flex min-h-screen">
-            {children}
-
-            <div className="ml-auto h-screen border-l-[0.5px]">
-              <MainSidebar className="w-72 lg:w-96" />
+        <div className={tn('min-h-screen', themeClass && `${themeClass} ak-layer-canvas-down`)} ref={setRootRef}>
+          <div className="isolate flex h-screen">
+            <div className="h-screen">
+              <MainSidebar className={tn('py-2', app.sidebarCollapsed ? 'w-2' : 'w-72')} />
             </div>
+
+            {children}
           </div>
 
           <GlobalModals />
