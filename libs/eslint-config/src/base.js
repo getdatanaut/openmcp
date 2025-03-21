@@ -8,6 +8,7 @@ import vitestPlugin from 'eslint-plugin-vitest';
 import prettierConfig from 'eslint-config-prettier/flat';
 import globals from 'globals';
 import { globalIgnores } from 'eslint/config';
+import turboPlugin from 'eslint-plugin-turbo';
 
 const ignores = [
   '.github',
@@ -19,6 +20,9 @@ const ignores = [
   '!.storybook',
   'build',
   'dist',
+  '.output',
+  '.turbo',
+  '.wrangler',
   'node_modules',
   '*.mjs',
   'next.config.js',
@@ -42,10 +46,18 @@ export const baseConfig = tseslint.config(
       },
     },
   },
-
+  
   eslint.configs.recommended,
-
   importPlugin.flatConfigs.recommended,
+
+  {
+    plugins: {
+      turbo: turboPlugin,
+    },
+    rules: {
+      "turbo/no-undeclared-env-vars": "error",
+    },
+  },
 
   {
     languageOptions: {
@@ -101,7 +113,7 @@ export const baseConfig = tseslint.config(
       '@typescript-eslint/no-empty-object-type': 'off',
       'dot-notation': 'off',
       '@typescript-eslint/dot-notation': 'off',
-      'no-redeclare': 'off',
+      'no-redeclare': 'off'
     },
   },
 

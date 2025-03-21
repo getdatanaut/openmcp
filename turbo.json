@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/turbo/schema.json",
+  "ui": "stream",
+  "globalEnv": ["DEV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*", ".dev.vars"],
+      "outputs": ["dist/**"]
+    },
+    "server#build": {
+      "outputs": [".wrangler/**", ".output/**"],
+      "dependsOn": ["^build", "www#build"],
+      "env": ["*_LLM_API_*"]
+    },
+    "www#build": {
+      "outputs": [".vite/**", "dist/**"],
+      "env": ["VITE_*"]
+    },
+    "deploy": {
+      "dependsOn": ["^build"],
+      "env": ["CLOUDFLARE_*", "*_LLM_API_*", "VITE_*"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "test": {},
+    "test.watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
+    },
+    "typegen": {}
+  }
+}

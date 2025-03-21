@@ -1,5 +1,5 @@
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
-import { StdioClientTransport, type StdioServerParameters } from '@modelcontextprotocol/sdk/client/stdio.js';
+import type { StdioServerParameters } from '@modelcontextprotocol/sdk/client/stdio.js';
 import { WebSocketClientTransport } from '@modelcontextprotocol/sdk/client/websocket.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import type { EventSourceInit } from 'eventsource';
@@ -37,19 +37,27 @@ export type InMemoryTransportConfig = {};
 /**
  * Create instance of a transport for a given type and config.
  */
-export function createTransport<T extends TransportType>(type: T, config: TransportConfigs[T]) {
+export async function createTransport<T extends TransportType>(type: T, config: TransportConfigs[T]) {
   if (isStdioTransportConfig(type, config)) {
-    const transport = new StdioClientTransport({
-      command: config.command,
-      args: config.args,
-      env: config.env,
-      cwd: config.cwd,
-      stderr: config.stderr,
-    });
+    // TODO(CL): need to ignore this import in browser builds
+    // const { StdioClientTransport } = await import('@modelcontextprotocol/sdk/client/stdio.js');
+    // const transport = new StdioClientTransport({
+    //   command: config.command,
+    //   args: config.args,
+    //   env: config.env,
+    //   cwd: config.cwd,
+    //   stderr: config.stderr,
+    // });
+
+    // return {
+    //   clientTransport: transport,
+    //   serverTransport: transport,
+    // };
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
 
     return {
-      clientTransport: transport,
-      serverTransport: transport,
+      clientTransport,
+      serverTransport,
     };
   }
 

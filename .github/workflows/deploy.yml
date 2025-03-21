@@ -1,0 +1,64 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - main
+      - action-testing
+  workflow_dispatch:
+    inputs:
+      deploy-target:
+        description: 'What do you want to deploy?'
+        required: true
+        type: choice
+        options:
+          - www
+          - server
+
+permissions:
+  contents: read
+  actions: read
+
+# Only run one deploy workflow at a time
+concurrency: production
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # We need to fetch all branches and commits to compare against.
+          fetch-depth: 0
+
+      - name: Install
+        uses: './.github/actions/install'
+
+      - name: Check
+        uses: './.github/actions/checks'
+        env:
+          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
+          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          TURBO_SCM_BASE: ${{ vars.TURBO_SCM_BASE || github.base_ref }}
+
+      - name: Deploy
+        run: yarn deploy --affected
+        env:
+          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
+          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          TURBO_SCM_BASE: ${{ vars.TURBO_SCM_BASE || github.base_ref }}

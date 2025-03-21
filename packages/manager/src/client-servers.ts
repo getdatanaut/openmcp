@@ -201,7 +201,7 @@ export class ClientServer {
     /**
      * Connect the MCP Client and MCP Server using the server's defined transport
      */
-    const { clientTransport, serverTransport } = createTransport(
+    const { clientTransport, serverTransport } = await createTransport(
       server.transport.type,
       replaceVariables(server.transport.config, this.serverConfig),
     );

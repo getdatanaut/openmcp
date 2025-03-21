@@ -18,16 +18,16 @@
     "check-constraints": "yarn constraints",
     "doctor": "yarn dlx @yarnpkg/doctor",
     "--dev--": "",
-    "dev": "nx run-many --target dev --projects www server --output-style stream --parallel 4",
-    "docker.up": "docker compose -f ./docker/docker-compose.yml up -d",
-    "docker.down": "docker compose -f ./docker/docker-compose.yml down --remove-orphans",
-    "docker.nuke": "yarn docker.down -v",
+    "dev": "turbo run dev --filter www --filter server",
+    "build": "turbo run build",
+    "deploy": "turbo run deploy",
     "clean": "rm -r **/node_modules && rm -r **/.nx && rm -r **/dist && rm -r **/build",
-    "lint": "nx run-many --target lint",
-    "lint.fix": "yarn lint --fix && prettier --ignore-path .eslintignore --write \"**/*.{ts,tsx}\";",
-    "test": "nx run-many --target test",
-    "typecheck": "nx run-many --target typecheck",
-    "typegen": "nx run-many --target typegen"
+    "lint": "turbo run lint --log-order=grouped",
+    "lint.fix": "turbo run lint --fix --log-order=grouped && yarn format",
+    "format": "prettier --ignore-path .eslintignore --write \"**/*.{ts,tsx}\";",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "typegen": "turbo run typegen"
   },
   "devDependencies": {
     "@yarnpkg/types": "~4.0.1",
@@ -35,6 +35,7 @@
     "prettier": "3.5.3",
     "prettier-plugin-classnames": "0.7.7",
     "prettier-plugin-tailwindcss": "0.6.11",
+    "turbo": "2.4.4",
     "typescript": "5.8.2"
   },
   "prettier": {

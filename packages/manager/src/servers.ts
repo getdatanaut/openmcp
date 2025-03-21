@@ -268,7 +268,7 @@ export class Server {
       version: this.version,
     });
 
-    const { clientTransport, serverTransport } = createTransport(this.transport.type, this.transport.config);
+    const { clientTransport, serverTransport } = await createTransport(this.transport.type, this.transport.config);
 
     /**
      * Connect the server and client via the same transport

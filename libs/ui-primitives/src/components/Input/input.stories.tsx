@@ -73,6 +73,7 @@ export const WithSection: Story = {
     placeholder: 'example@acme.com',
   },
   render: args => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [subscribeValue, setSubscribeValue] = useState('');
 
     return (

@@ -9,14 +9,14 @@
   },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "@openmcp/manager": "workspace:*",
-    "@types/node": "22.13.10",
+    "@types/node": "22.13.11",
     "eslint": "9.22.0",
     "typescript": "5.8.2"
   }

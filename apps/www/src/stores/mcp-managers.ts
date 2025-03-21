@@ -33,7 +33,7 @@ export class McpManagersStore {
     const manager = createMpcManager({
       id,
       conductor: defaultMpcConductorFactory({
-        llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_LLM_PROXY_URL}/${provider}`,
+        llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_API_URL}/_/llm/${provider}`,
         settings: conductor,
       }),
       storage: {

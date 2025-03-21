@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { createMpcManager } from '../src/manager.ts';
 
 describe('createManager()', () => {
-  it.only('should create a manager', async () => {
+  it('should create a manager', async () => {
     const manager = createMpcManager();
 
     await manager.servers.create({

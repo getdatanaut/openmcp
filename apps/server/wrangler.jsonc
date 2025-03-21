@@ -4,7 +4,7 @@
  */
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
-  "name": "server",
+  "name": "openmcp",
   "main": "src/index.ts",
   "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "compatibility_date": "2025-03-12",
@@ -36,4 +36,10 @@
     },
   ],
   "base_dir": "../../",
+  "assets": {
+    "directory": "../www/dist",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "single-page-application",
+  },
 }

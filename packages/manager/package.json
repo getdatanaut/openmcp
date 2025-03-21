@@ -8,21 +8,21 @@
   },
   "scripts": {
     "build": "tsc",
+    "lint": "eslint .",
     "test": "vitest run",
     "test.watch": "vitest watch",
-    "typecheck": "tsc",
-    "lint": "eslint ."
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.7.0",
     "@oslojs/crypto": "1.0.1",
-    "ai": "4.1.63",
+    "ai": "4.2.0",
     "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "@types/node": "22.13.10",
+    "@types/node": "22.13.11",
     "eslint": "9.22.0",
     "type-fest": "^4.37.0",
     "typescript": "5.8.2",

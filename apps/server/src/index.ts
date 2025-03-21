@@ -13,14 +13,8 @@ const app = new Hono<{ Bindings: Env }>()
   .route('/mcp', mcpRoute)
   .route('/_/llm', llmProxyRoute)
   .route('/directory', directoryRoute)
-  .get('/', async c => {
-    return c.json({
-      message: 'Welcome to OpenMCP!',
-      docs: 'https://datanaut.ai/docs/openmcp',
-      examples: 'https://datanaut.ai/docs/openmcp/examples',
-      github: 'https://github.com/getdatanaut/openmcp',
-      issues: 'https://github.com/getdatanaut/openmcp/issues',
-    });
+  .get('/*', async c => {
+    return c.env.ASSETS.fetch(c.req.raw);
   });
 
 export default app;

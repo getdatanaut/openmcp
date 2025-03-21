@@ -1,0 +1,44 @@
+name: PR
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: ${{ github.ref_name }}
+  # Here we specify that we'll cancel any "in progress" workflow of the same group. Thus if we push, ammend a commit and push
+  # again the previous workflow will be cancelled. This saves us github action build minutes and avoid any conflicts
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # We need to fetch all branches and commits to compare against.
+          fetch-depth: 0
+
+      - name: Install
+        uses: './.github/actions/install'
+
+      - name: Check
+        uses: './.github/actions/checks'
+        env:
+          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
+          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          TURBO_SCM_BASE: ${{ vars.TURBO_SCM_BASE || github.base_ref }}

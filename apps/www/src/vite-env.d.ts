@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly VITE_LLM_PROXY_URL: string;
   readonly VITE_API_URL: string;
 }
 
