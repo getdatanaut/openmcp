@@ -2,7 +2,7 @@ import { useChat, type UseChatHelpers } from '@ai-sdk/react';
 import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { Button, createContext, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
 import type { MpcManager } from '@openmcp/manager';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
@@ -17,8 +17,8 @@ import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 export type ThreadProps = {
   children: ReactNode;
   manager: MpcManager;
-  loadingFallback?: ReactNode;
   threadId?: TThreadId;
+  initialMessages?: UIMessage[];
   scrollContainerRef?: RefObject<HTMLDivElement | null>;
   onCreated?: (props: { threadId: TThreadId }) => void;
 };
@@ -37,36 +37,13 @@ const [ThreadContext, useThreadContext] = createContext<ThreadContextProps>({
   strict: true,
 });
 
-export const Thread = ({ threadId: providedThreadId, ...rest }: ThreadProps) => {
-  const isNewThread = !providedThreadId;
-  const threadId = useMemo(() => providedThreadId ?? ThreadId.generate(), [providedThreadId]);
-
-  const { data: messages, isPending } = useQuery({
-    queryKey: ['thread', threadId, 'messages'],
-    queryFn: async () => {
-      const msgs = await rest.manager.threads.listMessages({ id: threadId });
-      return msgs.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
-    },
-    enabled: !isNewThread,
-  });
-
-  if (!isNewThread && isPending) {
-    return rest.loadingFallback;
-  }
-
-  return <ThreadInner isNewThread={isNewThread} threadId={threadId} initialMessages={messages} {...rest} />;
-};
-
-export interface ThreadInnerProps extends Omit<ThreadProps, 'threadId' | 'loadingFallback'> {
-  isNewThread?: boolean;
-  threadId: TThreadId;
-  initialMessages?: UIMessage[];
-}
-
-export const ThreadInner = observer(
-  ({ isNewThread, threadId, children, manager, onCreated, initialMessages, scrollContainerRef }: ThreadInnerProps) => {
+export const Thread = observer(
+  ({ threadId: providedThreadId, children, manager, onCreated, initialMessages, scrollContainerRef }: ThreadProps) => {
     const { app } = useRootStore();
     const queryClient = useQueryClient();
+
+    const isNewThread = !providedThreadId;
+    const threadId = useMemo(() => providedThreadId ?? ThreadId.generate(), [providedThreadId]);
 
     const { containerRef, endRef, scrollToBottom } = useScrollToBottom({
       resetKey: threadId,

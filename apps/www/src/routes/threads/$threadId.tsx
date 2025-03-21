@@ -1,5 +1,6 @@
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Button, tn } from '@libs/ui-primitives';
+import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
 import { type Ref, type RefObject, useEffect, useRef } from 'react';
@@ -27,7 +28,14 @@ function ThreadRoute() {
 }
 
 const ThreadRouteComponent = observer(() => {
+  const { threadId } = Route.useParams();
+  const manager = useCurrentManager();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const { data: thread, isPending: isThreadPending } = useQuery({
+    queryKey: ['thread', threadId],
+    queryFn: () => manager.threads.get({ id: threadId }),
+  });
 
   return (
     <div className="flex h-screen flex-1 flex-col overflow-y-auto" ref={scrollContainerRef}>
@@ -35,7 +43,7 @@ const ThreadRouteComponent = observer(() => {
         <div className="flex h-full w-12 items-center justify-center" />
 
         <div className="flex h-full flex-1 items-center gap-4 border-l-[0.5px] px-4">
-          <div className="text-sm opacity-75">New Thread</div>
+          <div className="text-sm opacity-75">{thread?.name || ''}</div>
 
           <Button
             icon={faPlus}
@@ -59,8 +67,20 @@ const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: Re
   const manager = useCurrentManager();
   const { app } = useRootStore();
 
+  const { data: messages, isPending } = useQuery({
+    queryKey: ['thread', threadId, 'messages'],
+    queryFn: async () => {
+      const msgs = await manager.threads.listMessages({ id: threadId });
+      return msgs.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
+    },
+  });
+
+  if (isPending) {
+    return null;
+  }
+
   return (
-    <Thread manager={manager} threadId={threadId} scrollContainerRef={scrollContainerRef}>
+    <Thread manager={manager} threadId={threadId} scrollContainerRef={scrollContainerRef} initialMessages={messages}>
       <ThreadMessages style={{ paddingBottom: app.chatboxHeight }} />
       <ThreadChatBoxWrapper />
     </Thread>
