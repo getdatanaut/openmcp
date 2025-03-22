@@ -1,0 +1,71 @@
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      lint-affected:
+        value: ${{ jobs.setup.outputs.lint-affected }}
+      typecheck-affected:
+        value: ${{ jobs.setup.outputs.typecheck-affected }}
+      test-affected:
+        value: ${{ jobs.setup.outputs.test-affected }}
+      build-affected:
+        value: ${{ jobs.setup.outputs.build-affected }}
+      deploy-affected:
+        value: ${{ jobs.setup.outputs.deploy-affected }}
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+jobs:
+  # As its name stands for, this jobs will install the npm dependencies and cache them
+  # unless they have been cached in a previous workflow run and remained unchanged.
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # We need to fetch all branches and commits to compare against
+          fetch-depth: 0
+
+      - name: Node v22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        uses: './.github/actions/install'
+
+      - name: Affected Checks
+        id: affected
+        shell: bash
+        run: |
+          echo "lint-affected=$(yarn lint --affected --dry-run=json | jq -r 'if .packages | contains(["//"]) then "--affected" else .packages | map("--filter=" + .) | join(" ") end')" >> $GITHUB_OUTPUT
+          echo "typecheck-affected=$(yarn typecheck --affected --dry-run=json | jq -r 'if .packages | contains(["//"]) then "--affected" else .packages | map("--filter=" + .) | join(" ") end')" >> $GITHUB_OUTPUT
+          echo "test-affected=$(yarn test --affected --dry-run=json | jq -r 'if .packages | contains(["//"]) then "--affected" else .packages | map("--filter=" + .) | join(" ") end')" >> $GITHUB_OUTPUT
+          echo "build-affected=$(yarn build --affected --dry-run=json | jq -r 'if .packages | contains(["//"]) then "--affected" else .packages | map("--filter=" + .) | join(" ") end')" >> $GITHUB_OUTPUT
+          echo "deploy-affected=$(yarn deploy --affected --dry-run=json | jq -r '.packages | length')" >> $GITHUB_OUTPUT
+        env:
+          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
+          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Print affected
+        shell: bash
+        run: |
+          echo "Print affected arrays:"
+          echo "lint-affected: ${{ steps.affected.outputs.lint-affected }}"
+          echo "typecheck-affected: ${{ steps.affected.outputs.typecheck-affected }}"
+          echo "test-affected: ${{ steps.affected.outputs.test-affected }}"
+          echo "build-affected: ${{ steps.affected.outputs.build-affected }}"
+          echo "deploy-affected: ${{ steps.affected.outputs.deploy-affected }}"
+
+    outputs:
+      lint-affected: ${{ steps.affected.outputs.lint-affected }}
+      typecheck-affected: ${{ steps.affected.outputs.typecheck-affected }}
+      test-affected: ${{ steps.affected.outputs.test-affected }}
+      build-affected: ${{ steps.affected.outputs.build-affected }}
+      deploy-affected: ${{ steps.affected.outputs.deploy-affected }}

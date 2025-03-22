@@ -1,0 +1,80 @@
+on:
+  workflow_call:
+    inputs:
+      lint-affected:
+        required: true
+        type: string
+      typecheck-affected:
+        required: true
+        type: string
+      test-affected:
+        required: true
+        type: string
+      build-affected:
+        required: true
+        type: string
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.lint-affected
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Lint
+        run: yarn lint ${{ inputs.lint-affected }}
+
+  typecheck:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.typecheck-affected
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Typecheck
+        run: yarn typecheck ${{ inputs.typecheck-affected }}
+
+  test:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.test-affected
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Test
+        run: yarn test ${{ inputs.test-affected }}
+
+  build:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.build-affected
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Build
+        run: yarn build ${{ inputs.build-affected }}
+        env:
+          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
+          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}

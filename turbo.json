@@ -5,21 +5,11 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*", ".dev.vars"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"]
     },
-    "server#build": {
-      "outputs": [".wrangler/**", ".output/**"],
-      "dependsOn": ["^build", "www#build"],
-      "env": ["*_LLM_API_*"]
-    },
-    "www#build": {
-      "outputs": [".vite/**", "dist/**"],
-      "env": ["VITE_*"]
-    },
     "deploy": {
-      "dependsOn": ["build"],
-      "env": ["CLOUDFLARE_*", "*_LLM_API_*", "VITE_*"]
+      "dependsOn": ["^build"]
     },
     "dev": {
       "cache": false,

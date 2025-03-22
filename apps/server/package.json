@@ -7,6 +7,7 @@
     "dev": "dotenv -e .dev.vars -- wrangler dev",
     "build": "wrangler deploy --dry-run --outdir=.output",
     "deploy": "wrangler deploy",
+    "wrangler": "wrangler",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "typegen": "wrangler types"

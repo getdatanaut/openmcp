@@ -22,23 +22,16 @@ defaults:
     shell: bash
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
+  setup:
+    uses: ./.github/workflows/setup.yml
+    secrets: inherit
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          # We need to fetch all branches and commits to compare against.
-          fetch-depth: 0
-
-      - name: Install
-        uses: './.github/actions/install'
-
-      - name: Check
-        uses: './.github/actions/checks'
-        env:
-          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
-          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
-          VITE_API_URL: ${{ vars.VITE_API_URL }}
-          TURBO_SCM_BASE: ${{ vars.TURBO_SCM_BASE || github.base_ref }}
+  checks:
+    uses: ./.github/workflows/checks.yml
+    needs: [setup]
+    secrets: inherit
+    with:
+      lint-affected: ${{ needs.setup.outputs.lint-affected }}
+      typecheck-affected: ${{ needs.setup.outputs.typecheck-affected }}
+      test-affected: ${{ needs.setup.outputs.test-affected }}
+      build-affected: ${{ needs.setup.outputs.build-affected }}
