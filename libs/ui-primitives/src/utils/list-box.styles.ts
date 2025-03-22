@@ -10,9 +10,8 @@ import { tn, twMergeConfig } from './tw.ts';
 export const listBoxStyle = tv(
   {
     slots: {
-      popover: tn('ak-layer animate-popper z-30 border-[0.5px] bg-clip-padding outline-none'),
-      // arrow: tn('fill-panel stroke-neutral-line-2 stroke-2'),
-      arrow: tn('hidden'), // @TODO once ak tailwind supports targeting fill and stroke
+      popover: tn('ak-layer animate-popper z-30 border-[0.5px] outline-none'),
+      arrow: tn('fill-[var(--ak-layer)] stroke-[var(--ak-border)] stroke-2'),
 
       list: tn(
         'h-full overflow-auto overscroll-contain',
