@@ -46,7 +46,7 @@ export const baseConfig = tseslint.config(
       },
     },
   },
-  
+
   eslint.configs.recommended,
   importPlugin.flatConfigs.recommended,
 
@@ -55,7 +55,7 @@ export const baseConfig = tseslint.config(
       turbo: turboPlugin,
     },
     rules: {
-      "turbo/no-undeclared-env-vars": "error",
+      'turbo/no-undeclared-env-vars': 'error',
     },
   },
 
@@ -113,7 +113,10 @@ export const baseConfig = tseslint.config(
       '@typescript-eslint/no-empty-object-type': 'off',
       'dot-notation': 'off',
       '@typescript-eslint/dot-notation': 'off',
-      'no-redeclare': 'off'
+      'no-redeclare': 'off',
+
+      // https://eslint.org/docs/latest/rules/no-undef#handled_by_typescript
+      'no-undef': 'off',
     },
   },
 
