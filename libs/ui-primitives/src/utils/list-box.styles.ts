@@ -52,7 +52,7 @@ export const listBoxStyle = tv(
         sm: {
           popover: tn('ak-frame-xs shadow-2xs'),
           list: tn('p-1.5 text-sm'),
-          item: tn('h-7 gap-1 px-1.5'),
+          item: tn('h-7 gap-1.5 px-1.5'),
           group: tn(),
           groupTitle: tn('px-1.5', 'text-xs'),
           separator: tn('mx-1 my-1.5'),

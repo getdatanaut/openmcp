@@ -91,12 +91,12 @@ export { Icon } from './components/Icon/icon.tsx';
 export type { InputOptions, InputProps } from './components/Input/input.tsx';
 export { Input, InputContext, useInputContext } from './components/Input/input.tsx';
 
-// /**
-//  * Keyboard
-//  */
+/**
+ * Keyboard
+ */
 
-// export type { KeyboardOptions, KeyboardProps } from './components/Keyboard/keyboard.tsx';
-// export { Keyboard, KeyboardContext, useKeyboardContext } from './components/Keyboard/keyboard.tsx';
+export type { KeyboardOptions, KeyboardProps } from './components/Keyboard/keyboard.tsx';
+export { Keyboard, KeyboardContext, useKeyboardContext } from './components/Keyboard/keyboard.tsx';
 
 /**
  * Label
@@ -105,22 +105,22 @@ export { Input, InputContext, useInputContext } from './components/Input/input.t
 export type { LabelOptions, LabelProps } from './components/Label/label.tsx';
 export { Label, LabelContext, useLabelContext } from './components/Label/label.tsx';
 
-// /**
-//  * Menu
-//  */
+/**
+ * Menu
+ */
 
-// export type { MenuProps } from './components/Menu/menu.tsx';
-// export { Menu, MenuContext, useMenuContext } from './components/Menu/menu.tsx';
-// export type { MenuGroupProps } from './components/Menu/menu-group.tsx';
-// export { MenuGroup } from './components/Menu/menu-group.tsx';
-// export type { MenuItemProps } from './components/Menu/menu-item.tsx';
-// export { MenuItem } from './components/Menu/menu-item.tsx';
-// export type { MenuOptionGroupProps } from './components/Menu/menu-option-group.tsx';
-// export { MenuOptionGroup } from './components/Menu/menu-option-group.tsx';
-// export type { MenuOptionItemProps } from './components/Menu/menu-option-item.tsx';
-// export { MenuOptionItem } from './components/Menu/menu-option-item.tsx';
-// export type { MenuSeparatorProps } from './components/Menu/menu-separator.tsx';
-// export { MenuSeparator } from './components/Menu/menu-separator.tsx';
+export type { MenuProps } from './components/Menu/menu.tsx';
+export { Menu, MenuContext, useMenuContext } from './components/Menu/menu.tsx';
+export type { MenuGroupProps } from './components/Menu/menu-group.tsx';
+export { MenuGroup } from './components/Menu/menu-group.tsx';
+export type { MenuItemProps } from './components/Menu/menu-item.tsx';
+export { MenuItem } from './components/Menu/menu-item.tsx';
+export type { MenuOptionGroupProps } from './components/Menu/menu-option-group.tsx';
+export { MenuOptionGroup } from './components/Menu/menu-option-group.tsx';
+export type { MenuOptionItemProps } from './components/Menu/menu-option-item.tsx';
+export { MenuOptionItem } from './components/Menu/menu-option-item.tsx';
+export type { MenuSeparatorProps } from './components/Menu/menu-separator.tsx';
+export { MenuSeparator } from './components/Menu/menu-separator.tsx';
 
 // /**
 //  * Popover

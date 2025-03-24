@@ -35,7 +35,7 @@
   }
 
   body {
-    @apply ak-layer-canvas font-mono;
+    @apply ak-layer-canvas;
   }
 
   * {

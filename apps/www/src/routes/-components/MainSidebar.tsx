@@ -1,22 +1,34 @@
 import { createElement } from '@ariakit/react-core/utils/system';
 import type { Options } from '@ariakit/react-core/utils/types';
 import {
+  faBars,
   faCaretDown,
   faCaretLeft,
   faCaretRight,
-  faCog,
   faComments,
   faPlus,
   faServer,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import { Avatar, Button, ButtonGroup, type ButtonProps, Icon, type IconProps, tn, twMerge } from '@libs/ui-primitives';
+import {
+  Avatar,
+  Button,
+  ButtonGroup,
+  type ButtonProps,
+  Icon,
+  type IconProps,
+  Menu,
+  MenuOptionGroup,
+  MenuOptionItem,
+  tn,
+  twMerge,
+} from '@libs/ui-primitives';
 import type { Server, ThreadStorageData } from '@openmcp/manager';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { formatDate, isThisWeek, isToday, isYesterday } from 'date-fns';
 import { observer } from 'mobx-react-lite';
-import React, { type MouseEventHandler, type ReactNode, type Ref, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
@@ -37,8 +49,6 @@ export const MainSidebar = observer(({ className }: { className?: string }) => {
   let content = <ThreadHistory />;
   if (sidebar === 'servers') {
     content = <ServersSidebar />;
-  } else if (sidebar === 'settings') {
-    content = <SettingsSidebar />;
   }
 
   return (
@@ -61,6 +71,7 @@ export const MainSidebar = observer(({ className }: { className?: string }) => {
               icon={app.sidebarCollapsed ? faCaretRight : faCaretLeft}
               onClick={() => app.setSidebarCollapsed(!app.sidebarCollapsed)}
             />
+            <SettingsMenu />
             <Button icon={faPlus} intent="primary" render={<Link to="/threads" activeOptions={{ exact: true }} />} />
           </ButtonGroup>
         </div>
@@ -81,16 +92,10 @@ export const MainSidebar = observer(({ className }: { className?: string }) => {
             render={<Link to="." search={{ sidebar: 'history' }} />}
           />
           <SidebarListItem
-            name="Agents"
+            name="Servers"
             isActive={sidebar === 'servers'}
             icon={faServer}
             render={<Link to="." search={{ sidebar: 'servers' }} />}
-          />
-          <SidebarListItem
-            name="Settings"
-            isActive={sidebar === 'settings'}
-            icon={faCog}
-            render={<Link to="." search={{ sidebar: 'settings' }} />}
           />
         </div>
 
@@ -106,7 +111,7 @@ const SidebarSection = ({
   collapsible = false,
 }: {
   name: string;
-  children: ReactNode;
+  children: React.ReactNode;
   collapsible?: boolean;
 }) => {
   return (
@@ -132,7 +137,7 @@ const SidebarListItem = ({
   icon?: IconProps['icon'];
   action?: ButtonProps;
   isActive?: boolean;
-  ref?: Ref<HTMLElement>;
+  ref?: React.Ref<HTMLElement>;
 } & Options) => {
   const className = tn(
     'ak-frame-sm group hover:ak-layer-pop active:ak-layer-pop-[1.5] flex cursor-pointer items-center gap-2 py-1.5 pr-2 pl-2.5 active:cursor-default',
@@ -241,7 +246,7 @@ const ThreadListItem = ({
 }: {
   id: TThreadId;
   name: string;
-  handleDelete?: MouseEventHandler<HTMLElement>;
+  handleDelete?: React.MouseEventHandler<HTMLElement>;
 }) => {
   return (
     <SidebarListItem
@@ -371,9 +376,9 @@ const ServerListItem = observer(
     ...otherProps
   }: {
     server: Server;
-    handleAdd?: MouseEventHandler<HTMLElement>;
-    handleDelete?: MouseEventHandler<HTMLElement>;
-    ref?: Ref<HTMLElement>;
+    handleAdd?: React.MouseEventHandler<HTMLElement>;
+    handleDelete?: React.MouseEventHandler<HTMLElement>;
+    ref?: React.Ref<HTMLElement>;
   } & Options) => {
     const { app } = useRootStore();
 
@@ -431,71 +436,24 @@ const ServerListItem = observer(
  * Settings
  */
 
-const SettingsSidebar = observer(() => {
+const SettingsMenu = observer(() => {
   const { app } = useRootStore();
 
   return (
-    <>
-      <SidebarSection name="Theme">
-        {app.prebuiltThemes.map(theme => (
-          <ThemeListItem key={theme.name} {...theme} />
-        ))}
-      </SidebarSection>
-    </>
-  );
-});
-
-const ThemeListItem = observer(({ id, name, themeClass }: { id: string; name: string; themeClass: string }) => {
-  const { app } = useRootStore();
-
-  const isActive = app.theme?.themeClass === themeClass;
-  const ribbonClasses = ['ak-layer-primary', 'ak-layer-secondary'];
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      app.setThemeId(id);
-    }
-  };
-
-  return (
-    <div
-      className={tn(
-        `${themeClass} ak-edge-contrast-primary-1 ak-frame-xs focus:ring-2 focus:outline-none`,
-        isActive && 'ring-2',
-      )}
-      onClick={() => app.setThemeId(id)}
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-      role="button"
-      aria-pressed={isActive}
-    >
-      <div className="ak-layer-canvas ak-frame-xs hover:ak-layer-hover flex cursor-pointer items-center border-[0.5px] py-1 pr-3 pl-3">
-        <div>{name}</div>
-        <div className="ml-auto flex gap-1.5">
-          {ribbonClasses.map((ribbonClass, index) => {
-            const isLast = index === ribbonClasses.length - 1;
-
-            return (
-              <div key={index} className="relative">
-                <div
-                  className={tn(
-                    `${ribbonClass} relative h-7 origin-right skew-x-[-20deg] transform-gpu rounded-xs`,
-                    isLast ? 'w-7' : 'w-8',
-                  )}
-                />
-
-                {isLast && (
-                  <div
-                    className={`${ribbonClass} absolute top-0 -right-1.5 h-7 w-4 rounded-r-xs`}
-                    style={{ zIndex: 1 }}
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+    <Menu trigger={<Button icon={faBars} />}>
+      <Menu label="Theme">
+        <MenuOptionGroup label="Colors" value={app.currentThemeId} onChange={app.setThemeId}>
+          {app.prebuiltThemes.map(theme => (
+            <MenuOptionItem key={theme.id} value={theme.id}>
+              {theme.name}
+            </MenuOptionItem>
+          ))}
+        </MenuOptionGroup>
+        <MenuOptionGroup label="Font" value={app.fontId} onChange={app.setFontId}>
+          <MenuOptionItem value="mono">Mono</MenuOptionItem>
+          <MenuOptionItem value="sans">Sans</MenuOptionItem>
+        </MenuOptionGroup>
+      </Menu>
+    </Menu>
   );
 });

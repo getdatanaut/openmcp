@@ -1,5 +1,5 @@
 import { PREBUILT_THEMES } from '@libs/ui-primitives';
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import { makePersistable } from 'mobx-persist-store';
 
 export class AppStore {
@@ -10,12 +10,8 @@ export class AppStore {
     makeAutoObservable(this);
     void makePersistable(this, {
       name: 'AppStore',
-      properties: ['currentThemeId', 'sidebarCollapsed'],
+      properties: ['sidebarCollapsed', 'currentThemeId', 'fontId'],
       storage: typeof window !== 'undefined' ? window.localStorage : undefined,
-    }).then(() => {
-      runInAction(() => {
-        this.initializeTheme();
-      });
     });
   }
 
@@ -71,26 +67,21 @@ export class AppStore {
     return this.prebuiltThemes.find(theme => theme.id === this.currentThemeId);
   }
 
-  setThemeId(id: string) {
+  setThemeId = (id: string) => {
     this.currentThemeId = id;
-  }
+  };
 
   get prebuiltThemes() {
     return PREBUILT_THEMES;
   }
 
-  private initializeTheme() {
-    // Check if we're in a browser environment (to avoid SSR issues)
-    if (typeof window !== 'undefined' && !this.currentThemeId) {
-      // Only set the theme if it hasn't been explicitly set already
-      this.setThemeBasedOnSystemPreference();
-    }
+  public fontId = 'mono';
+
+  get fontClass() {
+    return this.fontId === 'mono' ? 'font-mono' : 'font-sans';
   }
 
-  private setThemeBasedOnSystemPreference() {
-    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    // Set to dark or light theme based on system preference
-    this.setThemeId(isDarkMode ? 'dark' : 'light');
-  }
+  setFontId = (id: string) => {
+    this.fontId = id;
+  };
 }

@@ -15,7 +15,7 @@ import { type MenuSlotProps, menuStaticClass, menuStyle, type MenuStyleProps } f
 import { MenuGroup } from './menu-group.tsx';
 import { BaseMenuItem } from './menu-item.tsx';
 
-export interface MenuOptions extends AK.MenuButtonOptions<'div'>, MenuStyleProps, MenuSlotProps {
+export interface MenuOptions extends AK.MenuOptions<'div'>, MenuStyleProps, MenuSlotProps {
   label?: string;
   searchable?: boolean;
   comboboxPlaceholder?: string;
@@ -58,7 +58,7 @@ export function Menu({ ref, ...originalProps }: MenuProps) {
       trigger,
       hideArrow,
       overlap,
-      ...props
+      ...menuProps
     },
     variantProps,
   ] = splitPropsVariants(originalProps, menuStyle.variantKeys);
@@ -96,11 +96,11 @@ export function Menu({ ref, ...originalProps }: MenuProps) {
   }
 
   const triggerElem = isSubmenu ? (
-    <AK.MenuButton ref={ref} {...props} render={<BaseMenuItem render={trigger} endIcon={faChevronRight} />}>
+    <AK.MenuButton ref={ref} render={<BaseMenuItem render={trigger} endIcon={faChevronRight} />}>
       {label}
     </AK.MenuButton>
   ) : (
-    <AK.MenuButton ref={ref} {...props} render={trigger} />
+    <AK.MenuButton ref={ref} render={trigger} />
   );
 
   const element = (
@@ -114,6 +114,7 @@ export function Menu({ ref, ...originalProps }: MenuProps) {
         gutter={isSubmenu ? -2 : hideArrow ? 8 : 4}
         className={popoverTw}
         data-side={side}
+        {...menuProps}
       >
         <div className={listTw}>
           <Provider

@@ -1,6 +1,6 @@
 import '../assets/app.css';
 
-import { DialogContext, tn } from '@libs/ui-primitives';
+import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRootRoute, HeadContent, Outlet, retainSearchParams, useNavigate } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
@@ -66,17 +66,19 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
   return (
     <CurrentManagerProvider>
       <DialogContext value={{ portalElement: rootRef, backdrop: 'blur' }}>
-        <div className={tn('min-h-screen', themeClass && `${themeClass} ak-layer-canvas-down`)} ref={setRootRef}>
-          <div className="isolate flex h-screen">
-            <div className="h-screen">
-              <MainSidebar className={tn('py-2', app.sidebarCollapsed ? 'w-2' : 'w-72')} />
+        <MenuContext value={{ portalElement: rootRef }}>
+          <div className={tn('ak-layer-canvas-down min-h-screen', themeClass, `font-${app.fontId}`)} ref={setRootRef}>
+            <div className="isolate flex h-screen">
+              <div className="h-screen">
+                <MainSidebar className={tn('py-2', app.sidebarCollapsed ? 'w-2' : 'w-72')} />
+              </div>
+
+              {children}
             </div>
 
-            {children}
+            <GlobalModals />
           </div>
-
-          <GlobalModals />
-        </div>
+        </MenuContext>
       </DialogContext>
     </CurrentManagerProvider>
   );
