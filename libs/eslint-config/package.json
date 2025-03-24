@@ -10,8 +10,8 @@
     "./react": "./src/react.js"
   },
   "dependencies": {
-    "@eslint/js": "9.22.0",
-    "eslint": "9.22.0",
+    "@eslint/js": "9.23.0",
+    "eslint": "9.23.0",
     "eslint-config-prettier": "10.1.1",
     "eslint-import-resolver-typescript": "4.2.2",
     "eslint-plugin-import": "2.31.0",
@@ -21,6 +21,6 @@
     "eslint-plugin-turbo": "2.4.4",
     "eslint-plugin-vitest": "0.5.4",
     "globals": "16.0.0",
-    "typescript-eslint": "8.27.0"
+    "typescript-eslint": "8.28.0"
   }
 }

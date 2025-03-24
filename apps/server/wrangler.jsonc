@@ -26,7 +26,7 @@
     "enabled": true,
   },
   "alias": {
-    "jsonc-parser": "../../node_modules/@stoplight/json/node_modules/jsonc-parser/lib/esm/main.js",
+    "jsonc-parser": "../../node_modules/jsonc-parser/lib/esm/main.js",
   },
   "rules": [
     {

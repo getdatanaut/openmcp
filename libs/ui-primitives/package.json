@@ -1,6 +1,7 @@
 {
   "name": "@libs/ui-primitives",
   "version": "0.0.0",
+  "private": true,
   "type": "module",
   "sideEffects": false,
   "main": "src/index.ts",
@@ -51,11 +52,11 @@
     "@tailwindcss/vite": "4.0.14",
     "@types/react": "19.0.12",
     "@vitejs/plugin-react": "4.3.4",
-    "eslint": "9.22.0",
+    "eslint": "9.23.0",
     "eslint-plugin-storybook": "^0.11.6",
     "react-lorem-ipsum": "1.4.10",
     "storybook": "8.6.7",
     "tailwindcss": "4.0.14",
-    "vite": "6.2.2"
+    "vite": "6.2.3"
   }
 }

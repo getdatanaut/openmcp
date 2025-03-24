@@ -1,5 +1,3 @@
-import { inspect } from 'node:util';
-
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
@@ -24,11 +22,9 @@ export async function createMcpServer(
   {
     openapi,
     serverUrl,
-    debug = false,
   }: {
     openapi: Record<string, unknown> | string;
     serverUrl?: string;
-    debug?: boolean;
   },
   getClientConfig?: () => Promise<ClientConfig> | ClientConfig,
 ) {
@@ -114,25 +110,6 @@ export async function createMcpServer(
         url.searchParams.set(key, String(value));
       }
     });
-
-    if (debug) {
-      console.log(
-        'openapi.callTool',
-        request.params.name,
-        inspect(
-          {
-            url: url.toString(),
-            method: operationTool.operation.method,
-            headers: params.headers,
-            body: formatBody(params.body, params.headers['Content-Type']),
-          },
-          {
-            depth: 10,
-            colors: true,
-          },
-        ),
-      );
-    }
 
     const res = await fetch(url.toString(), {
       method: operationTool.operation.method,

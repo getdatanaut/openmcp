@@ -1,9 +1,10 @@
 {
-  "extends": "@libs/tsconfig/tsconfig.node.json",
+  "extends": "@libs/tsconfig/tsconfig.workerd.json",
   "include": ["**/*.ts"],
   "compilerOptions": {
     "rootDir": ".",
     "baseUrl": ".",
-    "types": ["./worker-configuration.d.ts", "node"]
+    "types": ["./worker-configuration.d.ts", "@types/node"],
+    "customConditions": ["development"]
   }
 }

@@ -1,6 +1,5 @@
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { sha256 } from '@oslojs/crypto/sha2';
 
 import type { MpcManager } from './manager.ts';
 import { createTransport, type TransportConfig, type TransportConfigs } from './transport.ts';
@@ -255,16 +254,9 @@ export class Server {
    * @returns The result of the tool call
    */
   public async callTool(toolConfig: { name: string; input: Record<string, unknown>; config: Record<string, unknown> }) {
-    /** Don't use node:crypto - must work in all environments */
-    const encoder = new TextEncoder();
-    const data = encoder.encode(JSON.stringify(toolConfig));
-    const hashBytes = sha256(data);
-    const clientId = Array.from(hashBytes)
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-
+    const clientId = JSON.stringify(toolConfig);
     const mcpClient = new McpClient({
-      name: `${this.id}-${toolConfig.name}-${clientId}`,
+      name: `${this.id}-${clientId}`,
       version: this.version,
     });
 
