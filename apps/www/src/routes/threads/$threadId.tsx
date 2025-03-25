@@ -28,7 +28,7 @@ function ThreadRoute() {
 
 const ThreadRouteComponent = observer(() => {
   const { threadId } = Route.useParams();
-  const manager = useCurrentManager();
+  const { manager } = useCurrentManager();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: thread } = useQuery({
@@ -47,7 +47,7 @@ const ThreadRouteComponent = observer(() => {
 
 const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: RefObject<HTMLDivElement | null> }) => {
   const { threadId } = Route.useParams();
-  const manager = useCurrentManager();
+  const { manager } = useCurrentManager();
   const { app } = useRootStore();
 
   const { data: messages, isPending } = useQuery({
@@ -63,7 +63,7 @@ const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: Re
   }
 
   return (
-    <Thread manager={manager} threadId={threadId} scrollContainerRef={scrollContainerRef} initialMessages={messages}>
+    <Thread threadId={threadId} scrollContainerRef={scrollContainerRef} initialMessages={messages}>
       <ThreadMessages style={{ paddingBottom: app.chatboxHeight }} />
       <ThreadChatBoxWrapper />
     </Thread>

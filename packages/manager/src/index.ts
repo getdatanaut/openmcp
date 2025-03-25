@@ -1,7 +1,7 @@
 export type { ClientServerId, ClientServerStorageData } from './client-servers.ts';
 export { ClientServer } from './client-servers.ts';
-export type { DefaultMpcConductorSettings } from './conductor/default.ts';
-export { defaultMpcConductorFactory } from './conductor/default.ts';
+export type { MpcConductor, MpcConductorSettings } from './conductor.ts';
+export { createMpcConductor } from './conductor.ts';
 export type { MpcManager, MpcManagerOptions, MpcManagerStorage } from './manager.ts';
 export { createMpcManager } from './manager.ts';
 export type { ServerStorageData } from './servers.ts';

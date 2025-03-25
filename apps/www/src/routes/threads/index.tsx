@@ -2,7 +2,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
-import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { type TThreadId } from '~/utils/ids.ts';
 
 import { Thread, ThreadChatBox } from './-components/Thread.tsx';
@@ -12,7 +11,6 @@ export const Route = createFileRoute('/threads/')({
 });
 
 function RouteComponent() {
-  const manager = useCurrentManager();
   const navigate = Route.useNavigate();
 
   const onCreated = useCallback(
@@ -26,7 +24,7 @@ function RouteComponent() {
     <CanvasLayout>
       <div className="flex min-h-full w-full flex-col items-center justify-center gap-4">
         <div className="ak-layer-pop-[0.7] w-full max-w-[50rem] rounded-lg p-2.5">
-          <Thread onCreated={onCreated} manager={manager}>
+          <Thread onCreated={onCreated}>
             <div className="ak-layer rounded-md border-[0.5px] px-4 shadow-2xs">
               <ThreadChatBox />
             </div>

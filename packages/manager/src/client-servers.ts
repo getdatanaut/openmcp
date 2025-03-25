@@ -1,5 +1,6 @@
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { SetOptional } from 'type-fest';
 
 import type { MpcManager } from './manager.ts';
 import { createTransport } from './transport.ts';
@@ -60,8 +61,11 @@ export class ClientServerManager {
     return clientServer;
   };
 
-  public create = async (options: ClientServerStorageData) => {
-    const server = createClientServer(options, { manager: this.#manager });
+  public create = async (options: SetOptional<ClientServerStorageData, 'id'>) => {
+    const server = createClientServer(
+      { id: `${options.clientId}-${options.serverId}`, ...options },
+      { manager: this.#manager },
+    );
     await this.storage.insert(ClientServer.serialize(server));
     this.#clientServers.set(server.id, server);
 
@@ -83,11 +87,11 @@ export class ClientServerManager {
    * By default it will only return tools for connected client servers. Pass `lazyConnect: true` to connect
    * to all servers and return all tools.
    */
-  public async toolsByClientId({ clientId, lazyConnect }: { clientId: ClientId; lazyConnect?: boolean }) {
+  public toolsByClientId = async ({ clientId, lazyConnect }: { clientId: ClientId; lazyConnect?: boolean }) => {
     const clientServers = await this.findMany({ clientId });
     const tools = await Promise.all(clientServers.map(s => s.listTools({ lazyConnect })));
     return tools.flatMap(tools => tools || []);
-  }
+  };
 
   /**
    * Disconnect from all MCP Servers for a given client.
@@ -223,18 +227,14 @@ export class ClientServer {
    * List tools available from the server
    */
   public async listTools({ lazyConnect = false }: { lazyConnect?: boolean } = {}): Promise<ToolWithServer[]> {
-    if (!this.isConnected && !lazyConnect) {
-      await this.connect();
+    if (!this.isConnected) {
+      if (lazyConnect) {
+        await this.connect();
+      }
     }
 
     if (!this.isConnected || !this.#mcpClient) {
-      if (!lazyConnect) {
-        return [];
-      }
-
-      await this.connect();
-
-      return this.listTools();
+      return [];
     }
 
     const { tools } = await this.#mcpClient.listTools();

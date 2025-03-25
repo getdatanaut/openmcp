@@ -9,7 +9,7 @@ import {
   Heading,
 } from '@libs/ui-primitives';
 import type { Server } from '@openmcp/manager';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { JsonSchemaForm, JsonSchemaFormFields, useJsonSchemaForm } from '~/components/JsonSchemaForm.tsx';
 import { Markdown } from '~/components/Markdown.tsx';
@@ -34,9 +34,8 @@ export const AddClientServerDialog = ({
 };
 
 const AddClientServerDialogContent = ({ serverId, close }: { serverId: TMcpServerId; close: () => void }) => {
-  const { app } = useRootStore();
-  const manager = useCurrentManager();
-  const queryClient = useQueryClient();
+  const { app, queryClient } = useRootStore();
+  const { manager } = useCurrentManager();
 
   const { data: servers } = useQuery({
     queryKey: ['servers'],

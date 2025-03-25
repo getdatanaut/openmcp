@@ -1,58 +1,90 @@
 import { createOpenAI, type OpenAIProvider, type OpenAIProviderSettings } from '@ai-sdk/openai';
-import { generateObject, jsonSchema, type LanguageModelV1, streamText, tool as createTool } from 'ai';
+import { generateObject, jsonSchema, type LanguageModelV1, streamText, tool as createTool, type UIMessage } from 'ai';
 import { z } from 'zod';
 
-import type { MpcManager } from '../manager.ts';
-import type { MpcConductor, MpcConductorFactory } from './adapter.ts';
+import type { ClientServerManager } from './client-servers.ts';
+import type { ClientId } from './types.ts';
 
-export interface DefaultMpcConductorSettings {
+export interface MpcConductorSettings {
   supervisor?: {
     provider: 'openai';
     languageModelId: Parameters<OpenAIProvider['chat']>[0];
   };
   providers?: {
-    openai?: {
-      settings?: OpenAIProviderSettings;
-    };
+    openai?: OpenAIProviderSettings;
   };
 }
 
-interface DefaultMpcConductorOptions {
-  llmProxyUrl?: string | ((opts: { provider: keyof NonNullable<DefaultMpcConductorSettings['providers']> }) => string);
-  settings?: DefaultMpcConductorSettings;
+interface MpcConductorOptions {
+  toolsByClientId: ClientServerManager['toolsByClientId'];
+  llmProxyUrl?: string | ((opts: { provider: keyof NonNullable<MpcConductorSettings['providers']> }) => string);
+  settings?: MpcConductorSettings;
 }
 
 interface MpcSupervisor {
   model: LanguageModelV1;
 }
 
-export function defaultMpcConductorFactory(config: DefaultMpcConductorOptions): MpcConductorFactory {
-  return (manager: MpcManager) => new DefaultMpcConductor(config, manager);
+interface MpcConductorHandleMessageOpts
+  extends Pick<Parameters<typeof streamText>[0], 'onError' | 'onStepFinish' | 'onFinish'> {
+  clientId: ClientId;
+
+  message: UIMessage;
+
+  /** The consumer may or may not provide some portion of the message history for consideration */
+  history?: UIMessage[];
 }
+
+export function createMpcConductor(options: MpcConductorOptions) {
+  return new MpcConductor(options);
+}
+
+// Folks using manager are coming from a world where they probably have a chat app, but are prob not using tons of
+// tools. conductor optimizes the prompting and system loop of interacting and utilizing that system of tools.
 
 /**
  * Our default implementation of the MpcConductor interface.
  */
-export class DefaultMpcConductor implements MpcConductor {
+export class MpcConductor {
+  #toolsByClientId: MpcConductorOptions['toolsByClientId'];
   #supervisor: MpcSupervisor;
-  #settings: DefaultMpcConductorSettings;
-  #llmProxyUrl?: DefaultMpcConductorOptions['llmProxyUrl'];
-  #manager: MpcManager;
+  #settings: MpcConductorSettings;
+  #llmProxyUrl?: MpcConductorOptions['llmProxyUrl'];
 
-  constructor(options: DefaultMpcConductorOptions, manager: MpcManager) {
-    this.#manager = manager;
+  constructor(options: MpcConductorOptions) {
+    this.#toolsByClientId = options.toolsByClientId;
     this.#llmProxyUrl = options.llmProxyUrl;
     this.#settings = options.settings ?? {};
     this.#supervisor = this.initSupervisor();
   }
 
-  // @QUESTION: what happens if end user sends message, then immediately sends another one without waiting for the first one to finish?
-  public handleMessage: MpcConductor['handleMessage'] = async ({ clientId, threadId, message, history = [] }) => {
+  public generateTitle = async ({ messages }: { messages: UIMessage[] }) => {
+    const { object: llmObject } = await generateObject({
+      // @TODO might want to use a different, lightweight model for this
+      model: this.#supervisor.model,
+      system: `Create a concise thread title that summarizes these messages, suitable for display in a UI sidebar.`,
+      messages,
+      schema: z.object({
+        title: z.string(),
+      }),
+    });
+
+    return llmObject.title;
+  };
+
+  public handleMessage = async ({
+    clientId,
+    message,
+    history = [],
+    onError,
+    onFinish,
+    onStepFinish,
+  }: MpcConductorHandleMessageOpts) => {
     const messages = [...history, message];
 
-    // @TODO this implementation should probaby cache the tools, and use the mpc notification spec or something to update them (although now w stateless protocol maybe not)
+    // @TODO the underlying implementation should probaby cache the tools, and use the mpc notification spec or something to update them (although now w stateless protocol maybe not)
     // right now we're fetching all of the tools on every message
-    const tools = await this.#manager.clientServers.toolsByClientId({ clientId, lazyConnect: true });
+    const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
     const allToolNames = tools.map(t => t.name);
 
     const toolsByServer = tools.reduce(
@@ -87,9 +119,6 @@ ${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}`;
           .min(0)
           .max(1)
           .describe('A number between 0 and 1 indicating the confidence in the tools selected.'),
-
-        // TODO(CL): we could move this to a different generateObject call, since it only needs to happen once
-        title: z.string().describe('Create a concise subject title that summarizes the previous messages'),
       }),
     });
 
@@ -114,45 +143,21 @@ ${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}`;
 
     const result = streamText({
       model: this.#supervisor.model,
-      system: `You are a helpful assistant with access to tools the user has enabled.
-
-Here is a summary of all the available tools:
-${llmObject.summaryOfAllTools}
-`,
+      system: `You are a helpful assistant with access to tools the user has enabled.`,
       messages,
       maxSteps: 5,
       tools: aiTools,
       // Abitrarily limit to 50 tools
       experimental_activeTools: selectedToolNames.slice(0, 50),
-      onFinish: async opts => {
-        /** If a threadId was provided, store the response messages in the thread */
-        if (threadId) {
-          const { response } = opts;
-          const thread = await this.#manager.threads.get({ id: threadId });
-          if (thread) {
-            await thread.addResponseMessages({
-              originalMessages: messages,
-              responseMessages: response.messages,
-            });
-
-            if (thread.name === 'New Thread' && llmObject.title) {
-              try {
-                await this.#manager.threads.update({ id: threadId }, { name: llmObject.title });
-              } catch (error) {
-                console.error('Error generating thread name', error);
-              }
-            }
-          } else {
-            console.warn('Thread not found in conductorRun onFinish', { clientId, threadId });
-          }
-        }
-      },
+      onError,
+      onFinish,
+      onStepFinish,
     });
 
     return result.toDataStreamResponse();
   };
 
-  public async updateSettings(settings: DefaultMpcConductorSettings) {
+  public async updateSettings(settings: MpcConductorSettings) {
     this.#settings = settings;
     this.#supervisor = this.initSupervisor();
   }
@@ -164,21 +169,24 @@ ${llmObject.summaryOfAllTools}
       ({
         provider: 'openai',
         languageModelId: 'gpt-4o',
-      } satisfies DefaultMpcConductorSettings['supervisor']);
+      } satisfies MpcConductorSettings['supervisor']);
 
-    const settings = this.#settings.providers?.[supervisor.provider]?.settings;
+    const settings = this.#settings.providers?.[supervisor.provider];
 
     const llmProxyUrl =
       typeof this.#llmProxyUrl === 'function'
         ? this.#llmProxyUrl({ provider: supervisor.provider })
         : this.#llmProxyUrl;
 
+    // Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
+    const baseURL = settings?.baseURL ?? (settings?.apiKey ? undefined : llmProxyUrl);
+
     const finalSettings = {
-      // ai-sdk does not send requests if apiKey is not provided
-      apiKey: '',
+      // ai-sdk does not send requests if apiKey is not provided, so if
+      // using a proxy, set to empty string by default
+      apiKey: baseURL ? '' : undefined,
       ...settings,
-      // Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
-      baseURL: settings?.baseURL ?? (settings?.apiKey ? undefined : llmProxyUrl),
+      baseURL,
     };
 
     switch (supervisor.provider) {

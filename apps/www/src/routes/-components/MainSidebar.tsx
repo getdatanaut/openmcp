@@ -168,7 +168,7 @@ const SidebarListItem = ({
  */
 
 const ThreadHistory = () => {
-  const manager = useCurrentManager();
+  const { manager } = useCurrentManager();
   const queryClient = useQueryClient();
 
   const { threadId: activeThreadId } = useParams({ strict: false });
@@ -275,7 +275,7 @@ const ServersSidebar = () => {
 };
 
 const InstalledServers = () => {
-  const manager = useCurrentManager();
+  const { manager } = useCurrentManager();
   const queryClient = useQueryClient();
 
   const { data: clientServers } = useQuery({
@@ -344,7 +344,7 @@ const InstalledServers = () => {
 };
 
 const AvailableServers = observer(() => {
-  const manager = useCurrentManager();
+  const { manager } = useCurrentManager();
 
   const { data: servers } = useQuery({
     queryKey: ['servers'],

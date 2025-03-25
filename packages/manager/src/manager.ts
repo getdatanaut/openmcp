@@ -1,6 +1,4 @@
 import { type ClientServerManager, type ClientServerStorageData, createClientServerManager } from './client-servers.ts';
-import type { MpcConductor, MpcConductorFactory } from './conductor/adapter.ts';
-import { defaultMpcConductorFactory } from './conductor/default.ts';
 import { createServerManager, type ServerManager, type ServerStorageData } from './servers.ts';
 import type { Storage } from './storage/index.ts';
 import { createMemoryStorage } from './storage/memory.ts';
@@ -24,11 +22,6 @@ export interface MpcManagerOptions {
    * @default MemoryStorage
    */
   storage?: Partial<MpcManagerStorage>;
-
-  /**
-   * Optionally provide a Conductor implementation to handle tool orchestration
-   */
-  conductor?: MpcConductorFactory;
 }
 
 export interface MpcManagerStorage {
@@ -55,9 +48,8 @@ export class MpcManager {
   public readonly clientServers: ClientServerManager;
   public readonly threads: ThreadManager;
   public readonly storage: MpcManagerStorage;
-  public readonly conductor: MpcConductor;
 
-  constructor({ id, storage, conductor }: MpcManagerOptions = {}) {
+  constructor({ id, storage }: MpcManagerOptions = {}) {
     this.id = id ?? 'no-id';
     this.storage = {
       servers: storage?.servers ?? createMemoryStorage<ServerStorageData>(),
@@ -68,7 +60,6 @@ export class MpcManager {
     this.servers = createServerManager({ manager: this });
     this.clientServers = createClientServerManager({ manager: this });
     this.threads = createThreadManager({ manager: this });
-    this.conductor = conductor ? conductor(this) : defaultMpcConductorFactory({})(this);
   }
 
   public async close() {

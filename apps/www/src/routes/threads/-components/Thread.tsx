@@ -1,8 +1,7 @@
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
-import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp, faStop } from '@fortawesome/free-solid-svg-icons';
 import { Button, createContext, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
-import type { MpcManager } from '@openmcp/manager';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
@@ -10,13 +9,13 @@ import { type CSSProperties, type FormEvent, type KeyboardEvent, type RefObject,
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { Markdown } from '~/components/Markdown.tsx';
+import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { useScrollToBottom } from '~/hooks/use-scroll-to-bottom.tsx';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 
 export type ThreadProps = {
   children: ReactNode;
-  manager: MpcManager;
   threadId?: TThreadId;
   initialMessages?: UIMessage[];
   scrollContainerRef?: RefObject<HTMLDivElement | null>;
@@ -38,9 +37,9 @@ const [ThreadContext, useThreadContext] = createContext<ThreadContextProps>({
 });
 
 export const Thread = observer(
-  ({ threadId: providedThreadId, children, manager, onCreated, initialMessages, scrollContainerRef }: ThreadProps) => {
-    const { app } = useRootStore();
-    const queryClient = useQueryClient();
+  ({ threadId: providedThreadId, children, onCreated, initialMessages, scrollContainerRef }: ThreadProps) => {
+    const { app, queryClient } = useRootStore();
+    const { manager, conductor } = useCurrentManager();
 
     const isNewThread = !providedThreadId;
     const threadId = useMemo(() => providedThreadId ?? ThreadId.generate(), [providedThreadId]);
@@ -51,25 +50,58 @@ export const Thread = observer(
       graceAmount: app.chatboxHeight,
     });
 
+    const generateTitle = async (messages: UIMessage[]) => {
+      try {
+        const title = await conductor.generateTitle({ messages });
+        if (title) {
+          await manager.threads.update({ id: threadId }, { name: title });
+          void queryClient.invalidateQueries({ queryKey: ['threads'] });
+        }
+      } catch (error) {
+        console.error('Error generating thread name', error);
+      }
+    };
+
     const chat = useChat({
       id: threadId,
       initialMessages,
       sendExtraMessageFields: true,
       onError(error) {
-        console.error('Error in thread', error);
         // @TODO error handling
-        alert('Error in thread, see console for details');
+        console.error('Error in thread', error);
       },
       fetch: async (input, init) => {
         const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
         const message = body.messages[body.messages.length - 1]!;
         const history = body.messages.slice(0, -1);
 
-        return manager.conductor.handleMessage({
+        // If this is the first message, attempt to generate a title
+        if (!history.length) {
+          // Intentionally not blocking on this call
+          void generateTitle([message]);
+        }
+
+        return conductor.handleMessage({
           clientId: app.currentUserId,
-          threadId,
           message,
           history,
+          onError: error => {
+            console.error('Error in thread', error);
+            // @TODO error handling
+            alert('Error in thread, see console for details');
+          },
+          onFinish: async opts => {
+            const { response } = opts;
+            const thread = await manager.threads.get({ id: threadId });
+            if (thread) {
+              await thread.addResponseMessages({
+                originalMessages: [...history, message],
+                responseMessages: response.messages,
+              });
+            } else {
+              console.warn('Thread not found in conductorRun onFinish', { clientId: app.currentUserId, threadId });
+            }
+          },
         });
       },
     });
@@ -178,8 +210,6 @@ export const ThreadChatBox = ({
 }) => {
   const { chat, handleSubmit } = useThreadContext();
 
-  const value = chat.input;
-
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (disabled) return;
 
@@ -199,14 +229,19 @@ export const ThreadChatBox = ({
           'caret-secondary focus:placeholder:ak-text-secondary max-h-[30rem] flex-1 resize-none py-5 pl-2 focus:outline-none',
           inputClassName,
         )}
-        value={value}
+        value={chat.input}
         onChange={chat.handleInputChange}
         onKeyDown={onKeyDown}
         autoComplete="off"
+        disabled={chat.status !== 'ready'}
         autoFocus
       />
 
-      <Button type="submit" icon={faArrowUp} variant="solid" intent="primary" disabled={!value} />
+      {chat.status === 'submitted' || chat.status === 'streaming' ? (
+        <Button icon={faStop} variant="solid" intent="danger" onClick={() => chat.stop()} />
+      ) : (
+        <Button type="submit" icon={faArrowUp} variant="solid" intent="primary" disabled={!chat.input} />
+      )}
     </form>
   );
 };

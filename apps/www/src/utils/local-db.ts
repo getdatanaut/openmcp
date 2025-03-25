@@ -1,6 +1,6 @@
 import type {
   ClientServerStorageData,
-  DefaultMpcConductorSettings,
+  MpcConductorSettings,
   ServerStorageData,
   ThreadMessageStorageData,
   ThreadStorageData,
@@ -11,25 +11,23 @@ export type LocalDb = typeof localDb;
 
 export interface MpcManagerStorageData {
   id: string;
-  // @TODO option to store manager configuration remotely, so can use outside of local clients (e.g. via api)
-  isRemote?: boolean;
-  conductor?: DefaultMpcConductorSettings;
+  conductor?: MpcConductorSettings;
 }
 
 const localDb = new Dexie('datanaut') as Dexie & {
   servers: EntityTable<ServerStorageData, 'id'>;
   clientServers: EntityTable<ClientServerStorageData, 'id'>;
+  mpcManagers: EntityTable<MpcManagerStorageData, 'id'>;
   threads: EntityTable<ThreadStorageData, 'id'>;
   threadMessages: EntityTable<ThreadMessageStorageData, 'id'>;
-  mpcManagers: EntityTable<MpcManagerStorageData, 'id'>;
 };
 
 // Primary key and indexed props only
 localDb.version(1).stores({
   servers: 'id',
   clientServers: 'id, clientId, serverId',
-  threads: 'id, clientId',
-  threadMessages: 'id, threadId',
+  threads: 'id, clientId, createdAt',
+  threadMessages: 'id, threadId, createdAt',
   mpcManagers: 'id',
 });
 
