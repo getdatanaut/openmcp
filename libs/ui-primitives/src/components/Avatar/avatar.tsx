@@ -130,7 +130,7 @@ export function Avatar({ ref, ...props }: AvatarProps) {
    * For this case the fallback will either be the name based initials, custom icon, or default icon.
    */
   const showFallback = !src || !hasImageLoaded;
-  const singleLetter = variantProps.size === 'sm';
+  const singleLetter = variantProps.size === 'sm' || variantProps.size === 'xs';
 
   const fallbackElem = useMemo(() => {
     if (!showFallback && src) return null;

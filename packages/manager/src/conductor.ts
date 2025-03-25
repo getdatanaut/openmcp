@@ -85,7 +85,7 @@ export class MpcConductor {
     // @TODO the underlying implementation should probaby cache the tools, and use the mpc notification spec or something to update them (although now w stateless protocol maybe not)
     // right now we're fetching all of the tools on every message
     const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
-    const allToolNames = tools.map(t => t.name);
+    const allToolNames = tools.map(t => `${t.server}__${t.name}`);
 
     const toolsByServer = tools.reduce(
       (acc, tool) => {
@@ -105,7 +105,7 @@ The tools available are:
 ${Object.entries(toolsByServer)
   .map(([server, tools]) => {
     return `## ${server}
-${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}`;
+${tools.map(t => `- ${t.server}__${t.name}: ${t.description}`).join('\n')}`;
   })
   .join('\n')}`,
       messages,
@@ -127,8 +127,7 @@ ${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}`;
     const aiTools = tools.reduce(
       (acc, tool) => {
         // @ts-expect-error crazy zod stuff going on here... bah
-        acc[tool.name] = createTool({
-          id: `${tool.server}.${tool.name}` as const,
+        acc[`${tool.server}__${tool.name}`] = createTool({
           description: tool.description,
           parameters: jsonSchema(tool.inputSchema as any),
           execute: tool.execute,
@@ -144,6 +143,7 @@ ${tools.map(t => `- ${t.name}: ${t.description}`).join('\n')}`;
     const result = streamText({
       model: this.#supervisor.model,
       system: `You are a helpful assistant with access to tools the user has enabled.`,
+      toolCallStreaming: true,
       messages,
       maxSteps: 5,
       tools: aiTools,

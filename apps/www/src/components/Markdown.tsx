@@ -4,12 +4,26 @@ import { twMerge } from 'tailwind-merge';
 
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 
-export const Markdown = observer(({ content, className }: { content: string; className?: string }) => {
-  const { app } = useRootStore();
+export const Markdown = observer(
+  ({
+    unstyledCodeBlocks,
+    content,
+    className,
+  }: {
+    content: string;
+    className?: string;
+    unstyledCodeBlocks?: boolean;
+  }) => {
+    const { app } = useRootStore();
 
-  return (
-    <div className={twMerge('dn-prose', className)}>
-      <MarkdownPrimitive codeTheme={app.theme?.codeTheme ?? 'github-dark'} content={content} />
-    </div>
-  );
-});
+    return (
+      <div className={twMerge('dn-prose', className)}>
+        <MarkdownPrimitive
+          unstyledCodeBlocks={unstyledCodeBlocks}
+          codeTheme={app.theme?.codeTheme ?? 'github-dark'}
+          content={content}
+        />
+      </div>
+    );
+  },
+);

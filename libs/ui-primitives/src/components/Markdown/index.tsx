@@ -6,39 +6,51 @@ import reactToText from 'react-to-text';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 
+import { createContext } from '../../utils/context.tsx';
 import { tn } from '../../utils/tw.ts';
 import { CopyButton } from '../Button/copy-button.tsx';
+
+const [MarkdownInternalContext, useMarkdownInternalContext] = createContext<{
+  unstyledCodeBlocks?: boolean;
+}>({
+  name: 'MarkdownInternalContext',
+  strict: true,
+});
 
 export const Markdown = ({
   content,
   fallback,
   codeTheme,
+  unstyledCodeBlocks,
 }: {
   content?: string;
   fallback?: ReactNode;
   codeTheme: string;
+  unstyledCodeBlocks?: boolean;
 }) => {
   return (
-    <MarkdownHooks
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[
-        [
-          rehypePrettyCode,
-          {
-            theme: codeTheme,
-            keepBackground: false,
-            defaultLang: {
-              block: 'plaintext',
-              inline: 'plaintext',
+    <MarkdownInternalContext.Provider value={{ unstyledCodeBlocks }}>
+      <MarkdownHooks
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[
+          [
+            rehypePrettyCode,
+            {
+              theme: codeTheme,
+              keepBackground: false,
+              defaultLang: {
+                block: 'plaintext',
+                inline: 'plaintext',
+              },
             },
-          },
-        ],
-      ]}
-      fallback={fallback}
-      components={MarkdownComponents}
-    >
-      {content}
-    </MarkdownHooks>
+          ],
+        ]}
+        fallback={fallback}
+        components={MarkdownComponents}
+      >
+        {content}
+      </MarkdownHooks>
+    </MarkdownInternalContext.Provider>
   );
 };
 
@@ -46,7 +58,7 @@ const MarkdownBlockquote: Components['blockquote'] = props => {
   return <blockquote>{props.children}</blockquote>;
 };
 
-const MarkdownCode: Components['code'] = props => {
+const MarkdownCode: Components['code'] = ({ node, ...props }) => {
   // If style is set to grid, this is being rendered by the pre / larger code fence block
   const isInCodeFence = props.style?.display === 'grid';
   if (isInCodeFence) return <code {...props} />;
@@ -55,9 +67,15 @@ const MarkdownCode: Components['code'] = props => {
 };
 
 const MarkdownFigure: Components['figure'] = ({ className, node, children, ...props }) => {
+  const { unstyledCodeBlocks } = useMarkdownInternalContext();
+
   const isCodeFigure = props['data-rehype-pretty-code-figure'] !== undefined;
 
-  const classes = tn(isCodeFigure && 'ak-frame ak-layer-[down-0.5] -mx-1.5 text-sm leading-relaxed', className);
+  const classes = tn(
+    isCodeFigure && 'ak-frame text-sm leading-relaxed',
+    !unstyledCodeBlocks && 'ak-layer-[down-0.5] -mx-1.5',
+    className,
+  );
 
   let figureChildren: ReactNode[] = [];
 
@@ -113,8 +131,8 @@ const MarkdownFigure: Components['figure'] = ({ className, node, children, ...pr
   return <figure className={classes} {...props} children={figureChildren} />;
 };
 
-const MarkdownPre: Components['pre'] = props => {
-  return <pre className="px-0 py-4" {...props} />;
+const MarkdownPre: Components['pre'] = ({ node, ...props }) => {
+  return <pre className="max-h-[40rem] overflow-auto px-0 py-4" {...props} />;
 };
 
 const MarkdownComponents: Components = {

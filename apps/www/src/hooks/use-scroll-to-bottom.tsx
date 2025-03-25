@@ -92,7 +92,7 @@ export function useScrollToBottom(
       // console.log('useScrollToBottom.handleScroll()', {
       //   scrollDirection,
       //   isAtBottom,
-      //   canScroll: canScroll.current,
+      //   canScroll: canAutoScroll.current,
       //   isMouseWheelScroll: isMouseWheelScroll.current,
       // });
     };
@@ -100,6 +100,12 @@ export function useScrollToBottom(
     // Handle wheel events to detect mouse scrolling specifically
     const handleWheel = (e: WheelEvent) => {
       const direction = e.deltaY > 0 ? 'down' : 'up';
+
+      isProgrammaticScroll.current = false;
+      if (programmaticScrollTimeout.current) {
+        clearTimeout(programmaticScrollTimeout.current);
+        programmaticScrollTimeout.current = null;
+      }
 
       if (mouseWheelScrollTimeout.current) {
         clearTimeout(mouseWheelScrollTimeout.current);

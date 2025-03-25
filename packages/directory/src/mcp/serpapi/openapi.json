@@ -13,6 +13,7 @@
   "paths": {
     "/search": {
       "get": {
+        "operationId": "search",
         "summary": "Perform a search",
         "description": "Retrieves search engine results based on the provided query and parameters.",
         "security": [
@@ -99,10 +100,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "active",
-                "off"
-              ]
+              "enum": ["active", "off"]
             },
             "description": "Whether to enable safe search (\"active\" to filter explicit content, \"off\" to disable)."
           },

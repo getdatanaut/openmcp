@@ -1,11 +1,19 @@
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
-import { faArrowUp, faStop } from '@fortawesome/free-solid-svg-icons';
-import { Button, createContext, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
-import { useMutation } from '@tanstack/react-query';
+import { faArrowUp, faExclamationCircle, faSpinner, faStop } from '@fortawesome/free-solid-svg-icons';
+import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
-import { type UIMessage } from 'ai';
+import { type ToolInvocation, type UIMessage } from 'ai';
 import { observer } from 'mobx-react-lite';
-import { type CSSProperties, type FormEvent, type KeyboardEvent, type RefObject, useCallback, useMemo } from 'react';
+import {
+  type CSSProperties,
+  type FormEvent,
+  type KeyboardEvent,
+  type RefObject,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 import { Markdown } from '~/components/Markdown.tsx';
@@ -153,7 +161,7 @@ export const ThreadMessages = ({ className, style }: { className?: string; style
     <>
       <div className={twMerge('flex flex-1 flex-col', className)} style={style} ref={messagesContainerRef}>
         {chat.messages.map((message, index) => (
-          <ThreadMessage key={index} lineNumber={index + 1} isFirst={index === 0} {...message} />
+          <ThreadMessage key={message.id} lineNumber={index + 1} isFirst={index === 0} message={message} />
         ))}
       </div>
       <div ref={messagesEndRef} />
@@ -162,16 +170,16 @@ export const ThreadMessages = ({ className, style }: { className?: string; style
 };
 
 const ThreadMessage = ({
-  content,
-  role,
-  isActive,
+  message,
   lineNumber,
   isFirst,
-}: UIMessage & {
-  isActive?: boolean;
+}: {
+  message: UIMessage;
   lineNumber: number;
   isFirst: boolean;
 }) => {
+  const { role, parts } = message;
+
   const classes = tn('ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
 
   const containerClasses = tn(
@@ -180,7 +188,7 @@ const ThreadMessage = ({
     role === 'assistant' && 'ak-text/80',
   );
 
-  const contentClasses = tn('mx-auto w-full max-w-[60rem] leading-relaxed');
+  const contentClasses = tn('mx-auto flex w-full max-w-[60rem] flex-col gap-6 leading-relaxed');
 
   return (
     <div className={classes}>
@@ -192,11 +200,110 @@ const ThreadMessage = ({
         ) : null}
 
         <div className={contentClasses}>
-          <Markdown content={content} className="min-w-0 flex-1" />
+          {parts.map((p, i) => {
+            if (p.type === 'text' && p.text) {
+              return <Markdown key={i} content={p.text} className="min-w-0 flex-1" />;
+            }
+
+            if (p.type === 'tool-invocation') {
+              return <ToolInvocationPart key={p.toolInvocation.toolCallId} toolInvocation={p.toolInvocation} />;
+            }
+
+            return null;
+          })}
         </div>
       </div>
     </div>
   );
+};
+
+const ToolInvocationPart = ({ toolInvocation }: { toolInvocation: ToolInvocation }) => {
+  const { state, args } = toolInvocation;
+  const { app } = useRootStore();
+  const { manager } = useCurrentManager();
+
+  const [expanded, setExpanded] = useState(false);
+
+  const [serverId, toolName] = toolInvocation.toolName.split('__');
+
+  const { data: servers } = useQuery({
+    ...queryOptions.servers(),
+    queryFn: () => manager.servers.findMany(),
+  });
+
+  const server = servers?.find(s => s.id === serverId);
+
+  if (server) {
+    const icon = app.currentThemeId === 'light' ? server.presentation?.icon?.light : server.presentation?.icon?.dark;
+    const iconElem = icon ? (
+      <img src={icon} alt={server.name} className="ak-frame-xs h-block-xs w-block-xs" />
+    ) : (
+      <Avatar name={server.name} size="xs" />
+    );
+
+    const result =
+      state === 'result'
+        ? (toolInvocation.result as { isError?: true; content: { type: 'text'; text: string }[] })
+        : null;
+
+    const contentClasses = tn('ak-frame -mx-1.5 divide-y-[0.5px] border-[0.5px] text-xs', expanded ? '' : 'w-fit');
+
+    let expandedElem;
+    if (expanded) {
+      expandedElem = (
+        <>
+          <Markdown
+            unstyledCodeBlocks
+            content={`
+\`\`\`json title="tool args"
+${JSON.stringify(args || {}, null, 2)}
+\`\`\``}
+          />
+
+          <Markdown
+            unstyledCodeBlocks
+            content={`
+\`\`\`json title="tool result"
+${JSON.stringify(JSON.parse(result?.content[0]?.text || '{}'), null, 2)}
+\`\`\`
+`}
+          />
+        </>
+      );
+    }
+
+    return (
+      <div className={contentClasses}>
+        <div
+          className="flex cursor-pointer items-center gap-3 py-2 pr-3 pl-2"
+          onClick={() => setExpanded(prev => !prev)}
+        >
+          {iconElem}
+
+          <div>
+            {server.name} / {toolName}
+          </div>
+
+          {state !== 'result' ? (
+            <div>
+              <Icon icon={faSpinner} spin />
+            </div>
+          ) : null}
+
+          {result?.isError ? (
+            <div className="ak-text-danger">
+              <Icon icon={faExclamationCircle} />
+            </div>
+          ) : null}
+        </div>
+
+        {expandedElem}
+      </div>
+    );
+  }
+
+  // Only showing server tool invocations for now
+  return null;
 };
 
 export const ThreadChatBox = ({

@@ -26,6 +26,7 @@ export const avatarStyle = tv(
     },
     variants: {
       size: {
+        xs: tn('h-block-xs w-block-xs text-xs'),
         sm: tn('h-block-sm w-block-sm text-sm'),
         md: tn('h-block-md w-block-md text-base'),
         lg: tn('h-block-lg w-block-lg text-base'),
