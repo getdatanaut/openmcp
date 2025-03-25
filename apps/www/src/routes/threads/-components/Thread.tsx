@@ -326,29 +326,34 @@ export const ThreadChatBox = ({
     }
   };
 
-  return (
-    <form className={twMerge('flex w-full items-center gap-3', className)} onSubmit={handleSubmit}>
-      <TextareaAutosize
-        id="message"
-        name="message"
-        placeholder="Ask anything"
-        className={twMerge(
-          'caret-secondary focus:placeholder:ak-text-secondary max-h-[30rem] flex-1 resize-none py-5 pl-2 focus:outline-none',
-          inputClassName,
-        )}
-        value={chat.input}
-        onChange={chat.handleInputChange}
-        onKeyDown={onKeyDown}
-        autoComplete="off"
-        disabled={chat.status !== 'ready'}
-        autoFocus
-      />
+  const isStreaming = chat.status === 'submitted' || chat.status === 'streaming';
 
-      {chat.status === 'submitted' || chat.status === 'streaming' ? (
-        <Button icon={faStop} variant="solid" intent="danger" onClick={() => chat.stop()} />
-      ) : (
-        <Button type="submit" icon={faArrowUp} variant="solid" intent="primary" disabled={!chat.input} />
-      )}
-    </form>
+  return (
+    <>
+      {chat.error ? <div className="ak-text-danger pt-3 text-xs">{chat.error.message}</div> : null}
+      <form className={twMerge('flex w-full items-center gap-3', className)} onSubmit={handleSubmit}>
+        <TextareaAutosize
+          id="message"
+          name="message"
+          placeholder="Ask anything"
+          className={twMerge(
+            'caret-secondary focus:placeholder:ak-text-secondary max-h-[30rem] flex-1 resize-none py-5 pl-2 focus:outline-none',
+            inputClassName,
+          )}
+          value={chat.input}
+          onChange={chat.handleInputChange}
+          onKeyDown={onKeyDown}
+          autoComplete="off"
+          disabled={isStreaming}
+          autoFocus
+        />
+
+        {isStreaming ? (
+          <Button icon={faStop} variant="solid" intent="danger" onClick={() => chat.stop()} />
+        ) : (
+          <Button type="submit" icon={faArrowUp} variant="solid" intent="primary" disabled={!chat.input} />
+        )}
+      </form>
+    </>
   );
 };
