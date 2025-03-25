@@ -58,7 +58,7 @@ export const MainSidebar = observer(({ className }: { className?: string }) => {
       className={twMerge('ease-spring flex h-screen flex-col transition-[width] duration-150 ease-in-out', className)}
     >
       {/* This header section stays visible even when collapsed */}
-      <div className="ak-layer-0 sticky top-0 z-10">
+      <div className="ak-layer-0 relative top-0 z-10">
         <div className="h-10" />
         <div
           className={twMerge(
@@ -81,26 +81,31 @@ export const MainSidebar = observer(({ className }: { className?: string }) => {
       {/* Everything below the header fades in/out */}
       <div
         className={twMerge(
-          'flex flex-1 flex-col transition-opacity duration-100',
+          'flex shrink-0 flex-col items-start gap-1 py-5 pl-3 transition-opacity duration-100',
           app.sidebarCollapsed ? 'opacity-0' : 'opacity-100',
         )}
       >
-        <div className="flex flex-col items-start gap-1 pt-5 pl-3">
-          <SidebarListItem
-            name="History"
-            isActive={sidebar === 'history'}
-            icon={faComments}
-            render={<Link to="." search={{ sidebar: 'history' }} />}
-          />
-          <SidebarListItem
-            name="Servers"
-            isActive={sidebar === 'servers'}
-            icon={faServer}
-            render={<Link to="." search={{ sidebar: 'servers' }} />}
-          />
-        </div>
+        <SidebarListItem
+          name="History"
+          isActive={sidebar === 'history'}
+          icon={faComments}
+          render={<Link to="." search={{ sidebar: 'history' }} />}
+        />
+        <SidebarListItem
+          name="Servers"
+          isActive={sidebar === 'servers'}
+          icon={faServer}
+          render={<Link to="." search={{ sidebar: 'servers' }} />}
+        />
+      </div>
 
-        <div className="flex-1 overflow-y-auto pt-5 pb-12">{content}</div>
+      <div
+        className={twMerge(
+          'flex-1 overflow-y-auto pb-12 transition-opacity duration-100',
+          app.sidebarCollapsed ? 'opacity-0' : 'opacity-100',
+        )}
+      >
+        {content}
       </div>
     </div>
   );
@@ -117,7 +122,7 @@ const SidebarSection = ({
 }) => {
   return (
     <div>
-      <div className="flex cursor-default items-center gap-2.5 border-y-[0.5px] px-5 py-2 text-sm">
+      <div className="ak-layer-0 sticky top-0 z-10 flex cursor-default items-center gap-2.5 border-y-[0.5px] px-5 py-2 text-sm">
         {collapsible ? <Icon icon={faCaretDown} className="pl-0.5 text-[0.8em]" /> : null}
         <div>{name}</div>
       </div>
