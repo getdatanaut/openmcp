@@ -142,7 +142,7 @@ describe('ClientServer', () => {
         serverConfig: {},
       });
 
-      const tools = await clientServer.listTools();
+      const tools = await clientServer.listTools({ lazyConnect: true });
 
       expect(tools).toEqual([expect.objectContaining({ name: 'ping' }), expect.objectContaining({ name: 'greet' })]);
     });
@@ -155,7 +155,7 @@ describe('ClientServer', () => {
         serverConfig: {},
       });
 
-      const tools = await clientServer.listTools();
+      const tools = await clientServer.listTools({ lazyConnect: true });
 
       await tools.find(t => t.name === 'greet')!.execute({ name: 'marc' });
 
@@ -181,7 +181,7 @@ describe('ClientServerManager', () => {
         serverConfig: {},
       });
 
-      const tools = await clientServerManager.toolsByClientId({ clientId: 'client_1' });
+      const tools = await clientServerManager.toolsByClientId({ clientId: 'client_1', lazyConnect: true });
 
       expect(tools).toEqual([
         expect.objectContaining({ server: PING_PONG_SERVER_ID, name: 'ping' }),
