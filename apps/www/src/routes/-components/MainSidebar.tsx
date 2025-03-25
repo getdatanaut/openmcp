@@ -34,6 +34,7 @@ import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
+import { queryOptions } from '~/utils/query-options.ts';
 
 export const MainSidebar = observer(({ className }: { className?: string }) => {
   const { sidebar } = useSearch({ strict: false });
@@ -175,7 +176,7 @@ const ThreadHistory = () => {
   const navigate = useNavigate();
 
   const { data: threads } = useQuery({
-    queryKey: ['threads'],
+    ...queryOptions.threads(),
     queryFn: () => manager.threads.findMany(),
   });
 
@@ -186,8 +187,7 @@ const ThreadHistory = () => {
         void navigate({ to: '/threads' });
       }
 
-      // @TODO rework react query usage to consolidate query options into one spot, best practices
-      void queryClient.invalidateQueries({ queryKey: ['threads'] });
+      void queryClient.invalidateQueries({ queryKey: queryOptions.threads().queryKey });
     },
   });
 
@@ -279,20 +279,19 @@ const InstalledServers = () => {
   const queryClient = useQueryClient();
 
   const { data: clientServers } = useQuery({
-    queryKey: ['clientServers'],
+    ...queryOptions.clientServers(),
     queryFn: () => manager.clientServers.findMany(),
   });
 
   const { data: servers } = useQuery({
-    queryKey: ['servers'],
+    ...queryOptions.servers(),
     queryFn: () => manager.servers.findMany(),
-    staleTime: 1000 * 60 * 60 * 24,
   });
 
   const { mutate: deleteClientServer } = useMutation({
     mutationFn: manager.clientServers.delete,
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['clientServers'] });
+      void queryClient.invalidateQueries({ queryKey: queryOptions.clientServers().queryKey });
     },
   });
 
@@ -347,7 +346,7 @@ const AvailableServers = observer(() => {
   const { manager } = useCurrentManager();
 
   const { data: servers } = useQuery({
-    queryKey: ['servers'],
+    ...queryOptions.servers(),
     queryFn: () => manager.servers.findMany(),
   });
 

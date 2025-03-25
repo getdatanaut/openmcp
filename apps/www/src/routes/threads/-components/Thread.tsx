@@ -13,6 +13,7 @@ import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { useScrollToBottom } from '~/hooks/use-scroll-to-bottom.tsx';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
+import { queryOptions } from '~/utils/query-options.ts';
 
 export type ThreadProps = {
   children: ReactNode;
@@ -55,7 +56,7 @@ export const Thread = observer(
         const title = await conductor.generateTitle({ messages });
         if (title) {
           await manager.threads.update({ id: threadId }, { name: title });
-          void queryClient.invalidateQueries({ queryKey: ['threads'] });
+          void queryClient.invalidateQueries({ queryKey: queryOptions.threads().queryKey });
         }
       } catch (error) {
         console.error('Error generating thread name', error);
@@ -109,8 +110,7 @@ export const Thread = observer(
     const { mutateAsync: createThread } = useMutation({
       mutationFn: manager.threads.create,
       onSuccess: () => {
-        // @TODO rework react query usage to consolidate query options into one spot, best practices
-        void queryClient.invalidateQueries({ queryKey: ['threads'] });
+        void queryClient.invalidateQueries({ queryKey: queryOptions.threads().queryKey });
       },
     });
 

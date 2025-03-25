@@ -16,6 +16,7 @@ import { Markdown } from '~/components/Markdown.tsx';
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ClientServerId, type TMcpServerId } from '~/utils/ids.ts';
+import { queryOptions } from '~/utils/query-options.ts';
 
 export const AddClientServerDialog = ({
   isOpen,
@@ -38,9 +39,8 @@ const AddClientServerDialogContent = ({ serverId, close }: { serverId: TMcpServe
   const { manager } = useCurrentManager();
 
   const { data: servers } = useQuery({
-    queryKey: ['servers'],
-    queryFn: () => manager.servers.findMany({}),
-    staleTime: 1000 * 60 * 60 * 24,
+    ...queryOptions.servers(),
+    queryFn: () => manager.servers.findMany(),
   });
 
   const server = servers?.find(server => server.id === serverId);
@@ -55,7 +55,7 @@ const AddClientServerDialogContent = ({ serverId, close }: { serverId: TMcpServe
       });
     },
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['clientServers'] });
+      void queryClient.invalidateQueries({ queryKey: queryOptions.clientServers().queryKey });
       close();
     },
   });

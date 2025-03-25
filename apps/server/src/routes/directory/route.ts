@@ -12,6 +12,19 @@ const app = new Hono<{ Bindings: Env }>()
       }),
     );
   })
+  .get('/:serverId', async c => {
+    const { serverId } = c.req.param();
+
+    const url = new URL(c.req.url);
+    const directory = [firecrawl, openapi, petstore, pokemon, serpapi, slack];
+
+    const server = directory.find(server => server.id === serverId);
+    if (!server) {
+      return c.json({ error: 'Server not found' }, 404);
+    }
+
+    return c.json(JSON.parse(JSON.stringify(server).replaceAll('https://datanaut.ai/api', url.origin)));
+  })
   .get('/:serverId/:filename', async c => {
     const { serverId, filename } = c.req.param();
 

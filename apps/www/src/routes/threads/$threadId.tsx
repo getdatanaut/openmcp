@@ -8,6 +8,7 @@ import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ThreadId } from '~/utils/ids.ts';
+import { queryOptions } from '~/utils/query-options.ts';
 
 import { Thread, ThreadChatBox, ThreadMessages } from './-components/Thread.tsx';
 
@@ -26,13 +27,13 @@ function ThreadRoute() {
   return <ThreadRouteComponent />;
 }
 
-const ThreadRouteComponent = observer(() => {
+const ThreadRouteComponent = () => {
   const { threadId } = Route.useParams();
   const { manager } = useCurrentManager();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: thread } = useQuery({
-    queryKey: ['thread', threadId],
+    ...queryOptions.thread({ threadId }),
     queryFn: () => manager.threads.get({ id: threadId }),
   });
 
@@ -43,7 +44,7 @@ const ThreadRouteComponent = observer(() => {
       </div>
     </CanvasLayout>
   );
-});
+};
 
 const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: RefObject<HTMLDivElement | null> }) => {
   const { threadId } = Route.useParams();
@@ -51,7 +52,7 @@ const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: Re
   const { app } = useRootStore();
 
   const { data: messages, isPending } = useQuery({
-    queryKey: ['thread', threadId, 'messages'],
+    ...queryOptions.threadMessages({ threadId }),
     queryFn: async () => {
       const msgs = await manager.threads.listMessages({ id: threadId });
       return msgs.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());

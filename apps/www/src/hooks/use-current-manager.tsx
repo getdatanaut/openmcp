@@ -13,6 +13,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { type ReactNode, useEffect, useRef } from 'react';
 
 import type { LocalDb } from '~/utils/local-db.ts';
+import { queryOptions } from '~/utils/query-options.ts';
 
 import { useRootStore } from './use-root-store.tsx';
 
@@ -93,12 +94,15 @@ const initServerStorage = ({ db, queryClient }: { db: LocalDb; queryClient: Quer
     },
     findMany: async where => {
       return queryClient.fetchQuery({
-        queryKey: ['directory'],
+        ...queryOptions.directory(),
         queryFn: () => fetch(`${import.meta.env.VITE_API_URL}/directory`).then(res => res.json()),
       });
     },
     getById: async ({ id }) => {
-      return queryClient.getQueryData<ServerStorageData[]>(['directory'])?.find(server => server.id === id);
+      return queryClient.fetchQuery({
+        ...queryOptions.directoryServer({ serverId: id }),
+        queryFn: () => fetch(`${import.meta.env.VITE_API_URL}/directory/${id}`).then(res => res.json()),
+      });
     },
   } satisfies MpcManagerStorage['servers'];
 };
