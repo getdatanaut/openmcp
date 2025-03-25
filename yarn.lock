@@ -87,6 +87,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apidevtools/json-schema-ref-parser@npm:11.9.3":
+  version: 11.9.3
+  resolution: "@apidevtools/json-schema-ref-parser@npm:11.9.3"
+  dependencies:
+    "@jsdevtools/ono": "npm:^7.1.3"
+    "@types/json-schema": "npm:^7.0.15"
+    js-yaml: "npm:^4.1.0"
+  checksum: 10c0/5745813b3d964279f387677b7a903ba6634cdeaf879ff3a331a694392cbc923763f398506df190be114f2574b8b570baab3e367c2194bb35f50147ff6cf27d7a
+  languageName: node
+  linkType: hard
+
 "@ariakit/core@npm:0.4.14":
   version: 0.4.14
   resolution: "@ariakit/core@npm:0.4.14"
@@ -1996,12 +2007,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/openapi@workspace:packages/openapi"
   dependencies:
+    "@apidevtools/json-schema-ref-parser": "npm:11.9.3"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.7.0"
     "@stoplight/http-spec": "npm:7.1.0"
     "@stoplight/json": "npm:3.21.7"
-    "@stoplight/json-schema-ref-parser": "patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch"
     eslint: "npm:9.23.0"
     msw: "npm:2.7.3"
     tsup: "npm:8.4.0"
@@ -2432,32 +2443,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/json-schema-ref-parser@npm:10.0.0":
-  version: 10.0.0
-  resolution: "@stoplight/json-schema-ref-parser@npm:10.0.0"
-  dependencies:
-    "@jsdevtools/ono": "npm:^7.1.3"
-    "@stoplight/path": "npm:^1.3.2"
-    "@stoplight/yaml": "npm:^4.0.2"
-    call-me-maybe: "npm:^1.0.1"
-    url: "npm:^0.11.3"
-  checksum: 10c0/5252fd035999206f2ad24485349b8b4ab505443cd1d6a40f9dcb06f743a87de7c166b107998cc6c2c39249c874a634c5d0c11413f4978a8bf840961551149701
-  languageName: node
-  linkType: hard
-
-"@stoplight/json-schema-ref-parser@patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch":
-  version: 10.0.0
-  resolution: "@stoplight/json-schema-ref-parser@patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch::version=10.0.0&hash=374589"
-  dependencies:
-    "@jsdevtools/ono": "npm:^7.1.3"
-    "@stoplight/path": "npm:^1.3.2"
-    "@stoplight/yaml": "npm:^4.0.2"
-    call-me-maybe: "npm:^1.0.1"
-    url: "npm:^0.11.3"
-  checksum: 10c0/e5c12e741383878ab499fb0023af6cceca961423bb92f4a16be85830c428595ca0d460f857e4d2806e1185a02595b295e4b845a23aefe2a4c31856ea65d67afe
-  languageName: node
-  linkType: hard
-
 "@stoplight/json@npm:3.21.7, @stoplight/json@npm:^3.18.1":
   version: 3.21.7
   resolution: "@stoplight/json@npm:3.21.7"
@@ -2472,7 +2457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/ordered-object-literal@npm:^1.0.3, @stoplight/ordered-object-literal@npm:^1.0.5":
+"@stoplight/ordered-object-literal@npm:^1.0.3":
   version: 1.0.5
   resolution: "@stoplight/ordered-object-literal@npm:1.0.5"
   checksum: 10c0/e14402990f66f48478fb0871c14fd3c034f1bf9c56161921c354ccaa6dfb2639408fe9a8c77275119d6b734ee5513258f51a0ee2459d1cc6d9068b67eeb48862
@@ -2503,35 +2488,6 @@ __metadata:
     "@types/json-schema": "npm:^7.0.4"
     utility-types: "npm:^3.10.0"
   checksum: 10c0/11d741bd71c6a286cef946b10e003b9b13b031f512d576ed1274c194540f0ee928332108d2b4d1bc87a8e5ba9703d1266951e6a53b8eb0a8db4dc68b1a798cab
-  languageName: node
-  linkType: hard
-
-"@stoplight/types@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "@stoplight/types@npm:14.1.1"
-  dependencies:
-    "@types/json-schema": "npm:^7.0.4"
-    utility-types: "npm:^3.10.0"
-  checksum: 10c0/1573d842fee99a7f1eea1f2b17c28dcbfb1be51b72f2ef794e07d265b2fb8900654b5848f608952cd1e3dedf6c7ec157c82c65d4d95728d6309f4b1722a11450
-  languageName: node
-  linkType: hard
-
-"@stoplight/yaml-ast-parser@npm:0.0.50":
-  version: 0.0.50
-  resolution: "@stoplight/yaml-ast-parser@npm:0.0.50"
-  checksum: 10c0/44d83c7081888402bee88ad0c1e90cd191478005773d8f9767015e109f8499c17da57eb790cca30ba1c02d2f1b74f82992f01ca8ffa272085d17b5f4b5a618cf
-  languageName: node
-  linkType: hard
-
-"@stoplight/yaml@npm:^4.0.2":
-  version: 4.3.0
-  resolution: "@stoplight/yaml@npm:4.3.0"
-  dependencies:
-    "@stoplight/ordered-object-literal": "npm:^1.0.5"
-    "@stoplight/types": "npm:^14.1.1"
-    "@stoplight/yaml-ast-parser": "npm:0.0.50"
-    tslib: "npm:^2.2.0"
-  checksum: 10c0/d72b26e05a9cf96cb8321ea14bd03ba85aae023d48484d038e1f231ebdd7b8abcda496f55676944c5d138b177294991c25a3ae49cb5182f16c7eaa4660bc9928
   languageName: node
   linkType: hard
 
@@ -4580,13 +4536,6 @@ __metadata:
     call-bind-apply-helpers: "npm:^1.0.2"
     get-intrinsic: "npm:^1.3.0"
   checksum: 10c0/f4796a6a0941e71c766aea672f63b72bc61234c4f4964dc6d7606e3664c307e7d77845328a8f3359ce39ddb377fed67318f9ee203dea1d47e46165dcf2917644
-  languageName: node
-  linkType: hard
-
-"call-me-maybe@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "call-me-maybe@npm:1.0.2"
-  checksum: 10c0/8eff5dbb61141ebb236ed71b4e9549e488bcb5451c48c11e5667d5c75b0532303788a1101e6978cafa2d0c8c1a727805599c2741e3e0982855c9f1d78cd06c9f
   languageName: node
   linkType: hard
 
@@ -9572,13 +9521,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^1.4.1":
-  version: 1.4.1
-  resolution: "punycode@npm:1.4.1"
-  checksum: 10c0/354b743320518aef36f77013be6e15da4db24c2b4f62c5f1eb0529a6ed02fbaf1cb52925785f6ab85a962f2b590d9cd5ad730b70da72b5f180e2556b8bd3ca08
-  languageName: node
-  linkType: hard
-
 "punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
@@ -9595,7 +9537,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.12.3, qs@npm:^6.14.0":
+"qs@npm:^6.14.0":
   version: 6.14.0
   resolution: "qs@npm:6.14.0"
   dependencies:
@@ -11345,7 +11287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.1, tslib@npm:^2.2.0, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.0.1, tslib@npm:^2.4.0, tslib@npm:^2.6.2":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
@@ -11846,16 +11788,6 @@ __metadata:
     querystringify: "npm:^2.1.1"
     requires-port: "npm:^1.0.0"
   checksum: 10c0/bd5aa9389f896974beb851c112f63b466505a04b4807cea2e5a3b7092f6fbb75316f0491ea84e44f66fed55f1b440df5195d7e3a8203f64fcefa19d182f5be87
-  languageName: node
-  linkType: hard
-
-"url@npm:^0.11.3":
-  version: 0.11.4
-  resolution: "url@npm:0.11.4"
-  dependencies:
-    punycode: "npm:^1.4.1"
-    qs: "npm:^6.12.3"
-  checksum: 10c0/cc93405ae4a9b97a2aa60ca67f1cb1481c0221cb4725a7341d149be5e2f9cfda26fd432d64dbbec693d16593b68b8a46aad8e5eab21f814932134c9d8620c662
   languageName: node
   linkType: hard
 

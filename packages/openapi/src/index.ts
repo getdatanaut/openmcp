@@ -1,10 +1,10 @@
+import { dereference } from '@apidevtools/json-schema-ref-parser';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';
 import { traverse } from '@stoplight/json';
-import $RefParser from '@stoplight/json-schema-ref-parser/node';
 import type { IHttpOperation, IHttpOperationRequest } from '@stoplight/types';
 import { unset } from 'lodash';
 
@@ -138,7 +138,7 @@ export async function createMcpServer(
 }
 
 async function bundleOasService(openapi: Record<string, unknown> | string) {
-  const result = await new $RefParser().dereference(openapi);
+  const result = await dereference(openapi);
 
   if ('openapi' in result) {
     return bundleOas3Service({ document: result });

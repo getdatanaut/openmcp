@@ -1,7 +1,21 @@
 {
   "name": "@openmcp/openapi",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getdatanaut/openmcp",
+    "directory": "packages/openapi"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json"
+  ],
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -17,10 +31,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@apidevtools/json-schema-ref-parser": "11.9.3",
     "@modelcontextprotocol/sdk": "1.7.0",
     "@stoplight/http-spec": "7.1.0",
-    "@stoplight/json": "3.21.7",
-    "@stoplight/json-schema-ref-parser": "patch:@stoplight/json-schema-ref-parser@npm%3A10.0.0#~/.yarn/patches/@stoplight-json-schema-ref-parser-npm-10.0.0-d23b3543b0.patch"
+    "@stoplight/json": "3.21.7"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",

@@ -86,7 +86,10 @@ jobs:
       - name: Setup
         uses: './.github/actions/setup'
 
-      - name: Create Release Pull Request or Publish to npm
+      - name: Build
+        run: yarn build --filter "@openmcp/*"
+
+      - name: Create Release Pull Request or Publish to NPM
         id: changesets
         uses: changesets/action@v1
         with:

@@ -1,7 +1,21 @@
 {
   "name": "@openmcp/cloudflare",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getdatanaut/openmcp",
+    "directory": "packages/cloudflare"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json"
+  ],
   "exports": {
     ".": {
       "types": "./src/index.ts",
