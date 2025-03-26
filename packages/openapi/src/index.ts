@@ -5,7 +5,7 @@ import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';
 import { traverse } from '@stoplight/json';
-import type { IHttpOperation, IHttpOperationRequest } from '@stoplight/types';
+import type { IHttpOperation } from '@stoplight/types';
 import { unset } from 'lodash';
 
 /**
@@ -45,21 +45,20 @@ export async function createMcpServer(
   );
 
   const operationTools = new Map<string, { tool: Tool; operation: IHttpOperation<false> }>();
+  const operations = service.operations as IHttpOperation<false>[];
 
-  for (const operation of service.operations) {
-    const request = operation.request as IHttpOperationRequest<false>;
+  for (const operation of operations) {
+    const endpointName = `${operation.method.toUpperCase()} ${operation.path}`;
+    const name = String(operation.iid || operation.id || endpointName).slice(0, 64);
+    const description = [endpointName, operation.description || ''].filter(Boolean).join(' - ');
 
-    const toolName = operation.iid || operation.id || `${operation.method.toUpperCase()} ${operation.path}`;
-    const description = [`${operation.method.toUpperCase()} ${operation.path}`, `${operation.description || ''}`]
-      .filter(Boolean)
-      .join(' - ');
-
-    operationTools.set(toolName, {
-      operation: operation as IHttpOperation<false>,
+    operationTools.set(name, {
+      operation,
       tool: {
-        name: toolName,
+        name,
         description,
-        inputSchema: requestParametersToTool(request),
+        inputSchema: getOperationInputSchema(operation),
+        outputSchema: getOperationOutputSchema(operation),
       },
     });
   }
@@ -147,11 +146,12 @@ async function bundleOasService(openapi: Record<string, unknown> | string) {
   }
 }
 
-function requestParametersToTool({ path, query, headers, body }: IHttpOperationRequest<false>) {
-  const pathParams = parametersToTool(path);
-  const queryParams = parametersToTool(query);
-  const headerParams = parametersToTool(headers);
-  const bodyParam = body?.contents?.find(param => param.schema)?.schema;
+function getOperationInputSchema(operation: IHttpOperation<false>) {
+  const request = operation.request || {};
+  const pathParams = parametersToTool(request.path);
+  const queryParams = parametersToTool(request.query);
+  const headerParams = parametersToTool(request.headers);
+  const bodyParam = request.body?.contents?.find(param => param.schema)?.schema;
 
   return {
     type: 'object',
@@ -229,4 +229,15 @@ function removeExtraProperties<T>(obj: T): T {
   });
 
   return obj;
+}
+
+function getOperationOutputSchema(operation: IHttpOperation<false>) {
+  // Try 200 first
+  const response = operation.responses.find(r => r.code === '200')?.contents?.find(c => c.schema);
+  if (!response) {
+    // Try 2xx
+    return operation.responses.find(r => r.code.startsWith('2'))?.contents?.find(c => c.schema);
+  }
+
+  return response;
 }
