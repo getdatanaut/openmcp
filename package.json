@@ -23,7 +23,7 @@
     "deploy": "turbo run deploy",
     "clean": "rm -r **/node_modules && rm -r **/.nx && rm -r **/dist && rm -r **/build",
     "lint": "turbo run lint --log-order=grouped",
-    "lint.fix": "turbo run lint --fix --log-order=grouped && yarn format",
+    "lint.fix": "turbo run lint --log-order=grouped -- --fix && yarn format",
     "format": "prettier --ignore-path .eslintignore --write \"**/*.{ts,tsx}\";",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",

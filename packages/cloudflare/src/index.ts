@@ -7,8 +7,7 @@ export { getOpenMcpOpenAPIConfig, OpenMcpOpenAPI } from './mcp/openapi.ts';
 /**
  * Route a request to the appropriate OpenMcp Server
  * @param request Request to route
- * @param env Environment containing OpenMcp bindings
- * @param options Routing options
+ * @param mcpServerMap Map of OpenMcp Server IDs to their namespace and configuration
  * @returns Response from the OpenMcp Server or undefined if no route matched
  */
 export async function routeOpenMcpRequest<Namespace>(

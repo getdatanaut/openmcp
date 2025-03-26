@@ -48,6 +48,7 @@ export const baseConfig = tseslint.config(
   },
 
   eslint.configs.recommended,
+  // tseslint.configs.recommended,
   importPlugin.flatConfigs.recommended,
 
   {
@@ -104,6 +105,9 @@ export const baseConfig = tseslint.config(
       },
     },
     rules: {
+      // https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
+      'no-undef': 'off',
+
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
@@ -111,12 +115,14 @@ export const baseConfig = tseslint.config(
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
-      'dot-notation': 'off',
-      '@typescript-eslint/dot-notation': 'off',
+
       'no-redeclare': 'off',
 
-      // https://eslint.org/docs/latest/rules/no-undef#handled_by_typescript
-      'no-undef': 'off',
+      'dot-notation': 'off',
+      '@typescript-eslint/dot-notation': 'off',
+
+      'no-unused-vars': 'off',
+      "@typescript-eslint/no-unused-vars": "warn",
     },
   },
 

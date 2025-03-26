@@ -17,9 +17,9 @@ export class SSEServerTransport implements Transport {
   private _sessionId: string;
 
   onclose?: () => void;
-  // eslint-disable-next-line no-unused-vars
+
   onerror?: (error: Error) => void;
-  // eslint-disable-next-line no-unused-vars
+
   onmessage?: (message: JSONRPCMessage) => void;
 
   /**
