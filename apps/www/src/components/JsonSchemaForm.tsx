@@ -19,9 +19,11 @@ export interface JsonSchemaFormProps {
 
 export const useJsonSchemaForm = ({
   schema,
+  defaultValues: initialValues,
   values,
 }: {
   schema: ServerStorageData['configSchema'];
+  defaultValues?: Record<string, string | number | boolean>;
   values?: Record<string, string | number | boolean>;
 }) => {
   const defaultValues = useMemo(() => {
@@ -33,15 +35,15 @@ export const useJsonSchemaForm = ({
     if (schema.properties) {
       Object.entries(schema.properties).forEach(([key, prop]) => {
         if (prop.default !== undefined) {
-          values[key] = prop.default;
+          values[key] = initialValues?.[key] ?? prop.default;
         } else {
-          values[key] = prop.type === 'string' ? '' : prop.type === 'number' ? 0 : false;
+          values[key] = initialValues?.[key] ?? (prop.type === 'string' ? '' : prop.type === 'number' ? 0 : false);
         }
       });
     }
 
     return values;
-  }, [schema]);
+  }, [schema, initialValues]);
 
   const form = useFormStore<Record<string, string | number | boolean>>({ defaultValues, values });
 

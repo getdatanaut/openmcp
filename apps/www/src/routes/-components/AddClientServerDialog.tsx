@@ -157,7 +157,7 @@ const AddClientServerDialogForm = ({
 }) => {
   const { form } = useJsonSchemaForm({
     schema: server.configSchema,
-    values: clientServer?.serverConfig as Record<string, string | number | boolean>,
+    defaultValues: clientServer?.serverConfig as Record<string, string | number | boolean>,
   });
   form.useSubmit(async ({ values }) => {
     await handleSubmit(values);

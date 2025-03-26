@@ -138,6 +138,7 @@ export class MpcConductor {
       name: t.name,
       description: t.description,
     }));
+    const servers = Array.from(new Set(minimalToolInfo.map(t => t.server)));
 
     const result = streamText({
       model: this.#supervisor.model,
@@ -167,10 +168,28 @@ ${JSON.stringify(minimalToolInfo, null, 2)}
       maxSteps: 10,
       toolChoice: 'auto',
       tools: {
+        listTools: createTool({
+          description: 'List all available tools',
+          parameters: z.object({
+            server: z
+              .enum(servers as [string, ...string[]])
+              .optional()
+              .describe('Optionally filter by a specific server'),
+          }),
+          execute: async ({ server }) => {
+            console.log('listTools.args', { server });
+            if (server) {
+              return minimalToolInfo.filter(t => t.server === server);
+            }
+
+            return minimalToolInfo;
+          },
+        }),
+
         getTool: createTool({
           description: "Get details about a tool including the tool's inputSchema",
           parameters: z.object({
-            server: z.string().describe('The server of the tool'),
+            server: z.enum(servers as [string, ...string[]]).describe('The server of the tool'),
             name: z.string().describe('The name of the tool'),
           }),
           execute: async ({ server, name }) => {
@@ -196,7 +215,7 @@ ${JSON.stringify(minimalToolInfo, null, 2)}
         callTool: createTool({
           description: 'Call a tool. IMPORTANT: Use "getTool" before calling this tool.',
           parameters: z.object({
-            server: z.string().describe('The server of the tool'),
+            server: z.enum(servers as [string, ...string[]]).describe('The server of the tool'),
             name: z.string().describe('The name of the tool'),
             inputSchema: z
               .object({})
