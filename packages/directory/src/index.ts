@@ -1,3 +1,4 @@
+export { default as calcom } from './mcp/calcom/index.ts';
 export { default as firecrawl } from './mcp/firecrawl/index.ts';
 export { default as openapi } from './mcp/openapi/index.ts';
 export { default as petstore } from './mcp/petstore/index.ts';
