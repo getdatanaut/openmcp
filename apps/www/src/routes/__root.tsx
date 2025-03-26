@@ -10,7 +10,7 @@ import { z } from 'zod';
 import { CurrentManagerProvider } from '~/hooks/use-current-manager.tsx';
 import { RootStoreContext, useRootStore } from '~/hooks/use-root-store.tsx';
 import { createRootStore } from '~/stores/root.ts';
-import { McpServerId } from '~/utils/ids.ts';
+import { ClientServerId, McpServerId } from '~/utils/ids.ts';
 import { localDb } from '~/utils/local-db.ts';
 import { fallback } from '~/utils/routing.ts';
 
@@ -20,6 +20,7 @@ import { MainSidebar } from './-components/MainSidebar.tsx';
 const rootSearchSchema = z.object({
   sidebar: fallback(z.enum(['history', 'servers', 'dev', 'settings']).optional(), 'history'),
   server: McpServerId.validator.optional(),
+  client: ClientServerId.validator.optional(),
 });
 
 export const Route = createRootRoute({
@@ -85,16 +86,17 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
 });
 
 const GlobalModals = () => {
-  const { server } = Route.useSearch();
+  const { server, client } = Route.useSearch();
   const navigate = useNavigate();
 
   return (
     <>
       <AddClientServerDialog
         serverId={server}
+        clientServerId={client}
         isOpen={!!server}
         onClose={() => {
-          void navigate({ to: '.', search: prev => ({ ...prev, server: undefined }) });
+          void navigate({ to: '.', search: prev => ({ ...prev, server: undefined, client: undefined }) });
         }}
       />
     </>

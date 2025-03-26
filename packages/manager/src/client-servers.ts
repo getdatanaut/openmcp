@@ -48,14 +48,20 @@ export class ClientServerManager {
     return where ? found.filter(item => Object.entries(where).every(([key, value]) => item[key] === value)) : found;
   };
 
+  #getFromStorage = async ({ id }: { id: ClientServerId }) => {
+    const stored = await this.storage.getById({ id });
+    if (!stored) return undefined;
+
+    const clientServer = ClientServer.deserialize(stored, { manager: this.#manager });
+    // Sync to in-memory cache
+    this.#clientServers.set(stored.id, clientServer);
+    return clientServer;
+  };
+
   public get = async ({ id }: { id: ClientServerId }) => {
     let clientServer = this.#clientServers.get(id);
     if (!clientServer) {
-      const stored = await this.storage.getById({ id });
-      if (stored) {
-        clientServer = ClientServer.deserialize(stored, { manager: this.#manager });
-        this.#clientServers.set(stored.id, clientServer);
-      }
+      clientServer = await this.#getFromStorage({ id });
     }
     return clientServer;
   };
@@ -69,6 +75,16 @@ export class ClientServerManager {
     this.#clientServers.set(server.id, server);
 
     return server;
+  };
+
+  public update = async ({ id }: { id: ClientServerId }, options: Partial<ClientServerStorageData>) => {
+    const existing = await this.get({ id });
+    if (!existing) {
+      throw new Error(`Client server "${id}" not found`);
+    }
+
+    await this.storage.update({ id }, options);
+    return this.#getFromStorage({ id });
   };
 
   public delete = async ({ id }: { id: ClientServerId }) => {
@@ -93,7 +109,7 @@ export class ClientServerManager {
     clientId: ClientId;
     lazyConnect?: boolean;
   }): Promise<Tool[]> => {
-    const clientServers = await this.findMany({ clientId });
+    const clientServers = await this.findMany({ clientId, enabled: true });
     const tools = await Promise.all(clientServers.map(s => s.listTools({ lazyConnect })));
     return tools.flatMap(tools => tools || []);
   };
@@ -138,6 +154,7 @@ export type ClientServerStorageData = {
   clientId: ClientId;
   serverId: ServerId;
   serverConfig: Record<string, unknown>;
+  enabled?: boolean;
 };
 
 export interface ClientServerOptions {
@@ -165,6 +182,7 @@ export class ClientServer {
   public readonly clientId: ClientId;
   public readonly serverId: ServerId;
   public readonly serverConfig: Record<string, unknown>;
+  public readonly enabled: boolean = true;
 
   #manager: ClientServerOptions['manager'];
   #mcpClient?: McpClient;
@@ -180,6 +198,7 @@ export class ClientServer {
       clientId: server.clientId,
       serverId: server.serverId,
       serverConfig: server.serverConfig,
+      enabled: server.enabled ?? true, // Default enabled
     } satisfies ClientServerStorageData;
   }
 
@@ -188,6 +207,7 @@ export class ClientServer {
     this.clientId = data.clientId;
     this.serverId = data.serverId;
     this.serverConfig = data.serverConfig;
+    this.enabled = data.enabled ?? true;
     this.#manager = options.manager;
   }
 

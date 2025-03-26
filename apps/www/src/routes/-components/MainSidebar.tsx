@@ -33,7 +33,7 @@ import { useEffect } from 'react';
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
-import { type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
+import { type TClientServerId, type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
 import { queryOptions } from '~/utils/query-options.ts';
 
 export const MainSidebar = observer(({ className }: { className?: string }) => {
@@ -332,6 +332,17 @@ const InstalledServers = () => {
                 key={clientServer.id}
                 server={server}
                 handleDelete={() => deleteClientServer({ id: clientServer.id })}
+                disabled={!clientServer.enabled}
+                render={
+                  <Link
+                    to="."
+                    search={prev => ({
+                      ...prev,
+                      server: clientServer.serverId as TMcpServerId,
+                      client: clientServer.id as TClientServerId,
+                    })}
+                  />
+                }
               />
             );
           })}
@@ -377,11 +388,13 @@ const ServerListItem = observer(
     handleAdd,
     handleDelete,
     ref,
+    disabled = false,
     ...otherProps
   }: {
     server: Server;
     handleAdd?: React.MouseEventHandler<HTMLElement>;
     handleDelete?: React.MouseEventHandler<HTMLElement>;
+    disabled?: boolean;
     ref?: React.Ref<HTMLElement>;
   } & Options) => {
     const { app } = useRootStore();
@@ -393,7 +406,10 @@ const ServerListItem = observer(
       <Avatar name={server.name} size="lg" />
     );
 
-    const className = tn('ak-frame-sm hover:ak-layer-pop group flex cursor-pointer items-center gap-4 p-2');
+    const className = tn(
+      'ak-frame-sm hover:ak-layer-pop group flex cursor-pointer items-center gap-4 p-2',
+      disabled && 'opacity-50',
+    );
     const children = (
       <>
         <div className="pt-px">{iconElem}</div>
