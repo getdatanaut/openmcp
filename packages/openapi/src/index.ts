@@ -1,4 +1,4 @@
-import { dereference } from '@apidevtools/json-schema-ref-parser';
+import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
@@ -7,6 +7,11 @@ import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';
 import { traverse } from '@stoplight/json';
 import type { IHttpOperation } from '@stoplight/types';
 import { unset } from 'lodash';
+
+export type ServerConfig = {
+  openapi: Record<string, unknown> | string;
+  serverUrl?: string;
+};
 
 /**
  * Allow the client to override parameters for tool calls
@@ -18,17 +23,17 @@ export type ClientConfig = {
   body?: Record<string, unknown>;
 };
 
+type ToolSchema = Tool['inputSchema'];
+
 export async function createMcpServer(
-  {
-    openapi,
-    serverUrl,
-  }: {
-    openapi: Record<string, unknown> | string;
-    serverUrl?: string;
-  },
+  { openapi, serverUrl }: ServerConfig,
   getClientConfig?: () => Promise<ClientConfig> | ClientConfig,
 ) {
-  const service = await bundleOasService(openapi);
+  const { data: service, error } = await bundleOasService(openapi);
+  if (error) {
+    console.error(`Error bundling openapi ${openapi}:`, error);
+    throw error;
+  }
 
   const baseUrl = serverUrl || service.servers?.[0]?.url;
 
@@ -44,7 +49,10 @@ export async function createMcpServer(
     },
   );
 
-  const operationTools = new Map<string, { tool: Tool; operation: IHttpOperation<false> }>();
+  const operationTools = new Map<
+    string,
+    { tool: Tool & { outputSchema: ToolSchema }; operation: IHttpOperation<false> }
+  >();
   const operations = service.operations as IHttpOperation<false>[];
 
   for (const operation of operations) {
@@ -65,7 +73,14 @@ export async function createMcpServer(
 
   server.server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
-      tools: Array.from(operationTools.values()).map(({ tool }) => tool),
+      tools: Array.from(operationTools.values()).map(({ tool }) => {
+        return {
+          name: tool.name,
+          description: tool.description,
+          inputSchema: tool.inputSchema,
+          outputSchema: tool['outputSchema'],
+        };
+      }),
     };
   });
 
@@ -110,6 +125,14 @@ export async function createMcpServer(
       }
     });
 
+    const requestInit = {
+      url: url.toString(),
+      method: operationTool.operation.method,
+      headers: params.headers,
+      body: params.body,
+    };
+    console.log(`callTool ${request.params.name}:`, requestInit);
+
     const res = await fetch(url.toString(), {
       method: operationTool.operation.method,
       headers: params.headers,
@@ -137,12 +160,41 @@ export async function createMcpServer(
 }
 
 async function bundleOasService(openapi: Record<string, unknown> | string) {
-  const result = await dereference(openapi);
+  const { data: result, error } = await dereferenceOpenapi(openapi);
+  if (error) {
+    return {
+      data: null,
+      error,
+    };
+  }
 
-  if ('openapi' in result) {
-    return bundleOas3Service({ document: result });
-  } else {
-    return bundleOas2Service({ document: result });
+  const bundler = 'openapi' in result ? bundleOas3Service : bundleOas2Service;
+  return {
+    data: bundler({ document: result }),
+    error: null,
+  };
+}
+
+async function dereferenceOpenapi(openapi: Record<string, unknown> | string) {
+  try {
+    return {
+      data: await dereference(openapi, { continueOnError: true, dereference: { circular: 'ignore' } }),
+      error: null,
+    };
+  } catch (error) {
+    if (error instanceof JSONParserErrorGroup) {
+      // Ignore $ref errors for now
+      console.log(`Error resolving openapi ${openapi}:\n${error.errors.map(e => `- ${e.message}`).join('\n')}`);
+      return {
+        data: error.files?.schema,
+        error: error.files?.schema ? null : error,
+      };
+    }
+
+    return {
+      data: null,
+      error: error as Error,
+    };
   }
 }
 
@@ -231,13 +283,13 @@ function removeExtraProperties<T>(obj: T): T {
   return obj;
 }
 
-function getOperationOutputSchema(operation: IHttpOperation<false>) {
+function getOperationOutputSchema(operation: IHttpOperation<false>): ToolSchema {
   // Try 200 first
-  const response = operation.responses.find(r => r.code === '200')?.contents?.find(c => c.schema);
+  let response = operation.responses.find(r => r.code === '200')?.contents?.find(c => c.schema)?.schema;
   if (!response) {
     // Try 2xx
-    return operation.responses.find(r => r.code.startsWith('2'))?.contents?.find(c => c.schema);
+    response = operation.responses.find(r => r.code.startsWith('2'))?.contents?.find(c => c.schema)?.schema;
   }
 
-  return response;
+  return response ? removeExtraProperties(response as ToolSchema) : { type: 'object' };
 }
