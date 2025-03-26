@@ -31,6 +31,7 @@ export default {
         type: 'string',
         description: 'OAuth token for the Slack API',
         format: 'secret',
+        title: 'OAuth Token',
       },
     },
     required: ['token'],

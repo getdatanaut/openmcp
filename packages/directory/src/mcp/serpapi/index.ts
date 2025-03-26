@@ -31,6 +31,7 @@ export default {
         type: 'string',
         description: 'API key for your SerpAPI account. https://serpapi.com/dashboard',
         format: 'secret',
+        title: 'API Key',
       },
     },
     required: ['apiKey'],

@@ -32,6 +32,7 @@ export default {
         description:
           'API key for your Firecrawl account. https://docs.firecrawl.dev/api-reference/introduction#authentication',
         format: 'secret',
+        title: 'API Key',
       },
     },
     required: ['apiKey'],

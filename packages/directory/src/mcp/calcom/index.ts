@@ -27,10 +27,11 @@ export default {
   configSchema: {
     type: 'object',
     properties: {
-      apiKey: {
+      calcomApiKey: {
         type: 'string',
         description: 'API key for your Cal.com account. https://cal.com/docs/api-reference/v2/introduction#1-api-key',
         format: 'secret',
+        title: 'API Key',
       },
     },
     required: ['calcomApiKey'],
