@@ -218,92 +218,89 @@ const ThreadMessage = ({
 };
 
 const ToolInvocationPart = ({ toolInvocation }: { toolInvocation: ToolInvocation }) => {
-  const { state, args } = toolInvocation;
   const { app } = useRootStore();
   const { manager } = useCurrentManager();
 
   const [expanded, setExpanded] = useState(false);
-
-  const [serverId, toolName] = toolInvocation.toolName.split('__');
 
   const { data: servers } = useQuery({
     ...queryOptions.servers(),
     queryFn: () => manager.servers.findMany(),
   });
 
+  if (toolInvocation.toolName !== 'callTool') return null;
+
+  const { state, args } = toolInvocation;
+  if (!args) return null;
+
+  const { server: serverId, name: toolName, input } = args;
   const server = servers?.find(s => s.id === serverId);
+  // Only showing server tool invocations for now
+  if (!server) return null;
 
-  if (server) {
-    const icon = app.currentThemeId === 'light' ? server.presentation?.icon?.light : server.presentation?.icon?.dark;
-    const iconElem = icon ? (
-      <img src={icon} alt={server.name} className="ak-frame-xs h-block-xs w-block-xs" />
-    ) : (
-      <Avatar name={server.name} size="xs" />
-    );
+  const icon = app.currentThemeId === 'light' ? server.presentation?.icon?.light : server.presentation?.icon?.dark;
+  const iconElem = icon ? (
+    <img src={icon} alt={server.name} className="ak-frame-xs h-block-xs w-block-xs" />
+  ) : (
+    <Avatar name={server.name} size="xs" />
+  );
 
-    const result =
-      state === 'result'
-        ? (toolInvocation.result as { isError?: true; content: { type: 'text'; text: string }[] })
-        : null;
+  const result =
+    state === 'result'
+      ? (toolInvocation.result as { isError?: true; content: { type: 'text'; text: string }[] })
+      : null;
 
-    const contentClasses = tn('ak-frame -mx-1.5 divide-y-[0.5px] border-[0.5px] text-xs', expanded ? '' : 'w-fit');
+  const contentClasses = tn('ak-frame -mx-1.5 divide-y-[0.5px] border-[0.5px] text-xs', expanded ? '' : 'w-fit');
 
-    let expandedElem;
-    if (expanded) {
-      expandedElem = (
-        <>
-          <Markdown
-            unstyledCodeBlocks
-            content={`
+  let expandedElem;
+  if (expanded) {
+    expandedElem = (
+      <>
+        <Markdown
+          unstyledCodeBlocks
+          content={`
 \`\`\`json title="tool args"
-${JSON.stringify(args || {}, null, 2)}
+${JSON.stringify(input || {}, null, 2)}
 \`\`\``}
-          />
+        />
 
-          <Markdown
-            unstyledCodeBlocks
-            content={`
+        <Markdown
+          unstyledCodeBlocks
+          content={`
 \`\`\`json title="tool result"
-${JSON.stringify(JSON.parse(result?.content[0]?.text || '{}'), null, 2)}
+${JSON.stringify(JSON.parse(result?.content?.[0]?.text || '{}'), null, 2)}
 \`\`\`
 `}
-          />
-        </>
-      );
-    }
-
-    return (
-      <div className={contentClasses}>
-        <div
-          className="flex cursor-pointer items-center gap-3 py-2 pr-3 pl-2"
-          onClick={() => setExpanded(prev => !prev)}
-        >
-          {iconElem}
-
-          <div>
-            {server.name} / {toolName}
-          </div>
-
-          {state !== 'result' ? (
-            <div>
-              <Icon icon={faSpinner} spin />
-            </div>
-          ) : null}
-
-          {result?.isError ? (
-            <div className="ak-text-danger">
-              <Icon icon={faExclamationCircle} />
-            </div>
-          ) : null}
-        </div>
-
-        {expandedElem}
-      </div>
+        />
+      </>
     );
   }
 
-  // Only showing server tool invocations for now
-  return null;
+  return (
+    <div className={contentClasses}>
+      <div className="flex cursor-pointer items-center gap-3 py-2 pr-3 pl-2" onClick={() => setExpanded(prev => !prev)}>
+        {iconElem}
+
+        <div>
+          {server.name} / {toolName}
+        </div>
+
+        {state !== 'result' ? (
+          <div>
+            <Icon icon={faSpinner} spin />
+          </div>
+        ) : null}
+
+        {result?.isError ? (
+          <div className="ak-text-danger">
+            <Icon icon={faExclamationCircle} />
+          </div>
+        ) : null}
+      </div>
+
+      {expandedElem}
+    </div>
+  );
 };
 
 export const ThreadChatBox = ({

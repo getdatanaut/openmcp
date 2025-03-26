@@ -9,7 +9,6 @@ import type { ClientId, ServerId, ToolName } from './types.ts';
 /**
  * Manager
  */
-
 export interface ClientServerManagerOptions {
   manager: {
     servers: MpcManager['servers'];
@@ -87,10 +86,32 @@ export class ClientServerManager {
    * By default it will only return tools for connected client servers. Pass `lazyConnect: true` to connect
    * to all servers and return all tools.
    */
-  public toolsByClientId = async ({ clientId, lazyConnect }: { clientId: ClientId; lazyConnect?: boolean }) => {
+  public toolsByClientId = async ({
+    clientId,
+    lazyConnect,
+  }: {
+    clientId: ClientId;
+    lazyConnect?: boolean;
+  }): Promise<Tool[]> => {
     const clientServers = await this.findMany({ clientId });
     const tools = await Promise.all(clientServers.map(s => s.listTools({ lazyConnect })));
     return tools.flatMap(tools => tools || []);
+  };
+
+  public callTool = async (config: {
+    clientId: ClientId;
+    serverId: ServerId;
+    name: ToolName;
+    input: Record<string, unknown>;
+  }) => {
+    const clientServers = await this.findMany({ clientId: config.clientId, serverId: config.serverId });
+    const clientServer = clientServers[0];
+
+    if (!clientServer) {
+      throw new Error(`Client server not found for client ${config.clientId} and server ${config.serverId}`);
+    }
+
+    return clientServer?.callTool({ name: config.name, input: config.input });
   };
 
   /**
@@ -110,7 +131,6 @@ export class ClientServerManager {
 /*
  * Instance
  */
-
 export type ClientServerId = string | `${ClientId}-${ServerId}`;
 
 export type ClientServerStorageData = {
@@ -124,11 +144,12 @@ export interface ClientServerOptions {
   manager: Pick<MpcManager, 'servers'>;
 }
 
-interface ToolWithServer {
+export interface Tool {
+  server: ServerId;
   name: string;
   description?: string;
   inputSchema: any;
-  server: ServerId;
+  outputSchema: any;
   execute: (input: Record<string, unknown>) => Promise<any>;
 }
 
@@ -226,7 +247,7 @@ export class ClientServer {
   /**
    * List tools available from the server
    */
-  public async listTools({ lazyConnect = false }: { lazyConnect?: boolean } = {}): Promise<ToolWithServer[]> {
+  public async listTools({ lazyConnect = false }: { lazyConnect?: boolean } = {}): Promise<Tool[]> {
     if (!this.isConnected) {
       if (lazyConnect) {
         await this.connect();
@@ -240,8 +261,11 @@ export class ClientServer {
     const { tools } = await this.#mcpClient.listTools();
 
     return tools.map(tool => ({
-      ...tool,
       server: this.serverId,
+      name: tool.name,
+      description: tool.description,
+      inputSchema: tool['inputSchema'],
+      outputSchema: tool['outputSchema'],
       execute: async (input: Record<string, unknown>) =>
         this.callTool({
           name: tool.name,

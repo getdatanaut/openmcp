@@ -6,7 +6,6 @@ import {
   type MpcConductor,
   type MpcManager,
   type MpcManagerStorage,
-  type ServerStorageData,
 } from '@openmcp/manager';
 import type { QueryClient } from '@tanstack/react-query';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -50,6 +49,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
     createMpcConductor({
       llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_API_URL}/_/llm/${provider}`,
       toolsByClientId: manager.current.clientServers.toolsByClientId,
+      callTool: manager.current.clientServers.callTool,
       settings: {
         providers: {
           openai: { apiKey: '' },

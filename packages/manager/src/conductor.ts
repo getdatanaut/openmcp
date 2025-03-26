@@ -1,5 +1,14 @@
 import { createOpenAI, type OpenAIProvider, type OpenAIProviderSettings } from '@ai-sdk/openai';
-import { generateObject, jsonSchema, type LanguageModelV1, streamText, tool as createTool, type UIMessage } from 'ai';
+import {
+  convertToCoreMessages,
+  generateObject,
+  jsonSchema,
+  type LanguageModelV1,
+  NoSuchToolError,
+  streamText,
+  tool as createTool,
+  type UIMessage,
+} from 'ai';
 import { z } from 'zod';
 
 import type { ClientServerManager } from './client-servers.ts';
@@ -17,6 +26,7 @@ export interface MpcConductorSettings {
 
 interface MpcConductorOptions {
   toolsByClientId: ClientServerManager['toolsByClientId'];
+  callTool: ClientServerManager['callTool'];
   llmProxyUrl?: string | ((opts: { provider: keyof NonNullable<MpcConductorSettings['providers']> }) => string);
   settings?: MpcConductorSettings;
 }
@@ -47,12 +57,14 @@ export function createMpcConductor(options: MpcConductorOptions) {
  */
 export class MpcConductor {
   #toolsByClientId: MpcConductorOptions['toolsByClientId'];
+  #callTool: MpcConductorOptions['callTool'];
   #supervisor: MpcSupervisor;
   #settings: MpcConductorSettings;
   #llmProxyUrl?: MpcConductorOptions['llmProxyUrl'];
 
   constructor(options: MpcConductorOptions) {
     this.#toolsByClientId = options.toolsByClientId;
+    this.#callTool = options.callTool;
     this.#llmProxyUrl = options.llmProxyUrl;
     this.#settings = options.settings ?? {};
     this.#supervisor = this.initSupervisor();
@@ -80,75 +92,206 @@ export class MpcConductor {
     onFinish,
     onStepFinish,
   }: MpcConductorHandleMessageOpts) => {
-    const messages = [...history, message];
+    const coreMessages = convertToCoreMessages([...history, message]);
+    console.log('handleMessage.coreMessages', coreMessages);
+    // Minimal information needed to reconstruct the conversation
+    const messages = coreMessages.flatMap(message => {
+      // Ignore tool results
+      if (message.role === 'tool') {
+        return [];
+      }
 
-    // @TODO the underlying implementation should probaby cache the tools, and use the mpc notification spec or something to update them (although now w stateless protocol maybe not)
-    // right now we're fetching all of the tools on every message
-    const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
-    const allToolNames = tools.map(t => `${t.server}__${t.name}`);
+      // Ignore tool calls and empty assistant messages
+      if (message.role === 'assistant') {
+        const content =
+          typeof message.content === 'string'
+            ? message.content
+            : message.content.filter(c => {
+                if (c.type === 'text') {
+                  // Ignore empty messages
+                  return c.text.length > 0;
+                }
 
-    const toolsByServer = tools.reduce(
-      (acc, tool) => {
-        acc[tool.server] = acc[tool.server] || [];
-        acc[tool.server]!.push(tool);
-        return acc;
-      },
-      {} as Record<string, typeof tools>,
-    );
+                // Ignore tool calls
+                return c.type !== 'tool-call';
+              });
 
-    const { object: llmObject } = await generateObject({
-      model: this.#supervisor.model,
-      system: `Select the tools you might need based on the user's request.
+        if (!content.length) {
+          return [];
+        }
 
-The tools available are:
+        return {
+          ...message,
+          content,
+        };
+      }
 
-${Object.entries(toolsByServer)
-  .map(([server, tools]) => {
-    return `## ${server}
-${tools.map(t => `- ${t.server}__${t.name}: ${t.description}`).join('\n')}`;
-  })
-  .join('\n')}`,
-      messages,
-      schema: z.object({
-        selectedTools: z
-          .array(z.enum(allToolNames as [string, ...string[]]))
-          .describe("The tools you might need based on the user's request."),
-        summaryOfAllTools: z.string().describe('A general summary of all tools available.'),
-        confidence: z
-          .number()
-          .min(0)
-          .max(1)
-          .describe('A number between 0 and 1 indicating the confidence in the tools selected.'),
-      }),
+      return message;
     });
+    console.log('handleMessage.minimalMessages', messages);
 
-    console.log('LLM selected tools:', llmObject);
+    const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
 
-    const aiTools = tools.reduce(
-      (acc, tool) => {
-        // @ts-expect-error crazy zod stuff going on here... bah
-        acc[`${tool.server}__${tool.name}`] = createTool({
-          description: tool.description,
-          parameters: jsonSchema(tool.inputSchema as any),
-          execute: tool.execute,
-        });
-
-        return acc;
-      },
-      {} as Record<string, ReturnType<typeof createTool>>,
-    );
-
-    const selectedToolNames = llmObject.selectedTools.length > 0 ? llmObject.selectedTools : allToolNames;
+    // Do not include tool `inputSchema` or `outputSchema` in the system prompt
+    const minimalToolInfo = tools.map(t => ({
+      server: t.server,
+      name: t.name,
+      description: t.description,
+    }));
 
     const result = streamText({
       model: this.#supervisor.model,
-      system: `You are a helpful assistant with access to tools the user has enabled.`,
+      system: `You are a helpful assistant with access to tools the user has enabled.
+
+<example>
+A typical interaction should look like this:
+
+1. User makes a request to you.
+2. You use choose the best tools to use based on the user's request.
+3. Call "getTool" to get the input for "callTool".
+4. Call "callTool" to retreive the results of the tool.
+5. You repeat steps 3 and 4 until the user's request is fulfilled.
+6. You send a message to the user with the results.
+</example>
+
+You should only use "callTool" once you have called "getTool" and received a response.
+
+The tools available are:
+
+<tools>
+${JSON.stringify(minimalToolInfo, null, 2)}
+</tools>
+`,
       toolCallStreaming: true,
       messages,
-      maxSteps: 5,
-      tools: aiTools,
-      // Abitrarily limit to 50 tools
-      experimental_activeTools: selectedToolNames.slice(0, 50),
+      maxSteps: 10,
+      toolChoice: 'auto',
+      tools: {
+        getTool: createTool({
+          description: "Get details about a tool including the tool's inputSchema",
+          parameters: z.object({
+            server: z.string().describe('The server of the tool'),
+            name: z.string().describe('The name of the tool'),
+          }),
+          execute: async ({ server, name }) => {
+            console.log('getTool.args', { server, name });
+            const tool = tools.find(t => t.server === server && t.name === name);
+            if (!tool) {
+              return new Error('Tool not found');
+            }
+
+            const result = {
+              server: tool.server,
+              name: tool.name,
+              description: tool.description,
+              inputSchema: tool.inputSchema,
+              outputSchema: tool.outputSchema,
+            };
+            console.log('getTool.result', result);
+
+            return result;
+          },
+        }),
+
+        callTool: createTool({
+          description: 'Call a tool. IMPORTANT: Use "getTool" before calling this tool.',
+          parameters: z.object({
+            server: z.string().describe('The server of the tool'),
+            name: z.string().describe('The name of the tool'),
+            inputSchema: z
+              .object({})
+              .passthrough()
+              .describe(
+                'The inputSchema of the tool as returned by getTool. This is the shape of the input that should be provided to the tool.',
+              ),
+            input: z
+              .object({})
+              .passthrough()
+              .describe(
+                "Input that should be provided to the tool as a JSON object in the shape of the tool's inputSchema returned by getTool",
+              ),
+          }),
+          execute: async args => {
+            console.log('callTool.args', args);
+            let input = args.input;
+            if (!args.inputSchema) {
+              const tool = tools.find(t => t.server === args.server && t.name === args.name);
+              console.log('callTool.repair', tool);
+              if (!tool) {
+                return new Error('Tool not found');
+              }
+
+              const { object: repairedInput } = await generateObject({
+                model: this.#supervisor.model,
+                messages,
+                schema: jsonSchema(tool.inputSchema),
+                prompt: [
+                  `The model tried to call the tool "${args.name}"` + ` with the following arguments:`,
+                  JSON.stringify(args.input),
+                  `The tool accepts the following schema:`,
+                  JSON.stringify(tool.inputSchema, null, 2),
+                  'Please fix the arguments.',
+                ].join('\n'),
+              });
+
+              input = repairedInput as typeof args.input;
+            }
+
+            const result = await this.#callTool({
+              clientId,
+              serverId: args.server,
+              name: args.name,
+              input,
+            });
+            console.log('callTool.result', result);
+            return result;
+          },
+        }),
+      },
+      experimental_repairToolCall: async ({ toolCall, error }) => {
+        console.log('repairToolCall.args', toolCall);
+        if (NoSuchToolError.isInstance(error)) {
+          // do not attempt to fix invalid tool names
+          return null;
+        }
+
+        if (toolCall.toolName !== 'callTool') {
+          // only attempt to fix callTool
+          return null;
+        }
+
+        const { server, name, input } = JSON.parse(toolCall.args);
+
+        const tool = tools.find(t => t.server === server && t.name === name);
+        if (!tool) {
+          throw new Error(`Tool "${name}" not found on server "${server}"`);
+        }
+
+        const { object: repairedInput } = await generateObject({
+          model: this.#supervisor.model,
+          schema: jsonSchema(tool.inputSchema),
+          messages,
+          system: [
+            `The model tried to call the tool "${name}"` + ` with the following arguments:`,
+            JSON.stringify(input),
+            `The tool accepts the following schema:`,
+            JSON.stringify(tool.inputSchema, null, 2),
+            'Please fix the arguments.',
+          ].join('\n'),
+        });
+
+        console.log('repairToolCall.result', repairedInput);
+
+        return {
+          ...toolCall,
+          args: JSON.stringify({
+            server,
+            name,
+            input: repairedInput,
+            inputSchema: tool.inputSchema,
+          }),
+        };
+      },
       onError,
       onFinish,
       onStepFinish,
@@ -192,7 +335,7 @@ ${tools.map(t => `- ${t.server}__${t.name}: ${t.description}`).join('\n')}`;
     switch (supervisor.provider) {
       case 'openai':
         return {
-          model: createOpenAI(finalSettings)(supervisor.languageModelId),
+          model: createOpenAI(finalSettings)(supervisor.languageModelId, { structuredOutputs: false }),
         };
       default:
         throw new Error(`Unsupported supervisor provider: ${supervisor.provider}`);
