@@ -1,12 +1,9 @@
-import { createMcpServer } from '@openmcp/openapi';
+import { createMcpServer, type ServerConfig } from '@openmcp/openapi';
 
 import { OpenMcpDurableObject } from '../durable-object.ts';
 import type { SessionId } from '../utils/session.ts';
 
-export type OpenMcpOpenAPIConfig = {
-  openapi: string;
-  baseUrl?: string;
-};
+export type OpenMcpOpenAPIConfig = ServerConfig;
 
 /**
  * Get the MCP Server configuration from the request
@@ -16,9 +13,10 @@ export type OpenMcpOpenAPIConfig = {
 export function getOpenMcpOpenAPIConfig(request: Request) {
   const url = new URL(request.url);
   const openapi = url.searchParams.get('openapi') ?? undefined;
-  const baseUrl = url.searchParams.get('baseUrl') ?? undefined;
+  // TODO(CL): migrate baseUrl -> serverUrl
+  const serverUrl = url.searchParams.get('serverUrl') ?? url.searchParams.get('baseUrl') ?? undefined;
 
-  return { openapi, baseUrl };
+  return { openapi, serverUrl };
 }
 
 /**
