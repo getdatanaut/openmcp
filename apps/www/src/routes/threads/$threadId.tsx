@@ -38,13 +38,39 @@ const ThreadRouteComponent = () => {
   });
 
   return (
-    <CanvasLayout header={<div className="mx-auto text-sm opacity-75">{thread?.name || ''}</div>}>
+    <CanvasLayout header={<ThreadHeader />}>
       <div className="flex flex-1 flex-col overflow-y-auto" ref={scrollContainerRef}>
         <ThreadWrapper scrollContainerRef={scrollContainerRef} />
       </div>
     </CanvasLayout>
   );
 };
+
+const ThreadHeader = observer(() => {
+  const { threadId } = Route.useParams();
+  const { manager } = useCurrentManager();
+
+  const { data: thread } = useQuery({
+    ...queryOptions.thread({ threadId }),
+    queryFn: () => manager.threads.get({ id: threadId }),
+  });
+
+  return (
+    <div className="flex flex-1 items-center">
+      <div className="flex-1" />
+      <div className="flex-1 text-sm opacity-75">{thread?.name || ''}</div>
+      <div className="flex flex-1 items-center justify-end gap-2 divide-x-2">
+        <div className="px-2 text-xs opacity-60">
+          {thread?.usage
+            ? `${thread?.usage.totalTokens.toLocaleString('en-US', {
+                maximumFractionDigits: 0,
+              })} Tokens`
+            : ''}
+        </div>
+      </div>
+    </div>
+  );
+});
 
 const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: RefObject<HTMLDivElement | null> }) => {
   const { threadId } = Route.useParams();

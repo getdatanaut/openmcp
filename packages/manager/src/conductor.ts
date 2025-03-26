@@ -1,6 +1,7 @@
 import { createOpenAI, type OpenAIProvider, type OpenAIProviderSettings } from '@ai-sdk/openai';
 import {
   convertToCoreMessages,
+  createDataStreamResponse,
   generateObject,
   jsonSchema,
   type LanguageModelV1,
@@ -11,7 +12,7 @@ import {
 } from 'ai';
 import { z } from 'zod';
 
-import type { ClientServerManager } from './client-servers.ts';
+import type { ClientServerManager, Tool } from './client-servers.ts';
 import type { ClientId } from './types.ts';
 
 export interface MpcConductorSettings {
@@ -92,6 +93,40 @@ export class MpcConductor {
     onFinish,
     onStepFinish,
   }: MpcConductorHandleMessageOpts) => {
+    return createDataStreamResponse({
+      execute: async dataStream => {
+        const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
+
+        const result = this.#streamText({
+          clientId,
+          tools,
+          message,
+          history,
+          onError,
+          onStepFinish,
+          onFinish: event => {
+            dataStream.writeMessageAnnotation({
+              usage: event.usage,
+            });
+
+            return onFinish?.(event);
+          },
+        });
+
+        result.mergeIntoDataStream(dataStream);
+      },
+    });
+  };
+
+  #streamText = ({
+    clientId,
+    message,
+    tools,
+    history = [],
+    onError,
+    onFinish,
+    onStepFinish,
+  }: MpcConductorHandleMessageOpts & { tools: Tool[] }) => {
     const coreMessages = convertToCoreMessages([...history, message]);
     console.log('handleMessage.coreMessages', coreMessages);
     // Minimal information needed to reconstruct the conversation
@@ -130,8 +165,6 @@ export class MpcConductor {
     });
     console.log('handleMessage.minimalMessages', messages);
 
-    const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
-
     // Do not include tool `inputSchema` or `outputSchema` in the system prompt
     const minimalToolInfo = tools.map(t => ({
       server: t.server,
@@ -140,7 +173,7 @@ export class MpcConductor {
     }));
     const servers = Array.from(new Set(minimalToolInfo.map(t => t.server)));
 
-    const result = streamText({
+    return streamText({
       model: this.#supervisor.model,
       system: `You are a helpful assistant with access to tools the user has enabled.
 
@@ -315,8 +348,6 @@ ${JSON.stringify(minimalToolInfo, null, 2)}
       onFinish,
       onStepFinish,
     });
-
-    return result.toDataStreamResponse();
   };
 
   public async updateSettings(settings: MpcConductorSettings) {
@@ -343,12 +374,13 @@ ${JSON.stringify(minimalToolInfo, null, 2)}
     // Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
     const baseURL = settings?.baseURL ?? (settings?.apiKey ? undefined : llmProxyUrl);
 
-    const finalSettings = {
+    const finalSettings: OpenAIProviderSettings = {
       // ai-sdk does not send requests if apiKey is not provided, so if
       // using a proxy, set to empty string by default
       apiKey: baseURL ? '' : undefined,
       ...settings,
       baseURL,
+      compatibility: 'strict',
     };
 
     switch (supervisor.provider) {

@@ -4,6 +4,7 @@ import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type ToolInvocation, type UIMessage } from 'ai';
+import { formatDate } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import {
   type CSSProperties,
@@ -100,13 +101,15 @@ export const Thread = observer(
             alert('Error in thread, see console for details');
           },
           onFinish: async opts => {
-            const { response } = opts;
+            const { response, usage } = opts;
             const thread = await manager.threads.get({ id: threadId });
             if (thread) {
               await thread.addResponseMessages({
                 originalMessages: [...history, message],
                 responseMessages: response.messages,
+                usage,
               });
+              void queryClient.invalidateQueries({ queryKey: queryOptions.thread({ threadId }).queryKey });
             } else {
               console.warn('Thread not found in conductorRun onFinish', { clientId: app.currentUserId, threadId });
             }
@@ -180,7 +183,10 @@ const ThreadMessage = ({
 }) => {
   const { role, parts } = message;
 
-  const classes = tn('ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
+  // @ts-expect-error override usage
+  const usage = message.usage || message.annotations?.find(a => a.usage)?.usage;
+
+  const classes = tn('group ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
 
   const containerClasses = tn(
     'relative flex h-full py-14 pr-12',
@@ -211,6 +217,11 @@ const ThreadMessage = ({
 
             return null;
           })}
+
+          <div className="ak-text/80 invisible flex justify-end divide-x-2 text-xs opacity-60 group-hover:visible">
+            {usage?.totalTokens && <div className="px-2">{formatNumberWithCommas(usage.totalTokens)} Tokens</div>}
+            {message.createdAt && <div className="px-2">{formatDate(message.createdAt, 'MMM do h:mm a')}</div>}
+          </div>
         </div>
       </div>
     </div>
@@ -353,4 +364,10 @@ export const ThreadChatBox = ({
       </form>
     </>
   );
+};
+
+const formatNumberWithCommas = (num: number) => {
+  return num.toLocaleString('en-US', {
+    maximumFractionDigits: 0,
+  });
 };

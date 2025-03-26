@@ -69,12 +69,20 @@ export class ThreadManager {
 export interface ThreadMessageStorageData extends UIMessage {
   id: ThreadMessageId;
   threadId: ThreadId;
+  usage?: ThreadTokenUsage;
 }
 export interface ThreadStorageData {
   id: ThreadId;
   clientId: ClientId;
   name: string;
   createdAt: string;
+  usage?: ThreadTokenUsage;
+}
+
+export interface ThreadTokenUsage {
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
 }
 
 export interface ThreadOptions {
@@ -102,6 +110,11 @@ export class Thread {
   public readonly clientId: ClientId;
   public readonly name: string;
   public readonly createdAt: string;
+  public readonly usage: ThreadTokenUsage = {
+    promptTokens: 0,
+    completionTokens: 0,
+    totalTokens: 0,
+  };
 
   #manager: ThreadOptions['manager'];
 
@@ -115,6 +128,7 @@ export class Thread {
       clientId: thread.clientId,
       name: thread.name,
       createdAt: thread.createdAt,
+      usage: thread.usage,
     } satisfies ThreadStorageData;
   }
 
@@ -123,6 +137,11 @@ export class Thread {
     this.clientId = data.clientId;
     this.name = data.name;
     this.createdAt = data.createdAt;
+
+    if (data.usage) {
+      this.usage = data.usage;
+    }
+
     this.#manager = options.manager;
   }
 
@@ -133,11 +152,28 @@ export class Thread {
     return this.#manager.storage;
   }
 
+  #updateUsage = async (usage: ThreadTokenUsage) => {
+    this.usage.promptTokens += usage.promptTokens;
+    this.usage.completionTokens += usage.completionTokens;
+    this.usage.totalTokens += usage.totalTokens;
+
+    await this.storage.threads.update(
+      { id: this.id },
+      {
+        usage: this.usage,
+      },
+    );
+  };
+
   public listMessages = async () => {
     return this.storage.threadMessages.findMany({ threadId: this.id });
   };
 
-  public addMessage = async (message: UIMessage) => {
+  public addMessage = async (message: UIMessage, options?: { usage?: ThreadTokenUsage }) => {
+    if (options?.usage) {
+      await this.#updateUsage(options.usage);
+    }
+
     await this.storage.threadMessages.insert({
       ...message,
       threadId: this.id,
@@ -147,10 +183,16 @@ export class Thread {
   public addResponseMessages = async ({
     originalMessages,
     responseMessages,
+    usage,
   }: {
     originalMessages: UIMessage[];
     responseMessages: ResponseMessage[];
+    usage?: ThreadTokenUsage;
   }) => {
+    if (usage) {
+      await this.#updateUsage(usage);
+    }
+
     const messages = appendResponseMessages({ messages: originalMessages, responseMessages }).map(message => ({
       ...message,
       parts: message.parts ?? [],
@@ -171,8 +213,11 @@ export class Thread {
       }
     }
 
-    for (const message of messages) {
-      await this.storage.threadMessages.upsert({ id: message.id }, message);
-    }
+    await Promise.all(
+      messages.map(async (message, msgIndex) => {
+        const isLast = msgIndex === messages.length - 1;
+        await this.storage.threadMessages.upsert({ id: message.id }, isLast ? { ...message, usage } : message);
+      }),
+    );
   };
 }
