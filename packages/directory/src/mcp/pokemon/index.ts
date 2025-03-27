@@ -7,7 +7,7 @@ export default {
   transport: {
     type: 'sse',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/openapi.yml&baseUrl=https://pokeapi.co/api/v2',
+      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/openapi.yml&baseUrl=https://pokeapi.co',
     },
   },
   presentation: {

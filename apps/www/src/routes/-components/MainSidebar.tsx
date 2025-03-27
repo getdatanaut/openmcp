@@ -224,7 +224,7 @@ const ThreadHistory = () => {
     ) || {};
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col">
       {Object.values(groupedThreads).map(groupedThread => (
         <SidebarSection key={groupedThread.name} name={groupedThread.name}>
           {groupedThread.threads?.map(thread => (
