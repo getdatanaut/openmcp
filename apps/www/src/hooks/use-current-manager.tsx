@@ -11,7 +11,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { type ReactNode, useEffect, useRef } from 'react';
 
-import type { LocalDb } from '~/utils/local-db.ts';
+import type { LocalClientServer, LocalDb } from '~/utils/local-db.ts';
 import { queryOptions } from '~/utils/query-options.ts';
 
 import { useRootStore } from './use-root-store.tsx';
@@ -110,29 +110,31 @@ const initServerStorage = ({ db, queryClient }: { db: LocalDb; queryClient: Quer
 const initLocalClientServerStorage = ({ db }: { db: LocalDb }) => {
   return {
     insert: async row => {
-      await db.clientServers.add(row);
+      await db.clientServers.add({ ...row, enabled: row.enabled ? 1 : 0 });
     },
     upsert: async ({ id }, row) => {
-      await db.clientServers.put({ ...row, id });
+      await db.clientServers.put({ ...row, id, enabled: row.enabled ? 1 : 0 });
     },
     update: async ({ id }, row) => {
-      await db.clientServers.update(id, row);
+      await db.clientServers.update(id, { ...row, enabled: row.enabled ? 1 : 0 });
     },
     delete: async ({ id }) => {
       await db.clientServers.delete(id);
     },
     findMany: async where => {
-      let res: ClientServerStorageData[];
+      let res: LocalClientServer[];
       if (where && Object.keys(where).length > 0) {
-        res = await db.clientServers.where(where).toArray();
+        res = await db.clientServers
+          .where({ ...where, enabled: where.enabled === undefined ? undefined : where.enabled ? 1 : 0 })
+          .toArray();
       } else {
         res = await db.clientServers.toArray();
       }
-      return res;
+      return res.map(r => ({ ...r, enabled: r.enabled === 1 }));
     },
     getById: async ({ id }) => {
       const res = await db.clientServers.get(id);
-      return res;
+      return res ? { ...res, enabled: res.enabled === 1 } : undefined;
     },
   } satisfies MpcManagerStorage['clientServers'];
 };
