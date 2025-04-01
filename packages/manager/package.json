@@ -33,14 +33,18 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.8.0",
+    "@stoplight/json": "3.21.7",
     "ai": "4.2.10",
-    "jsonpath-plus": "^10.3.0",
+    "lodash": "4.17.21",
+    "nanoid": "5.1.5",
+    "nimma": "0.7.2",
     "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "@types/node": "22.13.16",
+    "@types/lodash": "4.17.16",
+    "@types/node": "22.13.17",
     "eslint": "9.23.0",
     "tsup": "8.4.0",
     "type-fest": "^4.39.0",

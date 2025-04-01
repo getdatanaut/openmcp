@@ -1,4 +1,11 @@
-import { appendResponseMessages, type CoreAssistantMessage, type CoreToolMessage, type UIMessage } from 'ai';
+import {
+  appendClientMessage,
+  appendResponseMessages,
+  type CoreAssistantMessage,
+  type CoreToolMessage,
+  type Message,
+  type UIMessage,
+} from 'ai';
 
 import type { MpcManager } from './manager.ts';
 import type { ClientId, ThreadId, ThreadMessageId } from './types.ts';
@@ -94,7 +101,8 @@ export interface ThreadOptions {
   };
 }
 
-type ResponseMessage = (CoreAssistantMessage | CoreToolMessage) & {
+// ai doesn't export this type
+export type AIResponseMessage = (CoreAssistantMessage | CoreToolMessage) & {
   id: string;
 };
 
@@ -169,15 +177,30 @@ export class Thread {
     return this.storage.threadMessages.findMany({ threadId: this.id });
   };
 
-  public addMessage = async (message: UIMessage, options?: { usage?: ThreadTokenUsage }) => {
+  public addMessage = async (message: UIMessage | Message, options?: { usage?: ThreadTokenUsage }) => {
     if (options?.usage) {
       await this.#updateUsage(options.usage);
     }
 
-    await this.storage.threadMessages.insert({
-      ...message,
-      threadId: this.id,
-    });
+    // Do not need all properties - for example the deprecated toolInvocations array
+    const newMessage = {
+      id: message.id,
+      role: message.role,
+      // Do not need to duplicate content - prefer parts if present
+      content: message.parts?.length ? '' : message.content,
+      parts: message.parts || [],
+      createdAt: message.createdAt,
+      annotations: message.annotations,
+      experimental_attachments: message.experimental_attachments,
+    } satisfies UIMessage;
+
+    await this.storage.threadMessages.upsert(
+      { id: newMessage.id },
+      {
+        ...newMessage,
+        threadId: this.id,
+      },
+    );
   };
 
   public addResponseMessages = async ({
@@ -186,7 +209,7 @@ export class Thread {
     usage,
   }: {
     originalMessages: UIMessage[];
-    responseMessages: ResponseMessage[];
+    responseMessages: AIResponseMessage[];
     usage?: ThreadTokenUsage;
   }) => {
     if (usage) {

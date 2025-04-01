@@ -48,6 +48,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
   const conductor = useRef(
     createMpcConductor({
       llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_API_URL}/_/llm/${provider}`,
+      serversByClientId: manager.current.clientServers.serversByClientId,
       toolsByClientId: manager.current.clientServers.toolsByClientId,
       callTool: manager.current.clientServers.callTool,
       settings: {

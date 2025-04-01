@@ -1,9 +1,10 @@
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
 import { faArrowUp, faExclamationCircle, faSpinner, faStop } from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
+import type { MpcConductorAnnotation } from '@openmcp/manager';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
-import { type ToolInvocation, type UIMessage } from 'ai';
+import { type LanguageModelUsage, type Message, type ToolInvocation, type UIMessage } from 'ai';
 import { formatDate } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import {
@@ -46,6 +47,23 @@ const [ThreadContext, useThreadContext] = createContext<ThreadContextProps>({
   strict: true,
 });
 
+const messageUsage = (message: Message) => {
+  return message.annotations?.reduce(
+    (acc: LanguageModelUsage, annotation) => {
+      const typedAnnotation = annotation as unknown as MpcConductorAnnotation;
+      if (['planning-usage', 'tool-usage', 'assistant-usage'].includes(typedAnnotation.type)) {
+        return {
+          totalTokens: acc.totalTokens + (typedAnnotation.usage?.totalTokens || 0),
+          promptTokens: acc.promptTokens + (typedAnnotation.usage?.promptTokens || 0),
+          completionTokens: acc.completionTokens + (typedAnnotation.usage?.completionTokens || 0),
+        };
+      }
+      return acc;
+    },
+    { totalTokens: 0, promptTokens: 0, completionTokens: 0 },
+  );
+};
+
 export const Thread = observer(
   ({ threadId: providedThreadId, children, onCreated, initialMessages, scrollContainerRef }: ThreadProps) => {
     const { app, queryClient } = useRootStore();
@@ -76,10 +94,27 @@ export const Thread = observer(
       id: threadId,
       initialMessages,
       sendExtraMessageFields: true,
+
       onError(error) {
         // @TODO error handling
-        console.error('Error in thread', error);
+        console.error('Error in thread');
+        console.log(error);
       },
+
+      onFinish: async (message, opts) => {
+        console.log('Thread.chat.onFinish', { message, opts });
+
+        const thread = await manager.threads.get({ id: threadId });
+        if (!thread) {
+          console.warn('Thread not found in chat.onFinish', { clientId: app.currentUserId, threadId });
+          return;
+        }
+
+        await thread.addMessage(message, { usage: messageUsage(message) });
+
+        void queryClient.invalidateQueries({ queryKey: queryOptions.thread({ threadId }).queryKey });
+      },
+
       fetch: async (input, init) => {
         const body = JSON.parse(init?.body) as { id: TThreadId; messages: UIMessage[] };
         const message = body.messages[body.messages.length - 1]!;
@@ -91,6 +126,17 @@ export const Thread = observer(
           void generateTitle([message]);
         }
 
+        console.log('Thread.chat.fetch', { message, history });
+
+        const thread = await manager.threads.get({ id: threadId });
+        if (!thread) {
+          console.warn('Thread not found in chat.fetch', { clientId: app.currentUserId, threadId });
+          return new Response('Thread not found', { status: 404 });
+        }
+
+        // Save the user's new message
+        await thread.addMessage(message);
+
         return conductor.handleMessage({
           clientId: app.currentUserId,
           message,
@@ -99,20 +145,6 @@ export const Thread = observer(
             console.error('Error in thread', error);
             // @TODO error handling
             alert('Error in thread, see console for details');
-          },
-          onFinish: async opts => {
-            const { response, usage } = opts;
-            const thread = await manager.threads.get({ id: threadId });
-            if (thread) {
-              await thread.addResponseMessages({
-                originalMessages: [...history, message],
-                responseMessages: response.messages,
-                usage,
-              });
-              void queryClient.invalidateQueries({ queryKey: queryOptions.thread({ threadId }).queryKey });
-            } else {
-              console.warn('Thread not found in conductorRun onFinish', { clientId: app.currentUserId, threadId });
-            }
           },
         });
       },
@@ -160,6 +192,10 @@ export const Thread = observer(
 export const ThreadMessages = ({ className, style }: { className?: string; style?: CSSProperties }) => {
   const { chat, messagesContainerRef, messagesEndRef } = useThreadContext();
 
+  // useEffect(() => {
+  //   console.log('ThreadMessages.useEffect', { messages: chat.messages });
+  // }, [JSON.stringify(chat.messages)]);
+
   return (
     <>
       <div className={twMerge('flex flex-1 flex-col', className)} style={style} ref={messagesContainerRef}>
@@ -183,8 +219,7 @@ const ThreadMessage = ({
 }) => {
   const { role, parts } = message;
 
-  // @ts-expect-error override usage
-  const usage = message.usage || message.annotations?.find(a => a.usage)?.usage;
+  const usage = messageUsage(message);
 
   const classes = tn('group ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
 
@@ -228,26 +263,34 @@ const ThreadMessage = ({
   );
 };
 
+interface MPCResponse {
+  isError?: true;
+  content: { type: 'text'; text: string }[];
+}
+
+const isMcpResponse = (response: unknown): response is MPCResponse => {
+  return typeof response === 'object' && response !== null && 'content' in response && Array.isArray(response.content);
+};
+
 const ToolInvocationPart = ({ toolInvocation }: { toolInvocation: ToolInvocation }) => {
+  const { state, args } = toolInvocation;
   const { app } = useRootStore();
   const { manager } = useCurrentManager();
 
   const [expanded, setExpanded] = useState(false);
+
+  const [serverId, toolName] = toolInvocation.toolName.split('__');
 
   const { data: servers } = useQuery({
     ...queryOptions.servers(),
     queryFn: () => manager.servers.findMany(),
   });
 
-  if (toolInvocation.toolName !== 'callTool') return null;
-
-  const { state, args } = toolInvocation;
-  if (!args) return null;
-
-  const { server: serverId, name: toolName, input } = args;
   const server = servers?.find(s => s.id === serverId);
-  // Only showing server tool invocations for now
-  if (!server) return null;
+  if (!server) {
+    // Only showing server tool invocations for now
+    return null;
+  }
 
   const icon = app.currentThemeId === 'light' ? server.presentation?.icon?.light : server.presentation?.icon?.dark;
   const iconElem = icon ? (
@@ -256,10 +299,7 @@ const ToolInvocationPart = ({ toolInvocation }: { toolInvocation: ToolInvocation
     <Avatar name={server.name} size="xs" />
   );
 
-  const result =
-    state === 'result'
-      ? (toolInvocation.result as { isError?: true; content: { type: 'text'; text: string }[] })
-      : null;
+  const result = state === 'result' ? (toolInvocation.result as MPCResponse | unknown) : null;
 
   const contentClasses = tn('ak-frame -mx-1.5 divide-y-[0.5px] border-[0.5px] text-xs', expanded ? '' : 'w-fit');
 
@@ -270,16 +310,16 @@ const ToolInvocationPart = ({ toolInvocation }: { toolInvocation: ToolInvocation
         <Markdown
           unstyledCodeBlocks
           content={`
-\`\`\`json title="tool args"
-${JSON.stringify(input || {}, null, 2)}
+\`\`\`json title="tool input"
+${JSON.stringify(args || {}, null, 2)}
 \`\`\``}
         />
 
         <Markdown
           unstyledCodeBlocks
           content={`
-\`\`\`json title="tool result"
-${JSON.stringify(JSON.parse(result?.content?.[0]?.text || '{}'), null, 2)}
+\`\`\`json title="tool output"
+${JSON.stringify(isMcpResponse(result) ? JSON.parse(result?.content?.[0]?.text || '{}') : result, null, 2)}
 \`\`\`
 `}
         />
@@ -302,7 +342,7 @@ ${JSON.stringify(JSON.parse(result?.content?.[0]?.text || '{}'), null, 2)}
           </div>
         ) : null}
 
-        {result?.isError ? (
+        {isMcpResponse(result) && result?.isError ? (
           <div className="ak-text-danger">
             <Icon icon={faExclamationCircle} />
           </div>

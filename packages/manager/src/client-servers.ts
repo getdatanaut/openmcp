@@ -96,6 +96,14 @@ export class ClientServerManager {
     }
   };
 
+  /** Retrieve all servers that are configured for a given client. */
+  public serversByClientId = async ({ clientId }: { clientId: ClientId }) => {
+    const clientServers = await this.findMany({ clientId, enabled: true });
+    return (await this.#manager.servers.findMany()).filter(server =>
+      clientServers.some(clientServer => clientServer.serverId === server.id),
+    );
+  };
+
   /**
    * List all tools available from the Servers configured for a given client.
    *

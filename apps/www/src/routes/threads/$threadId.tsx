@@ -28,14 +28,7 @@ function ThreadRoute() {
 }
 
 const ThreadRouteComponent = () => {
-  const { threadId } = Route.useParams();
-  const { manager } = useCurrentManager();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  const { data: thread } = useQuery({
-    ...queryOptions.thread({ threadId }),
-    queryFn: () => manager.threads.get({ id: threadId }),
-  });
 
   return (
     <CanvasLayout header={<ThreadHeader />}>
