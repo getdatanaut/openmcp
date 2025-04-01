@@ -34,29 +34,29 @@
     "rehype-pretty-code": "0.14.1",
     "remark-gfm": "4.0.1",
     "shiki": "3.2.1",
-    "tailwind-merge": "3.0.2",
+    "tailwind-merge": "3.1.0",
     "tailwind-variants": "1.0.0",
-    "tw-animate-css": "1.2.4"
+    "tw-animate-css": "1.2.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "3.2.6",
     "@fortawesome/fontawesome-common-types": "6.7.2",
     "@libs/eslint-config": "workspace:*",
-    "@storybook/addon-essentials": "8.6.7",
-    "@storybook/addon-interactions": "8.6.7",
-    "@storybook/addon-themes": "8.6.7",
-    "@storybook/blocks": "8.6.7",
-    "@storybook/react": "8.6.7",
-    "@storybook/react-vite": "8.6.7",
-    "@storybook/test": "8.6.7",
-    "@tailwindcss/vite": "4.0.14",
+    "@storybook/addon-essentials": "8.6.11",
+    "@storybook/addon-interactions": "8.6.11",
+    "@storybook/addon-themes": "8.6.11",
+    "@storybook/blocks": "8.6.11",
+    "@storybook/react": "8.6.11",
+    "@storybook/react-vite": "8.6.11",
+    "@storybook/test": "8.6.11",
+    "@tailwindcss/vite": "4.0.17",
     "@types/react": "19.0.12",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.23.0",
-    "eslint-plugin-storybook": "^0.11.6",
+    "eslint-plugin-storybook": "0.12.0",
     "react-lorem-ipsum": "1.4.10",
-    "storybook": "8.6.7",
-    "tailwindcss": "4.0.14",
-    "vite": "6.2.3"
+    "storybook": "8.6.11",
+    "tailwindcss": "4.0.17",
+    "vite": "6.2.4"
   }
 }

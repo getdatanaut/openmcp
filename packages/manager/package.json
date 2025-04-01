@@ -32,19 +32,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.7.0",
-    "ai": "4.2.2",
+    "@modelcontextprotocol/sdk": "1.8.0",
+    "ai": "4.2.10",
+    "jsonpath-plus": "^10.3.0",
     "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "@types/node": "22.13.13",
+    "@types/node": "22.13.16",
     "eslint": "9.23.0",
     "tsup": "8.4.0",
-    "type-fest": "^4.38.0",
+    "type-fest": "^4.39.0",
     "typescript": "5.8.2",
-    "vitest": "3.0.9"
+    "vitest": "3.1.1"
   },
   "keywords": [
     "mcp",

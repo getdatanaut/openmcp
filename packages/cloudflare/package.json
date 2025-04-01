@@ -29,17 +29,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.7.0",
+    "@modelcontextprotocol/sdk": "1.8.0",
     "@openmcp/openapi": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250321.0",
+    "@cloudflare/workers-types": "^4.20250327.0",
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "eslint": "9.23.0",
     "tsup": "8.4.0",
     "typescript": "5.8.2",
-    "vitest": "3.0.9"
+    "vitest": "3.1.1"
   },
   "publishConfig": {
     "access": "public"
