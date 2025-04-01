@@ -2,11 +2,12 @@ import { createOpenAI, type OpenAIProvider, type OpenAIProviderSettings } from '
 import { traverse } from '@stoplight/json';
 import {
   createDataStreamResponse,
+  customProvider,
   type DataStreamWriter,
   formatDataStreamPart,
   generateObject,
+  jsonSchema,
   type LanguageModelUsage,
-  type LanguageModelV1,
   streamText,
   type UIMessage,
 } from 'ai';
@@ -30,16 +31,14 @@ export interface MpcConductorSettings {
   };
 }
 
+type SupportedProvider = keyof NonNullable<MpcConductorSettings['providers']>;
+
 interface MpcConductorOptions {
   serversByClientId: ClientServerManager['serversByClientId'];
   toolsByClientId: ClientServerManager['toolsByClientId'];
   callTool: ClientServerManager['callTool'];
-  llmProxyUrl?: string | ((opts: { provider: keyof NonNullable<MpcConductorSettings['providers']> }) => string);
+  llmProxyUrl?: string | ((opts: { provider: SupportedProvider }) => string);
   settings?: MpcConductorSettings;
-}
-
-interface MpcSupervisor {
-  model: LanguageModelV1;
 }
 
 interface MpcConductorHandleMessageOpts
@@ -71,6 +70,11 @@ export type MpcConductorAnnotation =
     };
 
 const planSchema = z.object({
+  reasoning: z
+    .string()
+    .describe(
+      'A short description of the reasoning behind the plan. Do not solve the task here, just briefly describe why you chose the steps you did, or why you chose no steps.',
+    ),
   steps: z.array(
     z.object({
       // Using the term "agent" here because it seems to help the LLM (vs "server")
@@ -82,6 +86,41 @@ const planSchema = z.object({
   ),
 });
 
+const createProvider = (opts: { settings: MpcConductorSettings; llmProxyUrl: MpcConductorOptions['llmProxyUrl'] }) => {
+  const providerSettings = ({
+    provider,
+    settings,
+  }: {
+    provider: SupportedProvider;
+    settings?: OpenAIProviderSettings;
+  }) => {
+    const llmProxyUrl = typeof opts.llmProxyUrl === 'function' ? opts.llmProxyUrl({ provider }) : opts.llmProxyUrl;
+
+    // Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
+    const baseURL = settings?.baseURL ?? (settings?.apiKey ? undefined : llmProxyUrl);
+
+    return {
+      // ai-sdk does not send requests if apiKey is not provided, so if
+      // using a proxy, set to empty string by default
+      apiKey: baseURL ? '' : undefined,
+      ...settings,
+      baseURL,
+      compatibility: 'strict',
+    } as const;
+  };
+
+  const openai = createOpenAI(providerSettings({ provider: 'openai', settings: opts.settings.providers?.openai }));
+
+  return customProvider({
+    languageModels: {
+      'text-simple': openai('gpt-4o-mini'),
+      text: openai('gpt-4o'),
+      structure: openai('gpt-4o'),
+      planning: openai('gpt-4o'),
+    },
+  });
+};
+
 /**
  * Our default implementation of the MpcConductor interface.
  */
@@ -89,7 +128,7 @@ export class MpcConductor {
   #serversByClientId: MpcConductorOptions['serversByClientId'];
   #toolsByClientId: MpcConductorOptions['toolsByClientId'];
   #callTool: MpcConductorOptions['callTool'];
-  #supervisor: MpcSupervisor;
+  #provider: ReturnType<typeof createProvider>;
   #settings: MpcConductorSettings;
   #llmProxyUrl?: MpcConductorOptions['llmProxyUrl'];
 
@@ -99,13 +138,12 @@ export class MpcConductor {
     this.#callTool = options.callTool;
     this.#llmProxyUrl = options.llmProxyUrl;
     this.#settings = options.settings ?? {};
-    this.#supervisor = this.initSupervisor();
+    this.#provider = this.#initProvider();
   }
 
   public generateTitle = async ({ messages }: { messages: UIMessage[] }) => {
     const { object: llmObject } = await generateObject({
-      // @TODO might want to use a different, lightweight model for this
-      model: this.#supervisor.model,
+      model: this.#provider.languageModel('text-simple'),
       system: `Create a concise thread title that summarizes these messages, suitable for display in a UI sidebar.`,
       messages,
       schema: z.object({
@@ -169,7 +207,7 @@ export class MpcConductor {
         }
 
         const result = streamText({
-          model: this.#supervisor.model,
+          model: this.#provider.languageModel('text'),
           messages: [...history, ...stepMessages, message],
           onError,
           onStepFinish,
@@ -192,7 +230,7 @@ export class MpcConductor {
 
   public async updateSettings(settings: MpcConductorSettings) {
     this.#settings = settings;
-    this.#supervisor = this.initSupervisor();
+    this.#provider = this.#initProvider();
   }
 
   private async createPlan({
@@ -219,6 +257,7 @@ You are an AI assistant tasked with creating a plan to address the user's messag
 - Think through the user's request, and create a plan that lists the steps required to fulfill the request, along with the agent that must complete the step.
 - If the user's request is simple and can be fulfilled without the help of any of these agents (for example, from data in the message history), you should return an empty steps array.
 - If you believe any part of the user's request requires an agent that is not listed below, add a step with agentId "unknown" and a task that describes the part of the request that requires an agent.
+- Each step will have access to the information from prior steps, try not to add steps that essentially duplicate themselves
 
 Below is the list of available agents:
 
@@ -228,7 +267,7 @@ ${agentsJson}
 `;
 
     const plan = await generateObject({
-      model: this.#supervisor.model,
+      model: this.#provider.languageModel('planning'),
       system,
       messages: [...history, message],
       schema: planSchema,
@@ -261,7 +300,7 @@ ${agentsJson}
   }) {
     const tools = allTools.filter(t => t.server === server.id);
 
-    const plan = await this.createStepPlan({ step, server, tools, dataStream });
+    const plan = await this.#createStepPlan({ step, server, tools, dataStream });
 
     const stepMessage: UIMessage = {
       id: nanoid(),
@@ -323,8 +362,9 @@ ${agentsJson}
       //       ),
       //   }),
       // });
+
       const { object: toolCallObj, usage: toolCallUsage } = await generateObject({
-        model: this.#supervisor.model,
+        model: this.#provider.languageModel('structure'),
         system: `
         A request is being made to a tool named "${tool.name}". ${tool.description ? `This tool is described as "${tool.description}".` : ''}
 
@@ -344,10 +384,14 @@ ${agentsJson}
         </tool_input_schema>
         `,
 
-        messages: [...history, { role: 'user', content: step.task }],
+        messages: [...history, stepMessage, { role: 'user', content: step.task }],
 
-        schema: z.object({
-          toolInput: z.any(),
+        schema: jsonSchema({
+          type: 'object',
+          properties: {
+            toolInput: tool.inputSchema,
+          },
+          required: ['toolInput'],
         }),
       });
 
@@ -359,7 +403,7 @@ ${agentsJson}
 
       console.log(`${toolId} - runPlanStep`, { toolCallObj });
 
-      const toolInput = toolCallObj.toolInput ?? {};
+      const toolInput = (toolCallObj as any).toolInput ?? {};
 
       dataStream.write(
         formatDataStreamPart('tool_call', {
@@ -389,7 +433,7 @@ ${agentsJson}
       });
 
       const { object: toolOutputPaths } = await generateObject({
-        model: this.#supervisor.model,
+        model: this.#provider.languageModel('structure'),
         system: `
         A request was just made to a tool named "${tool.name}". ${tool.description ? `This tool is described as "${tool.description}".` : ''}
 
@@ -399,8 +443,9 @@ ${agentsJson}
 
         - The goal is to reduce the size of the response, while still being able to fulfill the user's request.
         - If you believe that the data retrieved from the primary json path may not be sufficient to answer the user's request, you can provide secondary json paths.
-        - The JSON path that you provide MUST BE A VALID JSON PATH FOR THE GIVEN ABREVIATED TOOL RESULT.
+        - The JSON path that you provide MUST BE A VALID JSON PATH FOR THE GIVEN ABREVIATED TOOL OUTPUT.
         - IMPORTANT: Air on the side of simpler JSON path expressions if possible. It is better to use a simpler json path expression that results in a larger data set than to use a complex json path expression that might not work.
+        - IMPORTANT: avoid using json path filter expressions like $.data.results[?(@.name == "John")].id, instead use $.data.results[*].id which is safer even if it retrieves more data. Use secondaryJsonPaths if you need multiple properties.
 
         <abbreviated_tool_output>
         ${JSON.stringify(trimmedResult, null, 2)}
@@ -410,7 +455,11 @@ ${agentsJson}
         messages: [...history, { role: 'user', content: step.task }],
 
         schema: z.object({
-          primaryJsonPath: z.string().describe('A json path that is valid for the tool output.'),
+          primaryJsonPath: z
+            .string()
+            .describe(
+              'A json path that is valid for the tool output. For example: $.data.results[0].id, $.data.results[*].name, etc.',
+            ),
           secondaryJsonPaths: z
             .array(z.string().optional())
             .describe(
@@ -477,7 +526,7 @@ ${agentsJson}
     return stepMessage;
   }
 
-  private async createStepPlan({
+  async #createStepPlan({
     step,
     server,
     tools,
@@ -489,9 +538,18 @@ ${agentsJson}
     dataStream: DataStreamWriter;
   }) {
     const partialPlanSchema = z.object({
+      reasoning: z
+        .string()
+        .describe(
+          'A short description of the reasoning behind the plan. Do not solve the task here, just briefly describe why you chose the steps you did, or why you chose no steps.',
+        ),
       steps: z.array(
         z.object({
-          task: z.string().describe('A description of what needs to be accomplished in this step.'),
+          task: z
+            .string()
+            .describe(
+              'A short and helpful description of what the agent needs to accomplish in this step. Remember that the agent has access to the message history, so you do not need to repeat any of that here.',
+            ),
           tool: z
             .string()
             .describe('The name of the tool to use. This name MUST BE ONE of the names in the available_tools list.'),
@@ -513,6 +571,8 @@ You are an AI assistant specialized to work with ${server.name}. You are tasked 
 - If the user's request can be fulfilled without using any tools (for example, from data in the message history), you should return an empty array.
 - You may need to use multiple tools to fulfill the task.
 - You may need to use the same tool multiple times in the plan.
+- IMPORTANT: each step has access to the information from prior steps, try not to add steps that essentially duplicate themselves
+- IMPORTANT: consider each tool carefully to generate a plan that requires the lease number of steps possible
 
 Below is the list of available tools with their descriptions:
 
@@ -522,13 +582,13 @@ ${toolsJson}
 `;
 
     const plan = await generateObject({
-      model: this.#supervisor.model,
+      model: this.#provider.languageModel('planning'),
       system,
       prompt: `Create a plan to fulfill the following task: "${step.task}"`,
       schema: partialPlanSchema,
     });
 
-    console.log(`${server.id} - createStepPlan`, { step, plan });
+    console.log(`${server.id} - #createStepPlan`, { step, plan });
 
     dataStream.writeMessageAnnotation({
       type: 'planning-usage',
@@ -538,41 +598,7 @@ ${toolsJson}
     return plan;
   }
 
-  private initSupervisor(): MpcSupervisor {
-    const supervisor =
-      this.#settings.supervisor ??
-      // Our default settings
-      ({
-        provider: 'openai',
-        languageModelId: 'gpt-4o',
-      } satisfies MpcConductorSettings['supervisor']);
-
-    const settings = this.#settings.providers?.[supervisor.provider];
-
-    const llmProxyUrl =
-      typeof this.#llmProxyUrl === 'function'
-        ? this.#llmProxyUrl({ provider: supervisor.provider })
-        : this.#llmProxyUrl;
-
-    // Prefer their baseURL if provided, otherwise use the proxy if no apiKey is provided
-    const baseURL = settings?.baseURL ?? (settings?.apiKey ? undefined : llmProxyUrl);
-
-    const finalSettings: OpenAIProviderSettings = {
-      // ai-sdk does not send requests if apiKey is not provided, so if
-      // using a proxy, set to empty string by default
-      apiKey: baseURL ? '' : undefined,
-      ...settings,
-      baseURL,
-      compatibility: 'strict',
-    };
-
-    switch (supervisor.provider) {
-      case 'openai':
-        return {
-          model: createOpenAI(finalSettings)(supervisor.languageModelId, { structuredOutputs: false }),
-        };
-      default:
-        throw new Error(`Unsupported supervisor provider: ${supervisor.provider}`);
-    }
+  #initProvider() {
+    return createProvider({ settings: this.#settings, llmProxyUrl: this.#llmProxyUrl });
   }
 }
