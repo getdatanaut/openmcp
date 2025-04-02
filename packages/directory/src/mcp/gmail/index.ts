@@ -7,7 +7,7 @@ export default {
   transport: {
     type: 'sse',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://datanaut.ai/api/directory/gmail/openapi.json&baseUrl=https://gmail.googleapis.com/gmail/v1',
+      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://datanaut.ai/api/directory/gmail/openapi.json&baseUrl=https://gmail.googleapis.com',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{gmailApiKey}}"}}',
