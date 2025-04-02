@@ -17,7 +17,7 @@ import { nanoid } from 'nanoid';
 import Nimma, { type Callback } from 'nimma';
 import { z } from 'zod';
 
-import type { ClientServerManager, Tool } from './client-servers.ts';
+import type { ClientServer, ClientServerManager, Tool } from './client-servers.ts';
 import type { Server } from './servers.ts';
 import type { ClientId } from './types.ts';
 
@@ -36,6 +36,7 @@ type SupportedProvider = keyof NonNullable<MpcConductorSettings['providers']>;
 interface MpcConductorOptions {
   serversByClientId: ClientServerManager['serversByClientId'];
   toolsByClientId: ClientServerManager['toolsByClientId'];
+  listClientServers: ClientServerManager['findMany'];
   callTool: ClientServerManager['callTool'];
   llmProxyUrl?: string | ((opts: { provider: SupportedProvider }) => string);
   settings?: MpcConductorSettings;
@@ -127,6 +128,7 @@ const createProvider = (opts: { settings: MpcConductorSettings; llmProxyUrl: Mpc
 export class MpcConductor {
   #serversByClientId: MpcConductorOptions['serversByClientId'];
   #toolsByClientId: MpcConductorOptions['toolsByClientId'];
+  #listClientServers: MpcConductorOptions['listClientServers'];
   #callTool: MpcConductorOptions['callTool'];
   #provider: ReturnType<typeof createProvider>;
   #settings: MpcConductorSettings;
@@ -135,6 +137,7 @@ export class MpcConductor {
   constructor(options: MpcConductorOptions) {
     this.#serversByClientId = options.serversByClientId;
     this.#toolsByClientId = options.toolsByClientId;
+    this.#listClientServers = options.listClientServers;
     this.#callTool = options.callTool;
     this.#llmProxyUrl = options.llmProxyUrl;
     this.#settings = options.settings ?? {};
@@ -182,6 +185,7 @@ export class MpcConductor {
         return JSON.stringify(error);
       },
       execute: async dataStream => {
+        const clientServers = await this.#listClientServers({ clientId, enabled: true });
         const servers = await this.#serversByClientId({ clientId });
         const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
 
@@ -189,6 +193,11 @@ export class MpcConductor {
 
         const stepMessages: UIMessage[] = [];
         for (const step of plan.object.steps) {
+          const clientServer = clientServers.find(cs => cs.serverId === step.agentId);
+          if (!clientServer) {
+            throw new Error(`Client server "${step.agentId}" not found`);
+          }
+
           const server = servers.find(s => s.id === step.agentId);
           if (!server) {
             throw new Error(`Server "${step.agentId}" not found`);
@@ -197,6 +206,7 @@ export class MpcConductor {
           const stepMessage = await this.runPlanStep({
             clientId,
             step,
+            clientServer,
             server,
             tools,
             history: stepMessages,
@@ -286,6 +296,7 @@ ${agentsJson}
   private async runPlanStep({
     clientId,
     step,
+    clientServer,
     server,
     tools: allTools,
     history,
@@ -293,6 +304,7 @@ ${agentsJson}
   }: {
     clientId: ClientId;
     step: z.infer<typeof planSchema>['steps'][number];
+    clientServer: ClientServer;
     server: Server;
     tools: Tool[];
     history: UIMessage[];
@@ -300,7 +312,21 @@ ${agentsJson}
   }) {
     const tools = allTools.filter(t => t.server === server.id);
 
-    const plan = await this.#createStepPlan({ step, server, tools, dataStream });
+    const safeClientServerConfig = _cloneDeep(clientServer.serverConfig);
+    for (const key in server.configSchema?.properties) {
+      const val = server.configSchema?.properties[key];
+      if (val?.format === 'secret') {
+        delete safeClientServerConfig[key];
+      }
+    }
+
+    const plan = await this.#createStepPlan({
+      step,
+      clientServerConfig: safeClientServerConfig,
+      server,
+      tools,
+      dataStream,
+    });
 
     const stepMessage: UIMessage = {
       id: nanoid(),
@@ -321,54 +347,12 @@ ${agentsJson}
 
       console.log(`${toolId} - runPlanStep`, { tool });
 
-      // const { object: toolCallObj, usage: toolCallUsage } = await generateObject({
-      //   model: this.#supervisor.model,
-      //   system: `
-      //   A request is being made to a tool named "${tool.name}". ${tool.description ? `This tool is described as "${tool.description}".` : ''}
-
-      //   We need to:
-
-      //   1. Use the message history to generate an input object that matches the tool's input schema.
-      //   2. Use the tool's description, the user's message history, and the tool's response schema, to generate a json path expression that can be used to extract the minimum data needed to answer the user's request.
-
-      //   Here is the tool's input schema:
-
-      //   <tool_input_schema>
-      //   ${JSON.stringify(tool.inputSchema, null, 2)}
-      //   </tool_input_schema>
-
-      //   For the json path expression(s):
-
-      //   - Please generate a json path expression that can be used to extract the minimum data needed to answer the user's request.
-      //   - The goal is to reduce the size of the response, while still being able to fulfill the user's request.
-      //   - If you believe that the data retrieved from the primary json path may not be sufficient to answer the user's request, you can provide secondary json paths.
-      //   - The JSON path that you provide MUST BE A VALID JSON PATH FOR THE GIVEN SCHEMA.
-      //   - IMPORTANT: Air on the side of simpler JSON path expressions if possible. It is better to use a simpler json path expression that results in a larger data set than to use a complex json path expression that might not work.
-
-      //   <tool_response_schema>
-      //   ${JSON.stringify(tool.outputSchema, null, 2)}
-      //   </tool_response_schema>
-      //   `,
-
-      //   messages: [...history, { role: 'user', content: step.task }],
-
-      //   schema: z.object({
-      //     toolInput: z.any(),
-      //     primaryJsonPath: z.string().describe('A json path that is valid for the tool response schema.'),
-      //     secondaryJsonPaths: z
-      //       .array(z.string().optional())
-      //       .describe(
-      //         "Secondary json paths that are valid for the tool response schema. Use this only if you believe that the data retrieved from the primary json path may not be sufficient to answer the user's request.",
-      //       ),
-      //   }),
-      // });
-
       const { object: toolCallObj, usage: toolCallUsage } = await generateObject({
         model: this.#provider.languageModel('structure'),
         system: `
         A request is being made to a tool named "${tool.name}". ${tool.description ? `This tool is described as "${tool.description}".` : ''}
 
-        Use the message history, the tool's description, and the tool's input schema to generate an input object that matches the tool's input schema.
+        Use the message history, the tool's description, the provided client server config, and the tool's input schema to generate an input object that matches the tool's input schema.
 
         This input object will be passed to the tool to accomplish the requested task.
 
@@ -376,12 +360,22 @@ ${agentsJson}
 
         1. Ignore properties the are used for authentication, we will handle that separately.
         2. With the exception of auth properties mentioned in point 1, the input object MUST be valid according to the tool's input schema
+        3. If the tool requires a property and it looks like that property, or something very similarly named, is in the client_server_config below, fallback to that value if nothing better is available.
+        4. If the tool input requires a property that is not available in the message history or the client server config below, and that must be supplied by the user, add a message requesting the missing property to the 'collectFromUser' array.
 
         Here is the tool's input schema:
 
         <tool_input_schema>
         ${JSON.stringify(tool.inputSchema, null, 2)}
         </tool_input_schema>
+
+        Here is the client server config:
+
+        <client_server_config>
+        ${JSON.stringify(safeClientServerConfig, null, 2)}
+        </client_server_config>
+
+        Todays date is ${new Date().toLocaleString()}.
         `,
 
         messages: [...history, stepMessage, { role: 'user', content: step.task }],
@@ -390,6 +384,14 @@ ${agentsJson}
           type: 'object',
           properties: {
             toolInput: tool.inputSchema,
+            collectFromUser: {
+              type: 'array',
+              description:
+                'An array of properties that must be supplied by the user. For example, if the user asks to send a message to "my boss" in slack, and it is not apparent from the message history who "my boss" is, we must ask them for the slack username of their boss.',
+              items: {
+                type: 'string',
+              },
+            },
           },
           required: ['toolInput'],
         }),
@@ -404,6 +406,12 @@ ${agentsJson}
       console.log(`${toolId} - runPlanStep`, { toolCallObj });
 
       const toolInput = (toolCallObj as any).toolInput ?? {};
+      const collectFromUser = (toolCallObj as any).collectFromUser ?? [];
+
+      if (collectFromUser.length) {
+        console.log('COLLECT FROM USER', { collectFromUser });
+        // @TODO need to break out of the loops and re-prompt the user for the missing properties
+      }
 
       dataStream.write(
         formatDataStreamPart('tool_call', {
@@ -517,7 +525,7 @@ ${agentsJson}
           toolCallId,
           state: 'result',
           toolName: toolId,
-          args: toolCallObj.toolInput ?? {},
+          args: toolInput ?? {},
           result: toolResultContent,
         },
       });
@@ -528,11 +536,13 @@ ${agentsJson}
 
   async #createStepPlan({
     step,
+    clientServerConfig,
     server,
     tools,
     dataStream,
   }: {
     step: z.infer<typeof planSchema>['steps'][number];
+    clientServerConfig: ClientServer['serverConfig'];
     server: Server;
     tools: Tool[];
     dataStream: DataStreamWriter;
@@ -572,13 +582,19 @@ You are an AI assistant specialized to work with ${server.name}. You are tasked 
 - You may need to use multiple tools to fulfill the task.
 - You may need to use the same tool multiple times in the plan.
 - IMPORTANT: each step has access to the information from prior steps, try not to add steps that essentially duplicate themselves
-- IMPORTANT: consider each tool carefully to generate a plan that requires the lease number of steps possible
+- IMPORTANT: consider each tool carefully to generate a plan that requires the least number of steps possible
 
 Below is the list of available tools with their descriptions:
 
 <available_tools>
 ${toolsJson}
 </available_tools>
+
+Here is the extra configuration associated with this server, in case it is helpful. It will be made available to each step of the plan.
+
+<client_server_config>
+${JSON.stringify(clientServerConfig, null, 2)}
+</client_server_config>
 `;
 
     const plan = await generateObject({
@@ -588,7 +604,7 @@ ${toolsJson}
       schema: partialPlanSchema,
     });
 
-    console.log(`${server.id} - #createStepPlan`, { step, plan });
+    console.log(`${server.id} - createStepPlan`, { step, plan });
 
     dataStream.writeMessageAnnotation({
       type: 'planning-usage',

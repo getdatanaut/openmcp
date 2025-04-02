@@ -50,6 +50,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
       llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_API_URL}/_/llm/${provider}`,
       serversByClientId: manager.current.clientServers.serversByClientId,
       toolsByClientId: manager.current.clientServers.toolsByClientId,
+      listClientServers: manager.current.clientServers.findMany,
       callTool: manager.current.clientServers.callTool,
       settings: {
         providers: {
