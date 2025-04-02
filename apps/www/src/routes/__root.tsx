@@ -71,7 +71,7 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
           <div className={tn('ak-layer-canvas-down min-h-screen', themeClass, `font-${app.fontId}`)} ref={setRootRef}>
             <div className="isolate flex h-screen">
               <div className="h-screen">
-                <MainSidebar className={tn('py-2', app.sidebarCollapsed ? 'w-2' : 'w-72')} />
+                <MainSidebar className={tn('py-2', app.sidebarCollapsed ? 'w-2' : 'w-80')} />
               </div>
 
               {children}
