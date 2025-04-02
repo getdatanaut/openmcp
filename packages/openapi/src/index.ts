@@ -57,7 +57,7 @@ export async function createMcpServer(
 
   for (const operation of operations) {
     const endpointName = `${operation.method.toUpperCase()} ${operation.path}`;
-    const name = String(operation.iid || operation.id || endpointName).slice(0, 64);
+    const name = cleanToolName(String(operation.iid || operation.id || endpointName));
     const description = [endpointName, operation.description || ''].filter(Boolean).join(' - ');
 
     operationTools.set(name, {
@@ -236,6 +236,14 @@ function parameterToTool(param: { name: string; description?: string; schema?: u
     type: 'string',
     ...(param.schema ? param.schema : {}),
   } as const;
+}
+
+/**
+ * Tool names must match '^[a-zA-Z0-9_-]+$'.
+ * They can be maximum 64 characters long.
+ */
+function cleanToolName(name: string) {
+  return name.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 64);
 }
 
 /**
