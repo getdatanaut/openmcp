@@ -38,9 +38,9 @@
     "@modelcontextprotocol/sdk": "1.8.0",
     "@stoplight/json": "3.21.7",
     "ai": "4.2.11",
+    "jsonpath-rfc9535": "1.2.0",
     "lodash": "4.17.21",
     "nanoid": "5.1.5",
-    "nimma": "0.7.2",
     "zod": "3.24.2"
   },
   "devDependencies": {

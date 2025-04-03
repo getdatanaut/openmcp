@@ -20,10 +20,10 @@ import {
   zodSchema,
 } from 'ai';
 import dedent from 'dedent';
+import { batchExec, type Callback } from 'jsonpath-rfc9535';
 import _cloneDeep from 'lodash/cloneDeep';
 import _set from 'lodash/set';
 import { nanoid } from 'nanoid';
-import Nimma, { type Callback } from 'nimma';
 import { z } from 'zod';
 
 import type { ClientServer, ClientServerManager, Tool } from './client-servers.ts';
@@ -269,7 +269,7 @@ export class MpcConductor {
         const servers = await this.#serversByClientId({ clientId });
         const tools = await this.#toolsByClientId({ clientId, lazyConnect: true });
 
-        const flow = new AgentFlow({
+        const processor = new MessageProcessor({
           clientId,
           message,
           history,
@@ -284,7 +284,7 @@ export class MpcConductor {
           onStepFinish,
         });
 
-        await flow.run();
+        await processor.process();
       },
     });
   };
@@ -317,7 +317,7 @@ const generateOutputSchemaSystemMessage = ({ schema }: { schema: z.ZodSchema }) 
   };
 };
 
-interface AgentFlowOptions {
+interface MessageProcessorOptions {
   clientId: ClientId;
   message: UIMessage;
   history: UIMessage[];
@@ -332,7 +332,10 @@ interface AgentFlowOptions {
   onStepFinish?: MpcConductorHandleMessageOpts['onStepFinish'];
 }
 
-class AgentFlow {
+/**
+ * Processes a user message by coordinating work across multiple agents and tools
+ */
+class MessageProcessor {
   #clientId: ClientId;
   #message: UIMessage;
   #history: UIMessage[];
@@ -348,7 +351,7 @@ class AgentFlow {
 
   #currentStepIndex = 0;
 
-  constructor(options: AgentFlowOptions) {
+  constructor(options: MessageProcessorOptions) {
     this.#clientId = options.clientId;
     this.#message = options.message;
     this.#history = options.history;
@@ -363,37 +366,40 @@ class AgentFlow {
     this.#onStepFinish = options.onStepFinish;
   }
 
-  public async run() {
-    const plan = await this.createPlan();
+  /**
+   * Execute the full processing of a user request
+   */
+  public async process() {
+    const workflow = await this.createAgentWorkflow();
 
-    const stepMessages: UIMessage[] = [];
-    for (const step of plan.steps) {
-      const clientServer = this.#clientServers.find(cs => cs.serverId === step.agentId);
+    const agentMessages: UIMessage[] = [];
+    for (const agentTask of workflow.steps) {
+      const clientServer = this.#clientServers.find(cs => cs.serverId === agentTask.agentId);
       if (!clientServer) {
-        throw new Error(`Client server "${step.agentId}" not found`);
+        throw new Error(`Client server "${agentTask.agentId}" not found`);
       }
 
-      const server = this.#servers.find(s => s.id === step.agentId);
+      const server = this.#servers.find(s => s.id === agentTask.agentId);
       if (!server) {
-        throw new Error(`Server "${step.agentId}" not found`);
+        throw new Error(`Server "${agentTask.agentId}" not found`);
       }
 
-      const stepMessage = await this.runPlanStep({
-        step,
+      const agentMessage = await this.executeAgentTask({
+        agentTask,
         clientServer,
         server,
       });
 
-      stepMessages.push(stepMessage);
+      agentMessages.push(agentMessage);
     }
 
     const textModel = this.#provider.languageModel('text');
 
-    // If the message was complex enough to require a plan, one more step at the end to wrap it up
-    if (plan.steps.length) {
+    // If the message was complex enough to require multiple agents, one more step at the end to wrap it up
+    if (workflow.steps.length) {
       const result = streamText({
         model: textModel,
-        messages: [...this.#history, ...stepMessages, this.#message],
+        messages: [...this.#history, ...agentMessages, this.#message],
         onError: this.#onError,
         onStepFinish: this.#onStepFinish,
         onFinish: event => {
@@ -412,9 +418,11 @@ class AgentFlow {
     }
   }
 
-  private async createPlan() {
+  /**
+   * Creates a simplistic "workflow" that describes which agents to use for the user's request
+   */
+  private async createAgentWorkflow() {
     const planningModel = this.#provider.languageModel('planning');
-
     const hasNativeReasoning = modelsWithReasoningOutput[planningModel.modelId];
 
     // If the model supports reasoning chunks, use the simple schema, otherwise use the schema that includes simulated "reasoning" prop in the output
@@ -444,80 +452,141 @@ class AgentFlow {
       systemMessages.push(generateOutputSchemaSystemMessage({ schema: agentPlanSchema }));
     }
 
-    this.#startStep();
-
-    this.#writeReasoningAnnotation({ type: 'reasoning-start', name: 'Planner' });
-
-    let text = '';
-    let reasoningText = '';
     let messageToUserText = '';
-    let reasoningStart = Date.now();
-    let reasoningEnd = Date.now();
-    const dataStream = this.#dataStream; // Create a local reference
-    const planStream = await streamText({
+
+    const workflow = await this.streamWithReasoning({
       model: planningModel,
-      messages: [...systemMessages, ...this.#history, this.#message],
-      experimental_output: planningModel.supportsStructuredOutputs ? output : undefined,
-      onChunk({ chunk }) {
-        if (chunk.type === 'text-delta') {
-          reasoningEnd = Date.now();
-
-          text += chunk.textDelta;
-
-          const parsed = output.parsePartial({ text });
-          if (!parsed?.partial) return;
-
-          // If this model doesn't formally support reasoning, we can
-          // simulate it by writing the reasoning property from the actual response to the stream
-          if (!hasNativeReasoning) {
-            const partial = parsed?.partial as z.infer<typeof agentPlanSchemaWithReasoning> | undefined;
-            if (partial?.reasoning && partial.reasoning !== reasoningText) {
-              const delta = partial.reasoning.substring(reasoningText.length);
-              reasoningText = partial.reasoning;
-              dataStream.write(formatDataStreamPart('reasoning', delta));
-            }
-          }
-
-          const partial = parsed?.partial as z.infer<typeof agentPlanSchema> | undefined;
+      systemMessages,
+      messages: [...this.#history, this.#message],
+      outputSchema: output,
+      logPrefix: 'createAgentWorkflow',
+      reasoning: {
+        name: 'Planner',
+        withSchema: agentPlanSchemaWithReasoning,
+        onPartialParsed: partial => {
+          // Handle messageToUser streaming for createAgentWorkflow
           if (partial?.messageToUser && partial.messageToUser !== messageToUserText) {
             const delta = partial.messageToUser.substring(messageToUserText.length);
             messageToUserText = partial.messageToUser;
-            dataStream.write(formatDataStreamPart('text', delta));
+            this.#dataStream.write(formatDataStreamPart('text', delta));
           }
-        } else if (chunk.type === 'reasoning') {
-          dataStream.write(formatDataStreamPart('reasoning', chunk.textDelta));
-        }
+        },
       },
     });
 
-    await planStream.consumeStream();
+    console.log('createAgentWorkflow', { workflow });
 
-    this.#writeUsageAnnotation({
-      type: 'planning-usage',
-      usage: await planStream.usage,
-      provider: planningModel.provider,
-      modelId: planningModel.modelId,
-    });
-
-    this.#writeReasoningAnnotation({ type: 'reasoning-finish', duration: reasoningEnd - reasoningStart });
-
-    // @TODO if parse fails, attempt to strip markdown code block from start/end and try again, since
-    // models that don't support structured outputs might wrap the response in a markdown code block
-    const plan = JSON.parse(text) as z.infer<typeof agentPlanSchema>;
-
-    console.log('createPlan', { plan });
-
-    this.#finishStep();
-
-    return plan;
+    return workflow;
   }
 
-  private async runPlanStep({
-    step,
+  /**
+   * Creates a sequence of tool calls for a specific agent task
+   */
+  private async createToolSequence({
+    agentTask,
+    clientServerConfig,
+    server,
+    tools,
+  }: {
+    agentTask: z.infer<typeof agentPlanSchema>['steps'][number];
+    clientServerConfig: ClientServer['serverConfig'];
+    server: Server;
+    tools: Tool[];
+  }) {
+    const toolStepsSchema = z.array(
+      z.object({
+        task: z
+          .string()
+          .describe(
+            'A short and helpful description of what the agent needs to accomplish in this step. Remember that the agent has access to the message history, so you do not need to repeat any of that here',
+          ),
+        tool: z
+          .string()
+          .describe('The name of the tool to use. This name MUST BE ONE of the names in the available_tools list.'),
+      }),
+    );
+
+    const toolSequenceSchema = z.object({
+      steps: toolStepsSchema,
+    });
+
+    const toolSequenceSchemaWithReasoning = z.object({
+      reasoning: z
+        .string()
+        .describe(
+          'A short description of the reasoning behind the plan. Do not solve the task here, just briefly describe why you chose the steps you did, or why you chose no steps.',
+        ),
+      steps: toolStepsSchema,
+    });
+
+    const planningModel = this.#provider.languageModel('planning');
+    const hasNativeReasoning = modelsWithReasoningOutput[planningModel.modelId];
+
+    // If the model supports reasoning chunks, use the simple schema, otherwise use the schema that includes simulated "reasoning" prop in the output
+    const output = Output.object({ schema: hasNativeReasoning ? toolSequenceSchema : toolSequenceSchemaWithReasoning });
+
+    const systemMessages: CoreSystemMessage[] = [];
+
+    systemMessages.push({
+      role: 'system',
+      content: dedent`
+        You are an AI assistant specialized to work with ${server.name}. You are tasked with creating a plan to address the requested task by utilizing the available tools, if necessary.
+
+        - Create a plan that specifies a sequence of tools to use.
+        - If the user's request can be fulfilled without using any tools (for example, from data in the message history), you should return an empty array.
+        - You may need to use multiple tools to fulfill the task.
+        - You may need to use the same tool multiple times in the plan.
+        - IMPORTANT: each step has access to the information from prior steps, try not to add steps that essentially duplicate themselves
+        - IMPORTANT: consider each tool carefully to generate a plan that requires the least number of steps possible
+
+        Below is the list of available tools with their descriptions:
+
+        <available_tools>
+        ${JSON.stringify(tools.map(t => ({ name: t.name, description: t.description })))}
+        </available_tools>
+
+        Here is the extra configuration associated with this server, in case it is helpful. It will be made available to each step of the plan.
+
+        <client_server_config>
+        ${JSON.stringify(clientServerConfig, null, 2)}
+        </client_server_config>
+      `,
+    });
+
+    if (!planningModel.supportsStructuredOutputs) {
+      systemMessages.push(generateOutputSchemaSystemMessage({ schema: toolSequenceSchema }));
+    }
+
+    const message: CoreUserMessage = {
+      role: 'user',
+      content: `Create a plan to fulfill the following task: "${agentTask.task}"`,
+    };
+
+    const toolSequence = await this.streamWithReasoning({
+      model: planningModel,
+      systemMessages,
+      messages: [message],
+      outputSchema: output,
+      logPrefix: `${server.id} - createToolSequence`,
+      reasoning: {
+        name: server.name,
+        serverId: server.id,
+        withSchema: toolSequenceSchemaWithReasoning,
+      },
+    });
+
+    return toolSequence;
+  }
+
+  /**
+   * Executes a specific task assigned to an agent by running the necessary tool calls
+   */
+  private async executeAgentTask({
+    agentTask,
     clientServer,
     server,
   }: {
-    step: z.infer<typeof agentPlanSchema>['steps'][number];
+    agentTask: z.infer<typeof agentPlanSchema>['steps'][number];
     clientServer: ClientServer;
     server: Server;
   }) {
@@ -531,31 +600,31 @@ class AgentFlow {
       }
     }
 
-    const plan = await this.createStepPlan({
-      step,
+    const toolSequence = await this.createToolSequence({
+      agentTask,
       clientServerConfig: safeClientServerConfig,
       server,
       tools,
     });
 
-    const stepMessage: UIMessage = {
+    const agentMessage: UIMessage = {
       id: nanoid(),
       role: 'assistant',
       content: '',
       parts: [],
     };
 
-    for (const step of plan.steps) {
+    for (const toolStep of toolSequence.steps) {
       const toolCallId = nanoid();
 
-      const tool = tools.find(t => t.name === step.tool);
+      const tool = tools.find(t => t.name === toolStep.tool);
       if (!tool) {
-        throw new Error(`Tool "${step.tool}" not found for server "${server.id}"`);
+        throw new Error(`Tool "${toolStep.tool}" not found for server "${server.id}"`);
       }
 
-      const toolId = `${server.id}__${step.tool}`;
+      const toolId = `${server.id}__${toolStep.tool}`;
 
-      console.log(`${toolId} - runPlanStep`, { tool });
+      console.log(`${toolId} - executeAgentTask`, { tool });
 
       const structureModel = this.#provider.languageModel('structure');
 
@@ -597,7 +666,7 @@ class AgentFlow {
           Todays date is ${new Date().toLocaleString()}.
         `,
 
-        messages: [...this.#history, stepMessage, { role: 'user', content: step.task }],
+        messages: [...this.#history, agentMessage, { role: 'user', content: toolStep.task }],
 
         schema: jsonSchema({
           type: 'object',
@@ -624,7 +693,7 @@ class AgentFlow {
         modelId: structureModel.modelId,
       });
 
-      console.log(`${toolId} - runPlanStep`, { toolCallObj });
+      console.log(`${toolId} - executeAgentTask`, { toolCallObj });
 
       const toolInput = (toolCallObj as any).toolInput ?? {};
       const collectFromUser = (toolCallObj as any).collectFromUser ?? [];
@@ -645,7 +714,7 @@ class AgentFlow {
       const toolResult = await this.#callTool({
         clientId: this.#clientId,
         serverId: tool.server,
-        name: step.tool,
+        name: toolStep.tool,
         input: toolInput,
       });
 
@@ -681,7 +750,7 @@ class AgentFlow {
           </abbreviated_tool_output>
         `,
 
-        messages: [...this.#history, { role: 'user', content: step.task }],
+        messages: [...this.#history, { role: 'user', content: toolStep.task }],
 
         schema: z.object({
           primaryJsonPath: z
@@ -700,30 +769,30 @@ class AgentFlow {
 
       // @TODO remove once can do this on the server? or better to leave here?
       const summarizedResult = {};
-      const nimmaCallBacks: Record<string, Callback> = {};
+      const jsonPathCallbacks = new Map<string, Callback>();
       if (toolOutputPaths.primaryJsonPath) {
-        nimmaCallBacks[toolOutputPaths.primaryJsonPath] = ({ path, value }) => {
+        jsonPathCallbacks.set(toolOutputPaths.primaryJsonPath, (value, path) => {
           _set(summarizedResult, path, value);
-        };
+        });
       }
 
       if (toolOutputPaths.secondaryJsonPaths) {
         for (const secondaryJsonPath of toolOutputPaths.secondaryJsonPaths) {
           if (!secondaryJsonPath) continue;
 
-          nimmaCallBacks[secondaryJsonPath] = ({ path, value }) => {
+          jsonPathCallbacks.set(secondaryJsonPath, (value, path) => {
             _set(summarizedResult, path, value);
-          };
+          });
         }
       }
 
       try {
-        Nimma.query(toolResultContent, nimmaCallBacks);
+        batchExec(toolResultContent, jsonPathCallbacks);
       } catch (error) {
-        console.error(`${toolId} - runPlanStep.nimmaError`, { error, toolOutputPaths, toolResultContent });
+        console.error(`${toolId} - executeAgentTask.nimmaError`, { error, toolOutputPaths, toolResultContent });
       }
 
-      console.log(`${toolId} - runPlanStep`, {
+      console.log(`${toolId} - executeAgentTask`, {
         toolOutputPaths,
         toolResult,
         trimmedResult,
@@ -740,7 +809,7 @@ class AgentFlow {
         }),
       );
 
-      stepMessage.parts.push({
+      agentMessage.parts.push({
         type: 'tool-invocation',
         toolInvocation: {
           toolCallId,
@@ -752,116 +821,73 @@ class AgentFlow {
       });
     }
 
-    return stepMessage;
+    return agentMessage;
   }
 
-  private async createStepPlan({
-    step,
-    clientServerConfig,
-    server,
-    tools,
+  private async streamWithReasoning<T extends z.ZodSchema, U extends z.ZodSchema>({
+    model,
+    systemMessages,
+    messages,
+    outputSchema,
+    logPrefix,
+    reasoning,
   }: {
-    step: z.infer<typeof agentPlanSchema>['steps'][number];
-    clientServerConfig: ClientServer['serverConfig'];
-    server: Server;
-    tools: Tool[];
-  }) {
-    const stepsSchema = z.array(
-      z.object({
-        task: z
-          .string()
-          .describe(
-            'A short and helpful description of what the agent needs to accomplish in this step. Remember that the agent has access to the message history, so you do not need to repeat any of that here',
-          ),
-        tool: z
-          .string()
-          .describe('The name of the tool to use. This name MUST BE ONE of the names in the available_tools list.'),
-      }),
-    );
-
-    const planSchema = z.object({
-      steps: stepsSchema,
-    });
-
-    const planSchemaWithReasoning = z.object({
-      reasoning: z
-        .string()
-        .describe(
-          'A short description of the reasoning behind the plan. Do not solve the task here, just briefly describe why you chose the steps you did, or why you chose no steps.',
-        ),
-      steps: stepsSchema,
-    });
-
-    const planningModel = this.#provider.languageModel('planning');
-
-    const hasNativeReasoning = modelsWithReasoningOutput[planningModel.modelId];
-
-    // If the model supports reasoning chunks, use the simple schema, otherwise use the schema that includes simulated "reasoning" prop in the output
-    const output = Output.object({ schema: hasNativeReasoning ? planSchema : planSchemaWithReasoning });
-
-    const systemMessages: CoreSystemMessage[] = [];
-
-    systemMessages.push({
-      role: 'system',
-      content: dedent`
-        You are an AI assistant specialized to work with ${server.name}. You are tasked with creating a plan to address the requested task by utilizing the available tools, if necessary.
-
-        - Create a plan that specifies a sequence of tools to use.
-        - If the user's request can be fulfilled without using any tools (for example, from data in the message history), you should return an empty array.
-        - You may need to use multiple tools to fulfill the task.
-        - You may need to use the same tool multiple times in the plan.
-        - IMPORTANT: each step has access to the information from prior steps, try not to add steps that essentially duplicate themselves
-        - IMPORTANT: consider each tool carefully to generate a plan that requires the least number of steps possible
-
-        Below is the list of available tools with their descriptions:
-
-        <available_tools>
-        ${JSON.stringify(tools.map(t => ({ name: t.name, description: t.description })))}
-        </available_tools>
-
-        Here is the extra configuration associated with this server, in case it is helpful. It will be made available to each step of the plan.
-
-        <client_server_config>
-        ${JSON.stringify(clientServerConfig, null, 2)}
-        </client_server_config>
-      `,
-    });
-
-    if (!planningModel.supportsStructuredOutputs) {
-      systemMessages.push(generateOutputSchemaSystemMessage({ schema: planSchema }));
-    }
-
-    const message: CoreUserMessage = {
-      role: 'user',
-      content: `Create a plan to fulfill the following task: "${step.task}"`,
+    model: ReturnType<ReturnType<typeof createProvider>['languageModel']>;
+    systemMessages: CoreSystemMessage[];
+    messages: (CoreUserMessage | UIMessage)[];
+    outputSchema: ReturnType<typeof Output.object>;
+    logPrefix: string;
+    reasoning: {
+      name: string;
+      serverId?: ServerId;
+      withSchema: U;
+      onPartialParsed?: (partial: any) => void;
     };
+  }) {
+    const hasNativeReasoning = modelsWithReasoningOutput[model.modelId];
 
     this.#startStep();
-
-    this.#writeReasoningAnnotation({ type: 'reasoning-start', name: server.name, serverId: server.id });
+    this.#writeReasoningAnnotation({ type: 'reasoning-start', name: reasoning.name, serverId: reasoning.serverId });
 
     let text = '';
     let reasoningText = '';
     let reasoningStart = Date.now();
     let reasoningEnd = Date.now();
+    let textPartCount = 0;
     const dataStream = this.#dataStream; // Create a local reference
-    const planStream = await streamText({
-      model: planningModel,
-      messages: [...systemMessages, message],
-      experimental_output: planningModel.supportsStructuredOutputs ? output : undefined,
+
+    const planStream = streamText({
+      model,
+      // @ts-expect-error ignore
+      messages: [...systemMessages, ...messages],
+      experimental_output: model.supportsStructuredOutputs ? outputSchema : undefined,
       onChunk({ chunk }) {
         if (chunk.type === 'text-delta') {
           reasoningEnd = Date.now();
 
           text += chunk.textDelta;
 
-          const parsed = output.parsePartial({ text });
+          // If the LLM decided to wrap the json in markdown code blocks EVEN THOUGH WE TELL IT NOT TO (or other things)
+          // We need to trim that bit from the beginning of the text. We'll trim from the end after consuming
+          // the entire stream
+          if (textPartCount === 0) {
+            text = text.trimStart();
+            // Check if the response starts with anything other than a JSON object or array
+            if (!text.startsWith('{') && !text.startsWith('[')) {
+              // Remove any non-JSON prefix (like markdown code blocks)
+              text = text.replace(/^[\s\S]*?([[{])/, '$1');
+            }
+          }
+
+          textPartCount++;
+
+          const parsed = outputSchema.parsePartial({ text });
           if (!parsed?.partial) return;
 
           // If this model doesn't formally support reasoning, we can
           // simulate it by writing the reasoning property from the actual response to the stream
           if (!hasNativeReasoning) {
-            const partial = parsed?.partial as z.infer<typeof planSchemaWithReasoning> | undefined;
+            const partial = parsed?.partial as z.infer<typeof reasoning.withSchema> | undefined;
             if (partial?.reasoning && partial.reasoning !== reasoningText) {
               const delta = partial.reasoning.substring(reasoningText.length);
               reasoningText = partial.reasoning;
@@ -869,11 +895,8 @@ class AgentFlow {
             }
           }
 
-          // const partial = parsed?.partial as z.infer<typeof planSchema> | undefined;
-          // if (partial?.messageToUser && partial.messageToUser !== messageToUserText) {
-          //   messageToUserText = partial.messageToUser;
-          //   dataStream.write(formatDataStreamPart('text', messageToUserText));
-          // }
+          // Call custom handler for partial parsing
+          reasoning.onPartialParsed?.(parsed.partial as z.infer<T>);
         } else if (chunk.type === 'reasoning') {
           dataStream.write(formatDataStreamPart('reasoning', chunk.textDelta));
         }
@@ -882,15 +905,21 @@ class AgentFlow {
 
     await planStream.consumeStream();
 
-    console.log(`${server.id} - createStepPlan`, { step, text });
+    text = text.trimEnd();
+    if (!text.endsWith('}') && !text.endsWith(']')) {
+      // Remove any non-JSON suffix (like markdown code blocks)
+      text = text.replace(/[}\]]([\s\S]*)$/, '$1');
+    }
 
-    const plan = JSON.parse(text) as z.infer<typeof planSchema>;
+    console.log(`${logPrefix}`, { text });
+
+    const plan = JSON.parse(text) as z.infer<T>;
 
     this.#writeUsageAnnotation({
       type: 'planning-usage',
       usage: await planStream.usage,
-      provider: planningModel.provider,
-      modelId: planningModel.modelId,
+      provider: model.provider,
+      modelId: model.modelId,
     });
 
     this.#writeReasoningAnnotation({ type: 'reasoning-finish', duration: reasoningEnd - reasoningStart });
@@ -918,9 +947,6 @@ class AgentFlow {
     });
   };
 
-  /**
-   *
-   */
   #startStep = () => {
     // @TODO not sure what messageId is for here... doesn't seem to do anything
     // start a new step - otherwise all text and reasoning chunks across the entire conductor run end up merged into one message part
