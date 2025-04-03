@@ -83,14 +83,14 @@ const reasoningStart = (message: Message, stepIndex: number) => {
   return message.annotations?.find(
     annotation =>
       isReasoningAnnotation(annotation) && annotation.type === 'reasoning-start' && annotation.stepIndex === stepIndex,
-  );
+  ) as MpcConductorReasoningStartAnnotation | undefined;
 };
 
 const reasoningFinish = (message: Message, stepIndex: number) => {
   return message.annotations?.find(
     annotation =>
       isReasoningAnnotation(annotation) && annotation.type === 'reasoning-finish' && annotation.stepIndex === stepIndex,
-  );
+  ) as MpcConductorReasoningFinishAnnotation | undefined;
 };
 
 export const Thread = observer(
