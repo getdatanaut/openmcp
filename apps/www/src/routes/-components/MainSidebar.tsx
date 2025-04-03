@@ -330,7 +330,10 @@ const InstalledServers = () => {
               <ServerListItem
                 key={clientServer.id}
                 server={server}
-                handleDelete={() => deleteClientServer({ id: clientServer.id })}
+                handleDelete={e => {
+                  e.preventDefault();
+                  deleteClientServer({ id: clientServer.id });
+                }}
                 disabled={!clientServer.enabled}
                 render={
                   <Link
