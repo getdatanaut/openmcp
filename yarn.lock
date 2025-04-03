@@ -12,6 +12,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ai-sdk/anthropic@npm:1.2.4":
+  version: 1.2.4
+  resolution: "@ai-sdk/anthropic@npm:1.2.4"
+  dependencies:
+    "@ai-sdk/provider": "npm:1.1.0"
+    "@ai-sdk/provider-utils": "npm:2.2.3"
+  peerDependencies:
+    zod: ^3.0.0
+  checksum: 10c0/335211cca9251bf2dfc37c2883b0313def760f0e6d7fc2e99b9f40cca40172c5e63109c0ceb686c39e785781980862670866fb4ee89ccbeafd5ef19710aaeeb3
+  languageName: node
+  linkType: hard
+
 "@ai-sdk/openai@npm:1.3.6":
   version: 1.3.6
   resolution: "@ai-sdk/openai@npm:1.3.6"
@@ -1359,6 +1371,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hono/zod-validator@npm:0.4.3":
+  version: 0.4.3
+  resolution: "@hono/zod-validator@npm:0.4.3"
+  peerDependencies:
+    hono: ">=3.9.0"
+    zod: ^3.19.1
+  checksum: 10c0/ad783cff6de379cee11f7b1fd54506b658a8e6e9f6066ba3656f340b0d75ab9a82aad7e67290df6f68fd0242244360215df0c8784fbeb18b60c9f6e1c2ca0807
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -1999,6 +2021,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/manager@workspace:packages/manager"
   dependencies:
+    "@ai-sdk/anthropic": "npm:1.2.4"
+    "@ai-sdk/openai": "npm:1.3.6"
+    "@ai-sdk/provider": "npm:1.1.0"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.8.0"
@@ -2028,6 +2053,7 @@ __metadata:
     "@modelcontextprotocol/sdk": "npm:1.8.0"
     "@stoplight/http-spec": "npm:7.1.0"
     "@stoplight/json": "npm:3.21.7"
+    dedent: "npm:1.5.3"
     eslint: "npm:9.23.0"
     msw: "npm:2.7.3"
     tsup: "npm:8.4.0"
@@ -4792,10 +4818,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "date-fns@npm:4.1.0"
-  checksum: 10c0/b79ff32830e6b7faa009590af6ae0fb8c3fd9ffad46d930548fbb5acf473773b4712ae887e156ba91a7b3dc30591ce0f517d69fd83bd9c38650fdc03b4e0bac8
+"dayjs@npm:1.11.13":
+  version: 1.11.13
+  resolution: "dayjs@npm:1.11.13"
+  checksum: 10c0/a3caf6ac8363c7dade9d1ee797848ddcf25c1ace68d9fe8678ecf8ba0675825430de5d793672ec87b24a69bf04a1544b176547b2539982275d5542a7955f35b7
   languageName: node
   linkType: hard
 
@@ -4826,6 +4852,18 @@ __metadata:
   dependencies:
     character-entities: "npm:^2.0.0"
   checksum: 10c0/359c76305b47e67660ec096c5cd3f65972ed75b8a53a40435a7a967cfab3e9516e64b443cbe0c7edcf5ab77f65a6924f12fb1872b1e09e2f044f28f4fd10996a
+  languageName: node
+  linkType: hard
+
+"dedent@npm:1.5.3":
+  version: 1.5.3
+  resolution: "dedent@npm:1.5.3"
+  peerDependencies:
+    babel-plugin-macros: ^3.1.0
+  peerDependenciesMeta:
+    babel-plugin-macros:
+      optional: true
+  checksum: 10c0/d94bde6e6f780be4da4fd760288fcf755ec368872f4ac5218197200d86430aeb8d90a003a840bff1c20221188e3f23adced0119cb811c6873c70d0ac66d12832
   languageName: node
   linkType: hard
 
@@ -10063,6 +10101,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:apps/server"
   dependencies:
+    "@hono/zod-validator": "npm:0.4.3"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@openmcp/cloudflare": "workspace:*"
@@ -12074,8 +12113,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "www@workspace:apps/www"
   dependencies:
-    "@ai-sdk/openai": "npm:1.3.6"
     "@ai-sdk/react": "npm:1.2.5"
+    "@ai-sdk/ui-utils": "npm:1.2.4"
     "@ariakit/react": "npm:0.4.15"
     "@ariakit/react-core": "npm:0.4.15"
     "@babel/plugin-proposal-decorators": "npm:~7.25.9"
@@ -12094,7 +12133,7 @@ __metadata:
     "@types/react-dom": "npm:19.0.4"
     "@vitejs/plugin-react": "npm:4.3.4"
     ai: "npm:4.2.10"
-    date-fns: "npm:^4.1.0"
+    dayjs: "npm:1.11.13"
     dexie: "npm:4.0.11"
     dexie-react-hooks: "npm:1.1.7"
     eslint: "npm:9.23.0"

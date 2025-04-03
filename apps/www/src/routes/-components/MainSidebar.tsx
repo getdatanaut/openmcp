@@ -26,13 +26,13 @@ import {
 import type { Server, ThreadStorageData } from '@openmcp/manager';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
-import { formatDate, isThisWeek, isToday, isYesterday } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
+import { dayjs } from '~/utils/dayjs.ts';
 import { type TClientServerId, type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
 import { queryOptions } from '~/utils/query-options.ts';
 
@@ -200,27 +200,26 @@ const ThreadHistory = () => {
   const groupedThreads =
     sortedThreads?.reduce(
       (acc, thread) => {
-        const date = thread.createdAt ? new Date(thread.createdAt) : new Date();
+        const date = dayjs(thread.createdAt);
 
         let name = '';
-        if (isToday(date)) {
+        if (date.isToday()) {
           name = 'Today';
-        } else if (isYesterday(date)) {
+        } else if (date.isYesterday()) {
           name = 'Yesterday';
-        } else if (isThisWeek(date)) {
+        } else if (date.isThisWeek()) {
           name = 'This Week';
         } else {
-          name = formatDate(date, 'PP');
+          name = 'Older';
         }
 
         acc[name] = {
-          date,
           name,
           threads: [...(acc[name]?.threads || []), thread],
         };
         return acc;
       },
-      {} as Record<string, { name: string; date: Date; threads: ThreadStorageData[] }>,
+      {} as Record<string, { name: string; threads: ThreadStorageData[] }>,
     ) || {};
 
   return (

@@ -1,18 +1,32 @@
 import { useChat, type UseChatHelpers } from '@ai-sdk/react';
-import { faArrowUp, faExclamationCircle, faSpinner, faStop } from '@fortawesome/free-solid-svg-icons';
+import type { ReasoningUIPart } from '@ai-sdk/ui-utils';
+import {
+  faArrowUp,
+  faChevronDown,
+  faChevronRight,
+  faExclamationCircle,
+  faSpinner,
+  faStop,
+} from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
-import type { MpcConductorAnnotation } from '@openmcp/manager';
+import {
+  isReasoningAnnotation,
+  isUsageAnnotation,
+  type MpcConductorReasoningFinishAnnotation,
+  type MpcConductorReasoningStartAnnotation,
+} from '@openmcp/manager';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type LanguageModelUsage, type Message, type ToolInvocation, type UIMessage } from 'ai';
-import { formatDate } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 import {
   type CSSProperties,
   type FormEvent,
   type KeyboardEvent,
+  memo,
   type RefObject,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -22,6 +36,7 @@ import { Markdown } from '~/components/Markdown.tsx';
 import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { useScrollToBottom } from '~/hooks/use-scroll-to-bottom.tsx';
+import { dayjs } from '~/utils/dayjs.ts';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 import { queryOptions } from '~/utils/query-options.ts';
 
@@ -50,17 +65,31 @@ const [ThreadContext, useThreadContext] = createContext<ThreadContextProps>({
 const messageUsage = (message: Message) => {
   return message.annotations?.reduce(
     (acc: LanguageModelUsage, annotation) => {
-      const typedAnnotation = annotation as unknown as MpcConductorAnnotation;
-      if (['planning-usage', 'tool-usage', 'assistant-usage'].includes(typedAnnotation.type)) {
+      if (isUsageAnnotation(annotation)) {
         return {
-          totalTokens: acc.totalTokens + (typedAnnotation.usage?.totalTokens || 0),
-          promptTokens: acc.promptTokens + (typedAnnotation.usage?.promptTokens || 0),
-          completionTokens: acc.completionTokens + (typedAnnotation.usage?.completionTokens || 0),
+          totalTokens: acc.totalTokens + (annotation.usage?.totalTokens || 0),
+          promptTokens: acc.promptTokens + (annotation.usage?.promptTokens || 0),
+          completionTokens: acc.completionTokens + (annotation.usage?.completionTokens || 0),
         };
       }
+
       return acc;
     },
     { totalTokens: 0, promptTokens: 0, completionTokens: 0 },
+  );
+};
+
+const reasoningStart = (message: Message, stepIndex: number) => {
+  return message.annotations?.find(
+    annotation =>
+      isReasoningAnnotation(annotation) && annotation.type === 'reasoning-start' && annotation.stepIndex === stepIndex,
+  );
+};
+
+const reasoningFinish = (message: Message, stepIndex: number) => {
+  return message.annotations?.find(
+    annotation =>
+      isReasoningAnnotation(annotation) && annotation.type === 'reasoning-finish' && annotation.stepIndex === stepIndex,
   );
 };
 
@@ -94,7 +123,7 @@ export const Thread = observer(
       id: threadId,
       initialMessages,
       sendExtraMessageFields: true,
-
+      // experimental_throttle: 2000,
       onError(error) {
         // @TODO error handling
         console.error('Error in thread');
@@ -192,15 +221,17 @@ export const Thread = observer(
 export const ThreadMessages = ({ className, style }: { className?: string; style?: CSSProperties }) => {
   const { chat, messagesContainerRef, messagesEndRef } = useThreadContext();
 
-  // useEffect(() => {
-  //   console.log('ThreadMessages.useEffect', { messages: chat.messages });
-  // }, [JSON.stringify(chat.messages)]);
-
   return (
     <>
       <div className={twMerge('flex flex-1 flex-col', className)} style={style} ref={messagesContainerRef}>
         {chat.messages.map((message, index) => (
-          <ThreadMessage key={message.id} lineNumber={index + 1} isFirst={index === 0} message={message} />
+          <ThreadMessage
+            key={message.id}
+            lineNumber={index + 1}
+            isFirst={index === 0}
+            message={message}
+            status={chat.status}
+          />
         ))}
       </div>
       <div ref={messagesEndRef} />
@@ -208,60 +239,94 @@ export const ThreadMessages = ({ className, style }: { className?: string; style
   );
 };
 
-const ThreadMessage = ({
-  message,
-  lineNumber,
-  isFirst,
-}: {
-  message: UIMessage;
-  lineNumber: number;
-  isFirst: boolean;
-}) => {
-  const { role, parts } = message;
+const ThreadMessage = memo(
+  ({
+    message,
+    lineNumber,
+    isFirst,
+    status,
+  }: {
+    message: UIMessage;
+    lineNumber: number;
+    isFirst: boolean;
+    status: UseChatHelpers['status'];
+  }) => {
+    const { role, parts } = message;
 
-  const usage = messageUsage(message);
+    const usage = messageUsage(message);
 
-  const classes = tn('group ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
+    const classes = tn('group ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
 
-  const containerClasses = tn(
-    'relative flex h-full py-14 pr-12',
-    role === 'user' && 'ak-text-secondary/80',
-    role === 'assistant' && 'ak-text/80',
-  );
+    useEffect(() => {
+      console.log('ThreadMessage.useEffect', lineNumber, message);
+    }, [JSON.stringify(message), lineNumber]);
 
-  const contentClasses = tn('mx-auto flex w-full max-w-[60rem] flex-col gap-6 leading-relaxed');
+    const containerClasses = tn(
+      'relative flex h-full py-14 pr-12',
+      role === 'user' && 'ak-text-secondary/80',
+      role === 'assistant' && 'ak-text/80',
+    );
 
-  return (
-    <div className={classes}>
-      <div className={containerClasses}>
-        {lineNumber > 1 ? (
-          <div className="ak-layer-0 ak-edge/2 absolute top-0 left-0 z-10 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-xs border-[0.5px] px-1 text-sm font-light">
-            <div className="opacity-60">{lineNumber}</div>
+    const contentClasses = tn('mx-auto flex w-full max-w-[60rem] flex-col gap-6 leading-relaxed');
+
+    let stepIndex = -1;
+
+    return (
+      <div className={classes}>
+        <div className={containerClasses}>
+          {!isFirst ? (
+            <div className="ak-layer-0 ak-edge/2 absolute top-0 left-0 z-10 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-xs border-[0.5px] px-1 text-sm font-light">
+              <div className="opacity-60">{lineNumber}</div>
+            </div>
+          ) : null}
+
+          <div className={contentClasses}>
+            {parts.map((p, i) => {
+              if (p.type === 'step-start') {
+                stepIndex++;
+              }
+
+              if (p.type === 'text' && p.text) {
+                return <Markdown key={i} content={p.text} className="min-w-0 flex-1" />;
+              }
+
+              if (p.type === 'tool-invocation') {
+                return <ToolInvocationPart key={p.toolInvocation.toolCallId} toolInvocation={p.toolInvocation} />;
+              }
+
+              if (p.type === 'reasoning') {
+                return (
+                  <ReasoningMessagePart
+                    key={i}
+                    part={p}
+                    isReasoning={status === 'streaming' && i === parts.length - 1}
+                    reasoningStart={reasoningStart(message, stepIndex)}
+                    reasoningFinish={reasoningFinish(message, stepIndex)}
+                  />
+                );
+              }
+
+              return null;
+            })}
           </div>
-        ) : null}
 
-        <div className={contentClasses}>
-          {parts.map((p, i) => {
-            if (p.type === 'text' && p.text) {
-              return <Markdown key={i} content={p.text} className="min-w-0 flex-1" />;
-            }
-
-            if (p.type === 'tool-invocation') {
-              return <ToolInvocationPart key={p.toolInvocation.toolCallId} toolInvocation={p.toolInvocation} />;
-            }
-
-            return null;
-          })}
-
-          <div className="ak-text/80 invisible flex justify-end divide-x-2 text-xs opacity-60 group-hover:visible">
-            {usage?.totalTokens && <div className="px-2">{formatNumberWithCommas(usage.totalTokens)} Tokens</div>}
-            {message.createdAt && <div className="px-2">{formatDate(message.createdAt, 'MMM do h:mm a')}</div>}
-          </div>
+          {!isFirst ? (
+            <div className="text-2xs invisible absolute top-0 right-3 -mt-px flex -translate-y-1/2 gap-2 group-hover:visible">
+              {usage?.totalTokens && (
+                <div className="ak-layer-0 ak-text/40 px-1.5">{formatNumberWithCommas(usage.totalTokens)} Tokens</div>
+              )}
+              {message.createdAt && (
+                <div className="ak-layer-0 ak-text/40 px-1.5" title={dayjs(message.createdAt).format('MMM D h:mm a')}>
+                  {dayjs(message.createdAt).fromNow()}
+                </div>
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+);
 
 interface MPCResponse {
   isError?: true;
@@ -347,6 +412,61 @@ ${JSON.stringify(isMcpResponse(result) ? JSON.parse(result?.content?.[0]?.text |
             <Icon icon={faExclamationCircle} />
           </div>
         ) : null}
+      </div>
+
+      {expandedElem}
+    </div>
+  );
+};
+
+const ReasoningMessagePart = ({
+  part,
+  isReasoning,
+  reasoningStart,
+  reasoningFinish,
+}: {
+  part: ReasoningUIPart;
+  isReasoning: boolean;
+  reasoningStart?: MpcConductorReasoningStartAnnotation;
+  reasoningFinish?: MpcConductorReasoningFinishAnnotation;
+}) => {
+  const [expanded, setExpanded] = useState(isReasoning);
+
+  let expandedElem;
+  if (expanded) {
+    expandedElem = (
+      <div className="ak-text/50 ml-1 border-l-[0.5px] pl-4 text-xs">
+        <div className="max-h-[20rem] overflow-auto">
+          {part.details.map((detail, i) =>
+            detail.type === 'text' ? <Markdown key={i} content={detail.text} /> : '<redacted>',
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  const icon = isReasoning ? faSpinner : expanded ? faChevronDown : faChevronRight;
+
+  useEffect(() => {
+    if (!isReasoning) {
+      setExpanded(false);
+    }
+  }, [isReasoning]);
+
+  const titleParts = [
+    reasoningStart?.name || 'Planner',
+    isReasoning
+      ? 'thinking...'
+      : `thought for ${reasoningFinish?.duration ? dayjs.duration(reasoningFinish?.duration).humanize() : 'a bit'}`,
+  ];
+
+  return (
+    <div className="-ml-0.5 flex flex-col gap-2">
+      <div className="flex cursor-pointer items-center gap-2.5 text-xs" onClick={() => setExpanded(prev => !prev)}>
+        <div>
+          <Icon icon={icon} className="text-[0.8em]" spin={isReasoning} fw />
+        </div>
+        <div>{titleParts.filter(Boolean).join(': ')}</div>
       </div>
 
       {expandedElem}

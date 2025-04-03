@@ -32,6 +32,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "1.2.4",
+    "@ai-sdk/openai": "1.3.6",
+    "@ai-sdk/provider": "1.1.0",
     "@modelcontextprotocol/sdk": "1.8.0",
     "@stoplight/json": "3.21.7",
     "ai": "4.2.10",

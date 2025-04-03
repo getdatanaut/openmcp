@@ -34,7 +34,8 @@
     "@apidevtools/json-schema-ref-parser": "11.9.3",
     "@modelcontextprotocol/sdk": "1.8.0",
     "@stoplight/http-spec": "7.1.0",
-    "@stoplight/json": "3.21.7"
+    "@stoplight/json": "3.21.7",
+    "dedent": "1.5.3"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
