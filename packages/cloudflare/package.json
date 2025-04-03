@@ -33,7 +33,7 @@
     "@openmcp/openapi": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250327.0",
+    "@cloudflare/workers-types": "^4.20250403.0",
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "eslint": "9.23.0",

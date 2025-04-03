@@ -22,10 +22,10 @@
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "@types/node": "22.13.17",
+    "@types/node": "22.14.0",
     "dotenv-cli": "^8.0.0",
     "eslint": "9.23.0",
     "typescript": "5.8.2",
-    "wrangler": "4.6.0"
+    "wrangler": "4.7.0"
   }
 }
