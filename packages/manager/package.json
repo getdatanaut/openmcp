@@ -41,6 +41,7 @@
     "jsonpath-rfc9535": "1.2.0",
     "lodash": "4.17.21",
     "nanoid": "5.1.5",
+    "neverthrow": "8.2.0",
     "zod": "3.24.2"
   },
   "devDependencies": {

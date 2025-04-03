@@ -170,11 +170,6 @@ export const Thread = observer(
           clientId: app.currentUserId,
           message,
           history,
-          onError: error => {
-            console.error('Error in thread', error);
-            // @TODO error handling
-            alert('Error in thread, see console for details');
-          },
         });
       },
     });
@@ -498,7 +493,9 @@ export const ThreadChatBox = ({
 
   return (
     <>
-      {chat.error ? <div className="ak-text-danger pt-3 text-xs">{chat.error.message}</div> : null}
+      {chat.error ? (
+        <div className="ak-text-danger max-h-[20rem] overflow-auto pt-3 text-xs">{chat.error.message}</div>
+      ) : null}
       <form className={twMerge('flex w-full items-center gap-3', className)} onSubmit={handleSubmit}>
         <TextareaAutosize
           id="message"

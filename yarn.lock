@@ -2035,6 +2035,7 @@ __metadata:
     jsonpath-rfc9535: "npm:1.2.0"
     lodash: "npm:4.17.21"
     nanoid: "npm:5.1.5"
+    neverthrow: "npm:8.2.0"
     tsup: "npm:8.4.0"
     type-fest: "npm:^4.39.1"
     typescript: "npm:5.8.2"
@@ -2209,6 +2210,13 @@ __metadata:
 "@rollup/rollup-linux-x64-gnu@npm:4.38.0":
   version: 4.38.0
   resolution: "@rollup/rollup-linux-x64-gnu@npm:4.38.0"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-linux-x64-gnu@npm:^4.24.0":
+  version: 4.39.0
+  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.39.0"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
@@ -8611,6 +8619,18 @@ __metadata:
   version: 1.0.0
   resolution: "negotiator@npm:1.0.0"
   checksum: 10c0/4c559dd52669ea48e1914f9d634227c561221dd54734070791f999c52ed0ff36e437b2e07d5c1f6e32909fc625fe46491c16e4a8f0572567d4dd15c3a4fda04b
+  languageName: node
+  linkType: hard
+
+"neverthrow@npm:8.2.0":
+  version: 8.2.0
+  resolution: "neverthrow@npm:8.2.0"
+  dependencies:
+    "@rollup/rollup-linux-x64-gnu": "npm:^4.24.0"
+  dependenciesMeta:
+    "@rollup/rollup-linux-x64-gnu":
+      optional: true
+  checksum: 10c0/7058a31bcc4b608021dbc217287105c133480265eca742ec11b0211ff81bdf1bb16098687bf16b20d0212578ccaf47f7df8733cea10f10c315bd4538b4cc1f04
   languageName: node
   linkType: hard
 
