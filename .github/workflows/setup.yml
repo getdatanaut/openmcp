@@ -47,8 +47,8 @@ jobs:
           echo "build-affected=$(yarn build --affected --dry-run=json | jq -r 'if .packages | contains(["//"]) then "--affected" else .packages | map("--filter=" + .) | join(" ") end')" >> $GITHUB_OUTPUT
           echo "deploy-affected=$(yarn deploy --affected --dry-run=json | jq -r '.packages | length')" >> $GITHUB_OUTPUT
         env:
-          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
-          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           VITE_API_URL: ${{ vars.VITE_API_URL }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

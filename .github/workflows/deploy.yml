@@ -56,8 +56,8 @@ jobs:
       - name: Deploy
         run: yarn deploy --filter server
         env:
-          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
-          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           VITE_API_URL: ${{ vars.VITE_API_URL }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
@@ -65,13 +65,13 @@ jobs:
       - name: Secrets
         run: |
           echo '{
-            "OPENAI_LLM_API_URL": "${{ vars.OPENAI_LLM_API_URL }}",
-            "OPENAI_LLM_API_KEY": "${{ secrets.OPENAI_LLM_API_KEY }}"
+            "OPENAI_API_KEY": "${{ secrets.OPENAI_API_KEY }}",
+            "ANTHROPIC_API_KEY": "${{ secrets.ANTHROPIC_API_KEY }}"
           }' > secrets.json
           yarn workspace server wrangler secret bulk < secrets.json
         env:
-          OPENAI_LLM_API_URL: ${{ vars.OPENAI_LLM_API_URL }}
-          OPENAI_LLM_API_KEY: ${{ secrets.OPENAI_LLM_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
 

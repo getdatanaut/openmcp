@@ -13,6 +13,7 @@
     "typegen": "wrangler types"
   },
   "dependencies": {
+    "@hono/zod-validator": "0.4.3",
     "@openmcp/cloudflare": "workspace:*",
     "@openmcp/directory": "workspace:*",
     "hono": "4.7.5",

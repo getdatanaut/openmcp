@@ -2,12 +2,8 @@
 
 ## Development
 
-Create a `.dev.vars` file in the root of the project using `.dev.vars.example` as a template.
-
-```
-OPENAI_LLM_API_URL=https://api.openai.com/v1
-OPENAI_LLM_API_KEY=sk-proj-1234567890
-```
+Copy `.dev.vars.example` to a new file, `.dev.vars`, in the root of the project. Fill the env variables with your actual
+values.
 
 Start the server in development mode:
 

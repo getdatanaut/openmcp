@@ -6,12 +6,12 @@
       "dependsOn": ["^build", "www#build"],
       "inputs": ["$TURBO_DEFAULT$", ".dev.vars"],
       "outputs": [".output/**"],
-      "env": ["*_LLM_API_*"]
+      "env": ["*_API_*"]
     },
     "deploy": {
       "dependsOn": ["build"],
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/apps/www/dist/**", ".output/**"],
-      "env": ["CLOUDFLARE_*", "*_LLM_API_*"]
+      "env": ["CLOUDFLARE_*", "*_API_*"]
     }
   }
 }
