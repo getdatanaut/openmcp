@@ -46,6 +46,10 @@ function RootComponent() {
 
   const rootStore = useMemo(() => createRootStore({ localDb, queryClient }), []);
 
+  if (isFirefox()) {
+    return <BrowserNotSupported />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <RootStoreContext.Provider value={rootStore}>
@@ -57,6 +61,28 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
+const isFirefox = () => {
+  return typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+};
+
+const BrowserNotSupported = () => {
+  return (
+    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4">
+      <div>
+        Firefox is currently not supported. Please use Safari, Edge, or a Chromium based browser (Chrome, Arc, etc).
+      </div>
+
+      <div>
+        For the technically curious among you, Firefox should work once{' '}
+        <a className="text-[blue]" href="https://bugzilla.mozilla.org/show_bug.cgi?id=1951206" target="_blank">
+          this bug
+        </a>{' '}
+        is resolved.
+      </div>
+    </div>
+  );
+};
 
 const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
   const { app } = useRootStore();

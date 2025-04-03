@@ -350,11 +350,7 @@ const InstalledServers = () => {
     }
   }
 
-  return (
-    <SidebarSection name="Installed" collapsible>
-      {content}
-    </SidebarSection>
-  );
+  return <SidebarSection name="Installed">{content}</SidebarSection>;
 };
 
 const AvailableServers = observer(() => {
@@ -368,7 +364,7 @@ const AvailableServers = observer(() => {
   const sorted = (servers || []).sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <SidebarSection name="Available" collapsible>
+    <SidebarSection name="Available">
       {sorted.map(server => (
         <ServerListItem
           key={server.id}
