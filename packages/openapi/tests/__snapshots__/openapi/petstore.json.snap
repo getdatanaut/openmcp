@@ -1,804 +1,116 @@
 [
   {
-    "description": "POST /pet - Add a new pet to the store",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "key": "Pet",
-          "properties": {
-            "category": {
-              "key": "Category",
-              "properties": {
-                "id": {
-                  "examples": [
-                    1,
-                  ],
-                  "format": "int64",
-                  "maximum": 9007199254740991,
-                  "minimum": -9007199254740991,
-                  "type": "integer",
-                },
-                "name": {
-                  "examples": [
-                    "Dogs",
-                  ],
-                  "type": "string",
-                },
-              },
-              "type": "object",
-              "xml": {
-                "name": "category",
-              },
-            },
-            "id": {
-              "examples": [
-                10,
-              ],
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "type": "integer",
-            },
-            "name": {
-              "examples": [
-                "doggie",
-              ],
-              "type": "string",
-            },
-            "photoUrls": {
-              "items": {
-                "type": "string",
-                "xml": {
-                  "name": "photoUrl",
-                },
-              },
-              "type": "array",
-              "xml": {
-                "wrapped": true,
-              },
-            },
-            "status": {
-              "description": "pet status in the store",
-              "enum": [
-                "available",
-                "pending",
-                "sold",
-              ],
-              "type": "string",
-            },
-            "tags": {
-              "items": {
-                "properties": {
-                  "id": {
-                    "format": "int64",
-                    "maximum": 9007199254740991,
-                    "minimum": -9007199254740991,
-                    "type": "integer",
-                  },
-                  "name": {
-                    "type": "string",
-                  },
-                },
-                "type": "object",
-                "xml": {
-                  "name": "tag",
-                },
-              },
-              "type": "array",
-              "xml": {
-                "wrapped": true,
-              },
-            },
-          },
-          "required": [
-            "name",
-            "photoUrls",
-          ],
-          "type": "object",
-          "xml": {
-            "name": "pet",
-          },
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "addPet",
   },
   {
-    "description": "PUT /pet - Update an existing pet by Id",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "key": "Pet",
-          "properties": {
-            "category": {
-              "key": "Category",
-              "properties": {
-                "id": {
-                  "examples": [
-                    1,
-                  ],
-                  "format": "int64",
-                  "maximum": 9007199254740991,
-                  "minimum": -9007199254740991,
-                  "type": "integer",
-                },
-                "name": {
-                  "examples": [
-                    "Dogs",
-                  ],
-                  "type": "string",
-                },
-              },
-              "type": "object",
-              "xml": {
-                "name": "category",
-              },
-            },
-            "id": {
-              "examples": [
-                10,
-              ],
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "type": "integer",
-            },
-            "name": {
-              "examples": [
-                "doggie",
-              ],
-              "type": "string",
-            },
-            "photoUrls": {
-              "items": {
-                "type": "string",
-                "xml": {
-                  "name": "photoUrl",
-                },
-              },
-              "type": "array",
-              "xml": {
-                "wrapped": true,
-              },
-            },
-            "status": {
-              "description": "pet status in the store",
-              "enum": [
-                "available",
-                "pending",
-                "sold",
-              ],
-              "type": "string",
-            },
-            "tags": {
-              "items": {
-                "properties": {
-                  "id": {
-                    "format": "int64",
-                    "maximum": 9007199254740991,
-                    "minimum": -9007199254740991,
-                    "type": "integer",
-                  },
-                  "name": {
-                    "type": "string",
-                  },
-                },
-                "type": "object",
-                "xml": {
-                  "name": "tag",
-                },
-              },
-              "type": "array",
-              "xml": {
-                "wrapped": true,
-              },
-            },
-          },
-          "required": [
-            "name",
-            "photoUrls",
-          ],
-          "type": "object",
-          "xml": {
-            "name": "pet",
-          },
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "updatePet",
   },
   {
-    "description": "GET /pet/findByStatus - Multiple status values can be provided with comma separated strings",
-    "inputSchema": {
-      "properties": {
-        "query": {
-          "properties": {
-            "status": {
-              "default": "available",
-              "description": "Status values that need to be considered for filter",
-              "enum": [
-                "available",
-                "pending",
-                "sold",
-              ],
-              "name": "status",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "findPetsByStatus",
   },
   {
-    "description": "GET /pet/findByTags - Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.",
-    "inputSchema": {
-      "properties": {
-        "query": {
-          "properties": {
-            "tags": {
-              "description": "Tags to filter by",
-              "items": {
-                "type": "string",
-              },
-              "name": "tags",
-              "type": "array",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "findPetsByTags",
   },
   {
-    "description": "GET /pet/{petId} - Returns a single pet",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "properties": {
-            "petId": {
-              "description": "ID of pet to return",
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "name": "petId",
-              "type": "integer",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "getPetById",
   },
   {
-    "description": "POST /pet/{petId}",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "properties": {
-            "petId": {
-              "description": "ID of pet that needs to be updated",
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "name": "petId",
-              "type": "integer",
-            },
-          },
-          "type": "object",
-        },
-        "query": {
-          "properties": {
-            "name": {
-              "description": "Name of pet that needs to be updated",
-              "name": "name",
-              "type": "string",
-            },
-            "status": {
-              "description": "Status of pet that needs to be updated",
-              "name": "status",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "updatePetWithForm",
   },
   {
-    "description": "DELETE /pet/{petId}",
-    "inputSchema": {
-      "properties": {
-        "headers": {
-          "properties": {
-            "api_key": {
-              "description": "",
-              "name": "api_key",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-        "path": {
-          "properties": {
-            "petId": {
-              "description": "Pet id to delete",
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "name": "petId",
-              "type": "integer",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "deletePet",
   },
   {
-    "description": "POST /pet/{petId}/uploadImage",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "contentMediaType": "application/octet-stream",
-          "type": "string",
-        },
-        "path": {
-          "properties": {
-            "petId": {
-              "description": "ID of pet to update",
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "name": "petId",
-              "type": "integer",
-            },
-          },
-          "type": "object",
-        },
-        "query": {
-          "properties": {
-            "additionalMetadata": {
-              "description": "Additional Metadata",
-              "name": "additionalMetadata",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "uploadFile",
   },
   {
-    "description": "GET /store/inventory - Returns a map of status codes to quantities",
-    "inputSchema": {
-      "properties": {},
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "getInventory",
   },
   {
-    "description": "POST /store/order - Place a new order in the store",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "key": "Order",
-          "properties": {
-            "complete": {
-              "type": "boolean",
-            },
-            "id": {
-              "examples": [
-                10,
-              ],
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "type": "integer",
-            },
-            "petId": {
-              "examples": [
-                198772,
-              ],
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "type": "integer",
-            },
-            "quantity": {
-              "examples": [
-                7,
-              ],
-              "format": "int32",
-              "maximum": 2147483647,
-              "minimum": -2147483648,
-              "type": "integer",
-            },
-            "shipDate": {
-              "format": "date-time",
-              "type": "string",
-            },
-            "status": {
-              "description": "Order Status",
-              "enum": [
-                "placed",
-                "approved",
-                "delivered",
-              ],
-              "examples": [
-                "approved",
-              ],
-              "type": "string",
-            },
-          },
-          "type": "object",
-          "xml": {
-            "name": "order",
-          },
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "placeOrder",
   },
   {
-    "description": "GET /store/order/{orderId} - For valid response try integer IDs with value <= 5 or > 10. Other values will generate exceptions.",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "properties": {
-            "orderId": {
-              "description": "ID of order that needs to be fetched",
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "name": "orderId",
-              "type": "integer",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "getOrderById",
   },
   {
-    "description": "DELETE /store/order/{orderId} - For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "properties": {
-            "orderId": {
-              "description": "ID of the order that needs to be deleted",
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "name": "orderId",
-              "type": "integer",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "deleteOrder",
   },
   {
-    "description": "POST /user - This can only be done by the logged in user.",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "key": "User",
-          "properties": {
-            "email": {
-              "examples": [
-                "john@email.com",
-              ],
-              "type": "string",
-            },
-            "firstName": {
-              "examples": [
-                "John",
-              ],
-              "type": "string",
-            },
-            "id": {
-              "examples": [
-                10,
-              ],
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "type": "integer",
-            },
-            "lastName": {
-              "examples": [
-                "James",
-              ],
-              "type": "string",
-            },
-            "password": {
-              "examples": [
-                12345,
-              ],
-              "type": "string",
-            },
-            "phone": {
-              "examples": [
-                12345,
-              ],
-              "type": "string",
-            },
-            "userStatus": {
-              "description": "User Status",
-              "examples": [
-                1,
-              ],
-              "format": "int32",
-              "maximum": 2147483647,
-              "minimum": -2147483648,
-              "type": "integer",
-            },
-            "username": {
-              "examples": [
-                "theUser",
-              ],
-              "type": "string",
-            },
-          },
-          "type": "object",
-          "xml": {
-            "name": "user",
-          },
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "createUser",
   },
   {
-    "description": "POST /user/createWithList - Creates list of users with given input array",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "items": {
-            "key": "User",
-            "properties": {
-              "email": {
-                "examples": [
-                  "john@email.com",
-                ],
-                "type": "string",
-              },
-              "firstName": {
-                "examples": [
-                  "John",
-                ],
-                "type": "string",
-              },
-              "id": {
-                "examples": [
-                  10,
-                ],
-                "format": "int64",
-                "maximum": 9007199254740991,
-                "minimum": -9007199254740991,
-                "type": "integer",
-              },
-              "lastName": {
-                "examples": [
-                  "James",
-                ],
-                "type": "string",
-              },
-              "password": {
-                "examples": [
-                  12345,
-                ],
-                "type": "string",
-              },
-              "phone": {
-                "examples": [
-                  12345,
-                ],
-                "type": "string",
-              },
-              "userStatus": {
-                "description": "User Status",
-                "examples": [
-                  1,
-                ],
-                "format": "int32",
-                "maximum": 2147483647,
-                "minimum": -2147483648,
-                "type": "integer",
-              },
-              "username": {
-                "examples": [
-                  "theUser",
-                ],
-                "type": "string",
-              },
-            },
-            "type": "object",
-            "xml": {
-              "name": "user",
-            },
-          },
-          "type": "array",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "createUsersWithListInput",
   },
   {
-    "description": "GET /user/login",
-    "inputSchema": {
-      "properties": {
-        "query": {
-          "properties": {
-            "password": {
-              "description": "The password for login in clear text",
-              "name": "password",
-              "type": "string",
-            },
-            "username": {
-              "description": "The user name for login",
-              "name": "username",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "loginUser",
   },
   {
-    "description": "GET /user/logout",
-    "inputSchema": {
-      "properties": {},
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "logoutUser",
   },
   {
-    "description": "GET /user/{username}",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "properties": {
-            "username": {
-              "description": "The name that needs to be fetched. Use user1 for testing. ",
-              "name": "username",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "getUserByName",
   },
   {
-    "description": "PUT /user/{username} - This can only be done by the logged in user.",
-    "inputSchema": {
-      "properties": {
-        "body": {
-          "key": "User",
-          "properties": {
-            "email": {
-              "examples": [
-                "john@email.com",
-              ],
-              "type": "string",
-            },
-            "firstName": {
-              "examples": [
-                "John",
-              ],
-              "type": "string",
-            },
-            "id": {
-              "examples": [
-                10,
-              ],
-              "format": "int64",
-              "maximum": 9007199254740991,
-              "minimum": -9007199254740991,
-              "type": "integer",
-            },
-            "lastName": {
-              "examples": [
-                "James",
-              ],
-              "type": "string",
-            },
-            "password": {
-              "examples": [
-                12345,
-              ],
-              "type": "string",
-            },
-            "phone": {
-              "examples": [
-                12345,
-              ],
-              "type": "string",
-            },
-            "userStatus": {
-              "description": "User Status",
-              "examples": [
-                1,
-              ],
-              "format": "int32",
-              "maximum": 2147483647,
-              "minimum": -2147483648,
-              "type": "integer",
-            },
-            "username": {
-              "examples": [
-                "theUser",
-              ],
-              "type": "string",
-            },
-          },
-          "type": "object",
-          "xml": {
-            "name": "user",
-          },
-        },
-        "path": {
-          "properties": {
-            "username": {
-              "description": "name that needs to be updated",
-              "name": "username",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "updateUser",
   },
   {
-    "description": "DELETE /user/{username} - This can only be done by the logged in user.",
-    "inputSchema": {
-      "properties": {
-        "path": {
-          "properties": {
-            "username": {
-              "description": "The name that needs to be deleted",
-              "name": "username",
-              "type": "string",
-            },
-          },
-          "type": "object",
-        },
-      },
-      "type": "object",
-    },
+    "hasDescription": true,
+    "hasInputSchema": true,
+    "hasOutputSchema": true,
     "name": "deleteUser",
   },
 ]

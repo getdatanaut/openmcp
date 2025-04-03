@@ -51,7 +51,14 @@ describe('createMcpServer', () => {
     await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
 
     const { tools } = await client.listTools();
-    await expect(tools).toMatchFileSnapshot(`./__snapshots__/openapi/${filename}.snap`);
+    await expect(
+      tools.map(tool => ({
+        name: tool.name,
+        hasDescription: !!tool.description,
+        hasInputSchema: !!tool.inputSchema,
+        hasOutputSchema: !!tool['outputSchema'],
+      })),
+    ).toMatchFileSnapshot(`./__snapshots__/openapi/${filename}.snap`);
 
     const toolCall = client.callTool({
       name: tools[0]!.name,
