@@ -822,9 +822,10 @@ class MessageProcessor {
 
           - The goal is to reduce the size of the response, while still being able to fulfill the user's request.
           - If you believe that the data retrieved from the primary json path may not be sufficient to answer the user's request, you can provide secondary json paths.
-          - The JSON path that you provide MUST BE A VALID JSON PATH FOR THE GIVEN ABREVIATED TOOL OUTPUT.
+          - The JSON path that you provide MUST BE A VALID JSON PATH, following the RFC9535 standard, FOR THE GIVEN ABREVIATED TOOL OUTPUT.
           - IMPORTANT: Air on the side of simpler JSON path expressions if possible. It is better to use a simpler json path expression that results in a larger data set than to use a complex json path expression that might not work.
-          - IMPORTANT: avoid using json path filter expressions like $.data.results[?(@.name == "John")].id, instead use $.data.results[*].id which is safer even if it retrieves more data. Use secondaryJsonPaths if you need multiple properties.
+          - IMPORTANT: avoid using json path filter expressions like $.users[?(@.name == "John")].id, instead use $.users[*].id which is safer even if it retrieves more data. Use secondaryJsonPaths if you need multiple properties.
+          - IMPORTANT: if any part of the json path expression includes a dash, you must quote it and wrap in brackets. For example, $.paintings[*].official-artwork.name is invalid but $.paintings[*]["official-artwork"].name is valid.
 
           <abbreviated_tool_output>
           ${JSON.stringify(trimmedResult)}
