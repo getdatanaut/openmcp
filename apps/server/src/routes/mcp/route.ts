@@ -12,7 +12,7 @@ const app = new Hono<{ Bindings: Env }>()
     return routeOpenMcpRequest(c.req.raw, {
       openapi: {
         namespace: c.env.OpenMcpOpenAPI,
-        getMcpConfig: getOpenMcpOpenAPIConfig,
+        getMcpConfig: getOpenMcpOpenAPIConfig({ openAiApiKey: c.env.OPENAI_API_KEY }),
       },
     });
   })
@@ -25,7 +25,7 @@ const app = new Hono<{ Bindings: Env }>()
     return routeOpenMcpRequest(c.req.raw, {
       openapi: {
         namespace: c.env.OpenMcpOpenAPI,
-        getMcpConfig: getOpenMcpOpenAPIConfig,
+        getMcpConfig: getOpenMcpOpenAPIConfig({ openAiApiKey: c.env.OPENAI_API_KEY }),
       },
     });
   })
@@ -38,7 +38,7 @@ const app = new Hono<{ Bindings: Env }>()
     return routeOpenMcpRequest(c.req.raw, {
       openapi: {
         namespace: c.env.OpenMcpOpenAPI,
-        getMcpConfig: getOpenMcpOpenAPIConfig,
+        getMcpConfig: getOpenMcpOpenAPIConfig({ openAiApiKey: c.env.OPENAI_API_KEY }),
       },
     });
   });

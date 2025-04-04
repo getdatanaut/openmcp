@@ -7,13 +7,13 @@ import type { SessionId } from './utils/session.ts';
 /**
  * Base class for OpenMcpDurableObjects
  */
-export abstract class OpenMcpDurableObject<Env = unknown, Config = unknown> extends DurableObject<Env> {
+export abstract class OpenMcpDurableObject<Env = unknown, ServerConfig = unknown> extends DurableObject<Env> {
   abstract readonly mcpServerId: string;
   readonly baseUrl: string = '/mcp';
 
-  config?: Config;
+  config?: ServerConfig;
 
-  #sessions: Map<SessionId, { transport: SSEServerTransport; config?: Config }> = new Map();
+  #sessions: Map<SessionId, { transport: SSEServerTransport; config?: ServerConfig }> = new Map();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -22,12 +22,12 @@ export abstract class OpenMcpDurableObject<Env = unknown, Config = unknown> exte
   /**
    * Create a new MCP Server
    */
-  abstract createMcpServer(config: Config, sessionId: SessionId): Promise<McpServer>;
+  abstract createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }): Promise<McpServer>;
 
   /**
    * Set the MCP Server configuration.
    */
-  public setConfig(config: Config) {
+  public setConfig(config: ServerConfig) {
     // TODO(CL): do we want to support updating the MCP Server?
     if (this.config) return;
 
@@ -83,7 +83,7 @@ export abstract class OpenMcpDurableObject<Env = unknown, Config = unknown> exte
     const endpoint = [this.baseUrl, this.mcpServerId, this.ctx.id, 'messages'].filter(Boolean).join('/');
     const transport = new SSEServerTransport(endpoint, sessionId);
 
-    const server = await this.createMcpServer(this.config, sessionId);
+    const server = await this.createMcpServer({ config: this.config, sessionId });
     await server.connect(transport);
 
     this.#sessions.set(sessionId, { transport });

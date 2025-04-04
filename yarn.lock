@@ -1992,11 +1992,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/cloudflare@workspace:packages/cloudflare"
   dependencies:
+    "@ai-sdk/openai": "npm:1.3.6"
     "@cloudflare/workers-types": "npm:^4.20250403.0"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.8.0"
     "@openmcp/openapi": "workspace:*"
+    "@openmcp/server": "workspace:*"
     eslint: "npm:9.23.0"
     tsup: "npm:8.4.0"
     typescript: "npm:5.8.2"
@@ -2027,12 +2029,12 @@ __metadata:
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.8.0"
-    "@stoplight/json": "npm:3.21.7"
+    "@openmcp/utils": "workspace:*"
     "@types/lodash": "npm:4.17.16"
     "@types/node": "npm:22.14.0"
     ai: "npm:4.2.11"
+    dedent: "npm:1.5.3"
     eslint: "npm:9.23.0"
-    jsonpath-rfc9535: "npm:1.2.0"
     lodash: "npm:4.17.21"
     nanoid: "npm:5.1.5"
     neverthrow: "npm:8.2.0"
@@ -2051,15 +2053,58 @@ __metadata:
     "@apidevtools/json-schema-ref-parser": "npm:11.9.3"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
-    "@modelcontextprotocol/sdk": "npm:1.8.0"
+    "@openmcp/server": "workspace:*"
     "@stoplight/http-spec": "npm:7.1.0"
     "@stoplight/json": "npm:3.21.7"
-    dedent: "npm:1.5.3"
+    ai: "npm:4.2.11"
     eslint: "npm:9.23.0"
+    json-schema: "npm:0.4.0"
+    lodash: "npm:4.17.21"
     msw: "npm:2.7.3"
+    neverthrow: "npm:8.2.0"
     tsup: "npm:8.4.0"
     typescript: "npm:5.8.2"
     vitest: "npm:3.1.1"
+  languageName: unknown
+  linkType: soft
+
+"@openmcp/server@workspace:*, @openmcp/server@workspace:packages/server":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/server@workspace:packages/server"
+  dependencies:
+    "@ai-sdk/ui-utils": "npm:1.2.4"
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    "@modelcontextprotocol/sdk": "npm:1.8.0"
+    "@openmcp/utils": "workspace:*"
+    ai: "npm:4.2.11"
+    eslint: "npm:9.23.0"
+    tsup: "npm:8.4.0"
+    typescript: "npm:5.8.2"
+    vitest: "npm:3.1.1"
+    zod: "npm:3.24.2"
+  languageName: unknown
+  linkType: soft
+
+"@openmcp/utils@workspace:*, @openmcp/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/utils@workspace:packages/utils"
+  dependencies:
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    "@stoplight/json": "npm:3.21.7"
+    ai: "npm:4.2.11"
+    dedent: "npm:1.5.3"
+    eslint: "npm:9.23.0"
+    gpt-tokenizer: "npm:2.9.0"
+    json-schema: "npm:0.4.0"
+    jsonpath-rfc9535: "npm:1.3.0"
+    lodash: "npm:4.17.21"
+    neverthrow: "npm:8.2.0"
+    tsup: "npm:8.4.0"
+    typescript: "npm:5.8.2"
+    vitest: "npm:3.1.1"
+    zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
 
@@ -6417,6 +6462,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gpt-tokenizer@npm:2.9.0":
+  version: 2.9.0
+  resolution: "gpt-tokenizer@npm:2.9.0"
+  checksum: 10c0/3733fbf045f81e71c475d0f2327e648600f5662079ef403a495efaed96fb20526877ee7f27dbee29ba73e8fa795b3405f07357fb4214abb84c5aae5be7ea902b
+  languageName: node
+  linkType: hard
+
 "graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.5, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
@@ -7282,7 +7334,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-schema@npm:^0.4.0":
+"json-schema@npm:0.4.0, json-schema@npm:^0.4.0":
   version: 0.4.0
   resolution: "json-schema@npm:0.4.0"
   checksum: 10c0/d4a637ec1d83544857c1c163232f3da46912e971d5bf054ba44fdb88f07d8d359a462b4aec46f2745efbc57053365608d88bc1d7b1729f7b4fc3369765639ed3
@@ -7361,10 +7413,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonpath-rfc9535@npm:1.2.0":
-  version: 1.2.0
-  resolution: "jsonpath-rfc9535@npm:1.2.0"
-  checksum: 10c0/8012ddeacf48459896e8739d0b9e14e2956ac5461537166a38282123177d5ccbc4e44414a440bea652dbae04b5a00d35f183d67ad7cdc164e4462cd3e689ffa6
+"jsonpath-rfc9535@npm:1.3.0":
+  version: 1.3.0
+  resolution: "jsonpath-rfc9535@npm:1.3.0"
+  checksum: 10c0/090c4a8d21874f6604aebd3b9a0002caea5bfd77d7e0c435c6841d23fa7c559a9a8fa902a4d94f7b3262c7e4884488bacf0c38f2c52df1fc99c18e495ada97a9
   languageName: node
   linkType: hard
 

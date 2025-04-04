@@ -252,9 +252,9 @@ const ThreadMessage = memo(
 
     const classes = tn('group ml-12', !isFirst && 'ak-edge/2 border-t-[0.5px]');
 
-    useEffect(() => {
-      console.log('ThreadMessage.useEffect', lineNumber, message);
-    }, [JSON.stringify(message), lineNumber]);
+    // useEffect(() => {
+    //   console.log('ThreadMessage.useEffect', lineNumber, message);
+    // }, [JSON.stringify(message), lineNumber]);
 
     const containerClasses = tn(
       'relative flex h-full py-14 pr-12',

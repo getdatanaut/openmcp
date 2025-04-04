@@ -1,7 +1,6 @@
 import type { LanguageModelV1FinishReason } from '@ai-sdk/provider';
-import { traverse } from '@stoplight/json';
+import { autoTrimToolResult, type AutoTrimToolResultError, errors } from '@openmcp/utils';
 import {
-  APICallError,
   type CoreSystemMessage,
   type CoreUserMessage,
   type DataStreamWriter,
@@ -14,9 +13,7 @@ import {
   zodSchema,
 } from 'ai';
 import dedent from 'dedent';
-import { batchExec, type Callback } from 'jsonpath-rfc9535';
 import _cloneDeep from 'lodash/cloneDeep';
-import _set from 'lodash/set';
 import { nanoid } from 'nanoid';
 import type { Result } from 'neverthrow';
 import { err, ok } from 'neverthrow';
@@ -30,7 +27,6 @@ import type {
   MpcConductorReasoningStartAnnotation,
   MpcConductorUsageAnnotation,
 } from './annotations.ts';
-import * as errors from './errors.ts';
 import type { MpcConductorProvider } from './provider.ts';
 
 // Processes a user message by coordinating work across multiple agents and tools
@@ -54,7 +50,7 @@ export async function processMessage({
   provider: MpcConductorProvider;
   callTool: ClientServerManager['callTool'];
   dataStream: DataStreamWriter;
-}): Promise<Result<void, errors.ConductorError>> {
+}): Promise<Result<void, MessageProcessorError>> {
   const processor = new MessageProcessor({
     clientId,
     message,
@@ -207,60 +203,15 @@ function createSafeClientServerConfig(clientServer: ClientServer, server: Server
   return safeClientServerConfig;
 }
 
-// Processes JSON paths and extracts data from the tool result
-function processJsonPaths<T extends Record<string, unknown>>(
-  toolResultContent: T,
-  toolOutputPaths: z.infer<typeof Schemas.toolOutputPaths>,
-): Result<T, errors.PickError<errors.ConductorError, 'Other'>> {
-  const summarizedResult = {} as T;
-  const jsonPathCallbacks = new Map<string, Callback>();
-
-  // Set up primary JSON path callback
-  if (toolOutputPaths.primaryJsonPath) {
-    jsonPathCallbacks.set(toolOutputPaths.primaryJsonPath, (value, path) => {
-      _set(summarizedResult, path, value);
-    });
-  }
-
-  // Set up secondary JSON path callbacks
-  if (toolOutputPaths.secondaryJsonPaths) {
-    for (const secondaryJsonPath of toolOutputPaths.secondaryJsonPaths) {
-      if (!secondaryJsonPath) continue;
-
-      jsonPathCallbacks.set(secondaryJsonPath, (value, path) => {
-        _set(summarizedResult, path, value);
-      });
-    }
-  }
-
-  try {
-    batchExec(
-      // @ts-expect-error ignore
-      toolResultContent,
-      jsonPathCallbacks,
-    );
-  } catch (error) {
-    console.error('processJsonPaths.error', { error, toolOutputPaths, toolResultContent });
-    return err(errors.other({ message: 'Error processing JSON paths', error }));
-  }
-
-  return ok(Object.keys(summarizedResult).length ? summarizedResult : toolResultContent);
-}
-
-// Creates a trimmed version of the tool result for prompt construction, to reduce token usage
-function createTrimmedToolResult<T extends Record<string, unknown>>(toolResultContent: T) {
-  const trimmedResult = _cloneDeep(toolResultContent);
-
-  traverse(trimmedResult, {
-    onProperty: ({ parent, property, propertyValue }) => {
-      if (Array.isArray(propertyValue)) {
-        _set(parent, property, propertyValue.slice(0, 1));
-      }
-    },
-  });
-
-  return trimmedResult;
-}
+type MessageProcessorError =
+  | errors.ClientServerNotFound
+  | errors.ServerNotFound
+  | errors.ToolNotFound
+  | errors.Other
+  | errors.JsonParse
+  | errors.AiSdk
+  | errors.LlmOutputParse
+  | AutoTrimToolResultError;
 
 class MessageProcessor {
   private readonly clientId: ClientId;
@@ -311,7 +262,7 @@ class MessageProcessor {
     this.currentStepIndex = 0;
   }
 
-  public async process(): Promise<Result<void, errors.ConductorError>> {
+  public async process(): Promise<Result<void, MessageProcessorError>> {
     const workflow = await this.createAgentWorkflow();
     if (workflow.isErr()) {
       return err(workflow.error);
@@ -432,7 +383,7 @@ class MessageProcessor {
       withSchema: U;
       onPartialParsed?: (partial: any) => void;
     };
-  }): Promise<Result<z.infer<T>, errors.ConductorError>> {
+  }): Promise<Result<z.infer<T>, errors.AiSdk | errors.LlmOutputParse>> {
     const hasNativeReasoning = MODELS_WITH_REASONING_OUTPUT[model.modelId];
 
     this.startStep();
@@ -501,11 +452,7 @@ class MessageProcessor {
       this.writeReasoningAnnotation({ type: 'reasoning-finish', duration: reasoningEnd - reasoningStart });
       this.finishStep();
 
-      if (APICallError.isInstance(error)) {
-        return err(errors.llmApiCall({ provider: model.provider, error }));
-      }
-
-      return err(errors.stream({ message: `Stream error in ${logPrefix}`, error }));
+      return err(errors.handleAiSdkError({ error, model }));
     }
 
     // Clean up any trailing non-JSON content
@@ -542,7 +489,9 @@ class MessageProcessor {
   // ---- Plan generation and execution ----
 
   // Creates a simplistic "workflow" defining which agents should handle the user's request
-  private createAgentWorkflow(): Promise<Result<z.infer<typeof Schemas.agentPlan>, errors.ConductorError>> {
+  private createAgentWorkflow(): Promise<
+    Result<z.infer<typeof Schemas.agentPlan>, errors.AiSdk | errors.LlmOutputParse>
+  > {
     const planningModel = this.provider.languageModel('planning');
     const hasNativeReasoning = MODELS_WITH_REASONING_OUTPUT[planningModel.modelId];
 
@@ -700,7 +649,7 @@ class MessageProcessor {
     toolId: string;
     safeClientServerConfig: ClientServer['serverConfig'];
     agentMessage: UIMessage;
-  }): Promise<Result<void, errors.ConductorError>> {
+  }): Promise<Result<void, errors.Other | errors.JsonParse | AutoTrimToolResultError>> {
     const toolCallId = nanoid();
     const structureModel = this.provider.languageModel('structure');
 
@@ -805,52 +754,23 @@ class MessageProcessor {
         return err(errors.jsonParse({ error }));
       }
 
-      // Create a trimmed version for the LLM prompt
-      const trimmedResult = createTrimmedToolResult(toolResultContent);
-
-      // Generate JSON paths to extract relevant data
-      const { object: toolOutputPaths } = await generateObject({
-        model: this.provider.languageModel('structure'),
-        system: dedent`
-          A request was just made to a tool named "${tool.name}". ${
-            tool.description ? `This tool is described as "${tool.description}".` : ''
-          }
-
-          We need to use the tool's description, the user's message history, and the provided truncated tool output.
-
-          The json path expression(s) that you generate will be used on the full tool output to extract the minimum data needed to answer the user's request.
-
-          - The goal is to reduce the size of the response, while still being able to fulfill the user's request.
-          - If you believe that the data retrieved from the primary json path may not be sufficient to answer the user's request, you can provide secondary json paths.
-          - The JSON path that you provide MUST BE A VALID JSON PATH, following the RFC9535 standard, FOR THE GIVEN ABREVIATED TOOL OUTPUT.
-          - IMPORTANT: Air on the side of simpler JSON path expressions if possible. It is better to use a simpler json path expression that results in a larger data set than to use a complex json path expression that might not work.
-          - IMPORTANT: avoid using json path filter expressions like $.users[?(@.name == "John")].id, instead use $.users[*].id which is safer even if it retrieves more data. Use secondaryJsonPaths if you need multiple properties.
-          - IMPORTANT: if any part of the json path expression includes a dash, you must quote it and wrap in brackets. For example, $.paintings[*].official-artwork.name is invalid but $.paintings[*]["official-artwork"].name is valid.
-
-          <abbreviated_tool_output>
-          ${JSON.stringify(trimmedResult)}
-          </abbreviated_tool_output>
-        `,
-        messages: [...this.history, { role: 'user', content: toolStep.task }],
-        schema: Schemas.toolOutputPaths,
+      const processedResult = await autoTrimToolResult({
+        tool: { name: tool.name, description: tool.description },
+        toolResult: toolResultContent,
+        toolResultRequirements: toolStep.task,
+        model: structureModel,
       });
 
-      // Process the JSON paths to extract relevant data
-      const processedResultResult = processJsonPaths(
-        toolResultContent,
-        toolOutputPaths as z.infer<typeof Schemas.toolOutputPaths>,
-      );
-
-      if (processedResultResult.isErr()) {
-        return err(processedResultResult.error);
+      if (processedResult.isErr()) {
+        return err(processedResult.error);
       }
 
-      const processedResult = processedResultResult.value;
+      // const processedResult = processedResult.value;
 
       this.dataStream.write(
         formatDataStreamPart('tool_result', {
           toolCallId,
-          result: processedResult,
+          result: processedResult.value,
         }),
       );
 
@@ -861,7 +781,7 @@ class MessageProcessor {
           state: 'result',
           toolName: toolId,
           args: toolInput ?? {},
-          result: processedResult,
+          result: processedResult.value,
         },
       });
 
@@ -881,7 +801,7 @@ class MessageProcessor {
     agentTask: z.infer<typeof Schemas.agentPlan>['steps'][number];
     clientServer: ClientServer;
     server: Server;
-  }): Promise<Result<UIMessage, errors.ConductorError>> {
+  }): Promise<Result<UIMessage, errors.ToolNotFound | errors.Other | errors.JsonParse | AutoTrimToolResultError>> {
     try {
       const agentTools = this.tools.filter(t => t.server === server.id);
 

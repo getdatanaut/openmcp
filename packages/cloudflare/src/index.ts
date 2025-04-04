@@ -10,13 +10,15 @@ export { getOpenMcpOpenAPIConfig, OpenMcpOpenAPI } from './mcp/openapi.ts';
  * @param mcpServerMap Map of OpenMcp Server IDs to their namespace and configuration
  * @returns Response from the OpenMcp Server or undefined if no route matched
  */
-export async function routeOpenMcpRequest<Namespace>(
+export async function routeOpenMcpRequest<TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<any, any>>>(
   request: Request,
   mcpServerMap: Record<
     string,
     {
-      namespace: Namespace;
-      getMcpConfig?: (request: Request) => unknown;
+      namespace: TNamespace;
+      getMcpConfig?: (opts: {
+        request: Request;
+      }) => TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<unknown, infer C>> ? C : never;
     }
   >,
 ) {
@@ -46,11 +48,13 @@ export async function routeOpenMcpRequest<Namespace>(
   if (!mcpServerId) {
     return new Response('No MCP Server ID found', { status: 404 });
   }
+
   const mcpServer = mcpServerMap[mcpServerId as keyof typeof mcpServerMap];
   if (!mcpServer) {
     return new Response('No MCP Server found', { status: 404 });
   }
-  const config = mcpServer.getMcpConfig ? mcpServer.getMcpConfig(request) : undefined;
+
+  const config = mcpServer.getMcpConfig ? mcpServer.getMcpConfig({ request }) : undefined;
   const doNamespace = mcpServer.namespace as DurableObjectNamespace<OpenMcpDurableObject>;
   const doId = config ? doNamespace.idFromName(JSON.stringify(config)) : doNamespace.newUniqueId();
   const stub = doNamespace.get(doId);

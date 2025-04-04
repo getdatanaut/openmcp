@@ -32,15 +32,18 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "11.9.3",
-    "@modelcontextprotocol/sdk": "1.8.0",
+    "@openmcp/server": "workspace:*",
     "@stoplight/http-spec": "7.1.0",
     "@stoplight/json": "3.21.7",
-    "dedent": "1.5.3"
+    "ai": "4.2.11",
+    "lodash": "4.17.21",
+    "neverthrow": "8.2.0"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "eslint": "9.23.0",
+    "json-schema": "0.4.0",
     "msw": "2.7.3",
     "tsup": "8.4.0",
     "typescript": "5.8.2",
