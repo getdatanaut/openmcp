@@ -35,11 +35,18 @@ export function tool<Params extends ToolParameters, ToolResult, OutputSchema ext
   return tool;
 }
 
+export interface TransformToolResultOpts {
+  tool: Omit<MpcServerTool, 'execute'> & { name: string };
+  toolArgs: unknown;
+  toolResult?: Record<string, unknown>;
+}
+
 export type McpServerOptions = {
   name: string;
   version: string;
   tools?: Record<string, MpcServerTool>;
   onInitialize?: (clientInfo: Implementation, clientCapabilities: ClientCapabilities) => void;
+  transformToolResult?: (opts: TransformToolResultOpts) => Record<string, unknown> | undefined;
   autoTrimToolResult?: {
     enabled: boolean;
     model: LanguageModelV1;
@@ -126,6 +133,14 @@ export function createMcpServer(options: McpServerOptions) {
 
       try {
         let result: Record<string, unknown> | undefined = await tool.execute(args);
+
+        if (options.transformToolResult) {
+          result = options.transformToolResult({
+            tool: { name: toolName, ...tool },
+            toolArgs: args,
+            toolResult: result,
+          });
+        }
 
         const toolResultRequirements = args['__tool_result_requirements'] as string | undefined;
         if (result && options.autoTrimToolResult?.enabled && toolResultRequirements) {

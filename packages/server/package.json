@@ -31,18 +31,18 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/ui-utils": "1.2.4",
-    "@modelcontextprotocol/sdk": "1.8.0",
+    "@ai-sdk/ui-utils": "1.2.5",
+    "@modelcontextprotocol/sdk": "1.9.0",
     "@openmcp/utils": "workspace:*",
-    "ai": "4.2.11",
+    "ai": "4.3.2",
     "zod": "3.24.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "eslint": "9.23.0",
+    "eslint": "9.24.0",
     "tsup": "8.4.0",
-    "typescript": "5.8.2",
+    "typescript": "5.8.3",
     "vitest": "3.1.1"
   },
   "publishConfig": {

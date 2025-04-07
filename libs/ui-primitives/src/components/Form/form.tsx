@@ -44,6 +44,7 @@ export function Form({ ref, ...originalProps }: FormProps) {
   const slots = useMemo(
     () => formStyle({ ...variantProps }),
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     Object.values(variantProps),
   );
 

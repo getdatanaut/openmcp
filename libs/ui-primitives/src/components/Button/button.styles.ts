@@ -85,7 +85,7 @@ export const buttonStyle = tv(
       {
         variant: 'solid',
         intent: 'neutral',
-        class: tn('ak-layer-contrast-8 ak-outline'),
+        class: tn('ak-layer-contrast-14 ak-outline'),
       },
       {
         variant: 'solid',
