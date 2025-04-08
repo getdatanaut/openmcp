@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "description": "Manage connections between MCP Servers and Clients through a single interface.",
   "type": "module",
+  "license": "Apache-2.0",
   "sideEffects": false,
+  "keywords": [
+    "mcp",
+    "model context protocol"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/getdatanaut/openmcp",
@@ -55,10 +60,6 @@
     "typescript": "5.8.3",
     "vitest": "3.1.1"
   },
-  "keywords": [
-    "mcp",
-    "model context protocol"
-  ],
   "publishConfig": {
     "access": "public"
   }

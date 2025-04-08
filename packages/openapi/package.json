@@ -2,6 +2,7 @@
   "name": "@openmcp/openapi",
   "version": "0.0.0",
   "type": "module",
+  "license": "Apache-2.0",
   "sideEffects": false,
   "repository": {
     "type": "git",
