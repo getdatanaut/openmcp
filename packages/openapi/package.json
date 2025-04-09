@@ -37,7 +37,7 @@
     "@openmcp/server": "workspace:*",
     "@stoplight/http-spec": "7.1.0",
     "@stoplight/json": "3.21.7",
-    "ai": "4.3.2",
+    "ai": "4.3.4",
     "lodash": "4.17.21",
     "neverthrow": "8.2.0"
   },

@@ -20,8 +20,8 @@
     "react": "*"
   },
   "dependencies": {
-    "@ariakit/react": "0.4.16",
-    "@ariakit/react-core": "0.4.16",
+    "@ariakit/react": "0.4.17",
+    "@ariakit/react-core": "0.4.17",
     "@ariakit/tailwind": "0.1.5",
     "@fortawesome/fontawesome-common-types": "6.7.2",
     "@fortawesome/fontawesome-svg-core": "6.7.2",
