@@ -13,7 +13,7 @@ import * as errors from './errors.ts';
 
 export type AutoTrimToolResultError = ProcessJsonPathsError | errors.AiSdk;
 
-export async function autoTrimToolResult<T extends Record<string, unknown>>({
+export async function autoTrimToolResult<T>({
   tool,
   toolResult,
   toolResultRequirements,
@@ -29,6 +29,11 @@ export async function autoTrimToolResult<T extends Record<string, unknown>>({
   minTokens?: number;
   tokenRatioThreshold?: number;
 }): Promise<Result<T, AutoTrimToolResultError>> {
+  // We can only auto trim objects - return the original result if it's not an object
+  if (!isRecord(toolResult)) {
+    return ok(toolResult);
+  }
+
   const stringifiedToolResult = JSON.stringify(toolResult);
   const resultTokenCount = countTokens(stringifiedToolResult);
 
@@ -132,27 +137,42 @@ export async function autoTrimToolResult<T extends Record<string, unknown>>({
  * This property is used to provide a short description of the current task to the tool.
  * This is used to trim the tool's result to just the information you need, so make sure to include any context the tool needs in order to understand what data to return to you.
  */
-export function addToolRequirementsToSchema(schema: JSONSchema7): JSONSchema7 {
+export function addToolRequirementsToSchema(schema?: JSONSchema7): JSONSchema7 | undefined {
+  const props = {
+    __tool_result_requirements: {
+      type: 'string',
+      description: dedent`
+        A short description of your current task. This will be used to trim the tool's result to just the information you need, so make sure to include any context the tool needs in order to understand what data to return to you.
+
+        If this is a mutation and you will not need any data from the tool result, set this to the string "SKIP".
+      `,
+    },
+  } as const;
+
+  if (!schema) {
+    return {
+      type: 'object',
+      properties: props,
+    };
+  }
+
   // Only add messages property if schema describes an object
   if (schema && typeof schema === 'object' && schema.type === 'object') {
     return {
       ...schema,
       properties: {
         ...(schema.properties || {}),
-        __tool_result_requirements: {
-          type: 'string',
-          description: dedent`
-            A short description of your current task. This will be used to trim the tool's result to just the information you need, so make sure to include any context the tool needs in order to understand what data to return to you.
-
-            If this is a mutation and you will not need any data from the tool result, set this to the string "SKIP".
-          `,
-        },
+        ...props,
       },
     };
   }
 
   // Return unchanged schema if not an object
   return schema;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 type ProcessJsonPathsError = errors.JsonPath;
@@ -207,7 +227,7 @@ function processJsonPaths<T extends Record<string, unknown>>(
 }
 
 // Creates a trimmed version of the tool result for prompt construction, to reduce token usage
-function createTrimmedToolResult<T extends Record<string, unknown>>(toolResultContent: T) {
+function createTrimmedToolResult<T>(toolResultContent: T): T {
   const trimmedResult = _cloneDeep(toolResultContent);
 
   traverse(trimmedResult, {

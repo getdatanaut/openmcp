@@ -1,6 +1,6 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { openApiToMcpServerOptions, type ServerConfig } from '@openmcp/openapi';
-import { createMcpServer } from '@openmcp/server';
+import { OpenMpcServer } from '@openmcp/server';
 
 import { OpenMcpDurableObject } from '../durable-object.ts';
 import type { SessionId } from '../utils/session.ts';
@@ -50,7 +50,7 @@ export class OpenMcpOpenAPI<
   Env = unknown,
   ServerConfig extends OpenMcpOpenAPIConfig = OpenMcpOpenAPIConfig,
 > extends OpenMcpDurableObject<Env, ServerConfig> {
-  mcpServerId = 'openapi';
+  mpcServerType = 'openapi';
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -62,7 +62,7 @@ export class OpenMcpOpenAPI<
       return this.getSession(sessionId)?.config ?? {};
     });
 
-    return createMcpServer({
+    return new OpenMpcServer({
       ...options,
       autoTrimToolResult: config.autoTrim
         ? {

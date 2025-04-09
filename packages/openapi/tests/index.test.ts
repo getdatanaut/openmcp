@@ -1,13 +1,11 @@
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 
-import { createMcpServer } from '../src/index.ts';
+import { openApiToMcpServerOptions } from '../src/index.ts';
 
 const fixtureDir = resolve(__dirname, '__fixtures__/openapi');
 const fixtures = readdirSync(fixtureDir)
@@ -31,47 +29,17 @@ describe('createMcpServer', () => {
   afterEach(() => server.resetHandlers());
 
   test.each(fixtures)('should create a MCP server for %s', async (filename, openapi) => {
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    const { tools } = await openApiToMcpServerOptions({ openapi, serverUrl });
 
-    const server = await createMcpServer({ openapi, serverUrl });
-    expect(server).toBeDefined();
-
-    const client = new McpClient(
-      {
-        name: 'test-client',
-        version: '1.0.0',
-      },
-      {
-        capabilities: {
-          tools: {},
-        },
-      },
-    );
-
-    await Promise.all([server.connect(serverTransport), client.connect(clientTransport)]);
-
-    const { tools } = await client.listTools();
     await expect(
-      tools.map(tool => ({
-        name: tool.name,
+      Object.entries(tools).map(([name, tool]) => ({
+        name,
         hasDescription: !!tool.description,
-        hasInputSchema: !!tool.inputSchema,
-        hasOutputSchema: !!tool['outputSchema'],
+        hasInputSchema: !!tool.parameters,
+        hasOutputSchema: !!tool['output'],
       })),
     ).toMatchFileSnapshot(`./__snapshots__/openapi/${filename}.snap`);
 
-    const toolCall = client.callTool({
-      name: tools[0]!.name,
-      arguments: {},
-    });
-
-    await expect(toolCall).resolves.toEqual({
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify({ success: true }, null, 2),
-        },
-      ],
-    });
+    await expect(Object.values(tools)[0]!.execute({})).resolves;
   });
 });

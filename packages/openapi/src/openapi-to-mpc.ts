@@ -1,6 +1,6 @@
 import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
-import { type McpServerOptions, tool } from '@openmcp/server';
+import { type OpenMcpServerOptions, tool } from '@openmcp/server';
 import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';
 import { traverse } from '@stoplight/json';
 import type { IHttpOperation } from '@stoplight/types';
@@ -35,7 +35,7 @@ export async function openApiToMcpServerOptions(
 
   const baseUrl = serverUrl || service.servers?.[0]?.url;
 
-  const operationTools: McpServerOptions['tools'] = {};
+  const operationTools: OpenMcpServerOptions['tools'] = {};
 
   const operations = service.operations as IHttpOperation<false>[];
 
@@ -118,7 +118,7 @@ export async function openApiToMcpServerOptions(
     name: service.name,
     version: service.version,
     tools: operationTools,
-  } satisfies McpServerOptions;
+  } satisfies OpenMcpServerOptions;
 }
 
 async function bundleOasService(openapi: Record<string, unknown> | string) {

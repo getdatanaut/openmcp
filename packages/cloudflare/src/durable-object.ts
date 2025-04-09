@@ -1,14 +1,17 @@
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { DurableObject } from 'cloudflare:workers';
 
 import { SSEServerTransport } from './transports/sse.ts';
 import type { SessionId } from './utils/session.ts';
 
+interface McpServerImpl {
+  connect: (transport: SSEServerTransport) => Promise<void>;
+}
+
 /**
  * Base class for OpenMcpDurableObjects
  */
 export abstract class OpenMcpDurableObject<Env = unknown, ServerConfig = unknown> extends DurableObject<Env> {
-  abstract readonly mcpServerId: string;
+  abstract readonly mpcServerType: string;
   readonly baseUrl: string = '/mcp';
 
   config?: ServerConfig;
@@ -22,7 +25,13 @@ export abstract class OpenMcpDurableObject<Env = unknown, ServerConfig = unknown
   /**
    * Create a new MCP Server
    */
-  abstract createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }): Promise<McpServer>;
+  abstract createMcpServer({
+    config,
+    sessionId,
+  }: {
+    config: ServerConfig;
+    sessionId: SessionId;
+  }): Promise<McpServerImpl>;
 
   /**
    * Set the MCP Server configuration.
@@ -80,7 +89,7 @@ export abstract class OpenMcpDurableObject<Env = unknown, ServerConfig = unknown
       throw new Error('MCP Server not configured');
     }
 
-    const endpoint = [this.baseUrl, this.mcpServerId, this.ctx.id, 'messages'].filter(Boolean).join('/');
+    const endpoint = [this.baseUrl, this.mpcServerType, this.ctx.id, 'messages'].filter(Boolean).join('/');
     const transport = new SSEServerTransport(endpoint, sessionId);
 
     const server = await this.createMcpServer({ config: this.config, sessionId });

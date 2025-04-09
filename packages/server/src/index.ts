@@ -1,2 +1,4 @@
-export type { McpServerOptions, MpcServerTool as Tool } from './server.ts';
-export { createMcpServer, tool } from './server.ts';
+export * from './resources.ts';
+export type { OpenMcpServerOptions } from './server.ts';
+export { OpenMpcServer } from './server.ts';
+export * from './tools.ts';

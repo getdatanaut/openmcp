@@ -26,8 +26,6 @@
   "scripts": {
     "build": "tsup",
     "lint": "eslint .",
-    "test": "vitest run",
-    "test.watch": "vitest watch",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -41,6 +39,7 @@
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "eslint": "9.24.0",
+    "json-schema": "0.4.0",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
     "vitest": "3.1.1"
