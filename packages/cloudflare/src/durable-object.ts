@@ -10,7 +10,11 @@ interface McpServerImpl {
 /**
  * Base class for OpenMcpDurableObjects
  */
-export abstract class OpenMcpDurableObject<Env = unknown, ServerConfig = unknown> extends DurableObject<Env> {
+export abstract class OpenMcpDurableObject<
+  Env = unknown,
+  ServerConfig = unknown,
+  ServerImpl extends McpServerImpl = McpServerImpl,
+> extends DurableObject<Env> {
   abstract readonly mpcServerType: string;
   readonly baseUrl: string = '/mcp';
 
@@ -25,13 +29,7 @@ export abstract class OpenMcpDurableObject<Env = unknown, ServerConfig = unknown
   /**
    * Create a new MCP Server
    */
-  abstract createMcpServer({
-    config,
-    sessionId,
-  }: {
-    config: ServerConfig;
-    sessionId: SessionId;
-  }): Promise<McpServerImpl>;
+  abstract createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }): Promise<ServerImpl>;
 
   /**
    * Set the MCP Server configuration.

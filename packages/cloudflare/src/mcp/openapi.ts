@@ -49,12 +49,8 @@ export function getOpenMcpOpenAPIConfig({ openAiApiKey }: { openAiApiKey?: strin
 export class OpenMcpOpenAPI<
   Env = unknown,
   ServerConfig extends OpenMcpOpenAPIConfig = OpenMcpOpenAPIConfig,
-> extends OpenMcpDurableObject<Env, ServerConfig> {
+> extends OpenMcpDurableObject<Env, ServerConfig, OpenMpcServer> {
   mpcServerType = 'openapi';
-
-  constructor(ctx: DurableObjectState, env: Env) {
-    super(ctx, env);
-  }
 
   override async createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }) {
     const options = await openApiToMcpServerOptions(config, () => {

@@ -10,7 +10,9 @@ export { getOpenMcpOpenAPIConfig, OpenMcpOpenAPI } from './mcp/openapi.ts';
  * @param mcpServerMap Map of OpenMcp Server IDs to their namespace and configuration
  * @returns Response from the OpenMcp Server or undefined if no route matched
  */
-export async function routeOpenMcpRequest<TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<any, any>>>(
+export async function routeOpenMcpRequest<
+  TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<any, any, any>>,
+>(
   request: Request,
   mcpServerMap: Record<
     string,
@@ -18,7 +20,7 @@ export async function routeOpenMcpRequest<TNamespace extends DurableObjectNamesp
       namespace: TNamespace;
       getMcpConfig?: (opts: {
         request: Request;
-      }) => TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<unknown, infer C>> ? C : never;
+      }) => TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<unknown, infer C, any>> ? C : never;
     }
   >,
 ) {
