@@ -1,4 +1,4 @@
-export type McpServerId = string;
+export type McpServerType = string;
 export type EncodedSessionId = string;
 export type SessionId<prefix extends string = typeof SESSION_ID_PREFIX> = `${string}_${EncodedSessionId}`;
 
@@ -18,9 +18,9 @@ const defaultSessionIdOptions = {
 /**
  * Session ID is encoded as a base64 string of the form:
  *
- * `{mcpServerId}::{uid}::{doId}`
+ * `{serverType}::{uid}::{doId}`
  *
- * - `mcpServerId` is the unique identifier for the MCP Server (`eg. openapi`).
+ * - `serverType` is the unique identifier for the MCP Server (`eg. openapi`).
  * - `uid` is a random UUID, used to ensure the session is unique.
  * - `doId` is the DurableObjectId for the MCP Server.
  *
@@ -34,10 +34,10 @@ export const SessionId = {
   encode: <Prefix extends string = typeof SESSION_ID_PREFIX>(
     {
       doId,
-      mcpServerId,
+      serverType,
     }: {
       doId: DurableObjectId;
-      mcpServerId: McpServerId;
+      serverType: McpServerType;
     },
     options: SessionIdOptions = defaultSessionIdOptions,
   ): SessionId<Prefix> => {
@@ -45,7 +45,7 @@ export const SessionId = {
     const delimiter = options.delimiter ?? SESSION_ID_DELIMITER;
 
     const uid = crypto.randomUUID();
-    const unencodedSessionId = [mcpServerId, uid, doId].join(delimiter);
+    const unencodedSessionId = [serverType, uid, doId].join(delimiter);
     const encodedSessionId = btoa(unencodedSessionId);
     return `${prefix}_${encodedSessionId}`;
   },
@@ -60,23 +60,23 @@ export const SessionId = {
       throw new Error('Invalid session ID');
     }
 
-    const [mcpServerId, uid, doId] = atob(encodedSessionId).split(delimiter);
+    const [serverType, uid, doId] = atob(encodedSessionId).split(delimiter);
 
-    if (!mcpServerId || !uid || !doId) {
+    if (!serverType || !uid || !doId) {
       throw new Error('MCP Server not found');
     }
 
-    return { openmcp, mcpServerId, uid, doId } as const;
+    return { openmcp, serverType, uid, doId } as const;
   },
 
   isValid: (
     sessionId: SessionId | string,
-    { doId, mcpServerId }: { doId: string; mcpServerId: McpServerId },
+    { doId, serverType }: { doId: string; serverType: McpServerType },
     options: SessionIdOptions = defaultSessionIdOptions,
   ): sessionId is SessionId => {
     try {
       const decodedSessionId = SessionId.decode(sessionId, options);
-      return decodedSessionId.mcpServerId === mcpServerId && decodedSessionId.doId === doId;
+      return decodedSessionId.serverType === serverType && decodedSessionId.doId === doId;
     } catch {
       return false;
     }

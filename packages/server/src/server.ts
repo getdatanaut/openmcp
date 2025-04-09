@@ -11,6 +11,7 @@ import {
   ListResourceTemplatesRequestSchema,
   type ListResourceTemplatesResult,
   ListToolsRequestSchema,
+  type ListToolsResult,
   McpError,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
@@ -159,7 +160,7 @@ export class OpenMpcServer {
 
   async listTools() {
     return {
-      tools: Object.entries(this.#tools),
+      tools: Object.values(this.#tools),
     };
   }
 
