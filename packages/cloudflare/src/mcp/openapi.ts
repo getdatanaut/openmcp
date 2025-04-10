@@ -1,6 +1,6 @@
 import { createOpenAI } from '@ai-sdk/openai';
 import { openApiToMcpServerOptions, type ServerConfig } from '@openmcp/openapi';
-import { OpenMpcServer } from '@openmcp/server';
+import { OpenMcpServer } from '@openmcp/server';
 
 import { OpenMcpDurableObject } from '../durable-object.ts';
 import type { SessionId } from '../utils/session.ts';
@@ -49,14 +49,14 @@ export function getOpenMcpOpenAPIConfig({ openAiApiKey }: { openAiApiKey?: strin
 export class OpenMcpOpenAPI<
   Env = unknown,
   ServerConfig extends OpenMcpOpenAPIConfig = OpenMcpOpenAPIConfig,
-> extends OpenMcpDurableObject<Env, ServerConfig, OpenMpcServer> {
+> extends OpenMcpDurableObject<Env, ServerConfig, OpenMcpServer> {
   override async createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }) {
     const options = await openApiToMcpServerOptions(config, () => {
       // @TODO this does not seem correct, at least the typings are not (config is typed as ServerConfig here, but this is client right?)
       return this.getSession(sessionId)?.config ?? {};
     });
 
-    return new OpenMpcServer({
+    return new OpenMcpServer({
       ...options,
       autoTrimToolResult: config.autoTrim
         ? {

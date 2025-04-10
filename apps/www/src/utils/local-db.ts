@@ -1,6 +1,6 @@
 import type {
   ClientServerStorageData,
-  MpcConductorSettings,
+  McpConductorSettings,
   ServerStorageData,
   ThreadMessageStorageData,
   ThreadStorageData,
@@ -13,14 +13,14 @@ export type LocalClientServer = Omit<ClientServerStorageData, 'enabled'> & { ena
 export interface LocalDb extends Dexie {
   servers: EntityTable<ServerStorageData, 'id'>;
   clientServers: EntityTable<LocalClientServer, 'id'>;
-  mcpManagers: EntityTable<MpcManagerStorageData, 'id'>;
+  mcpManagers: EntityTable<McpManagerStorageData, 'id'>;
   threads: EntityTable<ThreadStorageData, 'id'>;
   threadMessages: EntityTable<ThreadMessageStorageData, 'id'>;
 }
 
-export interface MpcManagerStorageData {
+export interface McpManagerStorageData {
   id: string;
-  conductor?: MpcConductorSettings;
+  conductor?: McpConductorSettings;
 }
 
 const localDb = new Dexie('datanaut') as LocalDb;

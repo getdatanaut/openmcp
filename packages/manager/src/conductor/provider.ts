@@ -2,9 +2,9 @@ import { type AnthropicProviderOptions, type AnthropicProviderSettings, createAn
 import { createOpenAI, type OpenAIProviderSettings } from '@ai-sdk/openai';
 import { customProvider, defaultSettingsMiddleware, wrapLanguageModel } from 'ai';
 
-export type MpcConductorProvider = ReturnType<typeof createProvider>;
+export type McpConductorProvider = ReturnType<typeof createProvider>;
 
-export interface MpcConductorProviderSettings {
+export interface McpConductorProviderSettings {
   llmProxyUrl?: string | ((opts: { provider: SupportedProvider }) => string);
   providers?: {
     openai?: OpenAIProviderSettings;
@@ -12,9 +12,9 @@ export interface MpcConductorProviderSettings {
   };
 }
 
-export type SupportedProvider = keyof NonNullable<MpcConductorProviderSettings['providers']>;
+export type SupportedProvider = keyof NonNullable<McpConductorProviderSettings['providers']>;
 
-export const createProvider = (opts: MpcConductorProviderSettings) => {
+export const createProvider = (opts: McpConductorProviderSettings) => {
   const providerSettings = ({
     provider,
     settings,

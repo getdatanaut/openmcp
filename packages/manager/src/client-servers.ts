@@ -2,7 +2,7 @@ import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { SetOptional } from 'type-fest';
 
-import type { MpcManager } from './manager.ts';
+import type { McpManager } from './manager.ts';
 import { createTransport } from './transport.ts';
 import type { ClientId, ServerId, ToolName } from './types.ts';
 
@@ -11,9 +11,9 @@ import type { ClientId, ServerId, ToolName } from './types.ts';
  */
 export interface ClientServerManagerOptions {
   manager: {
-    servers: MpcManager['servers'];
+    servers: McpManager['servers'];
     storage: {
-      clientServers: MpcManager['storage']['clientServers'];
+      clientServers: McpManager['storage']['clientServers'];
     };
   };
 }
@@ -166,7 +166,7 @@ export type ClientServerStorageData = {
 };
 
 export interface ClientServerOptions {
-  manager: Pick<MpcManager, 'servers'>;
+  manager: Pick<McpManager, 'servers'>;
 }
 
 export interface Tool {

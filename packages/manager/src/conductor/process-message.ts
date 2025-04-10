@@ -23,11 +23,11 @@ import type { ClientServer, ClientServerManager, Tool } from '../client-servers.
 import type { Server } from '../servers.ts';
 import type { ClientId, ServerId } from '../types.ts';
 import type {
-  MpcConductorReasoningFinishAnnotation,
-  MpcConductorReasoningStartAnnotation,
-  MpcConductorUsageAnnotation,
+  McpConductorReasoningFinishAnnotation,
+  McpConductorReasoningStartAnnotation,
+  McpConductorUsageAnnotation,
 } from './annotations.ts';
-import type { MpcConductorProvider } from './provider.ts';
+import type { McpConductorProvider } from './provider.ts';
 
 // Processes a user message by coordinating work across multiple agents and tools
 export async function processMessage({
@@ -47,7 +47,7 @@ export async function processMessage({
   clientServers: ClientServer[];
   servers: Server[];
   tools: Tool[];
-  provider: MpcConductorProvider;
+  provider: McpConductorProvider;
   callTool: ClientServerManager['callTool'];
   dataStream: DataStreamWriter;
 }): Promise<Result<void, MessageProcessorError>> {
@@ -220,7 +220,7 @@ class MessageProcessor {
   private readonly clientServers: ClientServer[];
   private readonly servers: Server[];
   private readonly tools: Tool[];
-  private readonly provider: MpcConductorProvider;
+  private readonly provider: McpConductorProvider;
   private readonly callTool: ClientServerManager['callTool'];
   private readonly dataStream: DataStreamWriter;
 
@@ -244,7 +244,7 @@ class MessageProcessor {
     clientServers: ClientServer[];
     servers: Server[];
     tools: Tool[];
-    provider: MpcConductorProvider;
+    provider: McpConductorProvider;
     callTool: ClientServerManager['callTool'];
     dataStream: DataStreamWriter;
   }) {
@@ -321,7 +321,7 @@ class MessageProcessor {
 
   // ---- Stream annotation and step management ----
 
-  private writeUsageAnnotation(annotation: Omit<MpcConductorUsageAnnotation, 'stepIndex'>) {
+  private writeUsageAnnotation(annotation: Omit<McpConductorUsageAnnotation, 'stepIndex'>) {
     this.dataStream.writeMessageAnnotation({
       ...annotation,
       stepIndex: this.currentStepIndex,
@@ -330,8 +330,8 @@ class MessageProcessor {
 
   private writeReasoningAnnotation(
     annotation:
-      | Omit<MpcConductorReasoningStartAnnotation, 'stepIndex'>
-      | Omit<MpcConductorReasoningFinishAnnotation, 'stepIndex'>,
+      | Omit<McpConductorReasoningStartAnnotation, 'stepIndex'>
+      | Omit<McpConductorReasoningFinishAnnotation, 'stepIndex'>,
   ) {
     this.dataStream.writeMessageAnnotation({
       ...annotation,
@@ -372,7 +372,7 @@ class MessageProcessor {
     logPrefix,
     reasoning,
   }: {
-    model: ReturnType<MpcConductorProvider['languageModel']>;
+    model: ReturnType<McpConductorProvider['languageModel']>;
     systemMessages: CoreSystemMessage[];
     messages: (CoreUserMessage | UIMessage)[];
     outputSchema: ReturnType<typeof Output.object>;

@@ -76,7 +76,7 @@ function BaseMenuItemContent({
   }, [setList, itemId, searchable]);
 
   const baseTw = slots.item({ class: [menuStaticClass('item'), className, classNames?.item] });
-  const contentTw = slots.itemContent({ class: [menuStaticClass('itemContent'), classNames?.itemContent] });
+  // const contentTw = slots.itemContent({ class: [menuStaticClass('itemContent'), classNames?.itemContent] });
   const indicatorTw = slots.itemIndicator({
     class: [menuStaticClass('itemIndicator'), classNames?.itemIndicator, optionType === 'radio' && 'text-[0.4em]'],
   });

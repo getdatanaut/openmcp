@@ -2,7 +2,7 @@ import { type LanguageModelUsage } from 'ai';
 
 import type { ServerId } from '../types.ts';
 
-export type MpcConductorUsageAnnotation = {
+export type McpConductorUsageAnnotation = {
   type: 'planning-usage' | 'assistant-usage' | 'tool-usage';
   usage: LanguageModelUsage;
   stepIndex: number;
@@ -19,27 +19,27 @@ export type MpcConductorUsageAnnotation = {
     }
 );
 
-export type MpcConductorReasoningAnnotation =
-  | MpcConductorReasoningStartAnnotation
-  | MpcConductorReasoningFinishAnnotation;
+export type McpConductorReasoningAnnotation =
+  | McpConductorReasoningStartAnnotation
+  | McpConductorReasoningFinishAnnotation;
 
-export type MpcConductorReasoningStartAnnotation = {
+export type McpConductorReasoningStartAnnotation = {
   type: 'reasoning-start';
   stepIndex: number;
   name: string;
   serverId?: ServerId;
 };
 
-export type MpcConductorReasoningFinishAnnotation = {
+export type McpConductorReasoningFinishAnnotation = {
   type: 'reasoning-finish';
   stepIndex: number;
   duration: number;
   serverId?: ServerId;
 };
 
-export type MpcConductorAnnotation = MpcConductorUsageAnnotation | MpcConductorReasoningAnnotation;
+export type McpConductorAnnotation = McpConductorUsageAnnotation | McpConductorReasoningAnnotation;
 
-export const isUsageAnnotation = (annotation: unknown): annotation is MpcConductorUsageAnnotation => {
+export const isUsageAnnotation = (annotation: unknown): annotation is McpConductorUsageAnnotation => {
   return (
     typeof annotation === 'object' &&
     annotation !== null &&
@@ -49,7 +49,7 @@ export const isUsageAnnotation = (annotation: unknown): annotation is MpcConduct
   );
 };
 
-export const isReasoningAnnotation = (annotation: unknown): annotation is MpcConductorReasoningAnnotation => {
+export const isReasoningAnnotation = (annotation: unknown): annotation is McpConductorReasoningAnnotation => {
   return (
     typeof annotation === 'object' &&
     annotation !== null &&

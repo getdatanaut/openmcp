@@ -8,23 +8,23 @@ import {
   type ThreadMessageStorageData,
   type ThreadStorageData,
 } from './threads.ts';
-import type { MpcManagerId } from './types.ts';
+import type { McpManagerId } from './types.ts';
 
-export interface MpcManagerOptions {
+export interface McpManagerOptions {
   /**
    * A unique identifier for this manager
    */
-  id?: MpcManagerId;
+  id?: McpManagerId;
 
   /**
    * Optionally provide a Storage implementation to persist manager state
    *
    * @default MemoryStorage
    */
-  storage?: Partial<MpcManagerStorage>;
+  storage?: Partial<McpManagerStorage>;
 }
 
-export interface MpcManagerStorage {
+export interface McpManagerStorage {
   servers: Storage<ServerStorageData>;
   clientServers: Storage<ClientServerStorageData>;
   threads: Storage<ThreadStorageData>;
@@ -34,22 +34,22 @@ export interface MpcManagerStorage {
 /**
  * Creates new Manager instance.
  */
-export function createMpcManager(options?: MpcManagerOptions) {
-  return new MpcManager(options);
+export function createMcpManager(options?: McpManagerOptions) {
+  return new McpManager(options);
 }
 
 /**
- * The MpcManager maintains knowledge of registered servers,
+ * The McpManager maintains knowledge of registered servers,
  * connected clients, server<->client connections, thread, and messages.
  */
-export class MpcManager {
-  public readonly id: MpcManagerId;
+export class McpManager {
+  public readonly id: McpManagerId;
   public readonly servers: ServerManager;
   public readonly clientServers: ClientServerManager;
   public readonly threads: ThreadManager;
-  public readonly storage: MpcManagerStorage;
+  public readonly storage: McpManagerStorage;
 
-  constructor({ id, storage }: MpcManagerOptions = {}) {
+  constructor({ id, storage }: McpManagerOptions = {}) {
     this.id = id ?? 'no-id';
     this.storage = {
       servers: storage?.servers ?? createMemoryStorage<ServerStorageData>(),

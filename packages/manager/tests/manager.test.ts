@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { createMpcManager } from '../src/manager.ts';
+import { createMcpManager } from '../src/manager.ts';
 
 describe('createManager()', () => {
   it('should create a manager', async () => {
-    const manager = createMpcManager();
+    const manager = createMcpManager();
 
     await manager.servers.create({
       id: 'test',

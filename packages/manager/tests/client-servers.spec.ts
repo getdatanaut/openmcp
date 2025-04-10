@@ -29,7 +29,7 @@ const PING_PONG_SERVER_ID = 'mcp_ping_pong';
 const PING_PONG_SERVERV2_ID = 'mcp_ping_pong_v2';
 
 beforeEach<CTX>(async ctx => {
-  ctx.pingToolExecutor = vi.fn<ToolCallback>((...args) => {
+  ctx.pingToolExecutor = vi.fn<ToolCallback>(() => {
     return { content: [{ type: 'text', text: 'PONG' }] };
   });
 
@@ -42,7 +42,7 @@ beforeEach<CTX>(async ctx => {
     return { content: [{ type: 'text', text: `Hi ${name}` }] };
   });
 
-  ctx.pingServerFactory = vi.fn<CreateMcpServerFactory>(config => {
+  ctx.pingServerFactory = vi.fn<CreateMcpServerFactory>(() => {
     const m = new McpServer({ name: 'Ping Pong Server', version: '1.0.0' });
 
     m.tool('ping', ctx.pingToolExecutor);
@@ -50,7 +50,7 @@ beforeEach<CTX>(async ctx => {
     return m;
   });
 
-  ctx.pingServerFactoryV2 = vi.fn<CreateMcpServerFactory>(config => {
+  ctx.pingServerFactoryV2 = vi.fn<CreateMcpServerFactory>(() => {
     const m = new McpServer({ name: 'Ping Pong Server V2', version: '2.0.0' });
 
     m.tool('ping', ctx.pingToolExecutorV2);

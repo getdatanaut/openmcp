@@ -1,11 +1,11 @@
 import { createContext } from '@libs/ui-primitives';
 import {
   type ClientServerStorageData,
-  createMpcConductor,
-  createMpcManager,
-  type MpcConductor,
-  type MpcManager,
-  type MpcManagerStorage,
+  createMcpConductor,
+  createMcpManager,
+  type McpConductor,
+  type McpManager,
+  type McpManagerStorage,
 } from '@openmcp/manager';
 import type { QueryClient } from '@tanstack/react-query';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -17,8 +17,8 @@ import { queryOptions } from '~/utils/query-options.ts';
 import { useRootStore } from './use-root-store.tsx';
 
 export const [CurrentManagerContext, useCurrentManager] = createContext<{
-  manager: MpcManager;
-  conductor: MpcConductor;
+  manager: McpManager;
+  conductor: McpConductor;
 }>({
   name: 'CurrentManagerContext',
   strict: true,
@@ -28,7 +28,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
   const { db, queryClient } = useRootStore();
 
   const manager = useRef(
-    createMpcManager({
+    createMcpManager({
       storage: {
         servers: initServerStorage({ db, queryClient }),
         clientServers: initLocalClientServerStorage({ db }),
@@ -46,7 +46,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
   );
 
   const conductor = useRef(
-    createMpcConductor({
+    createMcpConductor({
       llmProxyUrl: ({ provider }) => `${import.meta.env.VITE_API_URL}/_/llm/${provider}`,
       serversByClientId: manager.current.clientServers.serversByClientId,
       toolsByClientId: manager.current.clientServers.toolsByClientId,
@@ -82,19 +82,19 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
 
 const initServerStorage = ({ db, queryClient }: { db: LocalDb; queryClient: QueryClient }) => {
   return {
-    insert: async row => {
+    insert: async () => {
       throw new Error('Not available in the local manager.');
     },
-    upsert: async ({ id }, row) => {
+    upsert: async () => {
       throw new Error('Not available in the local manager.');
     },
-    update: async ({ id }, row) => {
+    update: async () => {
       throw new Error('Not available in the local manager.');
     },
-    delete: async ({ id }) => {
+    delete: async () => {
       throw new Error('Not available in the local manager.');
     },
-    findMany: async where => {
+    findMany: async () => {
       return queryClient.fetchQuery({
         ...queryOptions.directory(),
         queryFn: () => fetch(`${import.meta.env.VITE_API_URL}/directory`).then(res => res.json()),
@@ -106,7 +106,7 @@ const initServerStorage = ({ db, queryClient }: { db: LocalDb; queryClient: Quer
         queryFn: () => fetch(`${import.meta.env.VITE_API_URL}/directory/${id}`).then(res => res.json()),
       });
     },
-  } satisfies MpcManagerStorage['servers'];
+  } satisfies McpManagerStorage['servers'];
 };
 
 const initLocalClientServerStorage = ({ db }: { db: LocalDb }) => {
@@ -138,7 +138,7 @@ const initLocalClientServerStorage = ({ db }: { db: LocalDb }) => {
       const res = await db.clientServers.get(id);
       return res ? { ...res, enabled: res.enabled === 1 } : undefined;
     },
-  } satisfies MpcManagerStorage['clientServers'];
+  } satisfies McpManagerStorage['clientServers'];
 };
 
 const initLocalThreadStorage = ({ db }: { db: LocalDb }) => {
@@ -171,7 +171,7 @@ const initLocalThreadStorage = ({ db }: { db: LocalDb }) => {
       const res = await db.threads.get(id);
       return res;
     },
-  } satisfies MpcManagerStorage['threads'];
+  } satisfies McpManagerStorage['threads'];
 };
 
 const initLocalThreadMessageStorage = ({ db }: { db: LocalDb }) => {
@@ -201,5 +201,5 @@ const initLocalThreadMessageStorage = ({ db }: { db: LocalDb }) => {
       const res = await db.threadMessages.get(id);
       return res;
     },
-  } satisfies MpcManagerStorage['threadMessages'];
+  } satisfies McpManagerStorage['threadMessages'];
 };

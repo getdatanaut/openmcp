@@ -29,7 +29,7 @@ import {
   resourceTemplate,
   type ResourceUri,
 } from './resources.ts';
-import type { inferToolParameters, MpcServerTool, ToolName, ToolOutput, ToolParameters } from './tools.ts';
+import type { inferToolParameters, McpServerTool, ToolName, ToolOutput, ToolParameters } from './tools.ts';
 
 interface RegisteredTool {
   name: string;
@@ -49,7 +49,7 @@ export interface OpenMcpServerOptions {
   name: string;
   version: string;
   instructions?: string;
-  tools?: Record<ToolName, MpcServerTool>;
+  tools?: Record<ToolName, McpServerTool>;
   resources?: (Resource<string, unknown> | ResourceTemplate<string, unknown>)[];
   onInitialize?: (clientInfo: Implementation, clientCapabilities: ClientCapabilities) => void;
   transformToolResult?: (opts: TransformToolResultOpts) => any;
@@ -73,7 +73,7 @@ const AUTO_TRIM_MIN_TOKENS_DEFAULT = 5000;
  * - adds a hook to transform tool results
  * - adds optional auto-trimming of tool results
  */
-export class OpenMpcServer {
+export class OpenMcpServer {
   readonly server: Server;
 
   #tools: Record<ToolName, RegisteredTool> = {};

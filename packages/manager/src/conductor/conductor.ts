@@ -5,22 +5,22 @@ import { z } from 'zod';
 import type { ClientServerManager } from '../client-servers.ts';
 import type { ClientId } from '../types.ts';
 import { processMessage } from './process-message.ts';
-import { createProvider, type MpcConductorProvider, type MpcConductorProviderSettings } from './provider.ts';
+import { createProvider, type McpConductorProvider, type McpConductorProviderSettings } from './provider.ts';
 
-export interface MpcConductorSettings {
-  providers?: MpcConductorProviderSettings['providers'];
+export interface McpConductorSettings {
+  providers?: McpConductorProviderSettings['providers'];
 }
 
-export interface MpcConductorOptions {
+export interface McpConductorOptions {
   serversByClientId: ClientServerManager['serversByClientId'];
   toolsByClientId: ClientServerManager['toolsByClientId'];
   listClientServers: ClientServerManager['findMany'];
   callTool: ClientServerManager['callTool'];
-  llmProxyUrl?: MpcConductorProviderSettings['llmProxyUrl'];
-  settings?: MpcConductorSettings;
+  llmProxyUrl?: McpConductorProviderSettings['llmProxyUrl'];
+  settings?: McpConductorSettings;
 }
 
-export interface MpcConductorHandleMessageOpts {
+export interface McpConductorHandleMessageOpts {
   clientId: ClientId;
 
   message: UIMessage;
@@ -29,20 +29,20 @@ export interface MpcConductorHandleMessageOpts {
   history?: UIMessage[];
 }
 
-export function createMpcConductor(options: MpcConductorOptions) {
-  return new MpcConductor(options);
+export function createMcpConductor(options: McpConductorOptions) {
+  return new McpConductor(options);
 }
 
-export class MpcConductor {
-  #serversByClientId: MpcConductorOptions['serversByClientId'];
-  #toolsByClientId: MpcConductorOptions['toolsByClientId'];
-  #listClientServers: MpcConductorOptions['listClientServers'];
-  #callTool: MpcConductorOptions['callTool'];
-  #provider: MpcConductorProvider;
-  #llmProxyUrl: MpcConductorOptions['llmProxyUrl'];
-  #settings: MpcConductorOptions['settings'];
+export class McpConductor {
+  #serversByClientId: McpConductorOptions['serversByClientId'];
+  #toolsByClientId: McpConductorOptions['toolsByClientId'];
+  #listClientServers: McpConductorOptions['listClientServers'];
+  #callTool: McpConductorOptions['callTool'];
+  #provider: McpConductorProvider;
+  #llmProxyUrl: McpConductorOptions['llmProxyUrl'];
+  #settings: McpConductorOptions['settings'];
 
-  constructor(options: MpcConductorOptions) {
+  constructor(options: McpConductorOptions) {
     this.#serversByClientId = options.serversByClientId;
     this.#toolsByClientId = options.toolsByClientId;
     this.#listClientServers = options.listClientServers;
@@ -65,7 +65,7 @@ export class MpcConductor {
     return llmObject.title;
   };
 
-  public handleMessage = async ({ clientId, message, history = [] }: MpcConductorHandleMessageOpts) => {
+  public handleMessage = async ({ clientId, message, history = [] }: McpConductorHandleMessageOpts) => {
     return createDataStreamResponse({
       onError(error) {
         console.error('Conductor.handleMessage.onError', error);
@@ -122,7 +122,7 @@ export class MpcConductor {
     });
   };
 
-  public async updateSettings(settings: MpcConductorSettings) {
+  public async updateSettings(settings: McpConductorSettings) {
     this.#settings = settings;
     this.#provider = this.#initProvider();
   }

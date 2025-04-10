@@ -10,7 +10,7 @@ export type ToolOutput = z.ZodTypeAny | Schema<any>;
 
 export type ToolName = string;
 
-export interface MpcServerTool<
+export interface McpServerTool<
   Params extends ToolParameters = any,
   ToolResult = any,
   OutputSchema extends ToolOutput = any,
@@ -22,7 +22,7 @@ export interface MpcServerTool<
 }
 
 export function tool<Params extends ToolParameters, ToolResult, OutputSchema extends ToolOutput>(
-  tool: MpcServerTool<Params, ToolResult, OutputSchema>,
+  tool: McpServerTool<Params, ToolResult, OutputSchema>,
 ) {
   return tool;
 }

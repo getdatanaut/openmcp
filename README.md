@@ -1,13 +1,13 @@
-# OpenMpc
+# OpenMcp
 
-OpenMpc is a toolkit for working with the Model Context Protocol (MCP), providing a suite of packages to build, connect,
+OpenMcp is a toolkit for working with the Model Context Protocol (MCP), providing a suite of packages to build, connect,
 and manage MCP servers and clients.
 
 ## Packages
 
 ### [@openmcp/manager](packages/manager)
 
-OpenMpc manager effectly acts as a "host" application, and makes it easy to manage configuration, connections, and tool
+OpenMcp manager effectly acts as a "host" application, and makes it easy to manage configuration, connections, and tool
 calling between many MPC clients and many MPC servers.
 
 It is runtime agnostic, and works in the browser, node, and edge environments such as Cloudflare.
@@ -16,17 +16,17 @@ It is runtime agnostic, and works in the browser, node, and edge environments su
 <summary>Adding clients + servers and handling messages</summary>
 
 ```ts
-import { createMpcManager, createMpcConductor } from '@openmcp/manager';
+import { createMcpManager, createMcpConductor } from '@openmcp/manager';
 
 /**
  * Create a manager, by default it will store everything in memory.
  */
-const manager = createMpcManager();
+const manager = createMcpManager();
 
 /**
  * The conductor is handles messages and coordinates client<->server tool calling.
  */
-const conductor = createMpcConductor({
+const conductor = createMcpConductor({
   toolsByClientId: manager.current.clientServers.toolsByClientId,
   // Optional, will pull the openai key from the OPENAI_API_KEY env variable if not supplied here
   settings: {
@@ -109,10 +109,10 @@ const allTools = await manager.clientServers.toolsByClientId({ clientId: 'user-1
 <summary>Providing your own custom storage</summary>
 
 By default manager will load and store client server configs, and server configs, in memory. Often, this information
-will be stored in a database. To support this, OpenMpc manager supports custom storage:
+will be stored in a database. To support this, OpenMcp manager supports custom storage:
 
 ```ts
-const manager = createMpcManager({
+const manager = createMcpManager({
   storage: {
     servers: {
       insert: async row => {

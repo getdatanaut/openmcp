@@ -7,7 +7,7 @@ import {
   type UIMessage,
 } from 'ai';
 
-import type { MpcManager } from './manager.ts';
+import type { McpManager } from './manager.ts';
 import type { ClientId, ThreadId, ThreadMessageId } from './types.ts';
 
 /**
@@ -17,8 +17,8 @@ import type { ClientId, ThreadId, ThreadMessageId } from './types.ts';
 export interface ThreadManagerOptions {
   manager: {
     storage: {
-      threads: MpcManager['storage']['threads'];
-      threadMessages: MpcManager['storage']['threadMessages'];
+      threads: McpManager['storage']['threads'];
+      threadMessages: McpManager['storage']['threadMessages'];
     };
   };
 }
@@ -95,8 +95,8 @@ export interface ThreadTokenUsage {
 export interface ThreadOptions {
   manager: {
     storage: {
-      threads: MpcManager['storage']['threads'];
-      threadMessages: MpcManager['storage']['threadMessages'];
+      threads: McpManager['storage']['threads'];
+      threadMessages: McpManager['storage']['threadMessages'];
     };
   };
 }

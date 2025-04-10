@@ -1,7 +1,7 @@
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
-import type { MpcManager } from './manager.ts';
+import type { McpManager } from './manager.ts';
 import { createTransport, type TransportConfig, type TransportConfigs } from './transport.ts';
 import type { ServerId } from './types.ts';
 
@@ -11,7 +11,7 @@ import type { ServerId } from './types.ts';
 
 export interface ServerManagerOptions {
   manager: {
-    storage: Pick<MpcManager['storage'], 'servers'>;
+    storage: Pick<McpManager['storage'], 'servers'>;
   };
 
   /**
@@ -177,7 +177,7 @@ export interface ServerStorageData {
 
 export interface ServerOptions {
   manager: {
-    storage: Pick<MpcManager['storage'], 'servers'>;
+    storage: Pick<McpManager['storage'], 'servers'>;
   };
 
   /**

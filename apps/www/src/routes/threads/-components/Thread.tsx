@@ -12,8 +12,8 @@ import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@
 import {
   isReasoningAnnotation,
   isUsageAnnotation,
-  type MpcConductorReasoningFinishAnnotation,
-  type MpcConductorReasoningStartAnnotation,
+  type McpConductorReasoningFinishAnnotation,
+  type McpConductorReasoningStartAnnotation,
 } from '@openmcp/manager';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
@@ -83,14 +83,14 @@ const reasoningStart = (message: Message, stepIndex: number) => {
   return message.annotations?.find(
     annotation =>
       isReasoningAnnotation(annotation) && annotation.type === 'reasoning-start' && annotation.stepIndex === stepIndex,
-  ) as MpcConductorReasoningStartAnnotation | undefined;
+  ) as McpConductorReasoningStartAnnotation | undefined;
 };
 
 const reasoningFinish = (message: Message, stepIndex: number) => {
   return message.annotations?.find(
     annotation =>
       isReasoningAnnotation(annotation) && annotation.type === 'reasoning-finish' && annotation.stepIndex === stepIndex,
-  ) as MpcConductorReasoningFinishAnnotation | undefined;
+  ) as McpConductorReasoningFinishAnnotation | undefined;
 };
 
 export const Thread = observer(
@@ -270,7 +270,7 @@ const ThreadMessage = memo(
       <div className={classes}>
         <div className={containerClasses}>
           {!isFirst ? (
-            <div className="ak-layer-0 ak-edge/2 absolute top-0 left-0 z-10 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-xs border-[0.5px] px-1 text-sm font-light">
+            <div className="ak-layer-0 ak-edge/2 rounded-xs absolute left-0 top-0 z-10 -translate-x-1/2 -translate-y-1/2 cursor-default border-[0.5px] px-1 text-sm font-light">
               <div className="opacity-60">{lineNumber}</div>
             </div>
           ) : null}
@@ -306,7 +306,7 @@ const ThreadMessage = memo(
           </div>
 
           {!isFirst ? (
-            <div className="text-2xs invisible absolute top-0 right-3 -mt-px flex -translate-y-1/2 gap-2 group-hover:visible">
+            <div className="text-2xs invisible absolute right-3 top-0 -mt-px flex -translate-y-1/2 gap-2 group-hover:visible">
               {usage?.totalTokens && (
                 <div className="ak-layer-0 ak-text/40 px-1.5">{formatNumberWithCommas(usage.totalTokens)} Tokens</div>
               )}
@@ -389,7 +389,7 @@ ${JSON.stringify(isMcpResponse(result) ? JSON.parse(result?.content?.[0]?.text |
 
   return (
     <div className={contentClasses}>
-      <div className="flex cursor-pointer items-center gap-3 py-2 pr-3 pl-2" onClick={() => setExpanded(prev => !prev)}>
+      <div className="flex cursor-pointer items-center gap-3 py-2 pl-2 pr-3" onClick={() => setExpanded(prev => !prev)}>
         {iconElem}
 
         <div>
@@ -422,8 +422,8 @@ const ReasoningMessagePart = ({
 }: {
   part: ReasoningUIPart;
   isReasoning: boolean;
-  reasoningStart?: MpcConductorReasoningStartAnnotation;
-  reasoningFinish?: MpcConductorReasoningFinishAnnotation;
+  reasoningStart?: McpConductorReasoningStartAnnotation;
+  reasoningFinish?: McpConductorReasoningFinishAnnotation;
 }) => {
   const [expanded, setExpanded] = useState(isReasoning);
 

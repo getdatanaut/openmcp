@@ -1,4 +1,4 @@
-export type MpcManagerId = string;
+export type McpManagerId = string;
 
 export type ClientId = string;
 
