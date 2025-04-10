@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
+import { ButtonContext } from './button.context.ts';
 import { buttonGroupStaticClass, buttonGroupStyle, type ButtonGroupStyleProps } from './button.styles.ts';
-import { ButtonContext, type ButtonProps } from './button.tsx';
+import { type ButtonProps } from './button.tsx';
 
 export interface ButtonGroupProps
   extends Pick<ButtonProps, 'size' | 'variant' | 'intent' | 'disabled' | 'className' | 'children'>,
