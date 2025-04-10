@@ -42,6 +42,10 @@ export class ServerManager {
     return this.#manager.storage.servers;
   }
 
+  [Symbol.iterator]() {
+    return this.#servers.values();
+  }
+
   public findMany = async (where?: Partial<ServerStorageData>) => {
     const servers = await this.storage.findMany(where);
     for (const server of servers) {
@@ -76,14 +80,19 @@ export class ServerManager {
     return server;
   };
 
-  public create = async (data: ServerStorageData) => {
-    const server = createServer(data, {
-      manager: this.#manager,
-      createServer: this.createInMemoryServer(data),
-    });
+  public add = async (server: Server) => {
     await this.storage.insert(Server.serialize(server));
     this.#servers.set(server.id, server);
     return server;
+  };
+
+  public create = async (data: ServerStorageData) => {
+    return this.add(
+      createServer(data, {
+        manager: this.#manager,
+        createServer: this.createInMemoryServer(data),
+      }),
+    );
   };
 
   public delete = async ({ id }: { id: ServerId }) => {
@@ -175,7 +184,7 @@ export interface ServerStorageData {
   };
 }
 
-export interface ServerOptions {
+export interface ServerOptions<TC extends unknown = Record<string, unknown>> {
   manager: {
     storage: Pick<McpManager['storage'], 'servers'>;
   };
@@ -185,10 +194,14 @@ export interface ServerOptions {
    *
    * Only applicable when using the `inMemory` transport.
    */
-  createServer?: CreateMcpServerFactory;
+  createServer?: CreateMcpServerFactory<TC>;
 }
 
-export type CreateMcpServerFactory = (config: Record<string, unknown>) => McpServer | undefined;
+export type MinimalMcpServer = Pick<McpServer, 'connect' | 'server' | 'close'>;
+
+export type CreateMcpServerFactory<C = Record<string, unknown>> = (
+  config: C,
+) => Promise<MinimalMcpServer> | MinimalMcpServer | undefined;
 
 /**
  * Create a server configuration
@@ -202,22 +215,25 @@ export function createServer(data: ServerStorageData, options: ServerOptions) {
  *
  * A Client will configure the MCP Server before connecting via the `transport`.
  */
-export class Server {
+export class Server<TC extends unknown = Record<string, unknown>, O extends ServerOptions<TC> = ServerOptions<TC>> {
   public readonly id: ServerId;
   public readonly name: ServerStorageData['name'];
   public readonly version: ServerStorageData['version'];
   public readonly configSchema: ServerStorageData['configSchema'];
   public readonly transport: ServerStorageData['transport'];
   public readonly presentation: ServerStorageData['presentation'];
-  public readonly createServer?: CreateMcpServerFactory;
+  public readonly createServer?: CreateMcpServerFactory<TC>;
 
   #manager: ServerOptions['manager'];
 
-  static deserialize(data: ServerStorageData, options: ServerOptions): Server {
+  static deserialize<TC extends unknown, O extends ServerOptions<TC> = ServerOptions<TC>>(
+    data: ServerStorageData,
+    options: O,
+  ): Server<TC, O> {
     return new Server(data, options);
   }
 
-  static serialize(server: Server) {
+  static serialize<TC extends unknown, O extends ServerOptions<TC> = ServerOptions<TC>>(server: Server<TC, O>) {
     return {
       id: server.id,
       name: server.name,
@@ -228,7 +244,7 @@ export class Server {
     } satisfies ServerStorageData;
   }
 
-  constructor(data: ServerStorageData, options: ServerOptions) {
+  constructor(data: ServerStorageData, options: O) {
     this.id = data.id;
     this.name = data.name;
     this.version = data.version;
@@ -254,7 +270,7 @@ export class Server {
    * @param toolConfig.config - The configuration for the MCP Server
    * @returns The result of the tool call
    */
-  public async callTool(toolConfig: { name: string; input: Record<string, unknown>; config: Record<string, unknown> }) {
+  public async callTool(toolConfig: { name: string; input: Record<string, unknown>; config: TC }) {
     const clientId = JSON.stringify(toolConfig);
     const mcpClient = new McpClient({
       name: `${this.id}-${clientId}`,
@@ -266,7 +282,7 @@ export class Server {
     /**
      * Connect the server and client via the same transport
      */
-    const mcpServer = this.createServer?.(toolConfig.config);
+    const mcpServer = await this.createServer?.(toolConfig.config);
     if (mcpServer) {
       await mcpServer.connect(serverTransport);
     }

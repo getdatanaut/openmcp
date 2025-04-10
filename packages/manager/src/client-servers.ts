@@ -1,8 +1,8 @@
 import { Client as McpClient } from '@modelcontextprotocol/sdk/client/index.js';
-import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { SetOptional } from 'type-fest';
 
 import type { McpManager } from './manager.ts';
+import type { MinimalMcpServer } from './servers.ts';
 import { createTransport } from './transport.ts';
 import type { ClientId, ServerId, ToolName } from './types.ts';
 
@@ -67,14 +67,17 @@ export class ClientServerManager {
   };
 
   public create = async (options: SetOptional<ClientServerStorageData, 'id'>) => {
-    const server = createClientServer(
+    const clientServer = createClientServer(
       { id: `${options.clientId}-${options.serverId}`, ...options },
       { manager: this.#manager },
     );
-    await this.storage.insert(ClientServer.serialize(server));
-    this.#clientServers.set(server.id, server);
+    return this.add(clientServer);
+  };
 
-    return server;
+  public add = async (clientServer: ClientServer) => {
+    await this.storage.insert(ClientServer.serialize(clientServer));
+    this.#clientServers.set(clientServer.id, clientServer);
+    return clientServer;
   };
 
   public update = async ({ id }: { id: ClientServerId }, options: Partial<ClientServerStorageData>) => {
@@ -126,7 +129,7 @@ export class ClientServerManager {
     clientId: ClientId;
     serverId: ServerId;
     name: ToolName;
-    input: Record<string, unknown>;
+    input: Record<string, unknown> | undefined;
   }) => {
     const clientServers = await this.findMany({ clientId: config.clientId, serverId: config.serverId });
     const clientServer = clientServers[0];
@@ -194,7 +197,7 @@ export class ClientServer {
 
   #manager: ClientServerOptions['manager'];
   #mcpClient?: McpClient;
-  #mcpServer?: McpServer;
+  #mcpServer?: MinimalMcpServer;
 
   static deserialize(data: ClientServerStorageData, options: ClientServerOptions): ClientServer {
     return new ClientServer(data, options);
@@ -239,7 +242,7 @@ export class ClientServer {
     /**
      * Create optional MCP Server defined by the server's config
      */
-    const mcpServer = server.createServer?.(this.serverConfig);
+    const mcpServer = await server.createServer?.(this.serverConfig);
     this.#mcpServer = mcpServer;
 
     /**
@@ -305,7 +308,7 @@ export class ClientServer {
   /**
    * Call a tool on the server
    */
-  public async callTool(config: { name: ToolName; input: Record<string, unknown> }) {
+  public async callTool(config: { name: ToolName; input: Record<string, unknown> | undefined }) {
     // Always lazy connect if not already connected and calling a specific tool
     if (!this.isConnected) {
       await this.connect();

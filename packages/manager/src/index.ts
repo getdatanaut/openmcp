@@ -1,4 +1,4 @@
-export type { ClientServerId, ClientServerStorageData } from './client-servers.ts';
+export type { ClientServerId, ClientServerOptions, ClientServerStorageData, Tool } from './client-servers.ts';
 export { ClientServer } from './client-servers.ts';
 export type {
   McpConductorAnnotation,
@@ -10,7 +10,7 @@ export type { McpConductor, McpConductorSettings } from './conductor/conductor.t
 export { createMcpConductor } from './conductor/conductor.ts';
 export type { McpManager, McpManagerOptions, McpManagerStorage } from './manager.ts';
 export { createMcpManager } from './manager.ts';
-export type { ServerStorageData } from './servers.ts';
+export type { ServerOptions, ServerStorageData } from './servers.ts';
 export { Server } from './servers.ts';
 export type { Storage } from './storage/index.ts';
 export type { AIResponseMessage, ThreadMessageStorageData, ThreadStorageData } from './threads.ts';

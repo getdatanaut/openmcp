@@ -1,0 +1,51 @@
+{
+  "name": "@openmcp/remix",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getdatanaut/openmcp",
+    "directory": "packages/server"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.9.0",
+    "@openmcp/manager": "workspace:*",
+    "@openmcp/server": "workspace:*",
+    "@openmcp/utils": "workspace:*",
+    "zod": "3.24.2"
+  },
+  "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
+    "eslint": "9.24.0",
+    "json-schema": "0.4.0",
+    "tsup": "8.4.0",
+    "typescript": "5.8.3",
+    "vitest": "3.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

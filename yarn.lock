@@ -2824,6 +2824,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@openmcp/remix@workspace:packages/remix":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/remix@workspace:packages/remix"
+  dependencies:
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    "@modelcontextprotocol/sdk": "npm:1.9.0"
+    "@openmcp/manager": "workspace:*"
+    "@openmcp/server": "workspace:*"
+    "@openmcp/utils": "workspace:*"
+    eslint: "npm:9.24.0"
+    json-schema: "npm:0.4.0"
+    tsup: "npm:8.4.0"
+    typescript: "npm:5.8.3"
+    vitest: "npm:3.1.1"
+    zod: "npm:3.24.2"
+  languageName: unknown
+  linkType: soft
+
 "@openmcp/server@workspace:*, @openmcp/server@workspace:packages/server":
   version: 0.0.0-use.local
   resolution: "@openmcp/server@workspace:packages/server"
