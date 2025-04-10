@@ -59,8 +59,8 @@ yarn-error.log
 Thumbs.db
 
 # env
-.env.local
-.env.*.local
+.env*
+!.env.example
 .dev.vars
 
 *storybook.log
