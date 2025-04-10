@@ -83,7 +83,7 @@ function DialogContent({ ref, ...originalProps }: DialogProps) {
 
   const close = useCallback(() => dialog.setOpen(false), [dialog]);
 
-  const slots = useMemo(() => dialogStyle(variantProps), Object.values(variantProps));
+  const slots = useMemo(() => dialogStyle(variantProps), [variantProps]);
   const baseTw = slots.base({ class: [dialogStaticClass('base'), className] });
   const wrapperTw = slots.wrapper({ class: [dialogStaticClass('wrapper'), classNames?.wrapper] });
   const backdropTw = slots.backdrop({ class: [dialogStaticClass('backdrop'), classNames?.backdrop] });

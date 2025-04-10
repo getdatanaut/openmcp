@@ -10,7 +10,7 @@ export interface TabsProps extends Omit<AK.TabProviderProps, 'store' | 'classNam
 export function Tabs(originalProps: TabsProps) {
   const [{ classNames, children, ...props }, variantProps] = splitPropsVariants(originalProps, tabsStyle.variantKeys);
 
-  const slots = useMemo(() => tabsStyle(variantProps), Object.values(variantProps));
+  const slots = useMemo(() => tabsStyle(variantProps), [variantProps]);
 
   return (
     <TabsInternalContext.Provider value={{ slots, classNames }}>

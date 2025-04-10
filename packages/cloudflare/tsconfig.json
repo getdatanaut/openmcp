@@ -1,6 +1,6 @@
 {
   "extends": "@libs/tsconfig/tsconfig.workerd.json",
-  "include": ["src"],
+  "include": ["**/*.ts"],
   "compilerOptions": {
     "rootDir": ".",
     "types": ["@cloudflare/workers-types/2023-07-01"]

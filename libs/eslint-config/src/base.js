@@ -99,7 +99,7 @@ export const baseConfig = tseslint.config(
       },
       globals: {
         // @QUESTION: new way of defining globals for eslint is kind of annoying. Is it really needed if we just need the types?
-        ...globals.es2015,
+        ...globals.es2023,
         ...globals.node,
         ...globals.browser,
       },
@@ -122,7 +122,7 @@ export const baseConfig = tseslint.config(
       '@typescript-eslint/dot-notation': 'off',
 
       'no-unused-vars': 'off',
-      "@typescript-eslint/no-unused-vars": "warn",
+      '@typescript-eslint/no-unused-vars': 'warn',
     },
   },
 

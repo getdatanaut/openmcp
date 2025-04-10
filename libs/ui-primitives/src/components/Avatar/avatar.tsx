@@ -104,7 +104,7 @@ export function Avatar({ ref, ...props }: AvatarProps) {
   const imageStatus = useImage({ src, onError, ignoreFallback });
   const hasImageLoaded = imageStatus === 'loaded';
 
-  const slots = useMemo(() => avatarStyle(variantProps), [...Object.values(variantProps)]);
+  const slots = useMemo(() => avatarStyle(variantProps), [variantProps]);
 
   const baseTw = slots.base({ class: [avatarStaticClass('base'), className] });
   const imageTw = slots.image({ class: [avatarStaticClass('image'), classNames?.image, !hasImageLoaded && 'hidden'] });

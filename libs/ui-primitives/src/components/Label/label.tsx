@@ -22,7 +22,7 @@ export function Label({ ref, ...originalProps }: LabelProps) {
 
   const [{ className, ...props }, variantProps] = splitPropsVariants(originalProps, labelStyle.variantKeys);
 
-  const slots = useMemo(() => labelStyle(variantProps), Object.values(variantProps));
+  const slots = useMemo(() => labelStyle(variantProps), [variantProps]);
 
   const baseTw = slots.base({ class: [labelStaticClass('base'), className] });
 

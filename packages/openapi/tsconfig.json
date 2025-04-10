@@ -1,9 +1,7 @@
 {
   "extends": "@libs/tsconfig/tsconfig.isomorphic.json",
+  "include": ["**/*.ts"],
   "compilerOptions": {
-    "rootDir": ".",
-    "baseUrl": ".",
-    "types": ["node"]
-  },
-  "include": ["**/*.ts"]
+    "rootDir": "."
+  }
 }

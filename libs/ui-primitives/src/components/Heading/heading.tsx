@@ -24,7 +24,7 @@ export function Heading({ ref, ...originalProps }: HeadingProps) {
 
   const [{ className, ...props }, variantProps] = splitPropsVariants(originalProps, headingStyle.variantKeys);
 
-  const slots = useMemo(() => headingStyle(variantProps), Object.values(variantProps));
+  const slots = useMemo(() => headingStyle(variantProps), [variantProps]);
 
   const baseTw = slots.base({ class: [headingStaticClass('base'), className] });
 

@@ -40,7 +40,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
 
   // https://stackoverflow.com/a/73528448
   const [config, configLoaded] = useLiveQuery(
-    () => db.mpcManagers.get('default').then(m => [m, true]),
+    () => db.mcpManagers.get('default').then(m => [m, true]),
     [], // deps...
     [], // default result: makes 'loaded' undefined while loading
   );
@@ -64,14 +64,14 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
     if (!configLoaded) return;
 
     if (!config) {
-      void db.mpcManagers.add({ id: 'default' });
+      void db.mcpManagers.add({ id: 'default' });
       return;
     }
 
     if (config.conductor) {
       void conductor.current.updateSettings(config.conductor);
     }
-  }, [config, configLoaded, db.mpcManagers]);
+  }, [config, configLoaded, db.mcpManagers]);
 
   return (
     <CurrentManagerContext.Provider value={{ manager: manager.current, conductor: conductor.current }}>

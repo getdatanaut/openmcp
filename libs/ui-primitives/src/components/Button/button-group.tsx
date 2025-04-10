@@ -13,7 +13,7 @@ export function ButtonGroup(props: ButtonGroupProps) {
 
   const { className, children, size, variant, intent, disabled, ...others } = local;
 
-  const slots = useMemo(() => buttonGroupStyle(variantProps), [...Object.values(variantProps)]);
+  const slots = useMemo(() => buttonGroupStyle(variantProps), [variantProps]);
 
   const baseTw = slots.base({ class: [buttonGroupStaticClass('base'), className] });
 

@@ -1,5 +1,4 @@
 import { APICallError, type LanguageModelV1 } from 'ai';
-import { err } from 'neverthrow';
 
 export type ClientServerNotFound = ReturnType<typeof clientServerNotFound>;
 export const clientServerNotFound = ({ serverId }: { serverId: string }) => ({

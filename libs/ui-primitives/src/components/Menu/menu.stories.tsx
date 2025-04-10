@@ -310,7 +310,7 @@ export const Performance: Story = {
     const MAX_SUBMENU_DEPTH = 3;
 
     function renderMenuItems(depth = 1, parentId?: string) {
-      const items: any[] = [];
+      const items: React.ReactNode[] = [];
 
       for (let i = 0; i < ITEMS_PER_MENU; i++) {
         const id = parentId ? `${parentId}-${i}` : `${i}`;

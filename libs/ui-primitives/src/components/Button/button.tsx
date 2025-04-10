@@ -65,7 +65,7 @@ export function Button({ ref, ...originalProps }: ButtonProps) {
   // - if we don't have a loadingText, we make the content invisible, to preserve the button's width
   // - if we have a loadingText, we we hide the icon and endIcon
   const hiddenContentClass = tn(overlayIconElem ? (!loadingText ? 'invisible' : 'hidden') : '');
-  const slots = useMemo(() => buttonStyle(variantProps), Object.values(variantProps));
+  const slots = useMemo(() => buttonStyle(variantProps), [variantProps]);
 
   const baseTw = slots.base({ class: [buttonStaticClass('base'), className] });
   const iconTw = slots.icon({

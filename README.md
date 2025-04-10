@@ -147,7 +147,7 @@ const manager = createMpcManager({
 
 ### [@openmcp/cloudflare](packages/cloudflare)
 
-Turn durable objects into mpc servers.
+Turn durable objects into mcp servers.
 
 <details>
 <summary>Create your own MCP Server</summary>
@@ -158,7 +158,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 // 1. Define the durable object
 export class HelloWorldMcpServer extends OpenMcpDurableObject {
-  override readonly mcpServerId = 'my-hello-world-mpc';
+  override readonly mcpServerId = 'my-hello-world-mcp';
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -189,7 +189,7 @@ export class HelloWorldMcpServer extends OpenMcpDurableObject {
 export default {
   async fetch(request, env) {
     return routeOpenMcpRequest(request, {
-      'my-hello-world-mpc': {
+      'my-hello-world-mcp': {
         namespace: env.HELLO_WORLD_MCP_SERVER,
       },
     });
@@ -207,7 +207,7 @@ import { OpenMcpOpenAPI, routeOpenMcpRequest } from '@openmcp/cloudflare';
 
 // 1. Define the durable object
 export class PetstoreApi extends OpenMcpOpenAPI {
-  override mcpServerId = 'my-petstore-mpc';
+  override mcpServerId = 'my-petstore-mcp';
 
   override config = {
     // URL to the specification file
@@ -222,7 +222,7 @@ export class PetstoreApi extends OpenMcpOpenAPI {
 export default {
   async fetch(request, env) {
     return routeOpenMcpRequest(request, {
-      'my-petstore-mpc': {
+      'my-petstore-mcp': {
         namespace: env.PETSTORE_MCP_SERVER,
       },
     });

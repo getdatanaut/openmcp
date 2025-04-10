@@ -25,7 +25,7 @@ export function dbIdFactory<NS extends string>(namespace: NS, idLength = 12) {
   const createDbId = init({ length: idLength });
 
   const validator = z.custom<DbId<NS>>(val => {
-    return typeof val === 'string' && isDbIdNamespace(val as any, namespace);
+    return typeof val === 'string' && isDbIdNamespace(val as DbId, namespace);
   }, 'Invalid ID');
 
   return {

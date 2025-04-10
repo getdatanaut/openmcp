@@ -13,7 +13,7 @@ export type LocalClientServer = Omit<ClientServerStorageData, 'enabled'> & { ena
 export interface LocalDb extends Dexie {
   servers: EntityTable<ServerStorageData, 'id'>;
   clientServers: EntityTable<LocalClientServer, 'id'>;
-  mpcManagers: EntityTable<MpcManagerStorageData, 'id'>;
+  mcpManagers: EntityTable<MpcManagerStorageData, 'id'>;
   threads: EntityTable<ThreadStorageData, 'id'>;
   threadMessages: EntityTable<ThreadMessageStorageData, 'id'>;
 }
@@ -31,7 +31,7 @@ localDb.version(1).stores({
   clientServers: 'id, serverId, [clientId+enabled]',
   threads: 'id, clientId, createdAt',
   threadMessages: 'id, threadId, createdAt',
-  mpcManagers: 'id',
+  mcpManagers: 'id',
 });
 
 export { localDb };

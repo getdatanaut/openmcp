@@ -62,8 +62,7 @@ export function Input({ ref, ...originalProps }: InputProps) {
 
   const slots = useMemo(
     () => inputStyle({ ...variantProps, isDisabled: disabled, hasStartIcon, hasEndIcon, hasSection }),
-
-    [...Object.values(variantProps), disabled, hasStartIcon, hasEndIcon, hasSection],
+    [variantProps, disabled, hasStartIcon, hasEndIcon, hasSection],
   );
 
   const baseTw = slots.base({ class: [inputStaticClass('base'), className] });

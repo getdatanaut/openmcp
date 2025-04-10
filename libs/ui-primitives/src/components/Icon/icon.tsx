@@ -37,7 +37,7 @@ export function Icon({ ref, ...originalProps }: IconProps) {
 
   const { icon, className, ...rest } = props;
 
-  const slots = useMemo(() => iconStyle(variantProps), [...Object.values(variantProps)]);
+  const slots = useMemo(() => iconStyle(variantProps), [variantProps]);
 
   const baseTw = slots.base({ class: [iconStaticClass('base'), className] });
 
