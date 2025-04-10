@@ -1,0 +1,35 @@
+name: datanaut
+
+services:
+  pg:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    shm_size: 1g
+    ports:
+      - '5445:5432'
+    environment:
+      POSTGRES_USER: datanaut_user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: datanaut
+    volumes:
+      - pg:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: |
+      postgres
+      -c wal_level=logical
+      -c max_wal_senders=10
+      -c max_replication_slots=5
+      -c hot_standby=on
+      -c hot_standby_feedback=on
+
+volumes:
+  pg:
+
+networks:
+  internal:

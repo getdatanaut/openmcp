@@ -1,0 +1,28 @@
+{
+  "name": "@libs/auth",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./auth": "./src/auth.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc",
+    "schema.generate": "npx @better-auth/cli generate -y --config ./src/drizzle.ts --output ./src/schema.gen.ts && npx prepend-file-cli ./src/schema.gen.ts \"/* eslint-disable */\n\n\""
+  },
+  "dependencies": {
+    "@libs/db-ids": "workspace:*",
+    "@libs/utils-types": "workspace:*",
+    "better-auth": "1.2.5",
+    "drizzle-orm": "0.41.0"
+  },
+  "devDependencies": {
+    "@better-auth/cli": "1.2.5",
+    "@libs/db-pg": "workspace:*",
+    "eslint": "9.24.0",
+    "prepend-file-cli": "1.0.6"
+  }
+}

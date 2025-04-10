@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/turbo/schema.json",
   "ui": "stream",
-  "globalEnv": ["DEV"],
+  "globalEnv": ["DEV", "DN_PG_URL"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -26,6 +26,15 @@
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },
-    "typegen": {}
+    "typegen": {},
+    "migrate.up": {
+      "cache": false
+    },
+    "dev.reset": {
+      "cache": false
+    },
+    "dev.seed": {
+      "cache": false
+    }
   }
 }

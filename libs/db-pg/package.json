@@ -1,0 +1,25 @@
+{
+  "name": "@libs/db-pg",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@libs/db-ids": "workspace:*",
+    "@libs/db-pg-client": "workspace:*",
+    "@libs/utils-types": "workspace:*",
+    "drizzle-orm": "0.41.0",
+    "kysely": "0.27.6"
+  },
+  "devDependencies": {
+    "eslint": "9.24.0"
+  }
+}
