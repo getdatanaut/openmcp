@@ -1,0 +1,56 @@
+@import '@libs/ui-primitives/styles';
+
+@source "../../../../libs/ui-primitives/src";
+
+@font-face {
+  src: url(./fonts/ml/0-normal.woff2) format('woff2');
+  font-family: ml;
+  font-weight: 100 900;
+  font-style: normal;
+  unicode-range: U+0020-007F;
+}
+
+@font-face {
+  src: url(./fonts/ml/1-italic.woff2) format('woff2');
+  font-family: ml;
+  font-weight: 100 900;
+  font-style: italic;
+  unicode-range: U+0020-007F;
+}
+
+@theme {
+  --root-font-size: 14px;
+  --font-mono: ml, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+@layer base {
+  html,
+  body {
+    @apply min-h-screen;
+  }
+
+  html {
+    color-scheme: light dark;
+    font-size: var(--root-font-size);
+  }
+
+  body {
+    @apply ak-layer-canvas;
+  }
+
+  * {
+    @apply ak-edge selection:ak-layer-mix-primary/40;
+  }
+
+  a {
+    @apply focus-visible:ak-outline focus-visible:outline-[1.5px] focus-visible:outline-offset-[1.5px];
+  }
+
+  .using-mouse * {
+    outline: none !important;
+  }
+
+  #app {
+    @apply contents;
+  }
+}

@@ -5,10 +5,6 @@
   "compilerOptions": {
     "rootDir": ".",
 
-    // Enable top-level await, and other modern ESM features.
-    "target": "ESNext",
-    "lib": ["esnext"],
-
     // Strictness
     "strict": true,
     "noUncheckedIndexedAccess": true,

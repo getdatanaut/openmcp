@@ -1,6 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "target": "ES2023",
     "customConditions": ["workerd", "worker", "browser"]
   }
 }

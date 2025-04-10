@@ -1,0 +1,11 @@
+{
+  "extends": "@libs/tsconfig/tsconfig.workerd.json",
+  "include": ["worker"],
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["@cloudflare/workers-types/2023-07-01", "./worker-configuration.d.ts", "vite/client"],
+    "paths": {
+      "~/*": ["./worker/*"]
+    }
+  }
+}

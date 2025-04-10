@@ -3,7 +3,6 @@
   "compilerOptions": {
     "lib": ["ES2023"],
     "module": "ESNext",
-    "target": "ES2023",
-    "types": ["@types/node"]
+    "target": "ES2023"
   }
 }

@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["esnext", "dom", "DOM.Iterable"],
-    "jsxImportSource": "react",
+    "target": "ES2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "jsx": "react-jsx"
   }
 }

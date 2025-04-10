@@ -126,6 +126,7 @@ export interface ServerStorageData {
    *       type: 'string',
    *       title: 'API Key',
    *       description: 'The API key for the MCP Server',
+   *       format: 'secret',
    *     },
    *   },
    *   required: ['apiKey'],

@@ -1,8 +1,8 @@
 {
   "extends": "@libs/tsconfig/tsconfig.workerd.json",
-  "include": ["**/*.ts"],
+  "include": ["src"],
   "compilerOptions": {
     "rootDir": ".",
-    "types": ["@cloudflare/workers-types", "@types/node"]
+    "types": ["@cloudflare/workers-types/2023-07-01"]
   }
 }
