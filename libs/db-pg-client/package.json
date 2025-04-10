@@ -1,0 +1,20 @@
+{
+  "name": "@libs/db-pg-client",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "eslint": "9.24.0",
+    "kysely": "0.27.6",
+    "kysely-postgres-js": "2.0.0",
+    "postgres": "3.4.5",
+    "remeda": "2.21.2"
+  }
+}

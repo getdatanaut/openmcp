@@ -1827,6 +1827,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@libs/db-pg-client@workspace:*, @libs/db-pg-client@workspace:libs/db-pg-client":
+  version: 0.0.0-use.local
+  resolution: "@libs/db-pg-client@workspace:libs/db-pg-client"
+  dependencies:
+    eslint: "npm:9.24.0"
+    kysely: "npm:0.27.6"
+    kysely-postgres-js: "npm:2.0.0"
+    postgres: "npm:3.4.5"
+    remeda: "npm:2.21.2"
+  languageName: unknown
+  linkType: soft
+
+"@libs/db-pg-migrations@workspace:libs/db-pg-migrations":
+  version: 0.0.0-use.local
+  resolution: "@libs/db-pg-migrations@workspace:libs/db-pg-migrations"
+  dependencies:
+    "@libs/db-pg-client": "workspace:*"
+    drizzle-orm: "npm:0.41.0"
+    eslint: "npm:9.24.0"
+    kysely: "npm:0.27.6"
+    postgres: "npm:3.4.5"
+  languageName: unknown
+  linkType: soft
+
 "@libs/eslint-config@workspace:*, @libs/eslint-config@workspace:libs/eslint-config":
   version: 0.0.0-use.local
   resolution: "@libs/eslint-config@workspace:libs/eslint-config"
@@ -5405,6 +5429,98 @@ __metadata:
   languageName: node
   linkType: hard
 
+"drizzle-orm@npm:0.41.0":
+  version: 0.41.0
+  resolution: "drizzle-orm@npm:0.41.0"
+  peerDependencies:
+    "@aws-sdk/client-rds-data": ">=3"
+    "@cloudflare/workers-types": ">=4"
+    "@electric-sql/pglite": ">=0.2.0"
+    "@libsql/client": ">=0.10.0"
+    "@libsql/client-wasm": ">=0.10.0"
+    "@neondatabase/serverless": ">=0.10.0"
+    "@op-engineering/op-sqlite": ">=2"
+    "@opentelemetry/api": ^1.4.1
+    "@planetscale/database": ">=1"
+    "@prisma/client": "*"
+    "@tidbcloud/serverless": "*"
+    "@types/better-sqlite3": "*"
+    "@types/pg": "*"
+    "@types/sql.js": "*"
+    "@vercel/postgres": ">=0.8.0"
+    "@xata.io/client": "*"
+    better-sqlite3: ">=7"
+    bun-types: "*"
+    expo-sqlite: ">=14.0.0"
+    gel: ">=2"
+    knex: "*"
+    kysely: "*"
+    mysql2: ">=2"
+    pg: ">=8"
+    postgres: ">=3"
+    sql.js: ">=1"
+    sqlite3: ">=5"
+  peerDependenciesMeta:
+    "@aws-sdk/client-rds-data":
+      optional: true
+    "@cloudflare/workers-types":
+      optional: true
+    "@electric-sql/pglite":
+      optional: true
+    "@libsql/client":
+      optional: true
+    "@libsql/client-wasm":
+      optional: true
+    "@neondatabase/serverless":
+      optional: true
+    "@op-engineering/op-sqlite":
+      optional: true
+    "@opentelemetry/api":
+      optional: true
+    "@planetscale/database":
+      optional: true
+    "@prisma/client":
+      optional: true
+    "@tidbcloud/serverless":
+      optional: true
+    "@types/better-sqlite3":
+      optional: true
+    "@types/pg":
+      optional: true
+    "@types/sql.js":
+      optional: true
+    "@vercel/postgres":
+      optional: true
+    "@xata.io/client":
+      optional: true
+    better-sqlite3:
+      optional: true
+    bun-types:
+      optional: true
+    expo-sqlite:
+      optional: true
+    gel:
+      optional: true
+    knex:
+      optional: true
+    kysely:
+      optional: true
+    mysql2:
+      optional: true
+    pg:
+      optional: true
+    postgres:
+      optional: true
+    prisma:
+      optional: true
+    sql.js:
+      optional: true
+    sqlite3:
+      optional: true
+  checksum: 10c0/4abc7ab2958a7862a9bdd149f3ec892ec05892e7cd2042f996b6e58c5504e51d50b408833ff5bdd6d44a4a71af4b4c280d281b01a0ce59acfc26a0117b6b6875
+  languageName: node
+  linkType: hard
+
 "dunder-proto@npm:^1.0.0, dunder-proto@npm:^1.0.1":
   version: 1.0.1
   resolution: "dunder-proto@npm:1.0.1"
@@ -7763,6 +7879,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"kysely-postgres-js@npm:2.0.0":
+  version: 2.0.0
+  resolution: "kysely-postgres-js@npm:2.0.0"
+  peerDependencies:
+    kysely: ">= 0.24.0 < 1"
+    postgres: ">= 3.4.0 < 4"
+  checksum: 10c0/ef54b6edcc9500ee2ce648220cae33d171cda6a54e2d4aa9b0e79334e07520bc9bb94946b0ddb389ce87bf187ec835d789b1812670e848b71585366325fbae50
+  languageName: node
+  linkType: hard
+
+"kysely@npm:0.27.6":
+  version: 0.27.6
+  resolution: "kysely@npm:0.27.6"
+  checksum: 10c0/81cf668d196be265fa6782afb72d051590ce3f5c72b6456cc4a6eccbdfbac12bb1c938a8ec09b45de995854cfffb9972ce19553df2a4cf13dded3dc6cdddc326
+  languageName: node
+  linkType: hard
+
 "levn@npm:^0.4.1":
   version: 0.4.1
   resolution: "levn@npm:0.4.1"
@@ -9574,6 +9707,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postgres@npm:3.4.5":
+  version: 3.4.5
+  resolution: "postgres@npm:3.4.5"
+  checksum: 10c0/53415acea77e97bdc1eeb861048f34964e2236e4d4d42f408fc9b901e62bfcf7443a487ebfdad18b57b468c6e297bf8d22097106a200f62eb1262eb5a71355df
+  languageName: node
+  linkType: hard
+
 "postman-collection@npm:^4.1.3":
   version: 4.5.0
   resolution: "postman-collection@npm:4.5.0"
@@ -10159,6 +10299,15 @@ __metadata:
     mdast-util-to-markdown: "npm:^2.0.0"
     unified: "npm:^11.0.0"
   checksum: 10c0/0cdb37ce1217578f6f847c7ec9f50cbab35df5b9e3903d543e74b405404e67c07defcb23cd260a567b41b769400f6de03c2c3d9cd6ae7a6707d5c8d89ead489f
+  languageName: node
+  linkType: hard
+
+"remeda@npm:2.21.2":
+  version: 2.21.2
+  resolution: "remeda@npm:2.21.2"
+  dependencies:
+    type-fest: "npm:^4.37.0"
+  checksum: 10c0/f964ce5ddbefd181e71cd1154b24aa223188cc6b88a55a52b64a6a920377c54113a993f707b8beedb369e8ba76ef07479ad329d8e6ebad8868f0ee9e46ee0ec5
   languageName: node
   linkType: hard
 
@@ -11652,7 +11801,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.39.1":
+"type-fest@npm:^4.37.0, type-fest@npm:^4.39.1":
   version: 4.39.1
   resolution: "type-fest@npm:4.39.1"
   checksum: 10c0/f5bf302eb2e2f70658be1757aa578f4a09da3f65699b0b12b7ae5502ccea76e5124521a6e6b69540f442c3dc924c394202a2ab58718d0582725c7ac23c072594
