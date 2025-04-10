@@ -13,7 +13,6 @@ import {
   zodSchema,
 } from 'ai';
 import dedent from 'dedent';
-import _cloneDeep from 'lodash/cloneDeep';
 import { nanoid } from 'nanoid';
 import type { Result } from 'neverthrow';
 import { err, ok } from 'neverthrow';
@@ -175,7 +174,7 @@ function removeReasoningParts(messages: UIMessage[]): UIMessage[] {
       if (!message.parts?.length) return message;
 
       // Deep clone the message to avoid mutation
-      const newMessage = _cloneDeep(message);
+      const newMessage = structuredClone(message);
 
       newMessage.parts = newMessage.parts.filter(
         part => !['reasoning', 'step-start', 'step-finish'].includes(part.type),
@@ -191,7 +190,7 @@ function removeReasoningParts(messages: UIMessage[]): UIMessage[] {
 
 // Creates a safe copy of client server config with secrets removed
 function createSafeClientServerConfig(clientServer: ClientServer, server: Server): ClientServer['serverConfig'] {
-  const safeClientServerConfig = _cloneDeep(clientServer.serverConfig);
+  const safeClientServerConfig = structuredClone(clientServer.serverConfig);
 
   for (const key in server.configSchema?.properties) {
     const val = server.configSchema?.properties[key];

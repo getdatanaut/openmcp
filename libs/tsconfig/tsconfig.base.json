@@ -36,6 +36,9 @@
     // Allow importing .ts files
     "allowImportingTsExtensions": true,
 
+    // Do not transform or elide any imports or exports not marked as type-only
+    "verbatimModuleSyntax": true,
+
     // If not transpiling with typescript
     // Enable support for package.json "exports" property in TSC / vscode
     "moduleResolution": "Bundler",

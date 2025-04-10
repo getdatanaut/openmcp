@@ -4,8 +4,7 @@ import dedent from 'dedent';
 import { countTokens } from 'gpt-tokenizer/model/gpt-4o';
 import type { JSONSchema7 } from 'json-schema';
 import { batchExec, type Callback } from 'jsonpath-rfc9535';
-import _cloneDeep from 'lodash/cloneDeep';
-import _set from 'lodash/set';
+import _set from 'lodash/set.js';
 import { err, fromPromise, ok, type Result } from 'neverthrow';
 import { z } from 'zod';
 
@@ -228,7 +227,7 @@ function processJsonPaths<T extends Record<string, unknown>>(
 
 // Creates a trimmed version of the tool result for prompt construction, to reduce token usage
 function createTrimmedToolResult<T>(toolResultContent: T): T {
-  const trimmedResult = _cloneDeep(toolResultContent);
+  const trimmedResult = structuredClone(toolResultContent);
 
   traverse(trimmedResult, {
     onProperty: ({ parent, property, propertyValue }) => {

@@ -1,0 +1,62 @@
+{
+  "name": "@openmcp/cli",
+  "version": "0.0.0",
+  "type": "module",
+  "license": "Apache-2.0",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getdatanaut/openmcp",
+    "directory": "packages/cli"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json"
+  ],
+  "imports": {
+    "#register": {
+      "types": "./src/register.ts",
+      "development": "./src/register.ts",
+      "default": "./dist/register.js"
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "exec": "node --conditions=development --experimental-strip-types ./bin/index.js",
+    "build": "tsup",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test.watch": "vitest watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.9.0",
+    "@openmcp/manager": "0.0.0",
+    "yargs": "~17.7.2"
+  },
+  "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
+    "@types/yargs": "^17.0.33",
+    "eslint": "9.24.0",
+    "msw": "2.7.3",
+    "ts-node": "^10.9.2",
+    "tsup": "8.4.0",
+    "typescript": "5.8.3",
+    "vitest": "3.1.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
