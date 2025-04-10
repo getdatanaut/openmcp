@@ -39,6 +39,9 @@
     "turbo": "2.5.0",
     "typescript": "5.8.3"
   },
+  "resolutions": {
+    "@stoplight/http-spec/openapi3-ts": "4.4.x"
+  },
   "prettier": {
     "plugins": [
       "prettier-plugin-classnames",
