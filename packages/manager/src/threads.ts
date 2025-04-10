@@ -1,5 +1,4 @@
 import {
-  appendClientMessage,
   appendResponseMessages,
   type CoreAssistantMessage,
   type CoreToolMessage,

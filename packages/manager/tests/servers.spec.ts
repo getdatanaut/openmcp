@@ -24,7 +24,7 @@ beforeEach<CTX>(async ctx => {
     return { content: [{ type: 'text', text: 'PONG' }] };
   });
 
-  ctx.pingServerFactory = vi.fn<CreateMcpServerFactory>(config => {
+  ctx.pingServerFactory = vi.fn<CreateMcpServerFactory>(() => {
     const m = new McpServer({ name: 'Ping Pong Server', version: '1.0.0' });
 
     m.tool('ping', ctx.pingToolExecutor);

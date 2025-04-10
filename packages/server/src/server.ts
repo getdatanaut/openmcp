@@ -11,7 +11,6 @@ import {
   ListResourceTemplatesRequestSchema,
   type ListResourceTemplatesResult,
   ListToolsRequestSchema,
-  type ListToolsResult,
   McpError,
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';

@@ -1,6 +1,6 @@
 export type McpServerType = string;
 export type EncodedSessionId = string;
-export type SessionId<prefix extends string = typeof SESSION_ID_PREFIX> = `${string}_${EncodedSessionId}`;
+export type SessionId = `${string}_${EncodedSessionId}`;
 
 export type SessionIdOptions = {
   prefix?: string;
@@ -31,7 +31,7 @@ const defaultSessionIdOptions = {
  * This allows us to easily identify the MCP Server, unique session, and durable object instance.
  */
 export const SessionId = {
-  encode: <Prefix extends string = typeof SESSION_ID_PREFIX>(
+  encode: (
     {
       doId,
       serverType,
@@ -40,7 +40,7 @@ export const SessionId = {
       serverType: McpServerType;
     },
     options: SessionIdOptions = defaultSessionIdOptions,
-  ): SessionId<Prefix> => {
+  ): SessionId => {
     const prefix = options.prefix ?? SESSION_ID_PREFIX;
     const delimiter = options.delimiter ?? SESSION_ID_DELIMITER;
 

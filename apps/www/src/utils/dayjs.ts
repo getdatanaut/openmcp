@@ -21,7 +21,7 @@ declare module 'dayjs' {
  * Should "this" week be in the last 7 days, or literally the current week?
  * For now it's implemented as the last 7 days.
  */
-const isThisWeek: dayjs.PluginFunc = (o, c, d) => {
+const isThisWeek: dayjs.PluginFunc = (_o, c, d) => {
   c.prototype.isThisWeek = function () {
     const now = d();
 

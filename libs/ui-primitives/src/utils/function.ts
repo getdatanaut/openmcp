@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from 'react';
 
 export type ChildrenWithRenderProps<P> = ReactNode | ((props: P) => ReactNode);

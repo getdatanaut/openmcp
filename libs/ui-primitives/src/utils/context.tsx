@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { mergeProps } from '@ariakit/react-core/utils/misc';
 import * as React from 'react';
 

@@ -34,17 +34,21 @@ export const Route = createRootRoute({
 function RootComponent() {
   useReactScan();
 
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        refetchOnReconnect: true,
-        refetchOnWindowFocus: true,
-      },
-    },
-  });
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            refetchOnReconnect: true,
+            refetchOnWindowFocus: true,
+          },
+        },
+      }),
+    [],
+  );
 
-  const rootStore = useMemo(() => createRootStore({ localDb, queryClient }), []);
+  const rootStore = useMemo(() => createRootStore({ localDb, queryClient }), [queryClient]);
 
   if (isFirefox()) {
     return <BrowserNotSupported />;

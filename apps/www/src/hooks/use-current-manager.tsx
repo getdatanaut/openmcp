@@ -1,6 +1,5 @@
 import { createContext } from '@libs/ui-primitives';
 import {
-  type ClientServerStorageData,
   createMcpConductor,
   createMcpManager,
   type McpConductor,
@@ -80,7 +79,7 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
   );
 };
 
-const initServerStorage = ({ db, queryClient }: { db: LocalDb; queryClient: QueryClient }) => {
+const initServerStorage = ({ queryClient }: { db: LocalDb; queryClient: QueryClient }) => {
   return {
     insert: async () => {
       throw new Error('Not available in the local manager.');
