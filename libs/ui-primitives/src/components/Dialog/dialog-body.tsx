@@ -2,8 +2,8 @@ import { createElement } from '@ariakit/react-core/utils/system';
 import type { Options } from '@ariakit/react-core/utils/types';
 import { type ReactNode, type Ref } from 'react';
 
+import { useDialogInternalContext } from './dialog.context.ts';
 import { dialogStaticClass } from './dialog.styles.ts';
-import { useDialogInternalContext } from './internal-context.tsx';
 
 export interface DialogBodyProps extends Options {
   className?: string;

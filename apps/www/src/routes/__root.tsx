@@ -7,7 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { z } from 'zod';
 
-import { CurrentManagerProvider } from '~/hooks/use-current-manager.tsx';
+import { CurrentManagerProvider } from '~/components/CurrentManagerProvider.tsx';
 import { RootStoreContext, useRootStore } from '~/hooks/use-root-store.tsx';
 import { createRootStore } from '~/stores/root.ts';
 import { ClientServerId, McpServerId } from '~/utils/ids.ts';

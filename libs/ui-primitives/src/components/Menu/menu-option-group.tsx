@@ -1,4 +1,4 @@
-import { MenuOptionGroupContext } from './internal-context.tsx';
+import { MenuOptionGroupContext } from './menu.context.ts';
 import { MenuGroup, type MenuGroupProps } from './menu-group.tsx';
 
 interface BaseMenuOptionGroupProps extends MenuGroupProps {

@@ -1,9 +1,10 @@
 import { type ReactNode, type Ref, useMemo } from 'react';
 
-import { type ContextValue, createContext, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import type { HTMLProps } from '../../utils/types.ts';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
+import { InputContext } from './input.context.ts';
 import { type InputSlotProps, inputStaticClass, inputStyle, type InputStyleProps } from './input.styles.ts';
 
 export interface InputOptions extends InputStyleProps, InputSlotProps {
@@ -29,11 +30,6 @@ export interface InputOptions extends InputStyleProps, InputSlotProps {
 }
 
 export interface InputProps extends HTMLProps<'input'>, InputOptions {}
-
-export const [InputContext, useInputContext] = createContext<ContextValue<InputProps, HTMLInputElement>>({
-  name: 'InputContext',
-  strict: false,
-});
 
 export function Input({ ref, ...originalProps }: InputProps) {
   [originalProps, ref] = useContextProps(originalProps, InputContext, ref);

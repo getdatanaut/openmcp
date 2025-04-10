@@ -4,19 +4,13 @@ import { useDialogHeading } from '@ariakit/react-core/dialog/dialog-heading';
 import { useEvent } from '@ariakit/react-core/utils/hooks';
 import { type MouseEvent, type ReactElement, type Ref, useCallback, useMemo } from 'react';
 
-import {
-  type ContextValue,
-  createContext,
-  defaultSlot,
-  GenericSlotContext,
-  Provider,
-  useContextProps,
-} from '../../utils/context.tsx';
+import { defaultSlot, GenericSlotContext, useContextProps } from '../../utils/context.ts';
 import { type ChildrenWithRenderProps, runIfFn } from '../../utils/function.ts';
+import { Provider } from '../../utils/provider.tsx';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import { Button, type ButtonProps } from '../Button/button.tsx';
+import { DialogContext, DialogInternalContext } from './dialog.context.ts';
 import { type DialogSlotProps, dialogStaticClass, dialogStyle, type DialogStyleProps } from './dialog.styles.ts';
-import { DialogInternalContext } from './internal-context.tsx';
 
 type AKProps = Omit<AK.DialogOptions, 'store' | 'onChange' | 'children' | 'backdrop' | 'onToggle'> &
   Pick<AK.DialogProps, 'className'>;
@@ -44,11 +38,6 @@ export interface DialogProps extends AKProps, DialogStyleProps, DialogSlotProps 
 export interface DialogRenderProps {
   close: () => void;
 }
-
-export const [DialogContext, useDialogContext] = createContext<ContextValue<DialogProps, HTMLDivElement>>({
-  name: 'DialogContext',
-  strict: false,
-});
 
 export const DialogSlot = {
   title: 'title',

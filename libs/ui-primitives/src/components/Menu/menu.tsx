@@ -6,11 +6,13 @@ import * as AK from '@ariakit/react';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { startTransition, useCallback, useMemo, useState } from 'react';
 
-import { type ContextValue, createContext, Provider, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
+import { Provider } from '../../utils/provider.tsx';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import type { HTMLProps } from '../../utils/types.ts';
-import { Input, InputContext } from '../Input/input.tsx';
-import { MenuInternalContext, MenuSearchContext, useMenuSearchContext } from './internal-context.tsx';
+import { InputContext } from '../Input/input.context.ts';
+import { Input } from '../Input/input.tsx';
+import { MenuContext, MenuInternalContext, MenuSearchContext, useMenuSearchContext } from './menu.context.ts';
 import { type MenuSlotProps, menuStaticClass, menuStyle, type MenuStyleProps } from './menu.styles.ts';
 import { MenuGroup } from './menu-group.tsx';
 import { BaseMenuItem } from './menu-item.tsx';
@@ -28,11 +30,6 @@ export interface MenuOptions extends AK.MenuOptions<'div'>, MenuStyleProps, Menu
 }
 
 export interface MenuProps extends MenuOptions, Pick<HTMLProps<'div'>, 'children' | 'className'> {}
-
-export const [MenuContext, useMenuContext] = createContext<ContextValue<MenuProps, HTMLDivElement>>({
-  name: 'MenuContext',
-  strict: false,
-});
 
 export function Menu({ ref, ...originalProps }: MenuProps) {
   const parent = AK.useMenuContext();

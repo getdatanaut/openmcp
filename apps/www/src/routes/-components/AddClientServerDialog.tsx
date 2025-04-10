@@ -14,9 +14,9 @@ import type { ClientServer, Server } from '@openmcp/manager';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 
-import { JsonSchemaForm, JsonSchemaFormFields, useJsonSchemaForm } from '~/components/JsonSchemaForm.tsx';
+import { JsonSchemaForm, JsonSchemaFormFields, useJsonSchemaForm } from '~/components/JsonSchemaForm/index.ts';
 import { Markdown } from '~/components/Markdown.tsx';
-import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
+import { useCurrentManager } from '~/hooks/use-current-manager.ts';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ClientServerId, type TClientServerId, type TMcpServerId } from '~/utils/ids.ts';
 import { queryOptions } from '~/utils/query-options.ts';

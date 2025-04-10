@@ -7,7 +7,7 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
-    "./markdown": "./src/components/Markdown/index.tsx",
+    "./markdown": "./src/components/Markdown/index.ts",
     "./styles": "./src/styles.css"
   },
   "scripts": {

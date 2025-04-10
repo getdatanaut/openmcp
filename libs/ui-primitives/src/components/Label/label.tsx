@@ -1,9 +1,10 @@
 import type { Options } from '@ariakit/react-core/utils/types';
 import { createElement, type Ref, useMemo } from 'react';
 
-import { type ContextValue, createContext, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import type { HTMLProps } from '../../utils/types.ts';
+import { LabelContext } from './label.context.ts';
 import { type LabelSlotProps, labelStaticClass, labelStyle, type LabelStyleProps } from './label.styles.ts';
 
 export interface LabelOptions extends Options, LabelStyleProps, LabelSlotProps {
@@ -11,11 +12,6 @@ export interface LabelOptions extends Options, LabelStyleProps, LabelSlotProps {
 }
 
 export type LabelProps = LabelOptions & HTMLProps<'label'>;
-
-export const [LabelContext, useLabelContext] = createContext<ContextValue<LabelProps, HTMLLabelElement>>({
-  name: 'LabelContext',
-  strict: false,
-});
 
 export function Label({ ref, ...originalProps }: LabelProps) {
   [originalProps, ref] = useContextProps(originalProps, LabelContext, ref);

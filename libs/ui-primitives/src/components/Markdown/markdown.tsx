@@ -6,28 +6,18 @@ import reactToText from 'react-to-text';
 import rehypePrettyCode from 'rehype-pretty-code';
 import remarkGfm from 'remark-gfm';
 
-import { createContext } from '../../utils/context.tsx';
 import { tn } from '../../utils/tw.ts';
 import { CopyButton } from '../Button/copy-button.tsx';
+import { MarkdownInternalContext, useMarkdownInternalContext } from './markdown.context.ts';
 
-const [MarkdownInternalContext, useMarkdownInternalContext] = createContext<{
-  unstyledCodeBlocks?: boolean;
-}>({
-  name: 'MarkdownInternalContext',
-  strict: true,
-});
-
-export const Markdown = ({
-  content,
-  fallback,
-  codeTheme,
-  unstyledCodeBlocks,
-}: {
+export interface MarkdownProps {
   content?: string;
   fallback?: ReactNode;
   codeTheme: string;
   unstyledCodeBlocks?: boolean;
-}) => {
+}
+
+export const Markdown = ({ content, fallback, codeTheme, unstyledCodeBlocks }: MarkdownProps) => {
   return (
     <MarkdownInternalContext.Provider value={{ unstyledCodeBlocks }}>
       <MarkdownHooks

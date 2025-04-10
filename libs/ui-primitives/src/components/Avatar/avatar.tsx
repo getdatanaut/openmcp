@@ -3,9 +3,10 @@ import type { Options } from '@ariakit/react-core/utils/types';
 import { type ElementType, type ImgHTMLAttributes, type ReactNode, type Ref, useMemo } from 'react';
 
 import { useImage } from '../../hooks/use-image.ts';
-import { type ContextValue, createContext, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
+import { AvatarContext } from './avatar.context.ts';
 import { type AvatarSlotProps, avatarStaticClass, avatarStyle, type AvatarStyleProps } from './avatar.styles.ts';
 
 export interface AvatarProps extends Options, AvatarStyleProps, AvatarSlotProps {
@@ -73,11 +74,6 @@ export interface AvatarProps extends Options, AvatarStyleProps, AvatarSlotProps 
 
   ref?: Ref<HTMLSpanElement>;
 }
-
-export const [AvatarContext, useAvatarContext] = createContext<ContextValue<AvatarProps, HTMLSpanElement>>({
-  name: 'AvatarContext',
-  strict: false,
-});
 
 export function Avatar({ ref, ...props }: AvatarProps) {
   [props, ref] = useContextProps(props, AvatarContext, ref);

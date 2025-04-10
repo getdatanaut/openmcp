@@ -1,27 +1,12 @@
-import { createContext } from '@libs/ui-primitives';
-import {
-  createMcpConductor,
-  createMcpManager,
-  type McpConductor,
-  type McpManager,
-  type McpManagerStorage,
-} from '@openmcp/manager';
+import { createMcpConductor, createMcpManager, type McpManagerStorage } from '@openmcp/manager';
 import type { QueryClient } from '@tanstack/react-query';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { type ReactNode, useEffect, useRef } from 'react';
 
+import { CurrentManagerContext } from '~/hooks/use-current-manager.ts';
+import { useRootStore } from '~/hooks/use-root-store.tsx';
 import type { LocalClientServer, LocalDb } from '~/utils/local-db.ts';
 import { queryOptions } from '~/utils/query-options.ts';
-
-import { useRootStore } from './use-root-store.tsx';
-
-export const [CurrentManagerContext, useCurrentManager] = createContext<{
-  manager: McpManager;
-  conductor: McpConductor;
-}>({
-  name: 'CurrentManagerContext',
-  strict: true,
-});
 
 export const CurrentManagerProvider = ({ children }: { children: ReactNode }) => {
   const { db, queryClient } = useRootStore();

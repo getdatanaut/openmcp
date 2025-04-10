@@ -1,5 +1,5 @@
 import { mergeProps } from '@ariakit/react-core/utils/misc';
-import * as React from 'react';
+import { createContext as createReactContext, useContext as useReactContext, useMemo, useRef } from 'react';
 
 export interface CreateContextOptions {
   /**
@@ -33,12 +33,12 @@ export function createContext<ContextType>(options?: CreateContextOptions): Crea
 export function createContext<ContextType>(options: CreateContextOptions = {}) {
   const { strict = true, errorMessage, name } = options;
 
-  const Context = React.createContext<ContextType | undefined>(undefined);
+  const Context = createReactContext<ContextType | undefined>(undefined);
 
   Context.displayName = name;
 
   function useContext() {
-    const context = React.useContext(Context);
+    const context = useReactContext(Context);
 
     if (!context && strict) {
       const error = new Error(
@@ -79,87 +79,6 @@ export type SlottedContextValue<T> = SlottedValue<T> | T | null | undefined;
 export type WithRef<T, E> = T & { ref?: React.ForwardedRef<E> };
 export type ContextValue<T, E extends Element> = SlottedContextValue<WithRef<T, E>>;
 
-type ProviderValue<T> = [React.Context<T>, T];
-type ProviderValues<A, B, C, D, E, F, G, H, I, J, K> =
-  | [ProviderValue<A>]
-  | [ProviderValue<A>, ProviderValue<B>]
-  | [ProviderValue<A>, ProviderValue<B>, ProviderValue<C>]
-  | [ProviderValue<A>, ProviderValue<B>, ProviderValue<C>, ProviderValue<D>]
-  | [ProviderValue<A>, ProviderValue<B>, ProviderValue<C>, ProviderValue<D>, ProviderValue<E>]
-  | [ProviderValue<A>, ProviderValue<B>, ProviderValue<C>, ProviderValue<D>, ProviderValue<E>, ProviderValue<F>]
-  | [
-      ProviderValue<A>,
-      ProviderValue<B>,
-      ProviderValue<C>,
-      ProviderValue<D>,
-      ProviderValue<E>,
-      ProviderValue<F>,
-      ProviderValue<G>,
-    ]
-  | [
-      ProviderValue<A>,
-      ProviderValue<B>,
-      ProviderValue<C>,
-      ProviderValue<D>,
-      ProviderValue<E>,
-      ProviderValue<F>,
-      ProviderValue<G>,
-      ProviderValue<H>,
-    ]
-  | [
-      ProviderValue<A>,
-      ProviderValue<B>,
-      ProviderValue<C>,
-      ProviderValue<D>,
-      ProviderValue<E>,
-      ProviderValue<F>,
-      ProviderValue<G>,
-      ProviderValue<H>,
-      ProviderValue<I>,
-    ]
-  | [
-      ProviderValue<A>,
-      ProviderValue<B>,
-      ProviderValue<C>,
-      ProviderValue<D>,
-      ProviderValue<E>,
-      ProviderValue<F>,
-      ProviderValue<G>,
-      ProviderValue<H>,
-      ProviderValue<I>,
-      ProviderValue<J>,
-    ]
-  | [
-      ProviderValue<A>,
-      ProviderValue<B>,
-      ProviderValue<C>,
-      ProviderValue<D>,
-      ProviderValue<E>,
-      ProviderValue<F>,
-      ProviderValue<G>,
-      ProviderValue<H>,
-      ProviderValue<I>,
-      ProviderValue<J>,
-      ProviderValue<K>,
-    ];
-
-interface ProviderProps<A, B, C, D, E, F, G, H, I, J, K> {
-  values: ProviderValues<A, B, C, D, E, F, G, H, I, J, K>;
-  children: React.ReactNode;
-}
-
-export function Provider<A, B, C, D, E, F, G, H, I, J, K>({
-  values,
-  children,
-}: ProviderProps<A, B, C, D, E, F, G, H, I, J, K>): React.ReactNode {
-  for (const [Context, value] of values) {
-    // @ts-expect-error ignore
-    children = <Context.Provider value={value}>{children}</Context.Provider>;
-  }
-
-  return children;
-}
-
 export const [GenericSlotContext, useGenericSlotContext] = createContext<SlottedContextValue<any>>({
   name: 'GenericSlotContext',
   strict: false,
@@ -177,7 +96,7 @@ export function useSlottedContext<T>(
   slot?: string | null,
 ): T | null | undefined {
   const genericCtx = useGenericSlotContext();
-  const ctx = React.useContext(context);
+  const ctx = useReactContext(context);
 
   if (slot === null) {
     // An explicit `null` slot means don't use context.
@@ -205,8 +124,6 @@ export function useSlottedContext<T>(
   return ctx;
 }
 
-// export type RefObject<T> = React.RefObject<T | null> | null;
-
 export function useContextProps<T, U extends SlotProps, E extends Element>(
   props: T & SlotProps,
   context: React.Context<ContextValue<U, E>>,
@@ -222,7 +139,7 @@ export function useContextProps<T, U extends SlotProps, E extends Element>(
     contextProps[key] = contextProps[key] ?? defaultProps[key];
   }
 
-  const mergedRef = useObjectRef(React.useMemo(() => mergeRefs(ref, contextRef), [ref, contextRef]));
+  const mergedRef = useObjectRef(useMemo(() => mergeRefs(ref, contextRef), [ref, contextRef]));
   const mergedProps = mergeProps(contextProps, props) as unknown as T;
 
   return [mergedProps, mergedRef];
@@ -257,8 +174,8 @@ export function mergeRefs<T>(...refs: (React.Ref<T> | undefined)[]): React.Ref<T
  * @see https://reactjs.org/docs/forwarding-refs.html
  */
 export function useObjectRef<T>(forwardedRef?: ((instance: T | null) => void) | React.Ref<T>): React.Ref<T | null> {
-  const objRef: React.Ref<T | null> = React.useRef<T>(null);
-  return React.useMemo(
+  const objRef: React.Ref<T | null> = useRef<T>(null);
+  return useMemo(
     () => ({
       get current() {
         return objRef.current;

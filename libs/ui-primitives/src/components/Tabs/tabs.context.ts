@@ -1,4 +1,4 @@
-import { createContext } from '../../utils/context.tsx';
+import { createContext } from '../../utils/context.ts';
 import type { TabsSlotProps, tabsStyle } from './tabs.styles.ts';
 
 export const [TabsInternalContext, useTabsInternalContext] = createContext<{

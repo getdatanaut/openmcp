@@ -5,7 +5,7 @@ import { type ChangeEvent, useLayoutEffect } from 'react';
 import { tn } from '../../utils/tw.ts';
 import type { HTMLProps } from '../../utils/types.ts';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
-import { useMenuInternalContext, useMenuSearchContext, useMenuSearchGroupingContext } from './internal-context.tsx';
+import { useMenuInternalContext, useMenuSearchContext, useMenuSearchGroupingContext } from './menu.context.ts';
 import { menuStaticClass } from './menu.styles.ts';
 
 export interface MenuItemProps

@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { useMenuOptionGroupContext } from './internal-context.tsx';
+import { useMenuOptionGroupContext } from './menu.context.ts';
 import { BaseMenuItem, type MenuItemProps } from './menu-item.tsx';
 
 export interface MenuOptionItemProps extends Omit<MenuItemProps, 'icon' | 'checked'> {

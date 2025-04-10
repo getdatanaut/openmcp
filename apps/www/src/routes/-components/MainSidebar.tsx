@@ -29,7 +29,7 @@ import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router'
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 
-import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
+import { useCurrentManager } from '~/hooks/use-current-manager.ts';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { dayjs } from '~/utils/dayjs.ts';

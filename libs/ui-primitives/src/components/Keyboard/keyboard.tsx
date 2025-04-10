@@ -1,9 +1,10 @@
 import type { Options } from '@ariakit/react-core/utils/types';
 import { createElement, useMemo } from 'react';
 
-import { type ContextValue, createContext, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import type { HTMLProps } from '../../utils/types.ts';
+import { KeyboardContext } from './keyboard.context.ts';
 import { keyboardStaticClass, keyboardStyle } from './keyboard.styles.ts';
 
 export interface KeyboardOptions extends Options {
@@ -11,11 +12,6 @@ export interface KeyboardOptions extends Options {
 }
 
 export interface KeyboardProps extends KeyboardOptions, Pick<HTMLProps<'kbd'>, 'className'> {}
-
-export const [KeyboardContext, useKeyboardContext] = createContext<ContextValue<KeyboardProps, HTMLElement>>({
-  name: 'KeyboardContext',
-  strict: false,
-});
 
 export function Keyboard({ ref, ...originalProps }: KeyboardProps) {
   [originalProps, ref] = useContextProps(originalProps, KeyboardContext, ref);

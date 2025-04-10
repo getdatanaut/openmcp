@@ -1,7 +1,7 @@
 import * as AK from '@ariakit/react';
 import { type ReactNode, type Ref } from 'react';
 
-import { useTabsInternalContext } from './internal-context.tsx';
+import { useTabsInternalContext } from './tabs.context.ts';
 import { tabsStaticClass } from './tabs.styles.ts';
 
 type AKProps = AK.TabOptions;

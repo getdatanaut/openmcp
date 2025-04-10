@@ -2,7 +2,7 @@ import * as AK from '@ariakit/react';
 import { type ReactNode, type Ref, useId } from 'react';
 
 import { usePrevious } from '../../hooks/use-previous.ts';
-import { useTabsInternalContext } from './internal-context.tsx';
+import { useTabsInternalContext } from './tabs.context.ts';
 import { tabsStaticClass } from './tabs.styles.ts';
 
 type AkProps = AK.TabPanelOptions;

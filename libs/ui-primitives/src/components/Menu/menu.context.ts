@@ -1,5 +1,11 @@
-import { createContext } from '../../utils/context.tsx';
+import { type ContextValue, createContext } from '../../utils/context.ts';
 import type { MenuSlotProps, menuStyle } from './menu.styles.ts';
+import type { MenuProps } from './menu.tsx';
+
+export const [MenuContext, useMenuContext] = createContext<ContextValue<MenuProps, HTMLDivElement>>({
+  name: 'MenuContext',
+  strict: false,
+});
 
 export const [MenuInternalContext, useMenuInternalContext] = createContext<{
   slots: ReturnType<typeof menuStyle>;

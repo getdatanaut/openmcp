@@ -7,7 +7,7 @@ import {
   useMenuInternalContext,
   useMenuSearchContext,
   useMenuSearchGroupingContext,
-} from './internal-context.tsx';
+} from './menu.context.ts';
 import { menuStaticClass } from './menu.styles.ts';
 
 export interface MenuGroupProps

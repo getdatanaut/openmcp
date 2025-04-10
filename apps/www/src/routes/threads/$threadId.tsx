@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { type RefObject, useEffect, useRef } from 'react';
 
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
-import { useCurrentManager } from '~/hooks/use-current-manager.tsx';
+import { useCurrentManager } from '~/hooks/use-current-manager.ts';
 import { useElementSize } from '~/hooks/use-element-size.tsx';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { ThreadId } from '~/utils/ids.ts';

@@ -1,7 +1,7 @@
 import * as AK from '@ariakit/react';
 
 import type { HTMLProps } from '../../utils/types.ts';
-import { useMenuInternalContext, useMenuSearchContext } from './internal-context.tsx';
+import { useMenuInternalContext, useMenuSearchContext } from './menu.context.ts';
 import { menuStaticClass } from './menu.styles.ts';
 
 export interface MenuSeparatorProps extends AK.MenuSeparatorOptions, Pick<HTMLProps<'hr'>, 'className'> {

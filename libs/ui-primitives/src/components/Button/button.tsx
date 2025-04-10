@@ -2,10 +2,11 @@ import * as AK from '@ariakit/react';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { type ReactNode, type Ref, useMemo } from 'react';
 
-import { type ContextValue, createContext, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import { tn } from '../../utils/tw.ts';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
+import { ButtonContext } from './button.context.ts';
 import { type ButtonSlotProps, buttonStaticClass, buttonStyle, type ButtonStyleProps } from './button.styles.ts';
 
 type AKProps = AK.ButtonOptions & Pick<AK.ButtonProps, 'onClick' | 'title' | 'type' | 'tabIndex'>;
@@ -30,11 +31,6 @@ export interface ButtonProps extends AKProps, ButtonStyleProps, ButtonSlotProps 
   /** If provided, the button will show a centered icon instead of the normal button content. */
   overlayIcon?: IconProps['icon'];
 }
-
-export const [ButtonContext, useButtonContext] = createContext<ContextValue<ButtonProps, HTMLButtonElement>>({
-  name: 'ButtonContext',
-  strict: false,
-});
 
 const DEFAULT_SPINNER: IconProps['icon'] = faSpinner;
 

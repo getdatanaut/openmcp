@@ -5,6 +5,7 @@ import { cloneElement, type ReactElement, type Ref, useMemo } from 'react';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import { cn, twMerge } from '../../utils/tw.ts';
 import { iconStaticClass, iconStyle, type IconStyleProps } from './icon.styles.ts';
+import { isIconDefinition } from './icon.utils.ts';
 import { FaSvg } from './svg-icon.tsx';
 
 config.autoAddCss = false;
@@ -89,17 +90,6 @@ const iconFACX = (props: IconFACXProps) => {
     props.bounce && 'fa-bounce',
   ];
 };
-
-export function isIconDefinition(prop?: unknown): prop is IconDefinition {
-  if (prop && typeof prop === 'object' && Object.prototype.hasOwnProperty.call(prop, 'icon')) return true;
-  return false;
-}
-
-export function isIconProp(prop?: unknown): prop is IconProps['icon'] {
-  if ((prop && typeof prop === 'string') || Array.isArray(prop)) return true;
-  if (prop && typeof prop === 'object' && Object.prototype.hasOwnProperty.call(prop, 'iconName')) return true;
-  return false;
-}
 
 // Adapted from https://github.com/FortAwesome/react-fontawesome/blob/master/src/utils/normalize-icon-args.js
 // Adds defaultPrefix and adjusts to fix some typings issues

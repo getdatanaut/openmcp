@@ -2,18 +2,18 @@ import * as AK from '@ariakit/react';
 import { useFormReset } from '@ariakit/react-core/form/form-reset';
 import { type ComponentProps, type ReactNode, useMemo } from 'react';
 
-import { type ContextValue, createContext, Provider, useContextProps } from '../../utils/context.tsx';
+import { useContextProps } from '../../utils/context.ts';
+import { Provider } from '../../utils/provider.tsx';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
-import { Button, ButtonContext, type ButtonProps } from '../Button/button.tsx';
-import { Input, InputContext, type InputOptions } from '../Input/input.tsx';
-import { Label, LabelContext } from '../Label/label.tsx';
-import { type FormSlotProps, formStaticClass, formStyle, type FormStyleProps } from './form.styles.ts';
+import { ButtonContext } from '../Button/button.context.ts';
+import { Button, type ButtonProps } from '../Button/button.tsx';
+import { InputContext } from '../Input/input.context.ts';
+import { Input, type InputOptions } from '../Input/input.tsx';
+import { LabelContext } from '../Label/label.context.ts';
+import { Label } from '../Label/label.tsx';
 // import { Select, SelectContext, type SelectProps } from '../Select/select.tsx';
-import { FormInternalContext, useFormInternalContext } from './internal-context.tsx';
-
-export const useFormStore = AK.useFormStore;
-export const useFormContext = AK.useFormContext;
-export type { FormStore } from '@ariakit/react';
+import { FormContext, FormInternalContext, useFormInternalContext } from './form.context.ts';
+import { type FormSlotProps, formStaticClass, formStyle, type FormStyleProps } from './form.styles.ts';
 
 type AKProps = AK.FormOptions & Pick<ComponentProps<'form'>, 'onSubmit' | 'ref' | 'className' | 'children'>;
 
@@ -24,11 +24,6 @@ export interface FormProps extends AKProps, FormStyleProps, FormSlotProps {
   /** Marks the entire form and all child elements as read-only, including buttons. */
   readOnly?: boolean;
 }
-
-export const [FormContext] = createContext<ContextValue<FormProps, HTMLFormElement>>({
-  name: 'FormContext',
-  strict: false,
-});
 
 export function Form({ ref, ...originalProps }: FormProps) {
   [originalProps, ref] = useContextProps(originalProps, FormContext, ref, {
@@ -100,7 +95,7 @@ export function FormField({ ref, className, name, label, children, hint, ...prop
 export interface FormInputProps extends Omit<AK.FormInputProps, 'size'>, Omit<InputOptions, keyof AK.FormInputProps> {}
 
 export function FormInput({ required, ...props }: FormInputProps) {
-  const form = useFormContext();
+  const form = AK.useFormContext();
   if (!form) throw new Error('FormInput must be used within a Form');
 
   // Not using the built-in browser validation, so that we can customize the error message
@@ -152,7 +147,7 @@ export interface FormButtonProps extends ButtonProps {
  * By default, will set accessibleWhenDisabled=true if the button type is "submit".
  */
 export function FormButton({ validProps, submittingProps, ...props }: FormButtonProps) {
-  const form = useFormContext();
+  const form = AK.useFormContext();
   if (!form) throw new Error('FormSubmitButton must be used within a Form');
 
   // @TODO not working as expected atm, follow https://github.com/ariakit/ariakit/issues/4439
@@ -180,7 +175,7 @@ export interface FormResetProps extends FormButtonProps {}
  * By default, will set accessibleWhenDisabled=true if the button type is "submit".
  */
 export function FormReset(props: FormResetProps) {
-  const form = useFormContext();
+  const form = AK.useFormContext();
   if (!form) throw new Error('FormReset must be used within a Form');
 
   const reset = useFormReset();
