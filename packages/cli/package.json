@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.9.0",
-    "@openmcp/manager": "0.0.0",
+    "@openmcp/manager": "workspace:*",
     "yargs": "~17.7.2"
   },
   "devDependencies": {

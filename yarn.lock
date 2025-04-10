@@ -2075,7 +2075,7 @@ __metadata:
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
-    "@openmcp/manager": "npm:0.0.0"
+    "@openmcp/manager": "workspace:*"
     "@types/yargs": "npm:^17.0.33"
     eslint: "npm:9.24.0"
     msw: "npm:2.7.3"
@@ -2118,7 +2118,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmcp/manager@npm:0.0.0, @openmcp/manager@workspace:*, @openmcp/manager@workspace:packages/manager":
+"@openmcp/manager@workspace:*, @openmcp/manager@workspace:packages/manager":
   version: 0.0.0-use.local
   resolution: "@openmcp/manager@workspace:packages/manager"
   dependencies:
