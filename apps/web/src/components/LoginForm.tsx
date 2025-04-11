@@ -30,11 +30,11 @@ export function LoginForm() {
   return (
     <Form store={form} className="w-80">
       <FormField name={$.email} label="Email" hint="Please use your work email address.">
-        <FormInput name={$.email} required type="email" placeholder="me@example.com" />
+        <FormInput name={$.email} required type="email" placeholder="me@example.com" autoComplete="email" />
       </FormField>
 
       <FormField name={$.password} label="Password">
-        <FormInput name={$.password} required type="password" />
+        <FormInput name={$.password} required type="password" autoComplete="current-password" />
       </FormField>
 
       <div className="flex gap-2">

@@ -72,7 +72,7 @@ const isFirefox = () => {
 
 const BrowserNotSupported = () => {
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center gap-4">
+    <div className="flex min-h-dvh w-full flex-col items-center justify-center gap-4">
       <div>
         Firefox is currently not supported. Please use Safari, Edge, or a Chromium based browser (Chrome, Arc, etc).
       </div>
@@ -98,11 +98,9 @@ const SidebarLayout = observer(({ children }: { children: ReactNode }) => {
     <CurrentManagerProvider>
       <DialogContext value={{ portalElement: rootRef, backdrop: 'blur' }}>
         <MenuContext value={{ portalElement: rootRef }}>
-          <div className={tn('ak-layer-canvas-down min-h-screen', themeClass, `font-${app.fontId}`)} ref={setRootRef}>
-            <div className="isolate flex h-screen">
-              <div className="h-screen">
-                <MainSidebar className={tn('py-2', app.sidebarCollapsed ? 'w-2' : 'w-80')} />
-              </div>
+          <div className={tn('ak-layer-canvas-down min-h-dvh', themeClass, `font-${app.fontId}`)} ref={setRootRef}>
+            <div className="isolate flex h-dvh">
+              <MainSidebar className={tn('h-dvh py-2', app.sidebarCollapsed ? 'w-2' : 'w-80')} />
 
               {children}
             </div>

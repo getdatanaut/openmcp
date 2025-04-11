@@ -26,7 +26,7 @@
 @layer base {
   html,
   body {
-    @apply min-h-screen;
+    @apply min-h-dvh;
   }
 
   html {
@@ -40,10 +40,26 @@
 
   * {
     @apply ak-edge selection:ak-layer-mix-primary/40;
+
+    /* to prevent grid and flex items from spilling out of their container */
+    min-width: 0;
   }
 
   a {
     @apply focus-visible:ak-outline focus-visible:outline-[1.5px] focus-visible:outline-offset-[1.5px];
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    /* balance headings across multiple lines into an even block */
+    text-wrap: balance;
+  }
+
+  p {
+    /* prevent text orphans (single words on last line) */
+    text-wrap: pretty;
   }
 
   .using-mouse * {

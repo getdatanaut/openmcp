@@ -1,15 +1,20 @@
 import type { DbSdk } from '@libs/db-pg';
 import type { BetterAuthOptions } from 'better-auth';
+import type { SocialProviders } from 'better-auth/social-providers';
 
-interface AuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
+export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   db: DbSdk;
+  socialProviders?: SocialProviders;
 }
 
-export const createAuthOptions = ({ db }: AuthOptions) => {
+export const createAuthOptions = ({ db, socialProviders }: CreateAuthOptions) => {
   return {
     appName: 'Datanaut',
     emailAndPassword: {
       enabled: true,
+    },
+    socialProviders: {
+      ...socialProviders,
     },
     plugins: [],
     database: {

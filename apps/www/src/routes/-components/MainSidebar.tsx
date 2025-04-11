@@ -55,7 +55,7 @@ export const MainSidebar = observer(({ className }: { className?: string }) => {
   return (
     <div
       ref={ref}
-      className={twMerge('ease-spring flex h-screen flex-col transition-[width] duration-150 ease-in-out', className)}
+      className={twMerge('ease-spring flex flex-col transition-[width] duration-150 ease-in-out', className)}
     >
       {/* This header section stays visible even when collapsed */}
       <div className="ak-layer-0 relative top-0 z-10">

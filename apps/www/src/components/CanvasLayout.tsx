@@ -11,7 +11,7 @@ export const CanvasLayout = observer(({ header, children }: { header?: ReactNode
   }, [header, app]);
 
   return (
-    <div className="flex h-screen flex-1 flex-col">
+    <div className="flex h-dvh flex-1 flex-col">
       {header ? (
         <div className="px-2 pt-2">
           <div className="flex h-10 flex-shrink-0 items-center">

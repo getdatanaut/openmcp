@@ -13,7 +13,15 @@ export default {
     const url = new URL(req.url);
 
     const db = createDbSdk({ uri: env.HYPERDRIVE.connectionString, max: 5 });
-    const auth = createAuth({ db });
+    const auth = createAuth({
+      db,
+      socialProviders: {
+        github: {
+          clientId: env.GITHUB_CLIENT_ID,
+          clientSecret: env.GITHUB_CLIENT_SECRET,
+        },
+      },
+    });
 
     if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith('/api/auth')) {
       const res = await auth.handler(req);

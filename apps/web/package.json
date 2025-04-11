@@ -17,6 +17,8 @@
     "@ai-sdk/ui-utils": "1.2.7",
     "@ariakit/react": "0.4.17",
     "@ariakit/react-core": "0.4.17",
+    "@better-fetch/fetch": "1.1.18",
+    "@fortawesome/free-brands-svg-icons": "6.7.2",
     "@fortawesome/free-regular-svg-icons": "6.7.2",
     "@fortawesome/free-solid-svg-icons": "6.7.2",
     "@libs/auth": "workspace:*",
