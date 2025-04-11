@@ -5,6 +5,7 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { createMcpManager, type McpManager } from '@openmcp/manager';
+import * as fs from 'fs';
 import type { z } from 'zod';
 
 import type { Config } from './config/index.ts';
@@ -54,10 +55,9 @@ function registerListToolsHandler(server: Server, manager: McpManager) {
     try {
       const tools = Object.values(await manager.clientServers.tools({ lazyConnect: true })).flat();
       return { tools };
-    } catch (error) {
+    } catch {
       return {
-        content: [{ type: 'text', text: `Error: ${String(error)}` }],
-        isError: true,
+        tools: [],
       };
     }
   });
