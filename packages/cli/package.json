@@ -33,7 +33,7 @@
     }
   },
   "scripts": {
-    "exec": "node --conditions=development --experimental-strip-types ./bin/index.js",
+    "exec": "node --conditions=development --no-warnings --experimental-strip-types ./bin/index.js",
     "build": "tsup",
     "lint": "eslint .",
     "test": "vitest run",
