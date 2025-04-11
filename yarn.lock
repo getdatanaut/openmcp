@@ -2732,6 +2732,7 @@ __metadata:
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
     "@openmcp/manager": "workspace:*"
+    "@openmcp/remix": "workspace:*"
     "@types/yargs": "npm:^17.0.33"
     eslint: "npm:9.24.0"
     msw: "npm:2.7.3"
@@ -2824,7 +2825,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@openmcp/remix@workspace:packages/remix":
+"@openmcp/remix@workspace:*, @openmcp/remix@workspace:packages/remix":
   version: 0.0.0-use.local
   resolution: "@openmcp/remix@workspace:packages/remix"
   dependencies:
