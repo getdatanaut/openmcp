@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { drizzle } from 'drizzle-orm/postgres-js';
 
-import { authOptions } from './auth-options.ts';
+import { createAuthOptions } from './auth-options.ts';
 
 /**
  * URI doesn't matter, this file is only used by `@better-auth/cli generate`
@@ -11,7 +11,7 @@ import { authOptions } from './auth-options.ts';
 const db = drizzle('postgresql://postgres:postgres@localhost:5432/postgres');
 
 export const auth = betterAuth({
-  ...authOptions,
+  ...createAuthOptions({ db: {} as any }),
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),

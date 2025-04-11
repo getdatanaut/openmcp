@@ -15,4 +15,11 @@
   "observability": {
     "enabled": true,
   },
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "fc1e454e972a4c10bbf2368c79b35acd",
+      "localConnectionString": "postgres://datanaut_user:password@localhost:5445/datanaut",
+    },
+  ],
 }

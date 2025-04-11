@@ -2396,7 +2396,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@libs/auth@workspace:libs/auth":
+"@libs/auth@workspace:*, @libs/auth@workspace:libs/auth":
   version: 0.0.0-use.local
   resolution: "@libs/auth@workspace:libs/auth"
   dependencies:
@@ -2872,6 +2872,84 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orpc/client@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/client@npm:0.53.0"
+  dependencies:
+    "@orpc/shared": "npm:0.53.0"
+    "@orpc/standard-server": "npm:0.53.0"
+    "@orpc/standard-server-fetch": "npm:0.53.0"
+  checksum: 10c0/22a4d2417a316f5f9de059ff76b58e732e44e82d692a410e3f12afdf8b8954f1d9fa63d9e12d6645788f3a76de6d3599159b9b3bf09f0b761219a9065d2a8c8b
+  languageName: node
+  linkType: hard
+
+"@orpc/contract@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/contract@npm:0.53.0"
+  dependencies:
+    "@orpc/client": "npm:0.53.0"
+    "@orpc/shared": "npm:0.53.0"
+    "@standard-schema/spec": "npm:^1.0.0"
+  checksum: 10c0/c61d3d7da46d58ac966f831513a95b52bc63411354ff1f42ee031bfb67c45b4fa176614dc095008422665e3f731b800da05aeb1b6373e3e6b81145cda9443ae0
+  languageName: node
+  linkType: hard
+
+"@orpc/server@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/server@npm:0.53.0"
+  dependencies:
+    "@orpc/client": "npm:0.53.0"
+    "@orpc/contract": "npm:0.53.0"
+    "@orpc/shared": "npm:0.53.0"
+    "@orpc/standard-server": "npm:0.53.0"
+    "@orpc/standard-server-fetch": "npm:0.53.0"
+    "@orpc/standard-server-node": "npm:0.53.0"
+  peerDependencies:
+    hono: ">=4.6.0"
+    next: ">=14.0.0"
+  checksum: 10c0/6b94f25f99573a9c7785acb92c1e28cc0a9ead1e4697339523c6ad23234cc7b697d13b4ab5c713c91cbaf28793d498c9a0f803cb8c74024d6cb007ecab5f38ee
+  languageName: node
+  linkType: hard
+
+"@orpc/shared@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/shared@npm:0.53.0"
+  dependencies:
+    radash: "npm:^12.1.0"
+    type-fest: "npm:^4.26.1"
+  checksum: 10c0/48d38dd9aa393b6b68a14d25fa9d15ae4e7469223df1732608885a0d35c0437e7a3c020aebdb0e4c335c7f751e56a7ac12e204774994341873b66edec3b193c7
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server-fetch@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/standard-server-fetch@npm:0.53.0"
+  dependencies:
+    "@orpc/shared": "npm:0.53.0"
+    "@orpc/standard-server": "npm:0.53.0"
+  checksum: 10c0/8fac94a359b535a422da499e052cebf076a9e993e055c1c1c1ce149546ed8924319915d9d08047350fefbbd6b2bc3a207fbd48ebe66e63dbe7e9a44301846e95
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server-node@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/standard-server-node@npm:0.53.0"
+  dependencies:
+    "@orpc/shared": "npm:0.53.0"
+    "@orpc/standard-server": "npm:0.53.0"
+  checksum: 10c0/552680d16d7d936073c95f6b159151ec01a67b393464b8607af2c420e1b4167745f5afcf485e5aa238ae9581e925c8e423a56686728b5e99d26cfd132a479c5a
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server@npm:0.53.0":
+  version: 0.53.0
+  resolution: "@orpc/standard-server@npm:0.53.0"
+  dependencies:
+    "@orpc/shared": "npm:0.53.0"
+  checksum: 10c0/b82357211549828997f7a0a8455317756a4f2af4124d5f7a22bb0520e8e32894110a08371453bea916be83fca317aa5803e9aa60125c08bc9313fe7e67b55f44
+  languageName: node
+  linkType: hard
+
 "@paralleldrive/cuid2@npm:^2.2.2":
   version: 2.2.2
   resolution: "@paralleldrive/cuid2@npm:2.2.2"
@@ -3283,6 +3361,13 @@ __metadata:
     "@peculiar/asn1-schema": "npm:^2.3.8"
     "@peculiar/asn1-x509": "npm:^2.3.8"
   checksum: 10c0/35be012ff719bdd26eb8751c2b10432c373d7ccadb1f1241f6e161811f0be2a238d9582ab42f0b2e32ff1ce59cbcccae8f1a29ba3899227e76d08c5f1c2613a7
+  languageName: node
+  linkType: hard
+
+"@standard-schema/spec@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@standard-schema/spec@npm:1.0.0"
+  checksum: 10c0/a1ab9a8bdc09b5b47aa8365d0e0ec40cc2df6437be02853696a0e377321653b0d3ac6f079a8c67d5ddbe9821025584b1fb71d9cc041a6666a96f1fadf2ece15f
   languageName: node
   linkType: hard
 
@@ -11571,6 +11656,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"radash@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "radash@npm:12.1.0"
+  checksum: 10c0/c89e2345e06017aa6ecc090c1a72d18720b70ad73608dd2a80b8994789acb1108b5b481bef18e4b489eb541a76dd8e0924d6ec9717939cc8634179a1153ad07c
+  languageName: node
+  linkType: hard
+
 "range-parser@npm:^1.2.1":
   version: 1.2.1
   resolution: "range-parser@npm:1.2.1"
@@ -14331,13 +14423,16 @@ __metadata:
     "@ariakit/react": "npm:0.4.17"
     "@ariakit/react-core": "npm:0.4.17"
     "@cloudflare/vite-plugin": "npm:1.0.5"
-    "@cloudflare/workers-types": "npm:4.20250410.0"
     "@fortawesome/free-regular-svg-icons": "npm:6.7.2"
     "@fortawesome/free-solid-svg-icons": "npm:6.7.2"
+    "@libs/auth": "workspace:*"
+    "@libs/db-pg": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"
     "@openmcp/manager": "workspace:*"
+    "@orpc/client": "npm:0.53.0"
+    "@orpc/server": "npm:0.53.0"
     "@tailwindcss/vite": "npm:4.1.3"
     "@tanstack/react-query": "npm:5.72.2"
     "@tanstack/react-router": "npm:1.115.2"

@@ -5,8 +5,8 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    "./auth": "./src/auth.ts",
-    "./schema": "./src/schema.ts"
+    "./server": "./src/server.ts",
+    "./react": "./src/react.ts"
   },
   "scripts": {
     "lint": "eslint .",

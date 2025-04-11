@@ -9,15 +9,15 @@ import { userQueries, USERS_KEY } from './tables/users/index.ts';
 
 type InitDbSdkOpts = InitClientOpts;
 
-export type DbSdk = ReturnType<typeof initDbSdk>;
+export type DbSdk = ReturnType<typeof createDbSdk>;
 
-export const initDbSdk = (opts: InitDbSdkOpts) => {
+export const createDbSdk = (opts: InitDbSdkOpts) => {
   const { db, metrics } = initClient<DbSchema>(opts);
 
   return initSdk({ db, metrics });
 };
 
-const initSdk = ({ db, metrics }: { db: Kysely<DbSchema> | Transaction<DbSchema>; metrics: PgClientMetrics }) => {
+const initSdk = ({ db, metrics }: { db: Kysely<DbSchema>; metrics: PgClientMetrics }) => {
   // Please keep in alphabetical order.
   const queries = {
     [AUTH_VERIFICATIONS_KEY]: authVerificationQueries({ db }),

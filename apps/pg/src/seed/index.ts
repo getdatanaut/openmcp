@@ -1,4 +1,4 @@
-// import { initDbSdk } from '@libs/db-pg';
+// import { createDbSdk } from '@libs/db-pg';
 import { truncateSchemaTables } from '@libs/db-pg-migrations';
 
 const dbUrl = process.env['DN_PG_URL']!;
@@ -7,7 +7,7 @@ if (!dbUrl.includes('localhost')) {
   throw new Error('Seed may only be run against a database running on localhost.');
 }
 
-// const db = initDbSdk({ uri: dbUrl });
+// const db = createDbSdk({ uri: dbUrl });
 
 async function seed() {
   await truncateSchemaTables({ dbUrl: process.env['DN_PG_URL']! });
