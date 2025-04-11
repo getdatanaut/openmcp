@@ -2832,6 +2832,7 @@ __metadata:
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
     "@openmcp/manager": "workspace:*"
+    "@openmcp/openapi": "workspace:*"
     "@openmcp/server": "workspace:*"
     "@openmcp/utils": "workspace:*"
     eslint: "npm:9.24.0"
