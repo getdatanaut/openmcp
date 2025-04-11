@@ -18,7 +18,10 @@ export const OpenAPIServerSchema = z.object({
   }),
   clientConfig: z
     .object({
-      headers: z.record(z.union([z.array(z.string()), z.string()])).optional(),
+      path: z.record(z.unknown()).optional(),
+      query: z.record(z.unknown()).optional(),
+      headers: z.record(z.unknown()).optional(),
+      body: z.record(z.unknown()).optional(),
     })
     .optional(),
   tools,

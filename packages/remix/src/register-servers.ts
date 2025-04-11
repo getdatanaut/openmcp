@@ -1,8 +1,12 @@
 import { type McpManager, Server, type ServerStorageData, type TransportConfig } from '@openmcp/manager';
-import { openApiToMcpServerOptions, type ServerConfig as OpenAPIServerConfig } from '@openmcp/openapi';
+import {
+  type ClientConfig,
+  openApiToMcpServerOptions,
+  type ServerConfig as OpenAPIServerConfig,
+} from '@openmcp/openapi';
 import { OpenMcpServer } from '@openmcp/server';
 
-import type { Config, RemixServer } from './config/index.ts';
+import type { Config, OpenAPIServer, RemixServer } from './config/index.ts';
 import { ServerRegistrationError } from './errors.ts';
 import strictReplaceVariables from './utils/strict-replace-variables.ts';
 
@@ -44,6 +48,28 @@ function toTransportConfig(server: RemixServer, userConfig: unknown): TransportC
   }
 }
 
+// @todo: move this elsewhere
+function interpolateOpenAPIClientConfig(config: OpenAPIServer['clientConfig'], userConfig: unknown): ClientConfig {
+  if (!config) {
+    return {};
+  }
+
+  const interpolatedConfig: ClientConfig = {};
+  for (const [key, value] of Object.entries(config)) {
+    if (typeof value === 'object' && value !== null) {
+      interpolatedConfig[key] = Object.entries(value).reduce(
+        (acc, [k, v]) => {
+          acc[k] = typeof v === 'string' ? maybeReplaceVariables(v, userConfig) : v;
+          return acc;
+        },
+        {} as Record<string, unknown>,
+      );
+    }
+  }
+
+  return interpolatedConfig;
+}
+
 async function registerServer(manager: McpManager, name: string, remixServer: RemixServer, userConfig: unknown) {
   const definition: ServerStorageData = {
     id: name,
@@ -54,10 +80,11 @@ async function registerServer(manager: McpManager, name: string, remixServer: Re
   };
   let server;
   if (remixServer.type === 'openapi') {
+    const clientConfig = interpolateOpenAPIClientConfig(remixServer.clientConfig, userConfig);
     server = Server.deserialize<OpenAPIServerConfig>(definition, {
       manager,
       async createServer(config) {
-        const opts = await openApiToMcpServerOptions(config);
+        const opts = await openApiToMcpServerOptions(config, () => clientConfig);
         return new OpenMcpServer(opts);
       },
     });
