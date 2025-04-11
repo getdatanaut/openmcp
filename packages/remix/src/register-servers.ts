@@ -4,8 +4,8 @@ import { OpenMcpServer } from '@openmcp/server';
 
 import type { Config, RemixServer } from './config/index.ts';
 import { ServerRegistrationError } from './errors.ts';
-
 import strictReplaceVariables from './utils/strict-replace-variables.ts';
+
 function toTransportConfig(server: RemixServer, userConfig: unknown): TransportConfig {
   switch (server.type) {
     case 'stdio':
@@ -22,8 +22,15 @@ function toTransportConfig(server: RemixServer, userConfig: unknown): TransportC
         config: {
           url: strictReplaceVariables(server.url, userConfig),
           requestInit: {
-            // todo: escape the headers
-            headers: server.headers,
+            headers: server.headers
+              ? Object.entries(server.headers).reduce(
+                  (acc, [key, value]) => {
+                    acc[key] = strictReplaceVariables(value, userConfig);
+                    return acc;
+                  },
+                  {} as Record<string, string>,
+                )
+              : undefined,
           },
         },
       };
