@@ -39,7 +39,7 @@ export default {
       });
     } else {
       await handler({
-        server,
+        server: String(server),
         secret,
       });
     }
