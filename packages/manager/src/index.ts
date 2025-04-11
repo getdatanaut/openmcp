@@ -1,3 +1,13 @@
+declare global {
+  interface ImportMetaEnv {
+    readonly PLATFORM: 'node' | 'browser';
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
+}
+
 export type { ClientServerId, ClientServerOptions, ClientServerStorageData, Tool } from './client-servers.ts';
 export { ClientServer } from './client-servers.ts';
 export type {

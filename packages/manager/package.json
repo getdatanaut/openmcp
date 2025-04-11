@@ -26,7 +26,8 @@
     ".": {
       "types": "./src/index.ts",
       "development": "./src/index.ts",
-      "default": "./dist/index.js"
+      "browser": "./dist/browser/index.js",
+      "default": "./dist/node/index.js"
     }
   },
   "scripts": {
