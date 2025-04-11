@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
+export const ToolName = z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Tool name must match /^[a-zA-Z0-9_-]{1,64}$/');
+
 export const ToolSchema = z.object({
-  // todo: impose regex and length validation
-  name: z.string(),
+  name: ToolName,
 });
 
 export type Tool = z.infer<typeof ToolSchema>;
@@ -55,9 +56,29 @@ export const RemixServerSchema = z.discriminatedUnion('type', [
 
 export type RemixServer = z.infer<typeof RemixServerSchema>;
 
-export const ConfigSchema = z.object({
-  configs: z.record(z.record(z.unknown())),
-  servers: z.record(RemixServerSchema),
-});
+// slightly more restrictive than tool name to keep some buffer for the tool name
+// we also disallow underscore `_` since we use it as a delimiter in the tool name
+const RemixServerName = z.string().regex(/^[a-zA-Z0-9_]{1,24}$/, 'Server name must match ^[a-zA-Z0-9_]{1,24}$');
+
+export const ConfigSchema = z
+  .object({
+    configs: z.record(z.record(z.unknown())),
+    servers: z
+      .record(RemixServerSchema)
+      .refine(obj => Object.keys(obj).every(key => RemixServerName.safeParse(key).success), {
+        message: 'Server names must match ^[a-zA-Z0-9_]{1,24}$',
+      }),
+  })
+  .superRefine((data, ctx) => {
+    for (const key of Object.keys(data.configs)) {
+      if (!Object.hasOwn(data.servers, key)) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['configs', key],
+          message: `Config key "${key}" does not exist in servers`,
+        });
+      }
+    }
+  });
 
 export type Config = z.infer<typeof ConfigSchema>;

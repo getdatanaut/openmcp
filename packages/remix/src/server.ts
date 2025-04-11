@@ -1,10 +1,11 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
-import { createMcpManager, type Tool } from '@openmcp/manager';
+import { createMcpManager, type McpManager } from '@openmcp/manager';
 
 import type { Config } from './config/index.ts';
 import registerClientServers from './register-client-servers.ts';
 import registerServers from './register-servers.ts';
+import { parseToolName } from './utils/tools.ts';
 
 export default async function createRemixServer(config: Config): Promise<Server> {
   const manager = createMcpManager({
@@ -12,7 +13,7 @@ export default async function createRemixServer(config: Config): Promise<Server>
   });
 
   await registerServers(manager, config);
-  const clients = await registerClientServers(manager, config);
+  await registerClientServers(manager, config);
 
   const server = new Server(
     {
@@ -26,38 +27,24 @@ export default async function createRemixServer(config: Config): Promise<Server>
     },
   );
 
-  const tools: Tool[] = [];
-  server.setRequestHandler(ListToolsRequestSchema, async () => {
-    // todo: acquire a mutex lock here unless it's a one-shot operation
-    try {
-      const newTools: Tool[] = [];
-      await Promise.all(
-        clients.map(async client => {
-          newTools.push(...(await client.listTools()));
-        }),
-      );
-      tools.splice(0, tools.length, ...newTools);
-      // maybe just update the ones that succeeded instead of failing entirely?
-    } catch (ex) {
-      if (tools.length === 0) {
-        return {
-          content: [{ type: 'text', text: `Error: ${String(ex)}` }],
-          isError: true,
-        };
-      }
-    }
-
-    return { tools };
-  });
+  registerListToolsHandler(server, manager);
 
   server.setRequestHandler(CallToolRequestSchema, async request => {
     const { name, arguments: input } = request.params;
-    // todo: proper split name by server id and tool name with validation and everything
-    const [serverId, toolName] = name.split('-') as [string, string];
+    let serverId: string;
+    let toolName: string;
+    try {
+      [serverId, toolName] = parseToolName(name);
+    } catch (error) {
+      return {
+        content: [{ type: 'text', text: `Error: ${error instanceof Error ? error.message : String(error)}` }],
+        isError: true,
+      };
+    }
+
     const res = await manager.clientServers.callTool({
       serverId,
-      // todo: tidy this up
-      clientId: `${serverId}-client-${serverId}`,
+      clientId: `${serverId}-client`,
       name: toolName,
       input,
     });
@@ -73,4 +60,19 @@ export default async function createRemixServer(config: Config): Promise<Server>
   });
 
   return server;
+}
+
+function registerListToolsHandler(server: Server, manager: McpManager) {
+  server.setRequestHandler(ListToolsRequestSchema, async () => {
+    // todo: should we acquire a mutex lock?
+    try {
+      const tools = Object.values(await manager.clientServers.tools({ lazyConnect: true })).flat();
+      return { tools };
+    } catch (error) {
+      return {
+        content: [{ type: 'text', text: `Error: ${String(error)}` }],
+        isError: true,
+      };
+    }
+  });
 }

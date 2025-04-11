@@ -4,8 +4,8 @@ import { OpenMcpServer } from '@openmcp/server';
 
 import type { Config, RemixServer } from './config/index.ts';
 import { ServerRegistrationError } from './errors.ts';
-import strictReplaceVariables from './utils/strict-replace-variables.ts';
 
+import strictReplaceVariables from './utils/strict-replace-variables.ts';
 function toTransportConfig(server: RemixServer, userConfig: unknown): TransportConfig {
   switch (server.type) {
     case 'stdio':

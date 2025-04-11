@@ -1,12 +1,12 @@
 import { type Config, ConfigSchema } from './schemas.ts';
 
 export default function parseConfig(config: unknown): Config {
-  const err = ConfigSchema.safeParse(config);
-  if (!err.success) {
+  const res = ConfigSchema.safeParse(config);
+  if (!res.success) {
     throw new Error(
-      `Invalid config: ${err.error.issues.map(issue => `${issue.path.join('.')} - ${issue.message}`).join(', ')}`,
+      `Invalid config: ${res.error.issues.map(issue => `${issue.path.join('.')} - ${issue.message}`).join(', ')}`,
     );
   }
 
-  return err.data;
+  return res.data;
 }

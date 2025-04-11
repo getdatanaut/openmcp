@@ -125,6 +125,17 @@ export class ClientServerManager {
     return tools.flatMap(tools => tools || []);
   };
 
+  public tools = async ({ lazyConnect }: { lazyConnect?: boolean }): Promise<Record<string, Tool[]>> => {
+    const tools = {};
+    await Promise.all(
+      Array.from(this.#clientServers.values()).map(async clientServer => {
+        const clientId = clientServer.clientId;
+        tools[clientId] = await clientServer.listTools({ lazyConnect });
+      }),
+    );
+    return tools;
+  };
+
   public callTool = async (config: {
     clientId: ClientId;
     serverId: ServerId;

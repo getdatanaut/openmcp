@@ -42,10 +42,6 @@ export class ServerManager {
     return this.#manager.storage.servers;
   }
 
-  [Symbol.iterator]() {
-    return this.#servers.values();
-  }
-
   public findMany = async (where?: Partial<ServerStorageData>) => {
     const servers = await this.storage.findMany(where);
     for (const server of servers) {
