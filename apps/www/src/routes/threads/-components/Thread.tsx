@@ -8,6 +8,7 @@ import {
   faSpinner,
   faStop,
 } from '@fortawesome/free-solid-svg-icons';
+import console from '@libs/console';
 import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
 import {
   isReasoningAnnotation,

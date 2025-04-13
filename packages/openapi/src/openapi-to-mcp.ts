@@ -1,4 +1,5 @@
 import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
+import console from '@libs/console';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import { type OpenMcpServerOptions, tool } from '@openmcp/server';
 import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';

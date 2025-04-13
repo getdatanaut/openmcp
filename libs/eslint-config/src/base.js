@@ -80,6 +80,7 @@ export const baseConfig = tseslint.config(
       'import/no-duplicates': 'error',
       'import/extensions': ['error', 'ignorePackages'],
       'no-return-await': 'error',
+      'no-console': 'error',
       'no-empty': ['error', { allowEmptyCatch: true }],
       'no-unused-vars': 'warn',
     },
@@ -155,6 +156,14 @@ export const baseConfig = tseslint.config(
       globals: {
         ...globals.node,
       },
+    },
+  },
+
+  // Storybook files configuration
+  {
+    files: ['**/*.stories.tsx'],
+    rules: {
+      'no-console': 'off',
     },
   },
 

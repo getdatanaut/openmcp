@@ -5,7 +5,6 @@ import {
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { createMcpManager, type McpManager } from '@openmcp/manager';
-import * as fs from 'fs';
 import type { z } from 'zod';
 
 import type { Config } from './config/index.ts';

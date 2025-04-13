@@ -1,3 +1,4 @@
+import console from '@libs/console';
 import type { UIMessage } from 'ai';
 import { createDataStreamResponse, formatDataStreamPart, generateObject } from 'ai';
 import { z } from 'zod';
