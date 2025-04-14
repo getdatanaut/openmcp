@@ -2611,6 +2611,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@modelcontextprotocol/sdk@patch:@modelcontextprotocol/sdk@npm%3A1.9.0#~/.yarn/patches/@modelcontextprotocol-sdk-npm-1.9.0-5b54c94454.patch":
+  version: 1.9.0
+  resolution: "@modelcontextprotocol/sdk@patch:@modelcontextprotocol/sdk@npm%3A1.9.0#~/.yarn/patches/@modelcontextprotocol-sdk-npm-1.9.0-5b54c94454.patch::version=1.9.0&hash=0a87de"
+  dependencies:
+    content-type: "npm:^1.0.5"
+    cors: "npm:^2.8.5"
+    cross-spawn: "npm:^7.0.3"
+    eventsource: "npm:^3.0.2"
+    express: "npm:^5.0.1"
+    express-rate-limit: "npm:^7.5.0"
+    pkce-challenge: "npm:^5.0.0"
+    raw-body: "npm:^3.0.0"
+    zod: "npm:^3.23.8"
+    zod-to-json-schema: "npm:^3.24.1"
+  checksum: 10c0/d7e0332975d6af9bd720eb0fa55b9549a1400651d08fd68623e41d99e5d3015228962e2aa7e4205d3079a7eb3f79d8b5e546d56e0cb09eb2c07b304768e11e09
+  languageName: node
+  linkType: hard
+
 "@mrleebo/prisma-ast@npm:^0.12.0":
   version: 0.12.1
   resolution: "@mrleebo/prisma-ast@npm:0.12.1"
