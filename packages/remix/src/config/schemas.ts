@@ -29,6 +29,19 @@ export const OpenAPIServerSchema = z.object({
 
 export type OpenAPIServer = z.infer<typeof OpenAPIServerSchema>;
 
+export const StreamableHTTPServerSchema = z.object({
+  type: z.literal('streamable-http'),
+  url: z.string().url(),
+  headers: z
+    .object({
+      'x-openmcp': z.string(),
+    })
+    .optional(),
+  tools,
+});
+
+export type StreamableHTTPServer = z.infer<typeof StreamableHTTPServerSchema>;
+
 export const SSEServerSchema = z.object({
   type: z.literal('sse'),
   url: z.string().url(),
@@ -52,6 +65,7 @@ export const StdIOServerSchema = z.object({
 export type StdIOServer = z.infer<typeof StdIOServerSchema>;
 
 export const RemixServerSchema = z.discriminatedUnion('type', [
+  StreamableHTTPServerSchema,
   SSEServerSchema,
   OpenAPIServerSchema,
   StdIOServerSchema,

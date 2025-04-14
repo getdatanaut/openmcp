@@ -1,7 +1,28 @@
 import type { TransportConfig } from '@openmcp/manager';
 
-import type { RemixServer } from '../../config';
+import type { RemixServer, SSEServer } from '../../config';
+import type { StreamableHTTPServer } from '../../config/schemas.ts';
 import strictReplaceVariables from '../../utils/strict-replace-variables.ts';
+
+function getHttpConfig(
+  { url, headers }: StreamableHTTPServer | SSEServer,
+  userConfig: unknown,
+): TransportConfig['config'] {
+  return {
+    url: strictReplaceVariables(url, userConfig),
+    requestInit: {
+      headers: headers
+        ? Object.entries(headers).reduce(
+            (acc, [key, value]) => {
+              acc[key] = strictReplaceVariables(value, userConfig);
+              return acc;
+            },
+            {} as Record<string, string>,
+          )
+        : undefined,
+    },
+  };
+}
 
 export default function toTransportConfig(server: RemixServer, userConfig: unknown): TransportConfig {
   switch (server.type) {
@@ -13,23 +34,15 @@ export default function toTransportConfig(server: RemixServer, userConfig: unkno
           args: server.args.map(arg => strictReplaceVariables(arg, userConfig)),
         },
       };
+    case 'streamable-http':
+      return {
+        type: 'streamableHttp',
+        config: getHttpConfig(server, userConfig),
+      };
     case 'sse':
       return {
         type: 'sse',
-        config: {
-          url: strictReplaceVariables(server.url, userConfig),
-          requestInit: {
-            headers: server.headers
-              ? Object.entries(server.headers).reduce(
-                  (acc, [key, value]) => {
-                    acc[key] = strictReplaceVariables(value, userConfig);
-                    return acc;
-                  },
-                  {} as Record<string, string>,
-                )
-              : undefined,
-          },
-        },
+        config: getHttpConfig(server, userConfig),
       };
     case 'openapi':
       return {
