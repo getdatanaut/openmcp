@@ -1,6 +1,6 @@
 import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
-import { type OpenMcpServerOptions, tool } from '@openmcp/server';
+import { type OpenMcpServerOptions, tool, type ToolAnnotations } from '@openmcp/server';
 import { bundleOas2Service, bundleOas3Service } from '@stoplight/http-spec';
 import { traverse } from '@stoplight/json';
 import type { IHttpOperation } from '@stoplight/types';
@@ -12,6 +12,12 @@ export type ServerConfig = {
   openapi: Record<string, unknown> | string;
   serverUrl?: string;
 };
+
+export type OpenAPIToolAnnotations = ToolAnnotations<{
+  readOnly?: boolean;
+  destructive?: boolean;
+  idempotent?: boolean;
+}>;
 
 /**
  * Allow the client to override parameters for tool calls
@@ -25,7 +31,15 @@ export type ClientConfig = {
 
 export async function openApiToMcpServerOptions(
   { openapi, serverUrl }: ServerConfig,
-  getClientConfig?: () => Promise<ClientConfig> | ClientConfig,
+  {
+    getClientConfig,
+    configureAnnotations,
+  }: {
+    getClientConfig?(): Promise<ClientConfig> | ClientConfig;
+    configureAnnotations?(
+      annotations: OpenAPIToolAnnotations,
+    ): Promise<OpenAPIToolAnnotations> | OpenAPIToolAnnotations;
+  } = {},
 ) {
   const { data: service, error } = await bundleOasService(openapi);
   if (error) {
@@ -43,9 +57,12 @@ export async function openApiToMcpServerOptions(
     const endpointName = `${operation.method.toUpperCase()} ${operation.path}`;
     const name = cleanToolName(String(operation.iid || operation.id || endpointName));
     const description = [endpointName, operation.description || ''].filter(Boolean).join(' - ');
+    const collectedAnnotations = collectAnnotations(operation);
 
     operationTools[name] = tool({
       description,
+
+      annotations: (await configureAnnotations?.(collectedAnnotations)) ?? collectedAnnotations,
 
       parameters: jsonSchema<{
         path: Record<string, unknown>;
@@ -262,4 +279,24 @@ function getOperationOutputSchema(operation: IHttpOperation<false>): JSONSchema7
   }
 
   return response ? removeExtraProperties(response) : ({ type: 'object' } satisfies JSONSchema7);
+}
+
+// https://datatracker.ietf.org/doc/html/rfc9110#section-9.2.1
+const SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS', 'TRACE'] as const;
+
+// https://datatracker.ietf.org/doc/html/rfc9110#section-9.2.2
+const IDEMPOTENT_METHODS = ['PUT', 'DELETE', ...SAFE_METHODS] as const;
+
+const DESTRUCTIVE_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'] as const;
+
+function collectAnnotations(operation: IHttpOperation): OpenAPIToolAnnotations {
+  const method = operation.method.toUpperCase();
+  return {
+    title: operation.summary,
+    hints: {
+      readOnly: (SAFE_METHODS as readonly string[]).includes(method),
+      destructive: (DESTRUCTIVE_METHODS as readonly string[]).includes(method),
+      idempotent: (IDEMPOTENT_METHODS as readonly string[]).includes(method),
+    },
+  };
 }

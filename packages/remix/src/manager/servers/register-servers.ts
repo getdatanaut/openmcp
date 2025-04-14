@@ -22,7 +22,9 @@ async function registerServer(manager: McpManager, name: string, remixServer: Re
     server = Server.deserialize<OpenAPIServerConfig>(definition, {
       manager,
       async createServer(config) {
-        const opts = await openApiToMcpServerOptions(config, () => clientConfig);
+        const opts = await openApiToMcpServerOptions(config, {
+          getClientConfig: () => clientConfig,
+        });
         return new OpenMcpServer(opts);
       },
     });

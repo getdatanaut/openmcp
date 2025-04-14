@@ -3,114 +3,184 @@
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "addPet",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+      "idempotent": true,
+    },
     "name": "updatePet",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "findPetsByStatus",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "findPetsByTags",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "getPetById",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "updatePetWithForm",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+      "idempotent": true,
+    },
     "name": "deletePet",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "uploadFile",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "getInventory",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "placeOrder",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "getOrderById",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+      "idempotent": true,
+    },
     "name": "deleteOrder",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "createUser",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "createUsersWithListInput",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "loginUser",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "logoutUser",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "getUserByName",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+      "idempotent": true,
+    },
     "name": "updateUser",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+      "idempotent": true,
+    },
     "name": "deleteUser",
   },
 ]

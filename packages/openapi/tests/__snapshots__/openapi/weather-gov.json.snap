@@ -3,342 +3,570 @@
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_query",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_active",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_active_count",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_active_zone",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_active_area",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_active_region",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_types",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "alerts_single",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "cwsu",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "cwas",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "cwa",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "sigmetQuery",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "sigmetsByATSU",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "sigmetsByATSUByDate",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "sigmet",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "glossary",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "gridpoint",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "gridpoint_forecast",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "gridpoint_forecast_hourly",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "gridpoint_stations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "icons",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "iconsDualCondition",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "icons_summary",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "satellite_thumbnails",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "station_observation_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "station_observation_latest",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "station_observation_time",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "tafs",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "taf",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "obs_stations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "obs_station",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "office",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "office_headline",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "office_headlines",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "point",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "point_stations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_servers",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_server",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_stations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_station",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_station_alarms",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_queue",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "radar_profiler",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "products_query",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "product_locations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "product_types",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "product",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "products_type",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "products_type_locations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "location_products",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "products_type_location",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "zone_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "zone_list_type",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "zone",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "zone_forecast",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "zone_obs",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "zone_stations",
   },
 ]

@@ -1,6 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+import { pickBy } from 'lodash';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
@@ -37,9 +38,10 @@ describe('createMcpServer', () => {
         hasDescription: !!tool.description,
         hasInputSchema: !!tool.parameters,
         hasOutputSchema: !!tool['output'],
+        hints: pickBy(tool['annotations']?.hints, v => v),
       })),
     ).toMatchFileSnapshot(`./__snapshots__/openapi/${filename}.snap`);
 
-    await expect(Object.values(tools)[0]!.execute({})).resolves;
+    await expect(Object.values(tools)[0]!.execute({})).resolves.toHaveProperty('success', true);
   });
 });

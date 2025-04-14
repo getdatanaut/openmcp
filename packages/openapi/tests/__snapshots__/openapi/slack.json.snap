@@ -3,1044 +3,1646 @@
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_apps_approve",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_apps_approved_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_apps_requests_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_apps_restrict",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_apps_restricted_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_archive",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_convertToPrivate",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_create",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_delete",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_disconnectShared",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_conversations_ekm_listOriginalConnectedChannelInfo",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_conversations_getConversationPrefs",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_conversations_getTeams",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_invite",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_rename",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_restrictAccess_addGroup",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_conversations_restrictAccess_listGroups",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_restrictAccess_removeGroup",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_conversations_search",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_setConversationPrefs",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_setTeams",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_conversations_unarchive",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_emoji_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_emoji_addAlias",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_emoji_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_emoji_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_emoji_rename",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_inviteRequests_approve",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_inviteRequests_approved_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_inviteRequests_denied_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_inviteRequests_deny",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_inviteRequests_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_teams_admins_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_teams_create",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_teams_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_teams_owners_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_teams_settings_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_teams_settings_setDefaultChannels",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_teams_settings_setDescription",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_teams_settings_setDiscoverability",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_teams_settings_setIcon",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_teams_settings_setName",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_usergroups_addChannels",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_usergroups_addTeams",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_usergroups_listChannels",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_usergroups_removeChannels",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_assign",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_invite",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "admin_users_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_session_invalidate",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_session_reset",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_setAdmin",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_setExpiration",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_setOwner",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "admin_users_setRegular",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "api_test",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_event_authorizations_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_permissions_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_permissions_request",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_permissions_resources_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_permissions_scopes_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_permissions_users_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_permissions_users_request",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "apps_uninstall",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "auth_revoke",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "auth_test",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "bots_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "calls_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "calls_end",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "calls_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "calls_participants_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "calls_participants_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "calls_update",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_delete",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_deleteScheduledMessage",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "chat_getPermalink",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_meMessage",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_postEphemeral",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_postMessage",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_scheduleMessage",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "chat_scheduledMessages_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_unfurl",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "chat_update",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_archive",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_close",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_create",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "conversations_history",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "conversations_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_invite",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_join",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_kick",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_leave",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "conversations_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_mark",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "conversations_members",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_open",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_rename",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "conversations_replies",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_setPurpose",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_setTopic",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "conversations_unarchive",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "dialog_open",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "dnd_endDnd",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "dnd_endSnooze",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "dnd_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "dnd_setSnooze",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "dnd_teamInfo",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "emoji_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_comments_delete",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_delete",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "files_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "files_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_remote_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "files_remote_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "files_remote_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_remote_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "files_remote_share",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_remote_update",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_revokePublicURL",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_sharedPublicURL",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "files_upload",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "migration_exchange",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "oauth_access",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "oauth_token",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "oauth_v2_access",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "pins_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "pins_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "pins_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "reactions_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "reactions_get",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "reactions_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "reactions_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "reminders_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "reminders_complete",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "reminders_delete",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "reminders_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "reminders_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "rtm_connect",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "search_messages",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "stars_add",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "stars_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "stars_remove",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "team_accessLogs",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "team_billableInfo",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "team_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "team_integrationLogs",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "team_profile_get",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "usergroups_create",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "usergroups_disable",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "usergroups_enable",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "usergroups_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "usergroups_update",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "usergroups_users_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "usergroups_users_update",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_conversations",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "users_deletePhoto",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_getPresence",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_identity",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_info",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_list",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_lookupByEmail",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "users_profile_get",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "users_profile_set",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "users_setActive",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "users_setPhoto",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "destructive": true,
+    },
     "name": "users_setPresence",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "views_open",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "views_publish",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "views_push",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "views_update",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "workflows_stepCompleted",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "workflows_stepFailed",
   },
   {
     "hasDescription": true,
     "hasInputSchema": true,
     "hasOutputSchema": true,
+    "hints": {
+      "idempotent": true,
+      "readOnly": true,
+    },
     "name": "workflows_updateStep",
   },
 ]
