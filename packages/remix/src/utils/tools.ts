@@ -6,7 +6,7 @@ export function parseToolName(name: string): [serverId: string, toolName: string
     throw new Error(`Invalid tool name: ${name}`);
   }
 
-  return [name.slice(0, delimIndex), name.slice(delimIndex + 2)];
+  return [name.slice(0, delimIndex), name.slice(delimIndex + DELIMITER.length)];
 }
 
 export function resolveToolName(serverId: string, name: string) {
