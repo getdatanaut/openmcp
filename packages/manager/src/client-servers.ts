@@ -178,6 +178,7 @@ export interface Tool {
   description?: string;
   inputSchema: any;
   outputSchema: any;
+  annotations?: any; // sdk does not have schema yet, can swap with types later on
   execute: (input: Record<string, unknown>) => Promise<any>;
 }
 
@@ -297,6 +298,7 @@ export class ClientServer {
       description: tool.description,
       inputSchema: tool['inputSchema'],
       outputSchema: tool['outputSchema'],
+      annotations: tool['annotations'],
       execute: async (input: Record<string, unknown>) =>
         this.callTool({
           name: tool.name,
