@@ -45,5 +45,8 @@ const initSdk = ({ db, metrics }: { db: Kysely<DbSchema>; metrics: PgClientMetri
         return callback({ trx, trxQueries: initSdk({ db: trx, metrics }).queries });
       });
     },
+    [Symbol.asyncDispose]: async () => {
+      await db.destroy();
+    },
   };
 };

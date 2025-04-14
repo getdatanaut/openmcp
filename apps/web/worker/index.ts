@@ -1,12 +1,20 @@
-// import { RPCHandler } from '@orpc/server/fetch';
-// import { CORSPlugin } from '@orpc/server/plugins';
-
-// const handler = new RPCHandler(router, {
-//   plugins: [new CORSPlugin()],
-// });
-
-import { createAuth } from '@libs/auth/server';
+import { type AuthSession, type AuthUser, createAuth } from '@libs/auth/server';
 import { createDbSdk } from '@libs/db-pg';
+import { OpenAPIHandler } from '@orpc/openapi/fetch';
+import { RPCHandler } from '@orpc/server/fetch';
+import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins';
+
+import { API_BASE_PATH, AUTH_BASE_PATH, RPC_BASE_PATH } from './consts.ts';
+import type { RootContext } from './middleware.ts';
+import { router } from './router.ts';
+
+const openApiHandler = new OpenAPIHandler(router, {
+  plugins: [],
+});
+
+const rpcHandler = new RPCHandler(router, {
+  plugins: [new SimpleCsrfProtectionHandlerPlugin()],
+});
 
 export default {
   async fetch(req, env, ctx) {
@@ -15,6 +23,7 @@ export default {
     const db = createDbSdk({ uri: env.HYPERDRIVE.connectionString, max: 5 });
     const auth = createAuth({
       db,
+      basePath: AUTH_BASE_PATH,
       socialProviders: {
         github: {
           clientId: env.GITHUB_CLIENT_ID,
@@ -23,7 +32,7 @@ export default {
       },
     });
 
-    if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith('/api/auth')) {
+    if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith(AUTH_BASE_PATH)) {
       const res = await auth.handler(req);
 
       ctx.waitUntil(db.client.destroy());
@@ -31,16 +40,32 @@ export default {
       return res;
     }
 
-    // const { matched, response } = await handler.handle(request, {
-    //   prefix: '/rpc',
-    //   context: {}, // Provide initial context if needed
-    // });
-
-    // if (matched) {
-    //   return response;
-    // }
-
     ctx.waitUntil(db.client.destroy());
+
+    const session = (await auth.api.getSession({ headers: req.headers })) as {
+      user: AuthUser;
+      session: AuthSession;
+    } | null;
+
+    const orpcContext = { db, user: session?.user ?? null, session: session?.session ?? null } satisfies RootContext;
+
+    const rpcRes = await rpcHandler.handle(req, {
+      prefix: RPC_BASE_PATH,
+      context: orpcContext,
+    });
+
+    if (rpcRes.matched) {
+      return rpcRes.response;
+    }
+
+    const openApiRes = await openApiHandler.handle(req, {
+      prefix: API_BASE_PATH,
+      context: orpcContext,
+    });
+
+    if (openApiRes.matched) {
+      return openApiRes.response;
+    }
 
     return new Response(null, { status: 404 });
   },

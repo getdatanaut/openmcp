@@ -3,9 +3,6 @@
   "include": ["worker"],
   "compilerOptions": {
     "rootDir": ".",
-    "types": ["./worker-configuration.d.ts", "vite/client"],
-    "paths": {
-      "~/*": ["./worker/*"]
-    }
+    "types": ["./worker-configuration.d.ts", "vite/client"]
   }
 }

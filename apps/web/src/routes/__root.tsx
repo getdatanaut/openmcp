@@ -1,13 +1,10 @@
 import '../assets/app.css';
 
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
-import { Button, Heading, type IconProps } from '@libs/ui-primitives';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { useCallback, useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { LoginForm } from '~/components/LoginForm.tsx';
-import { RegisterForm } from '~/components/RegisterForm.tsx';
-import { signIn, signOut, useSession } from '~/libs/auth.ts';
+import { createQueryClient } from '~/libs/query.ts';
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -16,11 +13,17 @@ export const Route = createRootRoute({
 function RootComponent() {
   useReactScan();
 
+  const queryClient = useMemo(() => createQueryClient(), []);
+
   if (isFirefox()) {
     return <BrowserNotSupported />;
   }
 
-  return <Outlet />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Outlet />
+    </QueryClientProvider>
+  );
 }
 
 const isFirefox = () => {

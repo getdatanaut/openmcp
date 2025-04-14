@@ -1,10 +1,14 @@
 import type { BuildQueriesOpts } from '../../types.ts';
-import type { McpServerColNames } from './schema.ts';
+import { MCP_SERVERS_KEY, type McpServerColNames } from './schema.ts';
 
 export type McpServerQueries = ReturnType<typeof mcpServerQueries>;
 
-export const mcpServerQueries = (_: BuildQueriesOpts) => {
-  return {};
+export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
+  function list() {
+    return db.selectFrom(MCP_SERVERS_KEY).select(summarySelect);
+  }
+
+  return { list };
 };
 
 /**
@@ -13,9 +17,9 @@ export const mcpServerQueries = (_: BuildQueriesOpts) => {
 export const summarySelect = [
   'id',
   'name',
-  'icon_url',
-  'runs_local',
-  'runs_remote',
+  'iconUrl',
+  'runsLocal',
+  'runsRemote',
   'createdAt',
   'updatedAt',
 ] satisfies McpServerColNames[];
@@ -28,7 +32,7 @@ export type SummarySelectCols = (typeof summarySelect)[number];
 export const detailedSelect = [
   ...summarySelect,
   'instructions',
-  'config_schema',
+  'configSchema',
   'transports',
 ] satisfies McpServerColNames[];
 

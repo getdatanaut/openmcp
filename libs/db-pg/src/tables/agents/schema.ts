@@ -16,11 +16,11 @@ export const agents = pgTable(
     id: text('id').$type<TAgentId>().primaryKey(),
     name: text('name').notNull(),
     instructions: text('instructions'),
-    user_id: text('user_id').$type<TUserId>().notNull(),
+    userId: text('user_id').$type<TUserId>().notNull(),
     createdAt: timestampCol('created_at').defaultNow().notNull(),
     updatedAt: timestampCol('updated_at').defaultNow().notNull(),
   },
-  table => [index('agents_user_id_idx').on(table.user_id)],
+  table => [index('agents_user_id_idx').on(table.userId)],
 );
 
 export type AgentsTableCols = DrizzleToKysely<typeof agents>;

@@ -11,7 +11,7 @@ import { createAuthOptions } from './auth-options.ts';
 const db = drizzle('postgresql://postgres:postgres@localhost:5432/postgres');
 
 export const auth = betterAuth({
-  ...createAuthOptions({ db: {} as any }),
+  ...createAuthOptions({ db: {} as any, basePath: '/api/auth' }),
   database: drizzleAdapter(db, {
     provider: 'pg',
   }),

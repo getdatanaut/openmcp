@@ -16,11 +16,11 @@
   "dependencies": {
     "@libs/db-ids": "workspace:*",
     "@libs/utils-types": "workspace:*",
-    "better-auth": "1.2.5",
+    "better-auth": "1.2.7",
     "drizzle-orm": "0.41.0"
   },
   "devDependencies": {
-    "@better-auth/cli": "1.2.5",
+    "@better-auth/cli": "1.2.7",
     "@libs/db-pg": "workspace:*",
     "eslint": "9.24.0",
     "prepend-file-cli": "1.0.6"

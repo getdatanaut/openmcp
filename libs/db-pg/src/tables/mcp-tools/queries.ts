@@ -13,13 +13,13 @@ export const mcpToolQueries = (_: BuildQueriesOpts) => {
 export const summarySelect = [
   'id',
   'name',
-  'display_name',
+  'displayName',
   'description',
-  'is_readonly',
-  'is_destructive',
-  'is_idempotent',
-  'is_open_world',
-  'mcp_server_id',
+  'isReadonly',
+  'isDestructive',
+  'isIdempotent',
+  'isOpenWorld',
+  'mcpServerId',
   'createdAt',
   'updatedAt',
 ] satisfies McpToolColNames[];
@@ -32,8 +32,8 @@ export type SummarySelectCols = (typeof summarySelect)[number];
 export const detailedSelect = [
   ...summarySelect,
   'instructions',
-  'input_schema',
-  'output_schema',
+  'inputSchema',
+  'outputSchema',
 ] satisfies McpToolColNames[];
 
 export type DetailedSelectCols = (typeof detailedSelect)[number];

@@ -13,13 +13,13 @@ export const agentMcpTools = pgTable(
   AGENT_MCP_TOOLS_TABLE,
   {
     id: text('id').$type<TAgentMcpToolId>().primaryKey(),
-    agent_id: text('agent_id').$type<TAgentId>().notNull(),
-    mcp_server_id: text('mcp_server_id').$type<TMcpServerId>().notNull(),
-    mcp_tool_id: text('mcp_tool_id').$type<TMcpToolId>().notNull(),
+    agentId: text('agent_id').$type<TAgentId>().notNull(),
+    mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
+    mcpToolId: text('mcp_tool_id').$type<TMcpToolId>().notNull(),
   },
   table => [
-    index('agent_mcp_tools_agent_id_mcp_tool_id_idx').on(table.agent_id, table.mcp_tool_id),
-    index('agent_mcp_tools_agent_id_mcp_server_id_idx').on(table.agent_id, table.mcp_server_id),
+    index('agent_mcp_tools_agent_id_mcp_tool_id_idx').on(table.agentId, table.mcpToolId),
+    index('agent_mcp_tools_agent_id_mcp_server_id_idx').on(table.agentId, table.mcpServerId),
   ],
 );
 
@@ -27,7 +27,7 @@ export type AgentMcpToolsTableCols = DrizzleToKysely<typeof agentMcpTools>;
 export type NewMcpTool = SetOptional<typeof agentMcpTools.$inferInsert, 'id'>;
 export type UpdateableMcpTool = Omit<
   Updateable<AgentMcpToolsTableCols>,
-  'id' | 'agent_id' | 'mcp_server_id' | 'mcp_tool_id'
+  'id' | 'agentId' | 'mcpServerId' | 'mcpToolId'
 >;
 export type AgentMcpTool = typeof agentMcpTools.$inferSelect;
 export type AgentMcpToolColNames = NonNullable<keyof AgentMcpTool>;

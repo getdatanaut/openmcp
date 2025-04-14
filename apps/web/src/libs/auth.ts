@@ -1,3 +1,7 @@
 import { createAuthClient } from '@libs/auth/react';
 
-export const { useSession, signIn, signOut, signUp } = createAuthClient();
+import { AUTH_BASE_PATH } from '../../worker/consts.ts';
+
+export const { useSession, signIn, signOut, signUp } = createAuthClient({
+  basePath: AUTH_BASE_PATH,
+});
