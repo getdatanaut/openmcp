@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "type": "module",
   "license": "Apache-2.0",
-  "sideEffects": ["./src/console/init.ts", "./dist/console/init.js"],
+  "sideEffects": [
+    "./src/console/init.ts",
+    "./dist/console/init.js"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/getdatanaut/openmcp",
