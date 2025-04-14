@@ -50,11 +50,11 @@ export default async function createRemixServer(
 
 function registerListToolsHandler(server: Server, manager: McpManager) {
   server.setRequestHandler(ListToolsRequestSchema, async () => {
-    // todo: should we acquire a mutex lock?
     try {
       const tools = Object.values(await manager.clientServers.tools({ lazyConnect: true })).flat();
       return { tools };
-    } catch {
+    } catch (error) {
+      console.error('Error listing tools:', error);
       return {
         tools: [],
       };
@@ -70,6 +70,7 @@ function registerCallToolHandler(server: Server, manager: McpManager) {
     try {
       [serverId, toolName] = parseToolName(name);
     } catch (error) {
+      console.error('Error parsing tool name:', error);
       return {
         content: [{ type: 'text', text: `Error: ${error instanceof Error ? error.message : String(error)}` }],
         isError: true,
@@ -84,6 +85,7 @@ function registerCallToolHandler(server: Server, manager: McpManager) {
     });
 
     if (!res) {
+      console.error(`Error calling tool: No response from tool ${toolName}`);
       return {
         content: [{ type: 'text', text: 'Error: No response from tool' }],
         isError: true,
