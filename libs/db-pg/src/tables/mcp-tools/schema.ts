@@ -1,6 +1,6 @@
 import type { TMcpServerId, TMcpToolId } from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
-import { boolean, jsonb, pgTable, text, unique } from 'drizzle-orm/pg-core';
+import { boolean, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import { timestampCol } from '../../column-types.ts';
@@ -16,7 +16,7 @@ export const mcpTools = pgTable(
     id: text('id').$type<TMcpToolId>().primaryKey(),
     name: text('name').notNull(),
     displayName: text('display_name'),
-    description: text('description').notNull(),
+    description: text('description'),
     instructions: text('instructions'),
     inputSchema: jsonb('input_schema').$type<Record<string, unknown>>().notNull().default({}),
     outputSchema: jsonb('output_schema').$type<Record<string, unknown> | null>(),
@@ -28,7 +28,7 @@ export const mcpTools = pgTable(
     createdAt: timestampCol('created_at').defaultNow().notNull(),
     updatedAt: timestampCol('updated_at').defaultNow().notNull(),
   },
-  table => [unique('mcp_tools_mcp_server_id_name_unique').on(table.mcpServerId, table.name)],
+  table => [uniqueIndex('mcp_tools_mcp_server_id_name_unique').on(table.mcpServerId, table.name)],
 );
 
 export type McpToolsTableCols = DrizzleToKysely<typeof mcpTools>;

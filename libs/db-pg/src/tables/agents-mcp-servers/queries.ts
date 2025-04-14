@@ -6,12 +6,12 @@ import { type AgentMcpServerColNames, AGENTS_MCP_SERVERS_KEY } from './schema.ts
 export type AgentMcpServerQueries = ReturnType<typeof agentMcpServerQueries>;
 
 export const agentMcpServerQueries = ({ db }: BuildQueriesOpts) => {
-  function byUserId({ userId }: { userId: TUserId }) {
-    return db.selectFrom(AGENTS_MCP_SERVERS_KEY).select(summarySelect).where('userId', '=', userId);
+  function listByUserId({ userId }: { userId: TUserId }) {
+    return db.selectFrom(AGENTS_MCP_SERVERS_KEY).select(summarySelect).where('userId', '=', userId).execute();
   }
 
   return {
-    byUserId,
+    listByUserId,
   };
 };
 

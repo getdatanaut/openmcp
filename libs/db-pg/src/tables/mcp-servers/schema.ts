@@ -1,6 +1,6 @@
-import type { TMcpServerId } from '@libs/db-ids';
+import type { TMcpServerId, TUserId } from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
-import { boolean, jsonb, pgTable, text } from 'drizzle-orm/pg-core';
+import { boolean, index, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import { timestampCol } from '../../column-types.ts';
@@ -10,22 +10,34 @@ import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 export const MCP_SERVERS_KEY = 'mcpServers' as const;
 export const MCP_SERVERS_TABLE = 'mcp_servers' as const;
 
-export const mcpServers = pgTable(MCP_SERVERS_TABLE, {
-  id: text('id').$type<TMcpServerId>().primaryKey(),
-  name: text('name').notNull(),
-  description: text('description').notNull(),
-  instructions: text('instructions'),
-  iconUrl: text('icon_url'),
-  developer: text('developer').notNull(),
-  developerUrl: text('developer_url'),
-  sourceUrl: text('source_url'),
-  configSchema: jsonb('config_schema').$type<Record<string, unknown>>().notNull().default({}),
-  transports: jsonb('transports').$type<Record<string, unknown>>().notNull().default({}),
-  runsRemote: boolean('runs_remote').notNull(),
-  runsLocal: boolean('runs_local').notNull(),
-  createdAt: timestampCol('created_at').defaultNow().notNull(),
-  updatedAt: timestampCol('updated_at').defaultNow().notNull(),
-});
+export const mcpServers = pgTable(
+  MCP_SERVERS_TABLE,
+  {
+    id: text('id').$type<TMcpServerId>().primaryKey(),
+    externalId: text('external_id').notNull(), // provided by the uploader
+    name: text('name').notNull(),
+    description: text('description'),
+    instructions: text('instructions'),
+    iconUrl: text('icon_url'),
+    developer: text('developer'),
+    developerUrl: text('developer_url'),
+    sourceUrl: text('source_url'),
+    configSchema: jsonb('config_schema').$type<Record<string, unknown>>().notNull().default({}),
+    transports: jsonb('transports').$type<Record<string, unknown>>().notNull().default({}),
+    runsRemote: boolean('runs_remote').default(false).notNull(),
+    runsLocal: boolean('runs_local').default(true).notNull(),
+    userId: text('user_id').$type<TUserId>().notNull(),
+    visibility: text('visibility', { enum: ['public', 'private'] })
+      .default('private')
+      .notNull(),
+    createdAt: timestampCol('created_at').defaultNow().notNull(),
+    updatedAt: timestampCol('updated_at').defaultNow().notNull(),
+  },
+  t => [
+    uniqueIndex('mcp_servers_user_id_external_id_unique').on(t.userId, t.externalId),
+    index('mcp_servers_visibility_idx').on(t.visibility),
+  ],
+);
 
 export type McpServersTableCols = DrizzleToKysely<typeof mcpServers>;
 export type NewMcpServer = SetOptional<typeof mcpServers.$inferInsert, 'id'>;

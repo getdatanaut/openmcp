@@ -6,12 +6,12 @@ import { type AgentColNames, AGENTS_KEY } from './schema.ts';
 export type AgentQueries = ReturnType<typeof agentQueries>;
 
 export const agentQueries = ({ db }: BuildQueriesOpts) => {
-  function byUserId({ userId }: { userId: TUserId }) {
-    return db.selectFrom(AGENTS_KEY).select(summarySelect).where('userId', '=', userId);
+  function listByUserId({ userId }: { userId: TUserId }) {
+    return db.selectFrom(AGENTS_KEY).select(summarySelect).where('userId', '=', userId).execute();
   }
 
   return {
-    byUserId,
+    listByUserId,
   };
 };
 
