@@ -1,4 +1,4 @@
-import type { TAgentId, TAgentMcpServerId, TMcpServerId } from '@libs/db-ids';
+import type { TAgentId, TAgentMcpServerId, TMcpServerId, TUserId } from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
 import { index, jsonb, pgTable, text } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
@@ -16,9 +16,13 @@ export const agentsMcpServers = pgTable(
     id: text('id').$type<TAgentMcpServerId>().primaryKey(),
     agent_id: text('agent_id').$type<TAgentId>().notNull(),
     mcp_server_id: text('mcp_server_id').$type<TMcpServerId>().notNull(),
+    user_id: text('user_id').$type<TUserId>().notNull(),
     config: jsonb('config').$type<Record<string, unknown>>().notNull().default({}),
   },
-  table => [index('agents_mcp_servers_agent_id_mcp_server_id_idx').on(table.agent_id, table.mcp_server_id)],
+  table => [
+    index('agents_mcp_servers_agent_id_mcp_server_id_idx').on(table.agent_id, table.mcp_server_id),
+    index('agents_mcp_servers_user_id_idx').on(table.user_id),
+  ],
 );
 
 export type AgentsMcpServersTableCols = DrizzleToKysely<typeof agentsMcpServers>;
