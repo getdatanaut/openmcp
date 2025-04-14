@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { type ConsolaReporter } from 'consola/core';
 
 const LOG_LEVELS = {

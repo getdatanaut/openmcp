@@ -2411,19 +2411,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@libs/console@workspace:*, @libs/console@workspace:libs/console":
-  version: 0.0.0-use.local
-  resolution: "@libs/console@workspace:libs/console"
-  dependencies:
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
-    consola: "npm:^3.4.2"
-    eslint: "npm:9.24.0"
-    typescript: "npm:5.8.3"
-    vitest: "npm:3.1.1"
-  languageName: unknown
-  linkType: soft
-
 "@libs/db-ids@workspace:*, @libs/db-ids@workspace:libs/db-ids":
   version: 0.0.0-use.local
   resolution: "@libs/db-ids@workspace:libs/db-ids"
@@ -2741,13 +2728,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/cli@workspace:packages/cli"
   dependencies:
-    "@libs/console": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
     "@openmcp/manager": "workspace:*"
     "@openmcp/remix": "workspace:*"
     "@types/yargs": "npm:^17.0.33"
+    consola: "npm:~3.4.2"
     eslint: "npm:9.24.0"
     msw: "npm:2.7.3"
     ts-node: "npm:^10.9.2"
@@ -6127,7 +6114,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"consola@npm:^3.2.3, consola@npm:^3.4.0, consola@npm:^3.4.2":
+"consola@npm:^3.2.3, consola@npm:^3.4.0, consola@npm:~3.4.2":
   version: 3.4.2
   resolution: "consola@npm:3.4.2"
   checksum: 10c0/7cebe57ecf646ba74b300bcce23bff43034ed6fbec9f7e39c27cee1dc00df8a21cd336b466ad32e304ea70fba04ec9e890c200270de9a526ce021ba8a7e4c11a
