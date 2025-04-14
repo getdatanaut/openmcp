@@ -1,7 +1,7 @@
 import { type McpManager } from '@openmcp/manager';
 
-import type { Config, RemixServer } from '../config';
-import { ClientServerRegistrationError } from '../errors.ts';
+import type { Config, RemixServer } from '../../config';
+import { ClientServerRegistrationError } from '../../errors.ts';
 import ScopedClientServer from './scoped-client-server.ts';
 
 async function registerClientServer(manager: McpManager, name: string, server: RemixServer) {

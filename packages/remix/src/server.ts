@@ -1,30 +1,73 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import {
-  CallToolRequestSchema,
-  type ImplementationSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
-import { type ClientServer, createMcpManager, type McpManager, type Tool } from '@openmcp/manager';
-import type { z } from 'zod';
+import type { ClientServer, Tool } from '@openmcp/manager';
+import { OpenMcpServer, type OpenMcpServerOptions, type ToolName } from '@openmcp/server';
 
-import { observeToolListChanged, registerClientServers } from './client-servers/index.ts';
 import type { Config } from './config/index.ts';
-import { registerServers } from './servers/index.ts';
-import { parseToolName } from './utils/tools.ts';
+import type { RemixMcpManager } from './manager/remix-manager.ts';
+import { createRemixMcpManager } from './manager/remix-manager.ts';
 
-class RemixServer extends Server {
-  #manager: McpManager;
+class RemixOpenMcpServer extends OpenMcpServer {
+  #manager: RemixMcpManager;
+  #tools: Record<ToolName, Tool> | null = null;
+  readonly #toolsNameByClient = new WeakMap<ClientServer, ToolName[]>();
 
-  constructor(impl: z.infer<typeof ImplementationSchema>, manager: McpManager) {
-    super(impl, {
-      capabilities: {
-        tools: {
-          listChanged: true,
-        },
+  constructor(options: OpenMcpServerOptions, manager: RemixMcpManager) {
+    super(options);
+    this.#manager = manager;
+    super.setToolRequestHandlers();
+    this.server.registerCapabilities({
+      tools: {
+        listChanged: true,
       },
     });
+    this.#manager.observeToolListChanged(async clientServer => {
+      if (this.#toolsNameByClient.has(clientServer)) {
+        await this.#populateToolsForClientServer(clientServer);
+        await this.server.sendToolListChanged();
+      }
+    });
+  }
 
-    this.#manager = manager;
+  protected override async getTools() {
+    if (this.#tools === null) {
+      await this.#populateTools();
+    }
+
+    return this.#tools!;
+  }
+
+  async #populateToolsForClientServer(clientServer: ClientServer) {
+    let existingTools = this.#toolsNameByClient.get(clientServer);
+    const tools = this.#tools || (this.#tools = {});
+    if (existingTools) {
+      while (existingTools.length > 0) {
+        const toolName = existingTools.pop()!;
+        delete tools[toolName];
+      }
+    } else {
+      existingTools = [];
+      this.#toolsNameByClient.set(clientServer, existingTools);
+    }
+
+    try {
+      for (const tool of await clientServer.listTools()) {
+        tools[tool.name] = tool;
+        existingTools.push(tool.name);
+      }
+    } catch (error) {
+      console.warn(`Error listing tools for client server "${clientServer.clientId}": ${error}`);
+    }
+  }
+
+  async #populateTools() {
+    let clientServers: ClientServer[];
+    try {
+      clientServers = await this.#manager.clientServers.findMany({ enabled: true });
+    } catch (error) {
+      console.warn('Error fetching client servers:', String(error));
+      return;
+    }
+
+    await Promise.all(clientServers.map(async clientServer => this.#populateToolsForClientServer(clientServer)));
   }
 
   override async close(): Promise<void> {
@@ -33,95 +76,14 @@ class RemixServer extends Server {
 }
 
 export default async function createRemixServer(
-  impl: z.infer<typeof ImplementationSchema>,
+  options: Pick<OpenMcpServerOptions, 'name' | 'version'>,
   config: Config,
-): Promise<Server> {
-  const manager = createMcpManager({
-    id: String(Date.now()),
+): Promise<RemixOpenMcpServer> {
+  const manager = createRemixMcpManager({
+    id: `${options.name}-${options.version}`,
+    config,
   });
-
-  try {
-    await registerServers(manager, config);
-  } catch (error) {
-    console.log('Error registering servers:', error);
-    throw error;
-  }
-
-  let server: RemixServer | null = null;
-  try {
-    const clientServers = await registerClientServers(manager, config);
-    observeToolListChanged(clientServers, async () => {
-      await server?.notification({ method: 'notifications/tools/list_changed' });
-    });
-  } catch (error) {
-    console.log('Error registering client servers:', error);
-    throw error;
-  }
-
-  server = new RemixServer(impl, manager);
-
-  registerListToolsHandler(server, manager);
-  registerCallToolHandler(server, manager);
-
-  return server;
-}
-
-function registerListToolsHandler(server: Server, manager: McpManager) {
-  server.setRequestHandler(ListToolsRequestSchema, async () => {
-    const tools: Tool[] = [];
-    let clients: ClientServer[];
-    try {
-      clients = await manager.clientServers.findMany({ enabled: true });
-    } catch (error) {
-      console.error('Error finding client servers:', error);
-      return { tools };
-    }
-
-    await Promise.all(
-      clients.map(async client => {
-        const clientId = client.clientId;
-        try {
-          tools.push(...(await client.listTools()));
-        } catch (error) {
-          console.warn(`Error listing tools for client server "${clientId}": ${error}`);
-        }
-      }),
-    );
-
-    return { tools };
-  });
-}
-
-function registerCallToolHandler(server: Server, manager: McpManager) {
-  server.setRequestHandler(CallToolRequestSchema, async request => {
-    const { name, arguments: input } = request.params;
-    let serverId: string;
-    let toolName: string;
-    try {
-      [serverId, toolName] = parseToolName(name);
-    } catch (error) {
-      console.error('Error parsing tool name:', error);
-      return {
-        content: [{ type: 'text', text: `Error: ${error instanceof Error ? error.message : String(error)}` }],
-        isError: true,
-      };
-    }
-
-    const res = await manager.clientServers.callTool({
-      serverId,
-      clientId: `${serverId}-client`,
-      name: toolName,
-      input,
-    });
-
-    if (!res) {
-      console.error(`Error calling tool: No response from tool ${toolName}`);
-      return {
-        content: [{ type: 'text', text: 'Error: No response from tool' }],
-        isError: true,
-      };
-    }
-
-    return res;
-  });
+  await manager.registerServers();
+  await manager.registerClientServers();
+  return new RemixOpenMcpServer(options, manager);
 }

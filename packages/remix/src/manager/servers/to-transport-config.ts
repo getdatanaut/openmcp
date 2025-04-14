@@ -1,7 +1,7 @@
 import type { TransportConfig } from '@openmcp/manager';
 
-import type { RemixServer } from '../config';
-import strictReplaceVariables from '../utils/strict-replace-variables.ts';
+import type { RemixServer } from '../../config';
+import strictReplaceVariables from '../../utils/strict-replace-variables.ts';
 
 export default function toTransportConfig(server: RemixServer, userConfig: unknown): TransportConfig {
   switch (server.type) {

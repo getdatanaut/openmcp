@@ -1,7 +1,7 @@
 import { type ClientConfig } from '@openmcp/openapi';
 
-import type { OpenAPIServer } from '../config';
-import strictReplaceVariables from '../utils/strict-replace-variables.ts';
+import type { OpenAPIServer } from '../../config';
+import strictReplaceVariables from '../../utils/strict-replace-variables.ts';
 
 export default function interpolateOpenAPIClientConfig(
   config: OpenAPIServer['clientConfig'],

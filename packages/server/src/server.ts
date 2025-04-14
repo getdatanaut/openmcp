@@ -154,19 +154,23 @@ export class OpenMcpServer {
       execute,
     };
 
-    this.#setToolRequestHandlers();
+    this.setToolRequestHandlers();
+  }
+
+  protected async getTools(): Promise<Record<ToolName, RegisteredTool>> {
+    return this.#tools;
   }
 
   async listTools() {
     return {
-      tools: Object.values(this.#tools),
+      tools: Object.values(await this.getTools()),
     };
   }
 
   async callTool(request: z.infer<typeof CallToolRequestSchema>) {
     const toolName = request.params.name as ToolName;
 
-    const tool = this.#tools[toolName];
+    const tool = (await this.getTools())[toolName];
     if (!tool) {
       throw new McpError(ErrorCode.InvalidParams, `Tool ${request.params.name} not found`);
     }
@@ -222,14 +226,14 @@ export class OpenMcpServer {
   }
 
   #toolHandlersInitialized = false;
-  #setToolRequestHandlers() {
+  protected setToolRequestHandlers() {
     if (this.#toolHandlersInitialized) {
       return;
     }
 
     this.server.registerCapabilities({ tools: {} });
 
-    this.server.setRequestHandler(ListToolsRequestSchema, () => {
+    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
       return this.listTools();
     });
 
@@ -246,7 +250,7 @@ export class OpenMcpServer {
 
   resource<Uri extends ResourceUri, Result>(uri: Uri, r: Omit<Resource<Uri, Result>, 'uri'>) {
     this.#resources[uri] = resource(uri, r);
-    this.#setResourceRequestHandlers();
+    this.setResourceRequestHandlers();
   }
 
   resourceTemplate<Uri extends ResourceUri, Result>(
@@ -254,12 +258,12 @@ export class OpenMcpServer {
     r: Omit<ResourceTemplate<Uri, Result>, 'uriTemplate'>,
   ) {
     this.#resourceTemplates[uriTemplate] = resourceTemplate(uriTemplate, r);
-    this.#setResourceRequestHandlers();
+    this.setResourceRequestHandlers();
   }
 
   jsonResource<Uri extends ResourceUri, Result>(uri: Uri, r: Omit<Resource<Uri, Result>, 'uri' | 'mimeType'>) {
     this.#resources[uri] = jsonResource(uri, r);
-    this.#setResourceRequestHandlers();
+    this.setResourceRequestHandlers();
   }
 
   jsonResourceTemplate<Uri extends ResourceUri, Result>(
@@ -267,7 +271,7 @@ export class OpenMcpServer {
     r: Omit<ResourceTemplate<Uri, Result>, 'uriTemplate' | 'mimeType'>,
   ) {
     this.#resourceTemplates[uriTemplate] = jsonResourceTemplate(uriTemplate, r);
-    this.#setResourceRequestHandlers();
+    this.setResourceRequestHandlers();
   }
 
   async listResources(): Promise<ListResourcesResult> {
@@ -320,7 +324,7 @@ export class OpenMcpServer {
   }
 
   #resourceHandlersInitialized = false;
-  #setResourceRequestHandlers() {
+  protected setResourceRequestHandlers() {
     if (this.#resourceHandlersInitialized) {
       return;
     }

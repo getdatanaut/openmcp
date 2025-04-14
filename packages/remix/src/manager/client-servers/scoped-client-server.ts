@@ -1,6 +1,6 @@
 import { ClientServer, type ClientServerOptions, type ClientServerStorageData, type Tool } from '@openmcp/manager';
 
-import { resolveToolName } from '../utils/tools.ts';
+import { resolveToolName } from '../../utils/tools.ts';
 
 export default class ScopedClientServer extends ClientServer {
   readonly #allowedTools: string[] = [];
