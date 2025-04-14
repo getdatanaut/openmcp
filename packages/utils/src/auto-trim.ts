@@ -1,4 +1,3 @@
-import console from '@libs/console';
 import { traverse } from '@stoplight/json';
 import { type CoreMessage, generateObject, type LanguageModelV1 } from 'ai';
 import dedent from 'dedent';

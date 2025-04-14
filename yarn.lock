@@ -2764,7 +2764,6 @@ __metadata:
   dependencies:
     "@ai-sdk/openai": "npm:1.3.10"
     "@cloudflare/workers-types": "npm:4.20250410.0"
-    "@libs/console": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
@@ -2797,7 +2796,6 @@ __metadata:
     "@ai-sdk/anthropic": "npm:1.2.9"
     "@ai-sdk/openai": "npm:1.3.10"
     "@ai-sdk/provider": "npm:1.1.2"
-    "@libs/console": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
@@ -2823,7 +2821,6 @@ __metadata:
   resolution: "@openmcp/openapi@workspace:packages/openapi"
   dependencies:
     "@apidevtools/json-schema-ref-parser": "npm:11.9.3"
-    "@libs/console": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
@@ -2885,7 +2882,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/utils@workspace:packages/utils"
   dependencies:
-    "@libs/console": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@stoplight/json": "npm:3.21.7"
@@ -12444,7 +12440,6 @@ __metadata:
   resolution: "server@workspace:apps/server"
   dependencies:
     "@hono/zod-validator": "npm:0.4.3"
-    "@libs/console": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@openmcp/cloudflare": "workspace:*"

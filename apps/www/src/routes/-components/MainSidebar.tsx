@@ -10,7 +10,6 @@ import {
   faServer,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import console from '@libs/console';
 import {
   Avatar,
   Button,

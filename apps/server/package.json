@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@hono/zod-validator": "0.4.3",
-    "@libs/console": "workspace:*",
     "@openmcp/cloudflare": "workspace:*",
     "@openmcp/directory": "workspace:*",
     "hono": "4.7.6",

@@ -1,5 +1,4 @@
 import type { LanguageModelV1FinishReason } from '@ai-sdk/provider';
-import console from '@libs/console';
 import { autoTrimToolResult, type AutoTrimToolResultError, errors } from '@openmcp/utils';
 import {
   type CoreSystemMessage,
