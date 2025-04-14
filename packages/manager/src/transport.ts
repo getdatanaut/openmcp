@@ -10,6 +10,7 @@ export interface TransportConfigs {
   stdio: StdioTransportConfig;
   sse: SseTransportConfig;
   websocket: WebSocketTransportConfig;
+  streamableHttp: StreamableHTTPTransportConfig;
   inMemory: InMemoryTransportConfig;
 }
 
@@ -24,6 +25,11 @@ export type StdioTransportConfig = StdioServerParameters;
 export type SseTransportConfig = {
   url: string;
   eventSourceInit?: EventSourceInit;
+  requestInit?: RequestInit;
+};
+
+export type StreamableHTTPTransportConfig = {
+  url: string;
   requestInit?: RequestInit;
 };
 
@@ -46,6 +52,18 @@ export async function createTransport<T extends TransportType>(type: T, config: 
       env: config.env,
       cwd: config.cwd,
       stderr: config.stderr,
+    });
+
+    return {
+      clientTransport: transport,
+      serverTransport: transport,
+    };
+  }
+
+  if (isStreamableHTTPTransportConfig(type, config)) {
+    const { StreamableHTTPClientTransport } = await import('@modelcontextprotocol/sdk/client/streamableHttp.js');
+    const transport = new StreamableHTTPClientTransport(new URL(config.url), {
+      requestInit: config.requestInit,
     });
 
     return {
@@ -92,6 +110,13 @@ export function isStdioTransportConfig(type: string, config: unknown): config is
 
 export function isSseTransportConfig(type: string, config: unknown): config is SseTransportConfig {
   return type === 'sse';
+}
+
+export function isStreamableHTTPTransportConfig(
+  type: string,
+  config: unknown,
+): config is StreamableHTTPTransportConfig {
+  return type === 'streamableHttp';
 }
 
 export function isWebSocketTransportConfig(type: string, config: unknown): config is WebSocketTransportConfig {
