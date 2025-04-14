@@ -125,17 +125,6 @@ export class ClientServerManager {
     return tools.flatMap(tools => tools || []);
   };
 
-  public tools = async ({ lazyConnect }: { lazyConnect?: boolean }): Promise<Record<string, Tool[]>> => {
-    const tools = {};
-    await Promise.all(
-      Array.from(this.#clientServers.values()).map(async clientServer => {
-        const clientId = clientServer.clientId;
-        tools[clientId] = await clientServer.listTools({ lazyConnect });
-      }),
-    );
-    return tools;
-  };
-
   public callTool = async (config: {
     clientId: ClientId;
     serverId: ServerId;
@@ -329,6 +318,30 @@ export class ClientServer {
       name: config.name,
       arguments: config.input,
     });
+  }
+
+  /**
+   * Set a notification handler for the server.
+   * Wraps the MCP Client's setNotificationHandler method.
+   */
+  public setNotificationHandler(...args: Parameters<McpClient['setNotificationHandler']>) {
+    if (!this.isConnected || !this.#mcpClient) {
+      throw new Error('MCP Client is not connected');
+    }
+
+    this.#mcpClient.setNotificationHandler(...args);
+  }
+
+  /**
+   * Remove a notification handler for the server.
+   * @param args
+   */
+  public removeNotificationHandler(...args: Parameters<McpClient['removeNotificationHandler']>) {
+    if (!this.isConnected || !this.#mcpClient) {
+      throw new Error('MCP Client is not connected');
+    }
+
+    this.#mcpClient.removeNotificationHandler(...args);
   }
 
   /**

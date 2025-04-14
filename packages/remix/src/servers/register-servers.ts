@@ -2,10 +2,10 @@ import { type McpManager, Server, type ServerStorageData } from '@openmcp/manage
 import { openApiToMcpServerOptions, type ServerConfig as OpenAPIServerConfig } from '@openmcp/openapi';
 import { OpenMcpServer } from '@openmcp/server';
 
-import type { Config, RemixServer } from './config/index.ts';
-import { ServerRegistrationError } from './errors.ts';
-import interpolateOpenAPIClientConfig from './utils/interpolate-openapi-client-config.ts';
-import toTransportConfig from './utils/to-transport-config.ts';
+import type { Config, RemixServer } from '../config';
+import { ServerRegistrationError } from '../errors.ts';
+import interpolateOpenAPIClientConfig from './interpolate-openapi-client-config.ts';
+import toTransportConfig from './to-transport-config.ts';
 
 async function registerServer(manager: McpManager, name: string, remixServer: RemixServer, userConfig: unknown) {
   const definition: ServerStorageData = {

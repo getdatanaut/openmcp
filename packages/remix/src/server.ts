@@ -4,12 +4,12 @@ import {
   type ImplementationSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { createMcpManager, type McpManager } from '@openmcp/manager';
+import { type ClientServer, createMcpManager, type McpManager, type Tool } from '@openmcp/manager';
 import type { z } from 'zod';
 
+import { observeToolListChanged, registerClientServers } from './client-servers/index.ts';
 import type { Config } from './config/index.ts';
-import registerClientServers from './register-client-servers.ts';
-import registerServers from './register-servers.ts';
+import { registerServers } from './servers/index.ts';
 import { parseToolName } from './utils/tools.ts';
 
 class RemixServer extends Server {
@@ -18,7 +18,9 @@ class RemixServer extends Server {
   constructor(impl: z.infer<typeof ImplementationSchema>, manager: McpManager) {
     super(impl, {
       capabilities: {
-        tools: {},
+        tools: {
+          listChanged: true,
+        },
       },
     });
 
@@ -38,9 +40,25 @@ export default async function createRemixServer(
     id: String(Date.now()),
   });
 
-  await registerServers(manager, config);
-  await registerClientServers(manager, config);
-  const server = new RemixServer(impl, manager);
+  try {
+    await registerServers(manager, config);
+  } catch (error) {
+    console.log('Error registering servers:', error);
+    throw error;
+  }
+
+  let server: RemixServer | null = null;
+  try {
+    const clientServers = await registerClientServers(manager, config);
+    observeToolListChanged(clientServers, async () => {
+      await server?.notification({ method: 'notifications/tools/list_changed' });
+    });
+  } catch (error) {
+    console.log('Error registering client servers:', error);
+    throw error;
+  }
+
+  server = new RemixServer(impl, manager);
 
   registerListToolsHandler(server, manager);
   registerCallToolHandler(server, manager);
@@ -50,15 +68,27 @@ export default async function createRemixServer(
 
 function registerListToolsHandler(server: Server, manager: McpManager) {
   server.setRequestHandler(ListToolsRequestSchema, async () => {
+    const tools: Tool[] = [];
+    let clients: ClientServer[];
     try {
-      const tools = Object.values(await manager.clientServers.tools({ lazyConnect: true })).flat();
-      return { tools };
+      clients = await manager.clientServers.findMany({ enabled: true });
     } catch (error) {
-      console.error('Error listing tools:', error);
-      return {
-        tools: [],
-      };
+      console.error('Error finding client servers:', error);
+      return { tools };
     }
+
+    await Promise.all(
+      clients.map(async client => {
+        const clientId = client.clientId;
+        try {
+          tools.push(...(await client.listTools()));
+        } catch (error) {
+          console.warn(`Error listing tools for client server "${clientId}": ${error}`);
+        }
+      }),
+    );
+
+    return { tools };
   });
 }
 
