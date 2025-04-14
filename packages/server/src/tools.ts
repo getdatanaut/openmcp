@@ -10,19 +10,29 @@ export type ToolOutput = z.ZodTypeAny | Schema<any>;
 
 export type ToolName = string;
 
+export type ToolAnnotations<Hints extends Record<string, boolean> = Record<string, boolean>> = {
+  title?: string;
+  hints?: Hints;
+};
+
 export interface McpServerTool<
   Params extends ToolParameters = any,
   ToolResult = any,
   OutputSchema extends ToolOutput = any,
+  Annotations extends ToolAnnotations = ToolAnnotations,
 > {
   parameters?: Params;
   description?: string;
   output?: OutputSchema;
   execute: (args: inferToolParameters<Params>) => Promise<ToolResult>;
+  annotations?: Annotations;
 }
 
-export function tool<Params extends ToolParameters, ToolResult, OutputSchema extends ToolOutput>(
-  tool: McpServerTool<Params, ToolResult, OutputSchema>,
-) {
+export function tool<
+  Params extends ToolParameters,
+  ToolResult,
+  OutputSchema extends ToolOutput,
+  Annotations extends ToolAnnotations,
+>(tool: McpServerTool<Params, ToolResult, OutputSchema, Annotations>) {
   return tool;
 }

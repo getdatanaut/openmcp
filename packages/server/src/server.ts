@@ -28,14 +28,22 @@ import {
   resourceTemplate,
   type ResourceUri,
 } from './resources.ts';
-import type { inferToolParameters, McpServerTool, ToolName, ToolOutput, ToolParameters } from './tools.ts';
+import type {
+  inferToolParameters,
+  McpServerTool,
+  ToolAnnotations,
+  ToolName,
+  ToolOutput,
+  ToolParameters,
+} from './tools.ts';
 
-interface RegisteredTool {
+interface RegisteredTool<Annotations extends ToolAnnotations = ToolAnnotations> {
   name: string;
   description?: string;
   inputSchema?: JSONSchema7;
   outputSchema?: JSONSchema7;
   execute: (args: z.infer<z.ZodTypeAny>) => Promise<unknown>;
+  annotations?: Annotations;
 }
 
 export interface TransformToolResultOpts {
@@ -131,18 +139,25 @@ export class OpenMcpServer {
    * Tools
    */
 
-  tool<Params extends ToolParameters, ToolResult, OutputSchema extends ToolOutput>({
+  tool<
+    Params extends ToolParameters,
+    ToolResult,
+    OutputSchema extends ToolOutput,
+    Annotations extends ToolAnnotations,
+  >({
     name,
     description,
     parameters,
     output,
     execute,
+    annotations,
   }: {
     name: string;
     description?: string;
     parameters?: Params;
     output?: OutputSchema;
     execute: (args: inferToolParameters<Params>) => Promise<ToolResult>;
+    annotations?: Annotations;
   }) {
     const inputSchema = parameters ? asSchema(parameters).jsonSchema : undefined;
 
@@ -152,6 +167,10 @@ export class OpenMcpServer {
       inputSchema: this.#autoTrimToolResult ? addToolRequirementsToSchema(inputSchema) : inputSchema,
       outputSchema: output ? asSchema(output).jsonSchema : undefined,
       execute,
+      annotations: {
+        title: annotations?.title,
+        ...toAnnotationHints(annotations?.hints),
+      },
     };
 
     this.setToolRequestHandlers();
@@ -367,4 +386,17 @@ function enumerateError(error: unknown) {
   }
 
   return newError;
+}
+
+function toAnnotationHints(hints: ToolAnnotations['hints'] | undefined) {
+  if (!hints) {
+    return;
+  }
+
+  const transformedHints: Record<string, boolean> = {};
+  for (const [key, value] of Object.entries(hints)) {
+    transformedHints[`${key}Hint`] = value;
+  }
+
+  return transformedHints;
 }
