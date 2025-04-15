@@ -41,8 +41,14 @@ const initSdk = ({ db, metrics }: { db: Kysely<DbSchema>; metrics: PgClientMetri
     metrics,
     queries,
     transaction: <T>(callback: (props: { trx: Transaction<DbSchema>; trxQueries: typeof queries }) => Promise<T>) => {
-      return db.transaction().execute(trx => {
-        return callback({ trx, trxQueries: initSdk({ db: trx, metrics }).queries });
+      return db.transaction().execute(async trx => {
+        try {
+          const res = await callback({ trx, trxQueries: initSdk({ db: trx, metrics }).queries });
+          return res;
+        } catch (err) {
+          console.error(`Transaction failed: ${err}`);
+          throw err;
+        }
       });
     },
     [Symbol.asyncDispose]: async () => {

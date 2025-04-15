@@ -15,9 +15,6 @@
   "observability": {
     "enabled": true,
   },
-  "alias": {
-    "jsonc-parser": "../../node_modules/jsonc-parser/lib/esm/main.js",
-  },
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",

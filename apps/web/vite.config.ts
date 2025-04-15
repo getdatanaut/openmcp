@@ -17,4 +17,10 @@ export default defineConfig({
     cloudflare(),
     tsConfigPaths(),
   ],
+
+  resolve: {
+    alias: {
+      'jsonc-parser': '../../node_modules/jsonc-parser/lib/esm/main.js',
+    },
+  },
 });

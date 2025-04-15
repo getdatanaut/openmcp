@@ -37,7 +37,7 @@ const uploadMcpServer = base
             instructions: z.string().optional(),
             inputSchema: ToolInputSchemaSchema.optional(),
             outputSchema: ToolOutputSchemaSchema.optional(),
-            isReadOnly: z.boolean().optional(),
+            isReadonly: z.boolean().optional(),
             isDestructive: z.boolean().optional(),
             isIdempotent: z.boolean().optional(),
             isOpenWorld: z.boolean().optional(),
@@ -119,7 +119,7 @@ const uploadFromOpenApi = base
           outputSchema: tool.output
             ? (asSchema(tool.output).jsonSchema as z.infer<typeof ToolOutputSchemaSchema>)
             : undefined,
-          isReadOnly: tool.annotations?.hints?.readOnly,
+          isReadonly: tool.annotations?.hints?.readOnly,
           isDestructive: tool.annotations?.hints?.destructive,
           isIdempotent: tool.annotations?.hints?.idempotent,
           isOpenWorld: true,

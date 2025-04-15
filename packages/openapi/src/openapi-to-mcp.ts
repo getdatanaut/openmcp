@@ -273,7 +273,7 @@ function formatBody(body: object, contentType: string) {
 function removeExtraProperties<T>(obj: T): T {
   traverse(obj, {
     onProperty({ parent, property }) {
-      if (/^x-/.test(String(property)) || property === '$schema') {
+      if (/^x-/.test(String(property)) || property === '$schema' || property === 'key') {
         unset(parent, property);
       }
     },
