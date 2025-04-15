@@ -5,9 +5,9 @@ export default {
   name: 'Slack',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json&baseUrl=https://slack.com/api',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://raw.githubusercontent.com/slackapi/slack-api-specs/master/web-api/slack_web_openapi_v2.json&baseUrl=https://slack.com/api',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{token}}"}}',

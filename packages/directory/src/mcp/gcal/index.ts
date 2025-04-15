@@ -5,9 +5,9 @@ export default {
   name: 'Google Calendar',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://api.apis.guru/v2/specs/googleapis.com/calendar/v3/openapi.json&baseUrl=https://www.googleapis.com/calendar/v3',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://api.apis.guru/v2/specs/googleapis.com/calendar/v3/openapi.json&baseUrl=https://www.googleapis.com/calendar/v3',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{token}}"}}',

@@ -5,9 +5,9 @@ export default {
   name: 'OpenAPI',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi={{openapi}}&baseUrl={{baseUrl}}',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi={{openapi}}&baseUrl={{baseUrl}}',
       requestInit: {
         headers: {
           'x-openmcp': '{"query": {{query}}, "headers": {{headers}}}',

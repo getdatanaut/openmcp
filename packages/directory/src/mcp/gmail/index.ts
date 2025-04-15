@@ -5,9 +5,9 @@ export default {
   name: 'Gmail',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://datanaut.ai/api/directory/gmail/openapi.json&baseUrl=https://gmail.googleapis.com',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://datanaut.ai/api/directory/gmail/openapi.json&baseUrl=https://gmail.googleapis.com',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{gmailApiKey}}"}}',

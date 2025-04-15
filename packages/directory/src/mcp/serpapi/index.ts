@@ -5,9 +5,9 @@ export default {
   name: 'SerpAPI',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://datanaut.ai/api/directory/serpapi/openapi.json&baseUrl=https://serpapi.com',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://datanaut.ai/api/directory/serpapi/openapi.json&baseUrl=https://serpapi.com',
       requestInit: {
         headers: {
           'x-openmcp': '{"query":{"api_key":"{{apiKey}}"}}',

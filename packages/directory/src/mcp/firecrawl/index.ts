@@ -5,9 +5,9 @@ export default {
   name: 'Firecrawl',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/mendableai/firecrawl/refs/heads/main/apps/api/v1-openapi.json&baseUrl=https://api.firecrawl.dev/v1',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://raw.githubusercontent.com/mendableai/firecrawl/refs/heads/main/apps/api/v1-openapi.json&baseUrl=https://api.firecrawl.dev/v1',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{apiKey}}"}}',

@@ -5,9 +5,9 @@ export default {
   name: 'Resend',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/resend/resend-openapi/refs/heads/main/resend.yaml&baseUrl=https://api.resend.com',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://raw.githubusercontent.com/resend/resend-openapi/refs/heads/main/resend.yaml&baseUrl=https://api.resend.com',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{apiKey}}"}}',

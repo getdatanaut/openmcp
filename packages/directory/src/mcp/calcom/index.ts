@@ -5,9 +5,9 @@ export default {
   name: 'Cal.com',
   version: '1.0.0',
   transport: {
-    type: 'sse',
+    type: 'streamableHttp',
     config: {
-      url: 'https://datanaut.ai/api/mcp/openapi/sse?openapi=https://raw.githubusercontent.com/calcom/cal.com/122af4538d6b293090c8ab8a6a63a96b059c770f/docs/api-reference/v2/openapi.json&baseUrl=https://api.cal.com',
+      url: 'https://datanaut.ai/api/mcp/openapi/stream?openapi=https://raw.githubusercontent.com/calcom/cal.com/122af4538d6b293090c8ab8a6a63a96b059c770f/docs/api-reference/v2/openapi.json&baseUrl=https://api.cal.com',
       requestInit: {
         headers: {
           'x-openmcp': '{"headers":{"Authorization":"Bearer {{calcomApiKey}}"}}',
