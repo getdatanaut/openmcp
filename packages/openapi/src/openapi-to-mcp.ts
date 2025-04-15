@@ -131,11 +131,13 @@ export async function openApiToMcpServerOptions(
     });
   }
 
-  return {
+  const options = {
     name: service.name,
     version: service.version,
     tools: operationTools,
   } satisfies OpenMcpServerOptions;
+
+  return { service, options };
 }
 
 async function bundleOasService(openapi: Record<string, unknown> | string) {

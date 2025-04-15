@@ -51,7 +51,7 @@ export class OpenMcpOpenAPI<
   ServerConfig extends OpenMcpOpenAPIConfig = OpenMcpOpenAPIConfig,
 > extends OpenMcpDurableObject<Env, ServerConfig, OpenMcpServer> {
   override async createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }) {
-    const options = await openApiToMcpServerOptions(config, {
+    const { options } = await openApiToMcpServerOptions(config, {
       getClientConfig: () => {
         // @TODO this does not seem correct, at least the typings are not (config is typed as ServerConfig here, but this is client right?)
         return this.getSession(sessionId)?.config ?? {};

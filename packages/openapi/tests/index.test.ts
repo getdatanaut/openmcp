@@ -30,7 +30,9 @@ describe('createMcpServer', () => {
   afterEach(() => server.resetHandlers());
 
   test.each(fixtures)('should create a MCP server for %s', async (filename, openapi) => {
-    const { tools } = await openApiToMcpServerOptions({ openapi, serverUrl });
+    const {
+      options: { tools },
+    } = await openApiToMcpServerOptions({ openapi, serverUrl });
 
     await expect(
       Object.entries(tools).map(([name, tool]) => ({
