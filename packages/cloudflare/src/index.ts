@@ -20,16 +20,16 @@ export async function handleOpenMcpRequest<
   }) => TNamespace extends DurableObjectNamespace<OpenMcpDurableObject<unknown, infer C, any>> ? C : never;
 }) {
   const url = new URL(request.url);
-  const sessionId = url.searchParams.get('sessionId') as SessionId;
+  const sessionId = url.searchParams.get('sessionId') ?? request.headers.get('mcp-session-id');
 
-  if (sessionId) {
+  if (isSomeSessionId(sessionId)) {
     const session = SessionId.decode(sessionId);
 
     if (session.serverType !== serverType) {
       return new Response('This session is not valid for this MCP server', { status: 404 });
     }
 
-    return namespace.get(namespace.idFromString(session.doId)).fetch(request);
+    return namespace.get(namespace.idFromString(session.doId)).fetch(withSessionId(request, sessionId));
   }
 
   const config = getConfig ? getConfig({ request }) : undefined;
@@ -39,7 +39,15 @@ export async function handleOpenMcpRequest<
 
   await stub._init({ config });
 
-  url.searchParams.set('sessionId', SessionId.encode({ doId, serverType }));
+  return stub.fetch(withSessionId(request, SessionId.encode({ doId, serverType })));
+}
 
-  return stub.fetch(new Request(url.toString(), request));
+function isSomeSessionId(value: unknown): value is SessionId {
+  return typeof value === 'string';
+}
+
+function withSessionId(request: Request, sessionId: SessionId): Request {
+  const url = new URL(request.url);
+  url.searchParams.set('sessionId', sessionId);
+  return new Request(url.toString(), request);
 }

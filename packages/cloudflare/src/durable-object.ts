@@ -63,7 +63,7 @@ export abstract class OpenMcpDurableObject<
    */
   override async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
-    const sessionId = request.headers.get('mcp-session-id') as SessionId;
+    const sessionId = url.searchParams.get('sessionId') as SessionId;
 
     if (request.method === 'GET' && url.pathname.endsWith('/sse')) {
       return this.#handleSse(sessionId, request);
