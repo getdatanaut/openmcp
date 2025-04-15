@@ -1,10 +1,12 @@
+import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { DurableObject } from 'cloudflare:workers';
 
 import { SSEServerTransport } from './transports/sse.ts';
+import { StreamableHTTPServerTransport } from './transports/streamable-http.ts';
 import type { SessionId } from './utils/session.ts';
 
 interface McpServerImpl {
-  connect: (transport: SSEServerTransport) => Promise<void>;
+  connect: (transport: Transport) => Promise<void>;
 }
 
 /**
@@ -17,12 +19,19 @@ export abstract class OpenMcpDurableObject<
 > extends DurableObject<Env> {
   config!: ServerConfig;
 
-  #sessions: Map<SessionId, { transport: SSEServerTransport; config?: ServerConfig }> = new Map();
+  #sessions: Map<SessionId, { transport: SSEServerTransport | StreamableHTTPServerTransport; config?: ServerConfig }> =
+    new Map();
 
   /**
    * Create a new MCP Server
    */
-  abstract createMcpServer({ config, sessionId }: { config: ServerConfig; sessionId: SessionId }): Promise<ServerImpl>;
+  abstract createMcpServer({
+    config,
+    sessionId,
+  }: {
+    config: ServerConfig;
+    sessionId: SessionId | undefined;
+  }): Promise<ServerImpl>;
 
   /**
    * @private
@@ -54,7 +63,7 @@ export abstract class OpenMcpDurableObject<
    */
   override async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
-    const sessionId = url.searchParams.get('sessionId') as SessionId;
+    const sessionId = request.headers.get('mcp-session-id') as SessionId;
 
     if (request.method === 'GET' && url.pathname.endsWith('/sse')) {
       return this.#handleSse(sessionId, request);
@@ -62,6 +71,10 @@ export abstract class OpenMcpDurableObject<
 
     if (request.method === 'POST' && url.pathname.endsWith('/messages')) {
       return this.#handleSseMessages(sessionId, request);
+    }
+
+    if (url.pathname.endsWith('/stream')) {
+      return this.#handleStreamableHttp(sessionId, request);
     }
 
     return new Response('Not found', { status: 404 });
@@ -96,16 +109,49 @@ export abstract class OpenMcpDurableObject<
    */
   async #handleSseMessages(sessionId: SessionId, request: Request): Promise<Response> {
     const session = this.#sessions.get(sessionId);
-    if (!session?.transport) {
+    const transport = session?.transport;
+    if (!transport || !(transport instanceof SSEServerTransport)) {
       return new Response('SSE connection not established', { status: 500 });
     }
 
     this.#sessions.set(sessionId, {
-      transport: session.transport,
+      transport,
       config: this.#getClientConfig(request),
     });
 
-    return session.transport.handlePostMessage(request);
+    return transport.handlePostMessage(request);
+  }
+
+  /**
+   *
+   */
+  async #handleStreamableHttp(sessionId: SessionId, request: Request): Promise<Response> {
+    if (!this.config) {
+      throw new Error('MCP Server not configured');
+    }
+
+    const existingTransport = this.#sessions.get(sessionId)?.transport;
+    if (existingTransport instanceof StreamableHTTPServerTransport) {
+      this.#sessions.set(sessionId, {
+        transport: existingTransport,
+        config: this.#getClientConfig(request),
+      });
+
+      return existingTransport.handleRequest(request);
+    }
+
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: () => sessionId,
+    });
+
+    this.#sessions.set(sessionId, {
+      transport,
+      config: this.#getClientConfig(request),
+    });
+    const server = await this.createMcpServer({ config: this.config, sessionId });
+    await server.connect(transport);
+
+    return transport.handleRequest(request);
   }
 
   #getClientConfig(request: Request) {
