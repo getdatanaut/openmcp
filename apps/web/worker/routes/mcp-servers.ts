@@ -25,6 +25,8 @@ const uploadMcpServer = base
       description: z.string().optional(),
       instructions: z.string().optional(),
       iconUrl: z.string().url().optional(),
+      developer: z.string().optional(),
+      developerUrl: z.string().url().optional(),
       sourceUrl: z.string().url().optional(),
       configSchema: McpClientConfigSchemaSchema.optional(),
       transport: TransportSchema,
@@ -79,11 +81,14 @@ const uploadFromOpenApi = base
     z.object({
       openapi: z.string().url(),
       serverUrl: z.string().url().optional(),
+      iconUrl: z.string().url().optional(),
+      developer: z.string().optional(),
+      developerUrl: z.string().url().optional(),
       sourceUrl: z.string().url().optional(),
     }),
   )
   .handler(async ({ context, input, errors }) => {
-    const { openapi, sourceUrl } = input;
+    const { openapi, sourceUrl, iconUrl, developer, developerUrl } = input;
 
     const { service, options } = await openApiToMcpServerOptions({ openapi, serverUrl: input.serverUrl });
 
@@ -101,6 +106,9 @@ const uploadFromOpenApi = base
         name: service.name,
         externalId: serverUrl,
         description: service.description,
+        developer: developer || service.contact?.name,
+        developerUrl: developerUrl || service.contact?.url,
+        iconUrl: iconUrl || service.logo?.url,
         sourceUrl,
         transport: {
           type: 'openapi',

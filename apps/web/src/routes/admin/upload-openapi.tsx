@@ -137,6 +137,8 @@ function UploadRawDefinitionsForm() {
           {
             openapi: definition.transport.serverConfig.openapi,
             serverUrl: definition.transport.serverConfig.serverUrl || undefined,
+            iconUrl: definition.icon || undefined,
+            developer: definition.developer || undefined,
           },
           {
             onSettled() {},
