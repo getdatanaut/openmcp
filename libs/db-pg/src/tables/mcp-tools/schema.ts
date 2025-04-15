@@ -2,6 +2,7 @@ import type { TMcpServerId, TMcpToolId } from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
 import { boolean, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
+import { z } from 'zod';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
@@ -9,6 +10,24 @@ import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_TOOLS_KEY = 'mcpTools' as const;
 export const MCP_TOOLS_TABLE = 'mcp_tools' as const;
+
+export const ToolInputSchemaSchema = z
+  .object({
+    type: z.literal('object').optional(),
+    properties: z.optional(z.object({}).passthrough()),
+  })
+  .passthrough();
+
+export type ToolInputSchema = z.infer<typeof ToolInputSchemaSchema>;
+
+export const ToolOutputSchemaSchema = z
+  .object({
+    type: z.string().optional(),
+    properties: z.optional(z.object({}).passthrough()),
+  })
+  .passthrough();
+
+export type ToolOutputSchema = z.infer<typeof ToolOutputSchemaSchema>;
 
 export const mcpTools = pgTable(
   MCP_TOOLS_TABLE,
@@ -18,8 +37,8 @@ export const mcpTools = pgTable(
     displayName: text('display_name'),
     description: text('description'),
     instructions: text('instructions'),
-    inputSchema: jsonb('input_schema').$type<Record<string, unknown>>().notNull().default({}),
-    outputSchema: jsonb('output_schema').$type<Record<string, unknown> | null>(),
+    inputSchema: jsonb('input_schema').$type<ToolInputSchema>().notNull().default({}),
+    outputSchema: jsonb('output_schema').$type<ToolOutputSchema>().notNull().default({}),
     isReadonly: boolean('is_readonly'),
     isDestructive: boolean('is_destructive'),
     isIdempotent: boolean('is_idempotent'),

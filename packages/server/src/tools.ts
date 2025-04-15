@@ -16,9 +16,9 @@ export type ToolAnnotations<Hints extends Record<string, boolean> = Record<strin
 };
 
 export interface McpServerTool<
-  Params extends ToolParameters = any,
+  Params extends ToolParameters = ToolParameters,
   ToolResult = any,
-  OutputSchema extends ToolOutput = any,
+  OutputSchema extends ToolOutput = ToolOutput,
   Annotations extends ToolAnnotations = ToolAnnotations,
 > {
   parameters?: Params;

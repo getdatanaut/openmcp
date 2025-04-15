@@ -15,7 +15,7 @@ function RouteComponent() {
    * Making the request from the client because top level browser requests
    * skip the CF worker altogether.
    *
-   * More info: https://github.com/cloudflare/workers-sdk/issues/8879#issuecomment-2798072647
+   * More info: https://github.com/cloudflare/workers-sdk/issues/8798
    */
   useEffect(() => {
     void betterFetch(window.location.href, {

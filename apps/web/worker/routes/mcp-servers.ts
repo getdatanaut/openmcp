@@ -1,3 +1,12 @@
+import { asSchema } from '@ai-sdk/ui-utils';
+import {
+  McpClientConfigSchemaSchema,
+  ToolInputSchemaSchema,
+  ToolOutputSchemaSchema,
+  TransportSchema,
+} from '@libs/db-pg';
+import { openApiToMcpServerOptions } from '@openmcp/openapi';
+import { call } from '@orpc/server';
 import { z } from 'zod';
 
 import { base, requireAuth } from '../middleware.ts';
@@ -12,12 +21,13 @@ const uploadMcpServer = base
   .input(
     z.object({
       name: z.string(),
-      externalId: z.string().min(2).max(64),
+      externalId: z.string().min(2).max(255),
       description: z.string().optional(),
       instructions: z.string().optional(),
       iconUrl: z.string().url().optional(),
       sourceUrl: z.string().url().optional(),
-      configSchema: z.object({}).optional(),
+      configSchema: McpClientConfigSchemaSchema.optional(),
+      transport: TransportSchema,
       tools: z
         .array(
           z.object({
@@ -25,8 +35,8 @@ const uploadMcpServer = base
             displayName: z.string().optional(),
             description: z.string().optional(),
             instructions: z.string().optional(),
-            inputSchema: z.object({}).optional(),
-            outputSchema: z.object({}).optional(),
+            inputSchema: ToolInputSchemaSchema.optional(),
+            outputSchema: ToolOutputSchemaSchema.optional(),
             isReadOnly: z.boolean().optional(),
             isDestructive: z.boolean().optional(),
             isIdempotent: z.boolean().optional(),
@@ -63,9 +73,70 @@ const uploadMcpServer = base
     };
   });
 
+const uploadFromOpenApi = base
+  .use(requireAuth)
+  .input(
+    z.object({
+      openapi: z.string().url(),
+      serverUrl: z.string().url().optional(),
+      sourceUrl: z.string().url().optional(),
+    }),
+  )
+  .handler(async ({ context, input, errors }) => {
+    const { openapi, sourceUrl } = input;
+
+    const { service, options } = await openApiToMcpServerOptions({ openapi, serverUrl: input.serverUrl });
+
+    const serverUrl = input.serverUrl ?? service.servers?.[0]?.url;
+    if (!serverUrl) {
+      throw errors.BAD_REQUEST({
+        message: 'Server URL must be provided, or the the OpenAPI specification must contain a server definition.',
+        data: { issues: [] },
+      });
+    }
+
+    const res = await call(
+      uploadMcpServer,
+      {
+        name: service.name,
+        externalId: serverUrl,
+        description: service.description,
+        sourceUrl,
+        transport: {
+          type: 'openapi',
+          serverConfig: {
+            openapi,
+            serverUrl,
+          },
+        },
+        tools: Object.entries(options.tools).map(([name, tool]) => ({
+          name,
+          displayName: tool.annotations?.title,
+          description: tool.description,
+          inputSchema: tool.parameters
+            ? (asSchema(tool.parameters).jsonSchema as z.infer<typeof ToolInputSchemaSchema>)
+            : undefined,
+          outputSchema: tool.output
+            ? (asSchema(tool.output).jsonSchema as z.infer<typeof ToolOutputSchemaSchema>)
+            : undefined,
+          isReadOnly: tool.annotations?.hints?.['readOnlyHint'],
+          isDestructive: tool.annotations?.hints?.['destructiveHint'],
+          isIdempotent: tool.annotations?.hints?.['idempotentHint'],
+          isOpenWorld: tool.annotations?.hints?.['openWorldHint'],
+        })),
+      },
+      {
+        context,
+      },
+    );
+
+    return res;
+  });
+
 export const mpcServersRouter = {
   mcpServers: {
     list: listMcpServers,
     upload: uploadMcpServer,
+    uploadFromOpenApi: uploadFromOpenApi,
   },
 };

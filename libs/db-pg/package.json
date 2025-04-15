@@ -17,7 +17,8 @@
     "@libs/db-pg-client": "workspace:*",
     "@libs/utils-types": "workspace:*",
     "drizzle-orm": "0.41.0",
-    "kysely": "0.28.0"
+    "kysely": "0.28.0",
+    "zod": "3.24.2"
   },
   "devDependencies": {
     "eslint": "9.24.0"

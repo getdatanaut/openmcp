@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as ServersServerIdImport } from './routes/servers.$serverId'
+import { Route as AdminUploadOpenapiImport } from './routes/admin/upload-openapi'
 import { Route as ApiAuthCallbackProviderImport } from './routes/api.auth.callback.$provider'
 
 // Create/Update Routes
@@ -26,6 +27,12 @@ const IndexRoute = IndexImport.update({
 const ServersServerIdRoute = ServersServerIdImport.update({
   id: '/servers/$serverId',
   path: '/servers/$serverId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminUploadOpenapiRoute = AdminUploadOpenapiImport.update({
+  id: '/admin/upload-openapi',
+  path: '/admin/upload-openapi',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -44,6 +51,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/upload-openapi': {
+      id: '/admin/upload-openapi'
+      path: '/admin/upload-openapi'
+      fullPath: '/admin/upload-openapi'
+      preLoaderRoute: typeof AdminUploadOpenapiImport
       parentRoute: typeof rootRoute
     }
     '/servers/$serverId': {
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/servers/$serverId': typeof ServersServerIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/servers/$serverId': typeof ServersServerIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
 }
@@ -80,27 +96,43 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/servers/$serverId': typeof ServersServerIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/servers/$serverId' | '/api/auth/callback/$provider'
+  fullPaths:
+    | '/'
+    | '/admin/upload-openapi'
+    | '/servers/$serverId'
+    | '/api/auth/callback/$provider'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/servers/$serverId' | '/api/auth/callback/$provider'
-  id: '__root__' | '/' | '/servers/$serverId' | '/api/auth/callback/$provider'
+  to:
+    | '/'
+    | '/admin/upload-openapi'
+    | '/servers/$serverId'
+    | '/api/auth/callback/$provider'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin/upload-openapi'
+    | '/servers/$serverId'
+    | '/api/auth/callback/$provider'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminUploadOpenapiRoute: typeof AdminUploadOpenapiRoute
   ServersServerIdRoute: typeof ServersServerIdRoute
   ApiAuthCallbackProviderRoute: typeof ApiAuthCallbackProviderRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminUploadOpenapiRoute: AdminUploadOpenapiRoute,
   ServersServerIdRoute: ServersServerIdRoute,
   ApiAuthCallbackProviderRoute: ApiAuthCallbackProviderRoute,
 }
@@ -116,12 +148,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/admin/upload-openapi",
         "/servers/$serverId",
         "/api/auth/callback/$provider"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/admin/upload-openapi": {
+      "filePath": "admin/upload-openapi.tsx"
     },
     "/servers/$serverId": {
       "filePath": "servers.$serverId.tsx"

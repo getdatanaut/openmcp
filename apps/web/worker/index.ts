@@ -47,7 +47,12 @@ export default {
       session: AuthSession;
     } | null;
 
-    const orpcContext = { db, user: session?.user ?? null, session: session?.session ?? null } satisfies RootContext;
+    const orpcContext = {
+      db,
+      user: session?.user ?? null,
+      session: session?.session ?? null,
+      r2OpenApiBucket: env.OPENMCP_OPENAPI,
+    } satisfies RootContext;
 
     const rpcRes = await rpcHandler.handle(req, {
       prefix: RPC_BASE_PATH,

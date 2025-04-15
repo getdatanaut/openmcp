@@ -37,7 +37,7 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
           developerUrl: eb => eb.ref('excluded.developerUrl'),
           sourceUrl: eb => eb.ref('excluded.sourceUrl'),
           configSchema: eb => eb.ref('excluded.configSchema'),
-          transports: eb => eb.ref('excluded.transports'),
+          transport: eb => eb.ref('excluded.transport'),
           runsRemote: eb => eb.ref('excluded.runsRemote'),
           runsLocal: eb => eb.ref('excluded.runsLocal'),
           visibility: eb => eb.ref('excluded.visibility'),
@@ -74,7 +74,7 @@ export const detailedSelect = [
   ...summarySelect,
   'instructions',
   'configSchema',
-  'transports',
+  'transport',
 ] satisfies McpServerColNames[];
 
 export type DetailedSelectCols = (typeof detailedSelect)[number];
