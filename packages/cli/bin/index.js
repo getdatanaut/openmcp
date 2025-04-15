@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import process from 'node:process';
 
-await import('#console');
+import register from '#register';
 
-const { default: register } = await import('#register');
 await register(process.argv.slice(2));

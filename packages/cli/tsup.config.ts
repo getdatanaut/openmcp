@@ -4,5 +4,5 @@ export default defineConfig({
   format: 'esm',
   sourcemap: true,
   clean: true,
-  entry: ['src/index.ts', 'src/register.ts', 'src/console/init.ts'],
+  entry: ['src/index.ts', 'src/register.ts'],
 });

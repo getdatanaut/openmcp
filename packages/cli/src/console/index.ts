@@ -2,6 +2,8 @@ import { type ConsolaOptions, type ConsolaReporter, createConsola, LogLevels, ty
 
 import console from './reporters/console.ts';
 
+export { default as wrapConsole } from './wrap-console.ts';
+
 const consola = createConsola({
   reporters: [console],
 });

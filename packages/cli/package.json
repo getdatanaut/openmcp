@@ -3,10 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "license": "Apache-2.0",
-  "sideEffects": [
-    "./src/console/init.ts",
-    "./dist/console/init.js"
-  ],
+  "sideEffects": false,
   "repository": {
     "type": "git",
     "url": "https://github.com/getdatanaut/openmcp",
@@ -22,11 +19,6 @@
     "package.json"
   ],
   "imports": {
-    "#console": {
-      "types": "./src/console/init.ts",
-      "development": "./src/console/init.ts",
-      "default": "./dist/console/init.js"
-    },
     "#register": {
       "types": "./src/register.ts",
       "development": "./src/register.ts",

@@ -1,6 +1,6 @@
 import type { Argv, CommandBuilder, CommandModule } from 'yargs';
 
-import handler from './handler.ts';
+import { wrapConsole } from '../../console/index.ts';
 
 const builder = ((yargs: Argv) =>
   yargs
@@ -29,19 +29,26 @@ const builder = ((yargs: Argv) =>
 
 export default {
   describe: 'Start a new server',
-  command: 'run',
+  command: 'upload',
   builder,
   async handler(args) {
+    const restoreConsole = await wrapConsole();
+    const { default: handler } = await import('./handler.ts');
+
     const { server, secret, config } = args as Awaited<ReturnType<typeof builder>['argv']>;
-    if (typeof config === 'string') {
-      await handler({
-        configFile: config,
-      });
-    } else {
-      await handler({
-        server: String(server),
-        secret,
-      });
+    try {
+      if (typeof config === 'string') {
+        await handler({
+          configFile: config,
+        });
+      } else {
+        await handler({
+          server: String(server),
+          secret,
+        });
+      }
+    } finally {
+      restoreConsole();
     }
   },
 } satisfies CommandModule;
