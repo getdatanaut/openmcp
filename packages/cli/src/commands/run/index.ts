@@ -10,18 +10,19 @@ const builder = ((yargs: Argv) =>
         type: 'string',
         describe: 'The name of the server to start',
       },
+      secret: {
+        type: 'string',
+        describe: 'The secret to use for authentication',
+        implies: 'server',
+      },
       config: {
         type: 'string',
         describe: 'The filepath to the local config file',
       },
-      secret: {
-        type: 'string',
-        describe: 'The secret to use for authentication',
-      },
     } as const)
     .check(argv => {
-      if (!argv.config && !(argv.server && argv.secret)) {
-        throw new Error('You must provide either "config" or both "server" and "secret".');
+      if (!argv.config && !argv.server) {
+        throw new Error('You must provide either "config" or "server" and/or "secret"');
       }
 
       return true;
@@ -29,7 +30,7 @@ const builder = ((yargs: Argv) =>
 
 export default {
   describe: 'Start a new server',
-  command: 'upload',
+  command: 'run',
   builder,
   async handler(args) {
     const restoreConsole = await wrapConsole();

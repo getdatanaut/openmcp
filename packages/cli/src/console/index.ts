@@ -1,4 +1,4 @@
-import { type ConsolaOptions, type ConsolaReporter, createConsola, LogLevels, type LogType } from 'consola/core';
+import { type ConsolaOptions, type ConsolaReporter, createConsola, LogLevels, type LogType } from 'consola';
 
 import console from './reporters/console.ts';
 

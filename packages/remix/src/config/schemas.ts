@@ -32,9 +32,7 @@ export type OpenAPIServer = z.infer<typeof OpenAPIServerSchema>;
 export const StreamableHTTPServerSchema = z.object({
   type: z.literal('streamable-http'),
   url: z.string().url(),
-  headers: z
-    .record(z.string())
-    .optional(),
+  headers: z.record(z.string()).optional(),
   tools,
 });
 
@@ -43,9 +41,7 @@ export type StreamableHTTPServer = z.infer<typeof StreamableHTTPServerSchema>;
 export const SSEServerSchema = z.object({
   type: z.literal('sse'),
   url: z.string().url(),
-  headers: z
-    .record(z.string())
-    .optional(),
+  headers: z.record(z.string()).optional(),
   tools,
 });
 

@@ -2626,6 +2626,8 @@ __metadata:
     "@modelcontextprotocol/sdk": "npm:1.9.0"
     "@openmcp/manager": "workspace:*"
     "@openmcp/remix": "workspace:*"
+    "@orpc/client": "npm:^1.0.3"
+    "@orpc/server": "npm:^1.0.3"
     "@types/yargs": "npm:^17.0.33"
     consola: "npm:~3.4.2"
     eslint: "npm:9.24.0"
@@ -2787,7 +2789,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@orpc/client@npm:1.0.3":
+"@orpc/client@npm:1.0.3, @orpc/client@npm:^1.0.3":
   version: 1.0.3
   resolution: "@orpc/client@npm:1.0.3"
   dependencies:
@@ -2851,7 +2853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@orpc/server@npm:1.0.3":
+"@orpc/server@npm:1.0.3, @orpc/server@npm:^1.0.3":
   version: 1.0.3
   resolution: "@orpc/server@npm:1.0.3"
   dependencies:
