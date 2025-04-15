@@ -10,6 +10,13 @@ export { OpenMcpOpenAPI } from '@openmcp/cloudflare';
 const app = new Hono<{ Bindings: Env }>()
   // TODO(CL): need tolock down the cors to only allow the allowed origins
   .use('*', cors())
+  .use(
+    '/mcp/*',
+    cors({
+      origin: '*',
+      exposeHeaders: ['mcp-session-id'],
+    }),
+  )
   .route('/mcp', mcpRoute)
   .route('/_/llm', llmProxyRoute)
   .route('/directory', directoryRoute)
