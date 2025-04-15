@@ -33,9 +33,7 @@ export const StreamableHTTPServerSchema = z.object({
   type: z.literal('streamable-http'),
   url: z.string().url(),
   headers: z
-    .object({
-      'x-openmcp': z.string(),
-    })
+    .record(z.string())
     .optional(),
   tools,
 });
@@ -46,9 +44,7 @@ export const SSEServerSchema = z.object({
   type: z.literal('sse'),
   url: z.string().url(),
   headers: z
-    .object({
-      'x-openmcp': z.string(),
-    })
+    .record(z.string())
     .optional(),
   tools,
 });
