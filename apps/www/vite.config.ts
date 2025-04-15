@@ -1,3 +1,6 @@
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+
 import tailwindcss from '@tailwindcss/vite';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
@@ -20,6 +23,15 @@ export default defineConfig({
     }),
     tsConfigPaths(),
   ],
+
+  ...(process.env['NODE_ENV'] === 'development' && {
+    server: {
+      https: {
+        key: fs.readFileSync(path.join(import.meta.dirname, '.certs/localhost-key.pem')),
+        cert: fs.readFileSync(path.join(import.meta.dirname, '.certs/localhost.pem')),
+      },
+    },
+  }),
 
   define: {
     'process.env': {},
