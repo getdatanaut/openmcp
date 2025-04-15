@@ -52,11 +52,11 @@ export interface TransformToolResultOpts {
   toolResult?: unknown;
 }
 
-export interface OpenMcpServerOptions {
+export interface OpenMcpServerOptions<Tool extends McpServerTool = McpServerTool> {
   name: string;
   version: string;
   instructions?: string;
-  tools?: Record<ToolName, McpServerTool>;
+  tools?: Record<ToolName, Tool>;
   resources?: (Resource<string, unknown> | ResourceTemplate<string, unknown>)[];
   onInitialize?: (clientInfo: Implementation, clientCapabilities: ClientCapabilities) => void;
   transformToolResult?: (opts: TransformToolResultOpts) => any;

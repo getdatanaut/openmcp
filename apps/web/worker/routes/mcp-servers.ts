@@ -119,10 +119,10 @@ const uploadFromOpenApi = base
           outputSchema: tool.output
             ? (asSchema(tool.output).jsonSchema as z.infer<typeof ToolOutputSchemaSchema>)
             : undefined,
-          isReadOnly: tool.annotations?.hints?.['readOnlyHint'],
-          isDestructive: tool.annotations?.hints?.['destructiveHint'],
-          isIdempotent: tool.annotations?.hints?.['idempotentHint'],
-          isOpenWorld: tool.annotations?.hints?.['openWorldHint'],
+          isReadOnly: tool.annotations?.hints?.readOnly,
+          isDestructive: tool.annotations?.hints?.destructive,
+          isIdempotent: tool.annotations?.hints?.idempotent,
+          isOpenWorld: true,
         })),
       },
       {

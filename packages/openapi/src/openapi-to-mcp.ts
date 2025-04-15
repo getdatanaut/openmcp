@@ -1,6 +1,13 @@
 import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
 import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
-import { type OpenMcpServerOptions, tool, type ToolAnnotations } from '@openmcp/server';
+import {
+  type McpServerTool,
+  type OpenMcpServerOptions,
+  tool,
+  type ToolAnnotations,
+  type ToolOutput,
+  type ToolParameters,
+} from '@openmcp/server';
 import { bundleOas2Service } from '@stoplight/http-spec/oas2';
 import { bundleOas3Service } from '@stoplight/http-spec/oas3';
 import { traverse } from '@stoplight/json';
@@ -19,6 +26,8 @@ export type OpenAPIToolAnnotations = ToolAnnotations<{
   destructive?: boolean;
   idempotent?: boolean;
 }>;
+
+export type OpenAPITool = McpServerTool<ToolParameters, any, ToolOutput, OpenAPIToolAnnotations>;
 
 /**
  * Allow the client to override parameters for tool calls
@@ -50,7 +59,7 @@ export async function openApiToMcpServerOptions(
 
   const baseUrl = serverUrl || service.servers?.[0]?.url;
 
-  const operationTools: OpenMcpServerOptions['tools'] = {};
+  const operationTools: OpenMcpServerOptions<OpenAPITool>['tools'] = {};
 
   const operations = service.operations as IHttpOperation<false>[];
 
@@ -136,7 +145,7 @@ export async function openApiToMcpServerOptions(
     name: service.name,
     version: service.version,
     tools: operationTools,
-  } satisfies OpenMcpServerOptions;
+  } satisfies OpenMcpServerOptions<OpenAPITool>;
 
   return { service, options };
 }
