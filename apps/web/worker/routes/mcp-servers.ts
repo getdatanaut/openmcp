@@ -41,7 +41,6 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
     if (!serverUrl) {
       throw errors.BAD_REQUEST({
         message: 'Server URL must be provided, or the the OpenAPI specification must contain a server definition.',
-        data: { issues: [] },
       });
     }
 
@@ -100,7 +99,7 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
       console.error(storeResult.error);
       throw errors.BAD_REQUEST({
         message: storeResult.error.toString(),
-        data: { issues: [] },
+        cause: storeResult.error,
       });
     }
 

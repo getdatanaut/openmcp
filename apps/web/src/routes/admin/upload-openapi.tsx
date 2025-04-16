@@ -64,8 +64,11 @@ function UploadOpenApiForm() {
                 break;
               case 'BAD_REQUEST':
                 setError(error.message);
-                for (const issue of error.data?.issues ?? []) {
-                  form.setError(issue.path[0]!, issue.message);
+                break;
+              case 'INPUT_VALIDATION_FAILED':
+                setError(error.data.formErrors[0] ?? error.message);
+                for (const [key, values] of Object.entries(error.data.fieldErrors)) {
+                  form.setError(key, values.join('. '));
                 }
                 break;
             }
@@ -159,8 +162,11 @@ function UploadRawDefinitionsForm() {
                   break;
                 case 'BAD_REQUEST':
                   setError(error.message);
-                  for (const issue of error.data?.issues ?? []) {
-                    form.setError(issue.path[0]!, issue.message);
+                  break;
+                case 'INPUT_VALIDATION_FAILED':
+                  setError(error.data.formErrors[0] ?? error.message);
+                  for (const [key, values] of Object.entries(error.data.fieldErrors)) {
+                    form.setError(key, values.join('. '));
                   }
                   break;
               }
