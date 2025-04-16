@@ -1,92 +1,44 @@
 import { asSchema } from '@ai-sdk/ui-utils';
-import {
-  McpClientConfigSchemaSchema,
-  ToolInputSchemaSchema,
-  ToolOutputSchemaSchema,
-  TransportSchema,
-} from '@libs/db-pg';
+import type { ToolInputSchemaSchema, ToolOutputSchemaSchema } from '@libs/schemas/mcp';
 import { openApiToMcpServerOptions } from '@openmcp/openapi';
 import { call } from '@orpc/server';
-import { z } from 'zod';
+import type { z } from 'zod';
 
 import { base, requireAuth } from '../middleware.ts';
 
-const listMcpServers = base.handler(async ({ context: { db } }) => {
-  return db.queries.mcpServers.list();
+const listMcpServers = base.mcpServers.list.handler(async ({ context: { db } }) => {
+  return db.queries.mcpServers.listWithTools();
 });
 
-const uploadMcpServer = base
-  .use(requireAuth)
-  .route({ method: 'PUT', path: '/mcp-servers/{externalId}' })
-  .input(
-    z.object({
-      name: z.string(),
-      externalId: z.string().min(2).max(255),
-      description: z.string().optional(),
-      instructions: z.string().optional(),
-      iconUrl: z.string().url().optional(),
-      developer: z.string().optional(),
-      developerUrl: z.string().url().optional(),
-      sourceUrl: z.string().url().optional(),
-      configSchema: McpClientConfigSchemaSchema.optional(),
-      transport: TransportSchema,
-      tools: z
-        .array(
-          z.object({
-            name: z.string(),
-            displayName: z.string().optional(),
-            description: z.string().optional(),
-            instructions: z.string().optional(),
-            inputSchema: ToolInputSchemaSchema.optional(),
-            outputSchema: ToolOutputSchemaSchema.optional(),
-            isReadonly: z.boolean().optional(),
-            isDestructive: z.boolean().optional(),
-            isIdempotent: z.boolean().optional(),
-            isOpenWorld: z.boolean().optional(),
-          }),
-        )
-        .default([]),
-    }),
-  )
-  .handler(async ({ context: { db, session }, input }) => {
-    const { tools, ...serverProps } = input;
+const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({ context: { db, session }, input }) => {
+  const { tools, ...serverProps } = input;
 
-    const existing = await db.queries.mcpServers.getByExternalId({
-      userId: session.userId,
-      externalId: input.externalId,
-    });
-    const existingTools = existing ? await db.queries.mcpTools.listByServerId({ serverId: existing.id }) : [];
-    const toolsToDelete = existingTools.filter(t => !input.tools.some(t2 => t2.name === t.name));
+  const existing = await db.queries.mcpServers.getByExternalId({
+    userId: session.userId,
+    externalId: input.externalId,
+  });
+  const existingTools = existing ? await db.queries.mcpTools.listByServerId({ serverId: existing.id }) : [];
+  const toolsToDelete = existingTools.filter(t => !input.tools.some(t2 => t2.name === t.name));
 
-    const server = await db.transaction(async tx => {
-      if (toolsToDelete.length) {
-        await tx.trxQueries.mcpTools.bulkDeleteById({ ids: toolsToDelete.map(t => t.id) });
-      }
+  const server = await db.transaction(async tx => {
+    if (toolsToDelete.length) {
+      await tx.trxQueries.mcpTools.bulkDeleteById({ ids: toolsToDelete.map(t => t.id) });
+    }
 
-      const server = await tx.trxQueries.mcpServers.upsert({ ...serverProps, userId: session.userId });
+    const server = await tx.trxQueries.mcpServers.upsert({ ...serverProps, userId: session.userId });
 
-      await tx.trxQueries.mcpTools.bulkUpsert(tools.map(t => ({ ...t, mcpServerId: server.id })));
+    await tx.trxQueries.mcpTools.bulkUpsert(tools.map(t => ({ ...t, mcpServerId: server.id })));
 
-      return server;
-    });
-
-    return {
-      id: server.id,
-    };
+    return server;
   });
 
-const uploadFromOpenApi = base
+  return {
+    id: server.id,
+  };
+});
+
+const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
   .use(requireAuth)
-  .input(
-    z.object({
-      openapi: z.string().url(),
-      serverUrl: z.string().url().optional(),
-      iconUrl: z.string().url().optional(),
-      developer: z.string().optional(),
-      developerUrl: z.string().url().optional(),
-      sourceUrl: z.string().url().optional(),
-    }),
-  )
   .handler(async ({ context, input, errors }) => {
     const { openapi, sourceUrl, iconUrl, developer, developerUrl } = input;
 
@@ -103,8 +55,9 @@ const uploadFromOpenApi = base
     const res = await call(
       uploadMcpServer,
       {
-        name: service.name,
+        name: input.name || service.name,
         externalId: serverUrl,
+        summary: getFirstSentence(service.description) || undefined,
         description: service.description,
         developer: developer || service.contact?.name,
         developerUrl: developerUrl || service.contact?.url,
@@ -120,6 +73,7 @@ const uploadFromOpenApi = base
         tools: Object.entries(options.tools).map(([name, tool]) => ({
           name,
           displayName: tool.annotations?.title,
+          summary: getFirstSentence(tool.description) || undefined,
           description: tool.description,
           inputSchema: tool.parameters
             ? (asSchema(tool.parameters).jsonSchema as z.infer<typeof ToolInputSchemaSchema>)
@@ -148,3 +102,42 @@ export const mpcServersRouter = {
     uploadFromOpenApi: uploadFromOpenApi,
   },
 };
+
+/**
+ * Extracts the first sentence from a given text string.
+ *
+ * A sentence is defined as a sequence of characters ending with '.', '!', or '?'.
+ * Note: This simple definition may not correctly handle all edge cases,
+ * such as abbreviations containing periods (e.g., "Mr.").
+ *
+ * @param text The input string, potentially undefined or null.
+ * @returns A string containing the first sentence, or the original text
+ *          if it contains no sentence terminators.
+ *          Returns an empty string if the input is null, undefined, or whitespace only.
+ */
+function getFirstSentence(text: string | undefined | null): string {
+  if (!text) {
+    return '';
+  }
+
+  // Trim leading/trailing whitespace from the input
+  const trimmedText = text.trim();
+  if (!trimmedText) {
+    return '';
+  }
+
+  // Regex to match the first sentence:
+  // - Matches one or more characters that are not sentence terminators ([^.!?]+)
+  // - Followed by a sentence terminator ([.!?])
+  // - Does *not* use the 'g' flag, so it stops after the first match.
+  const sentenceRegex = /[^.!?]+[.!?]/;
+  const match = trimmedText.match(sentenceRegex);
+
+  // If no sentence with a terminator is found, return the trimmed text
+  if (!match) {
+    return trimmedText;
+  }
+
+  // Return the first matched sentence, trimming any trailing whitespace
+  return match[0].trim();
+}

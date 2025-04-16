@@ -986,24 +986,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cloudflare/vite-plugin@npm:1.0.6":
-  version: 1.0.6
-  resolution: "@cloudflare/vite-plugin@npm:1.0.6"
+"@cloudflare/vite-plugin@npm:1.0.7":
+  version: 1.0.7
+  resolution: "@cloudflare/vite-plugin@npm:1.0.7"
   dependencies:
     "@cloudflare/unenv-preset": "npm:2.3.1"
     "@hattip/adapter-node": "npm:^0.0.49"
     "@rollup/plugin-replace": "npm:^6.0.1"
     get-port: "npm:^7.1.0"
-    miniflare: "npm:4.20250410.0"
+    miniflare: "npm:4.20250410.1"
     picocolors: "npm:^1.1.1"
     tinyglobby: "npm:^0.2.12"
     unenv: "npm:2.0.0-rc.15"
-    wrangler: "npm:4.11.0"
+    wrangler: "npm:4.11.1"
     ws: "npm:8.18.0"
   peerDependencies:
     vite: ^6.1.0
     wrangler: ^3.101.0 || ^4.0.0
-  checksum: 10c0/e48676d8735194381b960bc4cad00f0e8ff2b9cec2ecd0e0368ecbed85cbba837df01ed08586e48ceecd23246e8e7fd066e66bfedbb8f353b48c7494ee86d4e1
+  checksum: 10c0/7a0425fc2db881d4cf80a10f1059156c1bfefbaadb4b00ab065affc04ac385ba4f0572eb22458788082c0ed99598dafa2d2c5f45e4e4d9000c7ec28e35b8d849
   languageName: node
   linkType: hard
 
@@ -2239,6 +2239,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@libs/api-contract@workspace:*, @libs/api-contract@workspace:libs/api-contract":
+  version: 0.0.0-use.local
+  resolution: "@libs/api-contract@workspace:libs/api-contract"
+  dependencies:
+    "@libs/db-ids": "workspace:*"
+    "@libs/db-pg": "workspace:*"
+    "@libs/schemas": "workspace:*"
+    "@orpc/contract": "npm:1.0.3"
+    eslint: "npm:9.24.0"
+    zod: "npm:3.24.2"
+  languageName: unknown
+  linkType: soft
+
 "@libs/auth@workspace:*, @libs/auth@workspace:libs/auth":
   version: 0.0.0-use.local
   resolution: "@libs/auth@workspace:libs/auth"
@@ -2293,6 +2306,7 @@ __metadata:
   dependencies:
     "@libs/db-ids": "workspace:*"
     "@libs/db-pg-client": "workspace:*"
+    "@libs/schemas": "workspace:*"
     "@libs/utils-types": "workspace:*"
     drizzle-orm: "npm:0.41.0"
     eslint: "npm:9.24.0"
@@ -2318,6 +2332,16 @@ __metadata:
     eslint-plugin-vitest: "npm:0.5.4"
     globals: "npm:16.0.0"
     typescript-eslint: "npm:8.30.0"
+  languageName: unknown
+  linkType: soft
+
+"@libs/schemas@workspace:*, @libs/schemas@workspace:libs/schemas":
+  version: 0.0.0-use.local
+  resolution: "@libs/schemas@workspace:libs/schemas"
+  dependencies:
+    "@libs/db-ids": "workspace:*"
+    eslint: "npm:9.24.0"
+    zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
 
@@ -10204,9 +10228,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"miniflare@npm:4.20250410.0":
-  version: 4.20250410.0
-  resolution: "miniflare@npm:4.20250410.0"
+"miniflare@npm:4.20250410.1":
+  version: 4.20250410.1
+  resolution: "miniflare@npm:4.20250410.1"
   dependencies:
     "@cspotcode/source-map-support": "npm:0.8.1"
     acorn: "npm:8.14.0"
@@ -10221,7 +10245,7 @@ __metadata:
     zod: "npm:3.22.3"
   bin:
     miniflare: bootstrap.js
-  checksum: 10c0/e962b42dc21a3d0f365bc985efb206bb9c6e165fd1e5d657229767289c148eb22d8bb0b7b89726886bd6bc5e0ba4f74feeba318e237b238c55794ee117928a5b
+  checksum: 10c0/d29f60fa86c9b60e39a2f5064f04f3224ea947cd67b2a1f8d5b772487bf8e2da46392aa343582c4628c55257a333fdb013c3afd4ba3f5e68e01da7ade3a80fe6
   languageName: node
   linkType: hard
 
@@ -12295,7 +12319,7 @@ __metadata:
     eslint: "npm:9.24.0"
     hono: "npm:4.7.6"
     typescript: "npm:5.8.3"
-    wrangler: "npm:4.11.0"
+    wrangler: "npm:4.11.1"
     zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
@@ -14299,13 +14323,15 @@ __metadata:
     "@ariakit/react": "npm:0.4.17"
     "@ariakit/react-core": "npm:0.4.17"
     "@better-fetch/fetch": "npm:1.1.18"
-    "@cloudflare/vite-plugin": "npm:1.0.6"
+    "@cloudflare/vite-plugin": "npm:1.0.7"
     "@fortawesome/free-brands-svg-icons": "npm:6.7.2"
     "@fortawesome/free-regular-svg-icons": "npm:6.7.2"
     "@fortawesome/free-solid-svg-icons": "npm:6.7.2"
+    "@libs/api-contract": "workspace:*"
     "@libs/auth": "workspace:*"
     "@libs/db-pg": "workspace:*"
     "@libs/eslint-config": "workspace:*"
+    "@libs/schemas": "workspace:*"
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"
     "@openmcp/manager": "workspace:*"
@@ -14335,7 +14361,7 @@ __metadata:
     typescript: "npm:5.8.3"
     vite: "npm:6.2.6"
     vite-tsconfig-paths: "npm:5.1.4"
-    wrangler: "npm:4.11.0"
+    wrangler: "npm:4.11.1"
     zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
@@ -14521,16 +14547,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wrangler@npm:4.11.0":
-  version: 4.11.0
-  resolution: "wrangler@npm:4.11.0"
+"wrangler@npm:4.11.1":
+  version: 4.11.1
+  resolution: "wrangler@npm:4.11.1"
   dependencies:
     "@cloudflare/kv-asset-handler": "npm:0.4.0"
     "@cloudflare/unenv-preset": "npm:2.3.1"
     blake3-wasm: "npm:2.1.5"
     esbuild: "npm:0.25.2"
     fsevents: "npm:~2.3.2"
-    miniflare: "npm:4.20250410.0"
+    miniflare: "npm:4.20250410.1"
     path-to-regexp: "npm:6.3.0"
     sharp: "npm:^0.33.5"
     unenv: "npm:2.0.0-rc.15"
@@ -14548,7 +14574,7 @@ __metadata:
   bin:
     wrangler: bin/wrangler.js
     wrangler2: bin/wrangler.js
-  checksum: 10c0/3124ae2375d83c498b5a8308b4954660f8e8bfdd99e20fbaab99dd519019acddc8d75531726fb345a3aec0caaee2b1e9918ba37e108a8fa046bcf836d5130f87
+  checksum: 10c0/1e4f79c18ac19a2c46188f6577c47fa58f835654a47d1e30eae5e2614f40f79d910642241dd2624f4c2072030237ce29d45adc8c1c6e46c686d006673579a5b0
   languageName: node
   linkType: hard
 

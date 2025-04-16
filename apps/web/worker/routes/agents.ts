@@ -1,6 +1,6 @@
 import { base, requireAuth } from '../middleware.ts';
 
-const listAgents = base.use(requireAuth).handler(async ({ context: { db, session } }) => {
+const listAgents = base.agents.list.use(requireAuth).handler(async ({ context: { db, session } }) => {
   return db.queries.agents.listByUserId({ userId: session.userId });
 });
 

@@ -135,6 +135,7 @@ function UploadRawDefinitionsForm() {
       await new Promise<void>((resolve, reject) => {
         uploadFromOpenApi.mutate(
           {
+            name: definition.name || undefined,
             openapi: definition.transport.serverConfig.openapi,
             serverUrl: definition.transport.serverConfig.serverUrl || undefined,
             iconUrl: definition.icon || undefined,
@@ -142,7 +143,7 @@ function UploadRawDefinitionsForm() {
           },
           {
             onSettled() {},
-            onSuccess(data) {
+            onSuccess() {
               resolve();
             },
             onError(error) {

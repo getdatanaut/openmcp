@@ -1,12 +1,11 @@
 {
-  "name": "@libs/db-pg",
+  "name": "@libs/api-contract",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts",
-    "./schema": "./src/schema.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "lint": "eslint .",
@@ -14,14 +13,12 @@
   },
   "dependencies": {
     "@libs/db-ids": "workspace:*",
-    "@libs/db-pg-client": "workspace:*",
-    "@libs/utils-types": "workspace:*",
-    "drizzle-orm": "0.41.0",
-    "kysely": "0.28.0"
+    "@libs/schemas": "workspace:*",
+    "@orpc/contract": "1.0.3",
+    "zod": "3.24.2"
   },
   "devDependencies": {
-    "@libs/schemas": "workspace:*",
-    "eslint": "9.24.0",
-    "zod": "3.24.2"
+    "@libs/db-pg": "workspace:*",
+    "eslint": "9.24.0"
   }
 }

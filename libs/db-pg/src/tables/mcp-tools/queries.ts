@@ -32,6 +32,7 @@ export const mcpToolQueries = ({ db }: BuildQueriesOpts) => {
           .onConflict(oc =>
             oc.columns(['mcpServerId', 'name']).doUpdateSet({
               displayName: eb => eb.ref('excluded.displayName'),
+              summary: eb => eb.ref('excluded.summary'),
               description: eb => eb.ref('excluded.description'),
               instructions: eb => eb.ref('excluded.instructions'),
               inputSchema: eb => eb.ref('excluded.inputSchema'),
@@ -62,7 +63,7 @@ export const summarySelect = [
   'id',
   'name',
   'displayName',
-  'description',
+  'summary',
   'isReadonly',
   'isDestructive',
   'isIdempotent',
@@ -79,6 +80,7 @@ export type SummarySelectCols = (typeof summarySelect)[number];
  */
 export const detailedSelect = [
   ...summarySelect,
+  'description',
   'instructions',
   'inputSchema',
   'outputSchema',

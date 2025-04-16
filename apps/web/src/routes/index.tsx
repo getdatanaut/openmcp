@@ -1,6 +1,6 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { Button, Heading, type IconProps } from '@libs/ui-primitives';
-import { createFileRoute, redirect } from '@tanstack/react-router';
+import { createFileRoute, Navigate, redirect } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
 import { LoginForm } from '~/components/LoginForm.tsx';
@@ -41,12 +41,13 @@ const TempAuthDebug = () => {
   } else if (error) {
     content = <div>Auth error: {error.message}</div>;
   } else if (session) {
-    content = (
-      <div className="flex flex-col gap-6">
-        <div>Signed in as {session.user.email}</div>
-        <Button onClick={() => signOut()}>Sign out</Button>
-      </div>
-    );
+    return <Navigate to="/mcp-servers" />;
+    // content = (
+    //   <div className="flex flex-col gap-6">
+    //     <div>Signed in as {session.user.email}</div>
+    //     <Button onClick={() => signOut()}>Sign out</Button>
+    //   </div>
+    // );
   } else {
     content = (
       <>

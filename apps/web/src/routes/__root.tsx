@@ -1,8 +1,9 @@
 import '../assets/app.css';
 
+import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { createQueryClient } from '~/libs/query.ts';
 
@@ -21,10 +22,31 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <SidebarLayout>
+        <Outlet />
+      </SidebarLayout>
     </QueryClientProvider>
   );
 }
+
+const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
+  const themeClass = 'theme-dracula';
+  const font = 'font-mono';
+
+  const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
+
+  return (
+    <DialogContext value={{ portalElement: rootRef, backdrop: 'blur' }}>
+      <MenuContext value={{ portalElement: rootRef }}>
+        <div className={tn('ak-layer-canvas-down min-h-dvh', themeClass, font)} ref={setRootRef}>
+          <div className="isolate flex h-dvh">{children}</div>
+
+          {/* <GlobalModals /> */}
+        </div>
+      </MenuContext>
+    </DialogContext>
+  );
+};
 
 const isFirefox = () => {
   return typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
