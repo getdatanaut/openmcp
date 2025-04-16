@@ -38,6 +38,7 @@
     "@tanstack/react-router-devtools": "1.116.0",
     "ai": "4.3.4",
     "dayjs": "1.11.13",
+    "neverthrow": "8.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-markdown": "10.1.0",

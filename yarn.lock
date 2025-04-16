@@ -14351,6 +14351,7 @@ __metadata:
     ai: "npm:4.3.4"
     dayjs: "npm:1.11.13"
     eslint: "npm:9.24.0"
+    neverthrow: "npm:8.2.0"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     react-markdown: "npm:10.1.0"

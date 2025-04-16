@@ -32,46 +32,51 @@ export default {
       },
     });
 
-    if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith(AUTH_BASE_PATH)) {
-      const res = await auth.handler(req);
+    try {
+      if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith(AUTH_BASE_PATH)) {
+        const res = await auth.handler(req);
 
+        return res;
+      }
+
+      const session = (await auth.api.getSession({ headers: req.headers })) as {
+        user: AuthUser;
+        session: AuthSession;
+      } | null;
+
+      const orpcContext = {
+        db,
+        user: session?.user ?? null,
+        session: session?.session ?? null,
+        r2OpenApiBucket: env.OPENMCP_OPENAPI,
+      } satisfies RootContext;
+
+      const rpcRes = await rpcHandler.handle(req, {
+        prefix: RPC_BASE_PATH,
+        context: orpcContext,
+      });
+
+      if (rpcRes.matched) {
+        ctx.waitUntil(db.client.destroy());
+
+        return rpcRes.response;
+      }
+
+      const openApiRes = await openApiHandler.handle(req, {
+        prefix: API_BASE_PATH,
+        context: orpcContext,
+      });
+
+      if (openApiRes.matched) {
+        return openApiRes.response;
+      }
+
+      return new Response(null, { status: 404 });
+    } catch (error) {
+      console.error(error);
+      return new Response(null, { status: 500 });
+    } finally {
       ctx.waitUntil(db.client.destroy());
-
-      return res;
     }
-
-    ctx.waitUntil(db.client.destroy());
-
-    const session = (await auth.api.getSession({ headers: req.headers })) as {
-      user: AuthUser;
-      session: AuthSession;
-    } | null;
-
-    const orpcContext = {
-      db,
-      user: session?.user ?? null,
-      session: session?.session ?? null,
-      r2OpenApiBucket: env.OPENMCP_OPENAPI,
-    } satisfies RootContext;
-
-    const rpcRes = await rpcHandler.handle(req, {
-      prefix: RPC_BASE_PATH,
-      context: orpcContext,
-    });
-
-    if (rpcRes.matched) {
-      return rpcRes.response;
-    }
-
-    const openApiRes = await openApiHandler.handle(req, {
-      prefix: API_BASE_PATH,
-      context: orpcContext,
-    });
-
-    if (openApiRes.matched) {
-      return openApiRes.response;
-    }
-
-    return new Response(null, { status: 404 });
   },
 } satisfies ExportedHandler<Env>;

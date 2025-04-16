@@ -64,10 +64,21 @@ const uploadFromOpenApiContract = base
   )
   .output(type<{ id: TMcpServerId }>());
 
+const getOpenApiDocumentContract = base
+  .route({
+    method: 'GET',
+    path: '/mcp-servers/{serverId}/openapi',
+    outputStructure: 'detailed',
+  })
+  .errors({ NOT_FOUND: {} })
+  .input(type<{ serverId: TMcpServerId }>())
+  .output(type<{ body: Blob }>());
+
 export const mpcServersRouterContract = {
   mcpServers: {
     list: listMcpServersContract,
     upload: uploadMcpServerContract,
     uploadFromOpenApi: uploadFromOpenApiContract,
+    getOpenApiDocument: getOpenApiDocumentContract,
   },
 };
