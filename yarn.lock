@@ -2629,6 +2629,7 @@ __metadata:
     "@orpc/client": "npm:^1.0.3"
     "@orpc/server": "npm:^1.0.3"
     "@types/yargs": "npm:^17.0.33"
+    "@types/yargs-parser": "npm:^21"
     consola: "npm:~3.4.2"
     eslint: "npm:9.24.0"
     msw: "npm:2.7.3"
@@ -2637,6 +2638,7 @@ __metadata:
     typescript: "npm:5.8.3"
     vitest: "npm:3.1.1"
     yargs: "npm:~17.7.2"
+    yargs-parser: "npm:~21.1.1"
   languageName: unknown
   linkType: soft
 
@@ -4485,7 +4487,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yargs-parser@npm:*":
+"@types/yargs-parser@npm:*, @types/yargs-parser@npm:^21":
   version: 21.0.3
   resolution: "@types/yargs-parser@npm:21.0.3"
   checksum: 10c0/e71c3bd9d0b73ca82e10bee2064c384ab70f61034bbfb78e74f5206283fc16a6d85267b606b5c22cb2a3338373586786fed595b2009825d6a9115afba36560a0
@@ -14752,7 +14754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs-parser@npm:^21.1.1":
+"yargs-parser@npm:^21.1.1, yargs-parser@npm:~21.1.1":
   version: 21.1.1
   resolution: "yargs-parser@npm:21.1.1"
   checksum: 10c0/f84b5e48169479d2f402239c59f084cfd1c3acc197a05c59b98bab067452e6b3ea46d4dd8ba2985ba7b3d32a343d77df0debd6b343e5dae3da2aab2cdf5886b2

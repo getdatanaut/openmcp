@@ -46,13 +46,15 @@
     "@openmcp/remix": "workspace:*",
     "@orpc/client": "^1.0.3",
     "consola": "~3.4.2",
-    "yargs": "~17.7.2"
+    "yargs": "~17.7.2",
+    "yargs-parser": "~21.1.1"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "@orpc/server": "^1.0.3",
     "@types/yargs": "^17.0.33",
+    "@types/yargs-parser": "^21",
     "eslint": "9.24.0",
     "msw": "2.7.3",
     "ts-node": "^10.9.2",
