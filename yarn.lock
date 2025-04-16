@@ -5034,6 +5034,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@zedux/atoms@npm:2.0.0-rc.7":
+  version: 2.0.0-rc.7
+  resolution: "@zedux/atoms@npm:2.0.0-rc.7"
+  checksum: 10c0/6c5921329f3c69e1cdb63ae7fdb2e7eb91939bdf8d528b563e6f7a92fc782e14e6e70093ea4efb71e512562b67aae385b8be1c185e82f9c832223e11a8c9564b
+  languageName: node
+  linkType: hard
+
+"@zedux/react@npm:2.0.0-rc.7":
+  version: 2.0.0-rc.7
+  resolution: "@zedux/react@npm:2.0.0-rc.7"
+  dependencies:
+    "@zedux/atoms": "npm:2.0.0-rc.7"
+  peerDependencies:
+    react: ">=18.0.0"
+  checksum: 10c0/a8a6ce9fe53c5f80272c9feefda90285caad7574ec0add8044de6f0baae3a70900c5ae949e4e4afe71581e3a5cd9c5916971651dcd60c39f0dae5040f7a2308e
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^3.0.0":
   version: 3.0.0
   resolution: "abbrev@npm:3.0.0"
@@ -14348,6 +14366,7 @@ __metadata:
     "@types/react": "npm:19.1.1"
     "@types/react-dom": "npm:19.1.2"
     "@vitejs/plugin-react": "npm:4.4.0"
+    "@zedux/react": "npm:2.0.0-rc.7"
     ai: "npm:4.3.4"
     dayjs: "npm:1.11.13"
     eslint: "npm:9.24.0"

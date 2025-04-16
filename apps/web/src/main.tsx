@@ -1,13 +1,32 @@
-import { createRouter, RouterProvider } from '@tanstack/react-router';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createRouter as baseCreateRouter, RouterProvider } from '@tanstack/react-router';
 import ReactDOM from 'react-dom/client';
 
 import { routeTree } from './routeTree.gen.ts';
 
-// Set up a Router instance
-const router = createRouter({
-  routeTree,
-  defaultPreload: 'intent',
-});
+export function createRouter() {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        refetchOnReconnect: true,
+        refetchOnWindowFocus: true,
+        staleTime: 1000 * 30,
+      },
+    },
+  });
+
+  return {
+    queryClient,
+    router: baseCreateRouter({
+      routeTree,
+      defaultPreload: 'intent',
+      context: { queryClient },
+    }),
+  };
+}
+
+const { queryClient, router } = createRouter();
 
 // Register things for typesafety
 declare module '@tanstack/react-router' {
@@ -16,4 +35,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
-ReactDOM.createRoot(document.getElementById('app')!).render(<RouterProvider router={router} />);
+ReactDOM.createRoot(document.getElementById('app')!).render(
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+  </QueryClientProvider>,
+);
