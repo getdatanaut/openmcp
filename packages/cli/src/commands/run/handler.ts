@@ -1,7 +1,7 @@
 import * as fs from 'node:fs/promises';
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { type Config, createRemixServer, parseConfig } from '@openmcp/remix';
+import type { Config } from '@openmcp/remix';
 
 type Input =
   | {
@@ -14,6 +14,7 @@ type Input =
 
 async function loadConfig(input: Input): Promise<Config> {
   if ('configFile' in input) {
+    const { parseConfig } = await import('@openmcp/remix');
     return parseConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')));
   }
 
@@ -21,6 +22,7 @@ async function loadConfig(input: Input): Promise<Config> {
 }
 
 export default async function handler(input: Input): Promise<void> {
+  const { createRemixServer } = await import('@openmcp/remix');
   const config = await loadConfig(input);
   const remixServer = await createRemixServer(
     {

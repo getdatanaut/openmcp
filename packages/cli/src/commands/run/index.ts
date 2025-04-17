@@ -1,32 +1,25 @@
-import type { Argv, CommandBuilder, CommandModule } from 'yargs';
+import type { Argv, CommandModule } from 'yargs';
 
 import { wrapConsole } from '../../console/index.ts';
 
-const builder = ((yargs: Argv) =>
-  yargs
-    .strict()
-    .options({
-      server: {
-        type: 'string',
-        describe: 'The name of the server to start',
-      },
-      secret: {
-        type: 'string',
-        describe: 'The secret to use for authentication',
-        implies: 'server',
-      },
-      config: {
-        type: 'string',
-        describe: 'The filepath to the local config file',
-      },
-    } as const)
-    .check(argv => {
-      if (!argv.config && !argv.server) {
-        throw new Error('You must provide either "config" or "server" and/or "secret"');
-      }
-
-      return true;
-    })) satisfies CommandBuilder;
+const builder = (yargs: Argv) =>
+  yargs.strict().options({
+    server: {
+      type: 'string',
+      describe: 'The name of the server to start',
+      conflicts: 'config',
+    },
+    secret: {
+      type: 'string',
+      describe: 'The secret to use for authentication',
+      implies: 'server',
+    },
+    config: {
+      type: 'string',
+      describe: 'The filepath to the local config file',
+      conflicts: 'server',
+    },
+  } as const);
 
 export default {
   describe: 'Start a new server',
