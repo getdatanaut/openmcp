@@ -51,6 +51,8 @@ export const StdIOServerSchema = z.object({
   type: z.literal('stdio'),
   command: z.string().nonempty('Command must be provided'),
   args: z.array(z.string()),
+  env: z.record(z.string()).optional(),
+  cwd: z.string().optional(),
   tools,
 });
 
