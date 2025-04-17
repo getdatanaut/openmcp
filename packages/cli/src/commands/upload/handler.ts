@@ -1,15 +1,40 @@
-import * as fs from 'node:fs/promises';
+// import { rpcClient } from '../../libs/client.ts';
+import createConnectedClient from './mcp-utils/create-client.ts';
+import listMcpTools from './mcp-utils/get-tools.ts';
+import createTransportDefinition from './transport-definitions/index.ts';
+import type { ServerDefinition } from './types.ts';
 
-import { rpc } from '../../libs/rpc.ts';
+export default async function handler(definition: ServerDefinition): Promise<void> {
+  const { transport, transportConfig, configSchema, externalId } = await createTransportDefinition(definition);
+  const defaultAnnotations = {
+    iconUrl: definition.iconUrl,
+    developer: definition.developer,
+  };
 
-async function loadConfig(input: Input): Promise<Config> {
-  if ('configFile' in input) {
-    return parseConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')));
+  await using client = await createConnectedClient(transport, defaultAnnotations);
+  const serverVersion = client.getServerVersion();
+  if (!serverVersion) {
+    throw new Error('Failed to get server version');
   }
+  const serverAnnotations = client.getServerAnnotations();
 
-  throw new Error('Server config not supported');
+  const mcpServer = {
+    name: serverVersion.name,
+    externalId: externalId ?? serverVersion.name,
+    description: unwrapStringOrUndefined(serverAnnotations?.['description']),
+    developer: definition.developer ?? unwrapStringOrUndefined(serverAnnotations?.['developer']),
+    developerUrl: definition.developerUrl || unwrapStringOrUndefined(serverAnnotations?.['developerUrl']),
+    iconUrl: definition.iconUrl ?? serverAnnotations?.iconUrl,
+    sourceUrl: definition.sourceUrl,
+    configSchema,
+    transport: transportConfig,
+    tools: await listMcpTools(client),
+  };
+
+  console.log(mcpServer);
+  // await rpcClient.mcpServers.upload(mcpServer);
 }
 
-export default async function handler(input: Input): Promise<void> {
-  const uploadFromOpenApi = useMutation(rpc.mcpServers.uploadFromOpenApi.mutationOptions());
+function unwrapStringOrUndefined(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
 }

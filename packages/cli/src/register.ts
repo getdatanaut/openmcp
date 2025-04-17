@@ -13,8 +13,8 @@ export default async function register(argv: string[]) {
     .showHelpOnFail(true)
     .wrap(yargs().terminalWidth())
     .strictCommands()
-    .strictOptions()
-    .command([runCommand, uploadCommand])
+    .command(runCommand)
+    .command(uploadCommand)
     .demandCommand(1, '')
     .parse(argv);
 }

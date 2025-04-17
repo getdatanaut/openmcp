@@ -1,79 +1,119 @@
-import type { Arguments, Argv, CommandBuilder, CommandModule } from 'yargs';
+import path from 'node:path';
+
+import type { Argv, CommandBuilder, CommandModule } from 'yargs';
 
 import handler from './handler.ts';
+import type { ServerDefinition } from './types.ts';
 
-type Args = {
-  timeout: number;
-} & (
-  | {
-      type: 'sse' | 'streamable-http' | 'openapi';
-      source: string;
-      headers: string[];
-    }
-  | {
-      type: 'stdio';
-      command: string;
-    }
-);
+function parsePairs(pairs: string[]): Record<string, string> {
+  const result: Record<string, string> = {};
+  for (const pair of pairs) {
+    const split = pair
+      .split(':')
+      .map(s => s.trim())
+      .filter(Boolean);
 
-const builder = ((yargs: Argv) =>
+    if (split.length !== 2) {
+      throw new Error(`Invalid header format: ${pair}. Expected format: "key:value"`);
+    }
+    const [key, value] = split as [string, string];
+    result[key] = value;
+  }
+  return result;
+}
+
+function isPopulated(input: unknown): input is [string, ...string[]] {
+  return Array.isArray(input) && input.length > 0;
+}
+
+const builder: CommandBuilder<{}, ServerDefinition> = yargs =>
   yargs
+    .parserConfiguration({ 'populate--': true })
     .strict()
+    // .example('$0 upload --type stdio -- npx -y @modelcontextprotocol/server-filesystem /tmp', 'Upload STDIO MCP server')
+    // .example('$0 upload --type sse -- http://localhost:3000/sse', 'Upload SSE MCP server')
+    // .example('$0 upload --type streamable-http -- http://localhost:3000/mcp', 'Upload streamable HTTP MCP server')
+    // .example('$0 upload --type openapi -- ./openapi.v3.yaml', 'Upload OpenAPI MCP server')
     .options({
       type: {
-        choices: ['stdio', 'sse', 'streamable-http', 'openapi'],
+        choices: ['stdio', 'sse', 'streamable-http', 'openapi'] as const,
+        description: 'Type of the MCP Server',
         demandOption: true,
       },
-      timeout: {
-        type: 'number',
-        describe: 'Timeout in milliseconds for the server/command to respond',
-        default: 10_000,
+      developer: {
+        type: 'string',
+        description: 'Developer of the server',
+      },
+      iconUrl: {
+        type: 'string',
+        description: 'Icon URL of the server',
+      },
+      sourceUrl: {
+        type: 'string',
+        description: 'Source URL of the server',
+      },
+      serverUrl: {
+        type: 'string',
+        description: 'Server URL of the OpenAPI server',
       },
       headers: {
         type: 'array',
-        describe: 'Headers to send with the request. Applicable to sse, streamable-http and openapi types.',
-        default: [],
-        group: 'HTTP Options',
-      },
-      source: {
-        type: 'string',
         describe:
-          'Source URL for the tool. Applicable to sse, streamable-http and openapi types. For openapi type this can be both a URL or a file path.',
-        group: 'HTTP Options',
+          "A key:value header pairs to send with the requests to SSE / StreamableHttp MCP server instance. This is primarily meant to be used to set the Authorization header. It's best combined with config",
+        default: [],
+        group: 'StreamableHttp/SSE Client Configuration',
+        coerce: parsePairs,
       },
-      command: {
-        type: 'string',
-        describe: 'Command to run. Applicable to stdio type.',
-      },
-    } as const)
-    .check((argv): argv is Arguments<Args> => {
-      switch (argv.type) {
-        case 'stdio':
-          if (typeof argv.command !== 'string') {
-            throw new Error('Command must be provided for stdio type');
-          }
-          break;
-        case 'sse':
-        case 'streamable-http':
-        case 'openapi':
-          if (typeof argv.source !== 'string') {
-            throw new Error('Source URL must be provided for sse, streamable-http and openapi types');
-          }
-          if (argv.type !== 'openapi' && !URL.canParse(argv.source)) {
-            throw new Error('Source URL must be a valid URL');
-          }
-          break;
-        default:
-          throw new Error('Type must be provided');
+    })
+    .middleware(argv => {
+      const source = argv['--'];
+      if (!isPopulated(source)) {
+        throw new Error('Missing URL or command.');
       }
 
-      return true;
-    })) satisfies CommandBuilder<Args, Args>;
+      if (argv.type === 'stdio') {
+        const validIdentifier = /^(?!-)[A-Za-z0-9_-]+$/;
+        argv['input'] = source
+          .map(argv => {
+            if (argv.startsWith('-')) {
+              return argv;
+            }
+
+            if (validIdentifier.test(argv)) {
+              return argv;
+            }
+
+            return JSON.stringify(argv);
+          })
+          .join(' ');
+        return;
+      }
+
+      if (source.length > 1) {
+        throw new Error(argv.type === 'openapi' ? 'Only one URL or file path is allowed.' : 'Only one URL is allowed.');
+      }
+
+      switch (argv.type) {
+        case 'sse':
+        case 'streamable-http':
+          argv['url'] = new URL(source[0]);
+          break;
+        case 'openapi': {
+          const uri = source[0];
+          if (!URL.canParse(uri) && !path.isAbsolute(uri)) {
+            argv['uri'] = path.join(process.cwd(), uri);
+          } else {
+            argv['uri'] = uri;
+          }
+          break;
+        }
+      }
+    }) as unknown as Argv<ServerDefinition>;
 
 export default {
   command: 'upload',
   builder,
   describe: 'Upload an mpc server',
   // describe: false, // Hides the command from the help output
-  async handler(args) {},
-} satisfies CommandModule<{}, Args>;
+  handler,
+} satisfies CommandModule<{}, ServerDefinition>;

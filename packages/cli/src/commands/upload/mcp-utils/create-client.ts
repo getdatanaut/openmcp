@@ -3,10 +3,11 @@ import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 
 import packageJson from '../../../../package.json' with { type: 'json' };
 
-// https://github.com/modelcontextprotocol/modelcontextprotocol/blob/dfd270157380c645d0731f9f2ffbc89f75fba47d/schema/2025-03-26/schema.ts#L177
 interface ServerAnnotations {
+  // https://github.com/modelcontextprotocol/modelcontextprotocol/blob/dfd270157380c645d0731f9f2ffbc89f75fba47d/schema/2025-03-26/schema.ts#L177
   serverName?: string;
   iconUrl?: string;
+  [key: string]: unknown;
 }
 
 export type ConnectedClient = Pick<

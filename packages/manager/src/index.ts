@@ -25,5 +25,5 @@ export { Server } from './servers.ts';
 export type { Storage } from './storage/index.ts';
 export type { AIResponseMessage, ThreadMessageStorageData, ThreadStorageData } from './threads.ts';
 export { Thread } from './threads.ts';
-export type { TransportConfig } from './transport.ts';
+export type { TransportConfig, TransportConfigs } from './transport.ts';
 export type { ClientId, McpManagerId, ServerId, ThreadId, ThreadMessageId } from './types.ts';

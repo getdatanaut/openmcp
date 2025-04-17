@@ -2621,12 +2621,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/cli@workspace:packages/cli"
   dependencies:
+    "@libs/api-contract": "workspace:*"
     "@libs/eslint-config": "workspace:*"
+    "@libs/schemas": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
+    "@openmcp/openapi": "workspace:*"
     "@openmcp/remix": "workspace:*"
-    "@orpc/client": "npm:^1.0.3"
-    "@orpc/server": "npm:^1.0.3"
+    "@orpc/client": "npm:1.0.3"
     "@types/yargs": "npm:^17.0.33"
     "@types/yargs-parser": "npm:^21"
     consola: "npm:~3.4.2"
@@ -2790,7 +2792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@orpc/client@npm:1.0.3, @orpc/client@npm:^1.0.3":
+"@orpc/client@npm:1.0.3":
   version: 1.0.3
   resolution: "@orpc/client@npm:1.0.3"
   dependencies:
@@ -2854,7 +2856,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@orpc/server@npm:1.0.3, @orpc/server@npm:^1.0.3":
+"@orpc/server@npm:1.0.3":
   version: 1.0.3
   resolution: "@orpc/server@npm:1.0.3"
   dependencies:
