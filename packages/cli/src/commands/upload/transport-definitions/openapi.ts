@@ -49,6 +49,34 @@ export class OpenAPIClientTransport implements Transport {
     this.#transport = transport;
   }
 
+  get onclose(): (() => void) | undefined {
+    return this.#transport.onclose;
+  }
+
+  set onclose(onclose: () => void) {
+    this.#transport.onclose = onclose;
+  }
+
+  get onerror(): ((error: Error) => void) | undefined {
+    return this.#transport.onerror;
+  }
+
+  set onerror(onerror: (error: Error) => void) {
+    this.#transport.onerror = onerror;
+  }
+
+  get onmessage(): ((message: JSONRPCMessage) => void) | undefined {
+    return this.#transport.onmessage;
+  }
+
+  set onmessage(onmessage: (message: JSONRPCMessage) => void) {
+    this.#transport.onmessage = onmessage;
+  }
+
+  get sessionId() {
+    return this.#transport.sessionId;
+  }
+
   send(message: JSONRPCMessage) {
     return this.#transport.send(message);
   }
