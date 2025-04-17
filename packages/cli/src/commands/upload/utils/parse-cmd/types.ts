@@ -1,3 +1,5 @@
+import type ConfigSchema from '../config-schema.ts';
+
 export type ResultArg =
   | {
       type: 'positional';
@@ -16,5 +18,5 @@ export type Result = {
   command: string;
   args: ResultArg[];
   env: Record<string, string>;
-  vars: Set<string>;
+  configSchema: ConfigSchema;
 };

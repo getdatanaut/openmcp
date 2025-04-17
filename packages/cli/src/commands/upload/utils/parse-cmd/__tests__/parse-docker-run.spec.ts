@@ -1,61 +1,69 @@
 import { describe, expect, it } from 'vitest';
 
+import ConfigSchema from '../../config-schema.ts';
 import parseDockerRun from '../parse-docker-run.ts';
 
 const cases = [
   [
-    'docker run nginx',
+    'run nginx',
     {
       command: 'docker',
       externalId: 'nginx',
-      args: [{ type: 'positional', raw: 'nginx', value: 'nginx' }],
-      vars: new Set(),
+      args: [
+        { type: 'positional', raw: 'run', value: 'run' },
+        { type: 'positional', raw: 'nginx', value: 'nginx' },
+      ],
+      configSchema: null,
     },
   ],
   [
-    'docker run -it ubuntu bash',
+    'run -it ubuntu bash',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'i', raw: 'true', value: 'true' },
         { type: 'flag', name: 't', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
         { type: 'positional', raw: 'bash', value: 'bash' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run -d nginx',
+    'run -d nginx',
     {
       command: 'docker',
       externalId: 'nginx',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'd', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run -p 8080:80 nginx',
+    'run -p 8080:80 nginx',
     {
       command: 'docker',
       externalId: 'nginx',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'p', raw: '8080:80', value: '8080:80' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run -e ENV_VAR_NAME=value ubuntu',
+    'run -e ENV_VAR_NAME=value ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         {
           type: 'flag',
           name: 'e',
@@ -64,144 +72,163 @@ const cases = [
         },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(['ENV_VAR_NAME']),
+      configSchema: {
+        type: 'object',
+        properties: {
+          ENV_VAR_NAME: {
+            type: 'string',
+          },
+        },
+        required: ['ENV_VAR_NAME'],
+      },
     },
   ],
   [
-    'docker run -v /host/path:/container/path ubuntu',
+    'run -v /host/path:/container/path ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'v', raw: '/host/path:/container/path', value: '/host/path:/container/path' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --memory=512m ubuntu',
+    'container run --memory=512m ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'container', value: 'container' },
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'memory', raw: '512m', value: '512m' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --name my_container ubuntu',
+    'run --name my_container ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'name', raw: 'my_container', value: 'my_container' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --rm ubuntu',
+    'run --rm ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'rm', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --network=my_network nginx',
+    'run --network=my_network nginx',
     {
       command: 'docker',
       externalId: 'nginx',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'network', raw: 'my_network', value: 'my_network' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run -u 1000:1000 ubuntu',
+    'run -u 1000:1000 ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'u', raw: '1000:1000', value: '1000:1000' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --restart=always nginx',
+    'run --restart=always nginx',
     {
       command: 'docker',
       externalId: 'nginx',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'restart', raw: 'always', value: 'always' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --hostname=myhost ubuntu',
+    'run --hostname=myhost ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'hostname', raw: 'myhost', value: 'myhost' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --cpus=1.5 ubuntu',
+    'run --cpus=1.5 ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'cpus', raw: '1.5', value: '1.5' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --entrypoint /bin/sh ubuntu',
+    'run --entrypoint /bin/sh ubuntu',
     {
       command: 'docker',
       externalId: 'ubuntu',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'entrypoint', raw: '/bin/sh', value: '/bin/sh' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run --read-only nginx',
+    'run --read-only nginx',
     {
       command: 'docker',
       externalId: 'nginx',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'read-only', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
     [
-      'docker',
       'run',
       '--rm',
       '-i',
@@ -217,6 +244,7 @@ const cases = [
       command: 'docker',
       externalId: 'mcp/git',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'rm', raw: 'true', value: 'true' },
         { type: 'flag', name: 'i', raw: 'true', value: 'true' },
         {
@@ -239,29 +267,36 @@ const cases = [
         },
         { type: 'positional', raw: 'mcp/git', value: 'mcp/git' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
   [
-    'docker run -i --rm --init -e DOCKER_CONTAINER=true mcp/puppeteer',
+    'run -i --rm --init -e DOCKER_CONTAINER=true mcp/puppeteer',
     {
       command: 'docker',
       externalId: 'mcp/puppeteer',
       args: [
+        { type: 'positional', raw: 'run', value: 'run' },
         { type: 'flag', name: 'i', raw: 'true', value: 'true' },
         { type: 'flag', name: 'rm', raw: 'true', value: 'true' },
         { type: 'flag', name: 'init', raw: 'true', value: 'true' },
         { type: 'flag', name: 'e', raw: 'DOCKER_CONTAINER=true', value: 'DOCKER_CONTAINER=true' },
         { type: 'positional', raw: 'mcp/puppeteer', value: 'mcp/puppeteer' },
       ],
-      vars: new Set(),
+      configSchema: null,
     },
   ],
 ] as const;
 
 describe('parseDockerRun', () => {
   it.each(cases)('should parse command: %s', (input, expected) => {
-    const parsed = parseDockerRun(input);
-    expect(parsed).toStrictEqual(expected);
+    const configSchema = new ConfigSchema();
+    const parsed = parseDockerRun(configSchema, 'docker', input);
+    expect(parsed).toStrictEqual({
+      command: expected.command,
+      args: expected.args,
+      externalId: expected.externalId,
+    });
+    expect(configSchema.serialize()).toStrictEqual(expected.configSchema);
   });
 });

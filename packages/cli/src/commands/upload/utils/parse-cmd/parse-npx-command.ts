@@ -1,11 +1,16 @@
 import yargsParser from 'yargs-parser';
 
+import type ConfigSchema from '../config-schema.ts';
+import { toInterpolable, toScreamCase } from '../string.ts';
 import type { Result, ResultArg } from './types.ts';
-import { toInterpolable, toScreamCase } from './utils.ts';
 
 const KNOWN_BOOLEAN_FLAGS = ['y', 'yes', 'q', 'quiet'];
 
-export default function parseNpx(command: string, input: string): Omit<Result, 'env'> {
+export default function parseNpx(
+  configSchema: ConfigSchema,
+  command: string,
+  input: string,
+): Omit<Result, 'env' | 'configSchema'> {
   const argv = yargsParser(input, {
     configuration: {
       'camel-case-expansion': false,
@@ -13,7 +18,7 @@ export default function parseNpx(command: string, input: string): Omit<Result, '
     },
     boolean: KNOWN_BOOLEAN_FLAGS,
   });
-  const positional = argv._.slice(1).map(String);
+  const positional = argv._.map(String);
   if (positional.length === 0) {
     throw new Error('No package found');
   }
@@ -36,7 +41,6 @@ export default function parseNpx(command: string, input: string): Omit<Result, '
     }
   }
 
-  const vars = new Set<string>();
   const positionalArgs = positional.slice(1).map<ResultArg>(arg => {
     if (arg.startsWith('-')) {
       return {
@@ -46,8 +50,7 @@ export default function parseNpx(command: string, input: string): Omit<Result, '
       };
     }
 
-    const varName = toScreamCase(`ARG_${vars.size}`);
-    vars.add(varName);
+    const varName = configSchema.add(toScreamCase(`ARG_${configSchema.size}`), configSchema.inferType(arg));
     return {
       type: 'positional',
       raw: arg,
@@ -67,6 +70,5 @@ export default function parseNpx(command: string, input: string): Omit<Result, '
       ...positionalArgs,
     ],
     externalId,
-    vars,
   };
 }

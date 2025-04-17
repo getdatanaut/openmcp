@@ -1,21 +1,24 @@
+import type ConfigSchema from './config-schema.ts';
+import { toInterpolable } from './string.ts';
+
 /**
  * Masks authentication-related information in a given URL
  *
- * @param vars - This is used to track which variables have been masked.
+ * @param configSchema - This is used to track which variables have been masked.
  * @param url - The URL object to parse for embedded credentials or authentication query parameters.
  * @return a masked URL string
  */
-export default function maskUrl(vars: Set<string>, url: URL): string {
+export default function maskUrl(configSchema: ConfigSchema, url: URL): string {
   // Start with the protocol and host
   let joinedUrl = `${url.protocol}//`;
 
   // Extract embedded credentials (if any)
   for (const field of ['username', 'password'] as const) {
     if (url[field]) {
-      vars.add(field);
-      joinedUrl += `{{${field}}}`;
+      const registeredKey = configSchema.add(field, 'string');
+      joinedUrl += toInterpolable(registeredKey);
       if (field === 'username') {
-        // Add separator between username and password or username and host
+        // Add a separator between username and password or username and host
         joinedUrl += url.password ? ':' : '@';
       } else if (field === 'password') {
         // Add separator after password
@@ -40,9 +43,9 @@ export default function maskUrl(vars: Set<string>, url: URL): string {
         joinedUrl += '&';
       }
 
-      if (paramKeys.includes(key) && value) {
-        vars.add(key);
-        joinedUrl += `${key}={{${key}}}`;
+      if (paramKeys.includes(key) && value.length > 0) {
+        const registeredKey = configSchema.add(key, 'string');
+        joinedUrl += `${key}=${toInterpolable(registeredKey)}`;
       } else {
         joinedUrl += `${key}=${value}`;
       }

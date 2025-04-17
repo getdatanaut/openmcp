@@ -1,3 +1,4 @@
+import type ConfigSchema from '../config-schema.ts';
 import type { Result } from './types.ts';
 
 function splitByWhitespacePreservingQuotes(input: string): string[] {
@@ -16,7 +17,11 @@ function isChar(code: number): boolean {
   return (code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a);
 }
 
-export default function parseGeneric(command: string, input: string): Omit<Result, 'env'> {
+export default function parseGeneric(
+  _configSchema: ConfigSchema,
+  command: string,
+  input: string,
+): Omit<Result, 'env' | 'configSchema'> {
   const args = splitByWhitespacePreservingQuotes(input);
   const externalId = [command];
   for (const arg of args) {
@@ -35,6 +40,5 @@ export default function parseGeneric(command: string, input: string): Omit<Resul
       value: arg,
     })),
     externalId: externalId.join('-'),
-    vars: new Set(),
   };
 }

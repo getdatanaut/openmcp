@@ -1,8 +1,9 @@
 import { default as yargsParser } from 'yargs-parser';
 
+import type ConfigSchema from '../config-schema.ts';
+import { toInterpolable, toScreamCase } from '../string.ts';
 import parseEnvVariables from './parse-env-variables.ts';
 import type { Result, ResultArg } from './types.ts';
-import { toInterpolable, toScreamCase } from './utils.ts';
 
 const KNOWN_BOOLEAN_FLAGS = [
   'd',
@@ -75,7 +76,11 @@ function handleArbitraryArg(name: string, value: unknown): ResultArg {
   };
 }
 
-export default function parseDockerRun(command: string, input: string): Omit<Result, 'env'> {
+export default function parseDockerRun(
+  configSchema: ConfigSchema,
+  command: string,
+  input: string,
+): Omit<Result, 'env' | 'configSchema'> {
   const argv = yargsParser(input, {
     configuration: {
       'dot-notation': false,
@@ -100,8 +105,14 @@ export default function parseDockerRun(command: string, input: string): Omit<Res
 
   const externalId = positional[0]!;
 
-  const vars = new Set<string>();
-  const args: ResultArg[] = [];
+  const args: ResultArg[] = argv._.slice(0, runCommandIndex + 1).map(arg => {
+    return {
+      type: 'positional',
+      raw: String(arg),
+      value: String(arg),
+    };
+  });
+
   for (const [name, value] of Object.entries(argv)) {
     switch (name) {
       case '_':
@@ -115,13 +126,13 @@ export default function parseDockerRun(command: string, input: string): Omit<Res
             name,
             raw: item,
             value: parseEnvVariables(String(item))
-              .vars.map(([name, val]) => {
-                if (val === 'true' || val === 'false' || val === '0' || val === '1') {
-                  return [name, val].join('=');
+              .vars.map(([name, value]) => {
+                const type = configSchema.inferType(value);
+                if (type === 'boolean') {
+                  return [name, value].join('=');
                 }
 
-                const varName = toScreamCase(name);
-                vars.add(varName);
+                const varName = configSchema.add(toScreamCase(name), type);
                 return [name, toInterpolable(varName)].join('=');
               })
               .join(' '),
@@ -151,6 +162,5 @@ export default function parseDockerRun(command: string, input: string): Omit<Res
     command,
     args,
     externalId,
-    vars,
   };
 }

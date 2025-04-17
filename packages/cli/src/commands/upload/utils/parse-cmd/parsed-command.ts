@@ -1,7 +1,7 @@
 import type { StdioServerParameters } from '@modelcontextprotocol/sdk/client/stdio.js';
 import type { TransportConfig } from '@openmcp/manager';
 
-import type { Result } from './types.ts';
+import type { Result, ResultArg } from './types.ts';
 
 export default class ParsedCommand {
   readonly #result: Result;
@@ -14,17 +14,27 @@ export default class ParsedCommand {
     return this.#result.externalId;
   }
 
-  get vars() {
-    return this.#result.vars;
+  get configSchema() {
+    return this.#result.configSchema;
   }
 
   getStdioServerParameters(cwd: string): StdioServerParameters {
     return {
       command: this.#result.command,
-      args: this.#result.args.map(arg => arg.raw),
+      args: this.#result.args.map(ParsedCommand.serializeArg),
       cwd,
       env: this.#result.env,
     };
+  }
+
+  static serializeArg(arg: ResultArg): string {
+    if (arg.type === 'positional') {
+      return arg.value;
+    }
+
+    const isBoolean = arg.raw === 'true' || arg.raw === 'false';
+    const name = arg.name.length === 1 ? `-${arg.name}` : `--${arg.name}`;
+    return isBoolean ? name : `${name} ${arg.value}`;
   }
 
   getTransportConfig(): TransportConfig<'stdio'> {
