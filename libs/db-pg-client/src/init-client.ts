@@ -1,7 +1,8 @@
-import { CamelCasePlugin, Kysely } from 'kysely';
+import { Kysely } from 'kysely';
 import { PostgresJSDialect } from 'kysely-postgres-js';
 import postgres from 'postgres';
 
+import { MyCamelCasePlugin } from './camel-case.ts';
 import type { InitClientFn, InitClientOpts, InitClientOptsWithSql, PgClient } from './types.ts';
 
 let client: PgClient<any>;
@@ -14,7 +15,7 @@ const KIND_METRIC_MAPPING = {
 };
 
 export const initClient: InitClientFn = <DB>(opts: InitClientOpts): PgClient<DB> => {
-  const { debug, reuse } = opts;
+  const { debug, reuse, skipCamelCase } = opts;
   if (client && reuse) {
     return client as PgClient<DB>;
   }
@@ -44,8 +45,8 @@ export const initClient: InitClientFn = <DB>(opts: InitClientOpts): PgClient<DB>
 
   const db = new Kysely<DB>({
     plugins: [
-      new CamelCasePlugin({
-        maintainNestedObjectKeys: true,
+      new MyCamelCasePlugin({
+        excludeColumns: skipCamelCase,
       }),
     ],
     log: evt => {

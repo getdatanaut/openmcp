@@ -24,8 +24,8 @@ export const agentMcpTools = pgTable(
 );
 
 export type AgentMcpToolsTableCols = DrizzleToKysely<typeof agentMcpTools>;
-export type NewMcpTool = SetOptional<typeof agentMcpTools.$inferInsert, 'id'>;
-export type UpdateableMcpTool = Omit<
+export type NewAgentMcpTool = SetOptional<typeof agentMcpTools.$inferInsert, 'id'>;
+export type UpdateableAgentMcpTool = Omit<
   Updateable<AgentMcpToolsTableCols>,
   'id' | 'agentId' | 'mcpServerId' | 'mcpToolId'
 >;

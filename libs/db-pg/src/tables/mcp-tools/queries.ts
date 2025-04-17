@@ -15,6 +15,10 @@ export const mcpToolQueries = ({ db }: BuildQueriesOpts) => {
     return db.deleteFrom(MCP_TOOLS_KEY).where('id', 'in', values.ids).execute();
   }
 
+  function getById({ id }: { id: TMcpToolId }) {
+    return db.selectFrom(MCP_TOOLS_KEY).select(detailedSelect).where('id', '=', id).executeTakeFirst();
+  }
+
   function bulkUpsert(values: NewMcpTool[]) {
     return safeBulkOp(
       values.map(
@@ -35,8 +39,8 @@ export const mcpToolQueries = ({ db }: BuildQueriesOpts) => {
               summary: eb => eb.ref('excluded.summary'),
               description: eb => eb.ref('excluded.description'),
               instructions: eb => eb.ref('excluded.instructions'),
-              inputSchema: eb => eb.ref('excluded.inputSchema'),
-              outputSchema: eb => eb.ref('excluded.outputSchema'),
+              inputSchemaJson: eb => eb.ref('excluded.inputSchemaJson'),
+              outputSchemaJson: eb => eb.ref('excluded.outputSchemaJson'),
               isReadonly: eb => eb.ref('excluded.isReadonly'),
               isDestructive: eb => eb.ref('excluded.isDestructive'),
               isIdempotent: eb => eb.ref('excluded.isIdempotent'),
@@ -51,6 +55,7 @@ export const mcpToolQueries = ({ db }: BuildQueriesOpts) => {
 
   return {
     listByServerId,
+    getById,
     bulkUpsert,
     bulkDeleteById,
   };
@@ -82,8 +87,8 @@ export const detailedSelect = [
   ...summarySelect,
   'description',
   'instructions',
-  'inputSchema',
-  'outputSchema',
+  'inputSchemaJson',
+  'outputSchemaJson',
 ] satisfies McpToolColNames[];
 
 export type DetailedSelectCols = (typeof detailedSelect)[number];

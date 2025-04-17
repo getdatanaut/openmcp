@@ -1,10 +1,30 @@
+import { AgentMcpToolId, type TAgentMcpToolId } from '@libs/db-ids';
+
 import type { BuildQueriesOpts } from '../../types.ts';
-import type { AgentMcpToolColNames } from './schema.ts';
+import { AGENT_MCP_TOOLS_KEY, type AgentMcpToolColNames, type NewAgentMcpTool } from './schema.ts';
 
 export type AgentMcpToolQueries = ReturnType<typeof agentMcpToolQueries>;
 
-export const agentMcpToolQueries = (_: BuildQueriesOpts) => {
-  return {};
+export const agentMcpToolQueries = ({ db }: BuildQueriesOpts) => {
+  function create(values: NewAgentMcpTool) {
+    return db
+      .insertInto(AGENT_MCP_TOOLS_KEY)
+      .values({
+        id: AgentMcpToolId.generate(),
+        ...values,
+      })
+      .returning(['id'])
+      .executeTakeFirstOrThrow();
+  }
+
+  function remove(values: { id: TAgentMcpToolId }) {
+    return db.deleteFrom(AGENT_MCP_TOOLS_KEY).where('id', '=', values.id).execute();
+  }
+
+  return {
+    create,
+    remove,
+  };
 };
 
 /**

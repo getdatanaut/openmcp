@@ -9,6 +9,14 @@ interface BaseInitClientOpts {
    * Only applicable in the edge client, and usually you will not want this.
    */
   reuse?: boolean;
+
+  /**
+   * List of columns that should not be camel-cased.
+   * Usually this is all columns that are JSONB.
+   *
+   * Alternatively, any column key that ends with _json will also not be camelCased.
+   */
+  skipCamelCase?: string[];
 }
 
 export interface InitClientOptsWithUri extends BaseInitClientOpts {

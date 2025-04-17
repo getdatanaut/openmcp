@@ -28,15 +28,29 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
       .execute();
   }
 
-  function listWithTools() {
+  function listWithTools({ userId }: { userId?: TUserId } = {}) {
     return db
       .selectFrom(MCP_SERVERS_KEY)
       .select(eb => [
         ...summarySelect,
         jsonArrayFrom(
-          eb.selectFrom(MCP_TOOLS_KEY).select(toolSummarySelect).whereRef('mcpTools.mcpServerId', '=', 'mcpServers.id'),
+          eb
+            .selectFrom(MCP_TOOLS_KEY)
+            .select(toolSummarySelect.map(t => `${MCP_TOOLS_KEY}.${t}` as const))
+            .whereRef(`${MCP_TOOLS_KEY}.mcpServerId`, '=', `${MCP_SERVERS_KEY}.id`),
         ).as('tools'),
       ])
+      .where(eb => {
+        const ors: Expression<SqlBool>[] = [];
+
+        ors.push(eb('visibility', '=', 'public'));
+
+        if (userId) {
+          ors.push(eb('userId', '=', userId));
+        }
+
+        return eb.or(ors);
+      })
       .execute();
   }
 
@@ -70,8 +84,8 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
           developer: eb => eb.ref('excluded.developer'),
           developerUrl: eb => eb.ref('excluded.developerUrl'),
           sourceUrl: eb => eb.ref('excluded.sourceUrl'),
-          configSchema: eb => eb.ref('excluded.configSchema'),
-          transport: eb => eb.ref('excluded.transport'),
+          configSchemaJson: eb => eb.ref('excluded.configSchemaJson'),
+          transportJson: eb => eb.ref('excluded.transportJson'),
           runsRemote: eb => eb.ref('excluded.runsRemote'),
           runsLocal: eb => eb.ref('excluded.runsLocal'),
           visibility: eb => eb.ref('excluded.visibility'),
@@ -111,8 +125,8 @@ export const detailedSelect = [
   ...summarySelect,
   'description',
   'instructions',
-  'configSchema',
-  'transport',
+  'configSchemaJson',
+  'transportJson',
 ] satisfies McpServerColNames[];
 
 export type DetailedSelectCols = (typeof detailedSelect)[number];

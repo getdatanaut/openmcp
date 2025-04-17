@@ -25,8 +25,11 @@ export const mcpServers = pgTable(
     developer: text('developer'),
     developerUrl: text('developer_url'),
     sourceUrl: text('source_url'),
-    configSchema: jsonb('config_schema').$type<z.infer<typeof McpClientConfigSchemaSchema>>().notNull().default({}),
-    transport: jsonb('transport').$type<z.infer<typeof TransportSchema>>().notNull(),
+    configSchemaJson: jsonb('config_schema_json')
+      .$type<z.infer<typeof McpClientConfigSchemaSchema>>()
+      .notNull()
+      .default({}),
+    transportJson: jsonb('transport_json').$type<z.infer<typeof TransportSchema>>().notNull(),
     runsRemote: boolean('runs_remote').default(false).notNull(),
     runsLocal: boolean('runs_local').default(true).notNull(),
     userId: text('user_id').$type<TUserId>().notNull(),
