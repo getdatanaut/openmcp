@@ -30,10 +30,13 @@ const builder: CommandBuilder<{}, ServerDefinition> = yargs =>
   yargs
     .parserConfiguration({ 'populate--': true })
     .strict()
-    // .example('$0 upload --type stdio -- npx -y @modelcontextprotocol/server-filesystem /tmp', 'Upload STDIO MCP server')
-    // .example('$0 upload --type sse -- http://localhost:3000/sse', 'Upload SSE MCP server')
-    // .example('$0 upload --type streamable-http -- http://localhost:3000/mcp', 'Upload streamable HTTP MCP server')
-    // .example('$0 upload --type openapi -- ./openapi.v3.yaml', 'Upload OpenAPI MCP server')
+    .example(
+      '$0 upload --type stdio -- "npx -y @modelcontextprotocol/server-filesystem /tmp"',
+      'Upload STDIO MCP server',
+    )
+    .example('$0 upload --type sse -- "http://localhost:3000/sse"', 'Upload SSE MCP server')
+    .example('$0 upload --type streamable-http -- "http://localhost:3000/mcp"', 'Upload streamable HTTP MCP server')
+    .example('$0 upload --type openapi -- "./openapi.v3.yaml"', 'Upload OpenAPI MCP server')
     .options({
       type: {
         choices: ['stdio', 'sse', 'streamable-http', 'openapi'] as const,
@@ -72,20 +75,11 @@ const builder: CommandBuilder<{}, ServerDefinition> = yargs =>
       }
 
       if (argv.type === 'stdio') {
-        const validIdentifier = /^(?!-)[A-Za-z0-9_-]+$/;
-        argv['input'] = source
-          .map(argv => {
-            if (argv.startsWith('-')) {
-              return argv;
-            }
+        if (source.length > 1) {
+          throw new Error(`Only one command is allowed`);
+        }
 
-            if (validIdentifier.test(argv)) {
-              return argv;
-            }
-
-            return JSON.stringify(argv);
-          })
-          .join(' ');
+        argv['input'] = source[0];
         return;
       }
 
