@@ -14,6 +14,10 @@ export default class ParsedCommand {
     return this.#result.externalId;
   }
 
+  get vars() {
+    return this.#result.vars;
+  }
+
   getStdioServerParameters(cwd: string): StdioServerParameters {
     return {
       command: this.#result.command,
@@ -23,7 +27,7 @@ export default class ParsedCommand {
     };
   }
 
-  getTransportConfig(): TransportConfig & { type: 'stdio' } {
+  getTransportConfig(): TransportConfig<'stdio'> {
     return {
       type: 'stdio',
       config: {
