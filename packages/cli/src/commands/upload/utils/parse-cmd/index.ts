@@ -34,6 +34,7 @@ export default function parseCmd(input: string): ParsedCommand {
   const parse = parsers[commandName] ?? parsers.generic;
   return new ParsedCommand({
     ...parse(configSchema, commandName, actualInput.slice(commandName.length + 1)),
+    configSchema,
     env,
   });
 }
