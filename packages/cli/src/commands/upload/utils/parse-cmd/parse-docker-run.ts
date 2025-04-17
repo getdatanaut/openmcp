@@ -3,7 +3,7 @@ import { default as yargsParser } from 'yargs-parser';
 import type ConfigSchema from '../config-schema.ts';
 import { toInterpolable, toScreamCase } from '../string.ts';
 import parseEnvVariables from './parse-env-variables.ts';
-import type { Result, ResultArg } from './types.ts';
+import type { Result, ResultArg, ResultArgFlag } from './types.ts';
 
 const KNOWN_BOOLEAN_FLAGS = [
   'd',
@@ -67,13 +67,33 @@ const KNOWN_ARRAY_FLAGS = [
   'volumes-from',
 ];
 
-function handleArbitraryArg(name: string, value: unknown): ResultArg {
-  return {
-    type: 'flag',
-    name,
-    raw: String(value),
-    value: String(value),
-  };
+function handleArbitraryArg(name: string, value: unknown): ResultArgFlag {
+  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+  switch (typeof value) {
+    case 'boolean':
+      return {
+        type: 'flag',
+        dataType: 'boolean',
+        name,
+        value,
+      };
+    case 'number':
+      return {
+        type: 'flag',
+        dataType: 'number',
+        name,
+        value: String(value),
+        masked: null,
+      };
+    default:
+      return {
+        type: 'flag',
+        dataType: 'string',
+        name,
+        value: String(value),
+        masked: null,
+      };
+  }
 }
 
 export default function parseDockerRun(
@@ -97,18 +117,17 @@ export default function parseDockerRun(
     throw new Error('No run command found');
   }
 
-  const positional = argv._.slice(runCommandIndex + 1).map(String);
+  const positional = argv._.slice(runCommandIndex + 1);
 
   if (positional.length === 0) {
     throw new Error('No image name found');
   }
 
-  const externalId = positional[0]!;
+  const externalId = String(positional[0]!);
 
   const args: ResultArg[] = argv._.slice(0, runCommandIndex + 1).map(arg => {
     return {
-      type: 'positional',
-      raw: String(arg),
+      type: 'command',
       value: String(arg),
     };
   });
@@ -123,9 +142,10 @@ export default function parseDockerRun(
         for (const item of value) {
           args.push({
             type: 'flag',
+            dataType: 'string',
             name,
-            raw: item,
-            value: parseEnvVariables(String(item))
+            value: String(item),
+            masked: parseEnvVariables(String(item))
               .vars.map(([name, value]) => {
                 const type = configSchema.inferType(value);
                 if (type === 'boolean') {
@@ -153,8 +173,9 @@ export default function parseDockerRun(
   for (const item of positional) {
     args.push({
       type: 'positional',
-      raw: item,
-      value: item,
+      dataType: 'string',
+      value: String(item),
+      masked: null,
     });
   }
 

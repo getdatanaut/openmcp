@@ -18,12 +18,12 @@ export default function parseNpx(
     },
     boolean: KNOWN_BOOLEAN_FLAGS,
   });
-  const positional = argv._.map(String);
+  const positional = argv._;
   if (positional.length === 0) {
     throw new Error('No package found');
   }
 
-  const externalId: string = positional[0]!;
+  const externalId: string = String(positional[0]!);
   const flags: ResultArg[] = [];
   for (const [name, value] of Object.entries(argv)) {
     if (name === '_') {
@@ -35,26 +35,28 @@ export default function parseNpx(
       flags.push({
         type: 'flag',
         name,
-        raw: String(value),
-        value: String(value),
+        dataType: 'boolean',
+        value,
       });
     }
   }
 
   const positionalArgs = positional.slice(1).map<ResultArg>(arg => {
-    if (arg.startsWith('-')) {
+    if (typeof arg === 'number' || arg.startsWith('-')) {
       return {
         type: 'positional',
-        raw: arg,
-        value: arg,
+        dataType: typeof arg as 'string' | 'number',
+        value: String(arg),
+        masked: null,
       };
     }
 
     const varName = configSchema.add(toScreamCase(`ARG_${configSchema.size}`), configSchema.inferType(arg));
     return {
       type: 'positional',
-      raw: arg,
-      value: toInterpolable(varName),
+      dataType: 'string',
+      value: arg,
+      masked: toInterpolable(varName),
     };
   });
 
@@ -64,8 +66,9 @@ export default function parseNpx(
       ...flags,
       {
         type: 'positional',
-        raw: externalId,
+        dataType: 'string',
         value: externalId,
+        masked: null,
       },
       ...positionalArgs,
     ],

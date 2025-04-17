@@ -6,12 +6,12 @@ import parseNpx from './parse-npx-command.ts';
 import ParsedCommand from './parsed-command.ts';
 
 function parseCommand(input: string): string {
-  const index = input.indexOf(' ');
-  if (index === -1) {
+  if (input.length === 0) {
     throw new Error('No command name found');
   }
 
-  return input.slice(0, index);
+  const index = input.indexOf(' ');
+  return index === -1 ? input : input.slice(0, index);
 }
 
 const parsers = {

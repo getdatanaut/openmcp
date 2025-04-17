@@ -36,8 +36,9 @@ export default function parseGeneric(
     command,
     args: args.map(arg => ({
       type: 'positional',
-      raw: arg,
+      dataType: 'string',
       value: arg,
+      masked: null,
     })),
     externalId: externalId.join('-'),
   };

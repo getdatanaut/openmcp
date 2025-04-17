@@ -10,11 +10,12 @@ const cases = [
       command: 'npx',
       externalId: '@modelcontextprotocol/server-google-maps',
       args: [
-        { type: 'flag', name: 'y', raw: 'true', value: 'true' },
+        { type: 'flag', name: 'y', dataType: 'boolean', value: true },
         {
           type: 'positional',
-          raw: '@modelcontextprotocol/server-google-maps',
+          dataType: 'string',
           value: '@modelcontextprotocol/server-google-maps',
+          masked: null,
         },
       ],
       configSchema: undefined,
@@ -26,13 +27,14 @@ const cases = [
       command: 'npx',
       externalId: '@modelcontextprotocol/server-filesystem',
       args: [
-        { type: 'flag', name: 'y', raw: 'true', value: 'true' },
+        { type: 'flag', name: 'y', dataType: 'boolean', value: true },
         {
           type: 'positional',
-          raw: '@modelcontextprotocol/server-filesystem',
+          dataType: 'string',
           value: '@modelcontextprotocol/server-filesystem',
+          masked: null,
         },
-        { type: 'positional', raw: '/path/to/allowed/files', value: '{{ARG_0}}' },
+        { type: 'positional', dataType: 'string', value: '/path/to/allowed/files', masked: '{{ARG_0}}' },
       ],
       configSchema: {
         type: 'object',
@@ -53,28 +55,33 @@ const cases = [
       args: [
         {
           type: 'positional',
-          raw: 'shopify-mcp',
+          dataType: 'string',
           value: 'shopify-mcp',
+          masked: null,
         },
         {
           type: 'positional',
-          raw: '--accessToken',
+          dataType: 'string',
           value: '--accessToken',
+          masked: null,
         },
         {
           type: 'positional',
-          raw: 'ABC',
-          value: '{{ARG_0}}',
+          dataType: 'string',
+          value: 'ABC',
+          masked: '{{ARG_0}}',
         },
         {
           type: 'positional',
-          raw: '--domain',
+          dataType: 'string',
           value: '--domain',
+          masked: null,
         },
         {
           type: 'positional',
-          raw: 'my-shop.myshopify.com',
-          value: '{{ARG_1}}',
+          dataType: 'string',
+          value: 'my-shop.myshopify.com',
+          masked: '{{ARG_1}}',
         },
       ],
       configSchema: {
