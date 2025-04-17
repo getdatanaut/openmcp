@@ -41,11 +41,11 @@ export const inputStyle = tv(
     variants: {
       variant: {
         outline: {
-          input: tn('ak-frame-border', inputStyles),
+          input: tn('ak-edge-1/20 border', inputStyles),
           textarea: tn(inputStyles, 'h-full resize'),
         },
         ghost: {
-          input: tn('ak-frame-border hover:ak-edge-canvas border-transparent', inputStyles),
+          input: tn('hover:ak-edge-1/20 border border-transparent', inputStyles),
           textarea: tn(inputStyles, 'h-full resize'),
         },
         unstyled: {

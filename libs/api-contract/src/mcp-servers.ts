@@ -1,5 +1,5 @@
 import { McpServerId, type TMcpServerId } from '@libs/db-ids';
-import type { McpServerDetailedSelect, McpServerSummarySelect } from '@libs/db-pg';
+import type { McpServerDetailedSelect, McpServerSummarySelect, McpToolSummarySelect } from '@libs/db-pg';
 import {
   McpClientConfigSchemaSchema,
   ToolInputSchemaSchema,
@@ -11,14 +11,16 @@ import { z } from 'zod';
 
 import { base } from './base.ts';
 
-const listMcpServersContract = base.output(type<McpServerSummarySelect[]>());
+const listContract = base.output(type<McpServerSummarySelect[]>());
 
-const getMcpServerContract = base
+const listWithToolsContract = base.output(type<(McpServerSummarySelect & { tools: McpToolSummarySelect[] })[]>());
+
+const getContract = base
   .input(z.object({ serverId: McpServerId.validator }))
   .output(type<McpServerDetailedSelect>())
   .errors({ NOT_FOUND: {} });
 
-const uploadMcpServerContract = base
+const uploadContract = base
   .route({ method: 'PUT', path: '/mcp-servers/{externalId}' })
   .input(
     z.object({
@@ -75,14 +77,15 @@ const getOpenApiDocumentContract = base
     outputStructure: 'detailed',
   })
   .errors({ NOT_FOUND: {} })
-  .input(type<{ serverId: TMcpServerId }>())
+  .input(z.object({ serverId: McpServerId.validator }))
   .output(type<{ body: Blob }>());
 
 export const mpcServersRouterContract = {
   mcpServers: {
-    list: listMcpServersContract,
-    get: getMcpServerContract,
-    upload: uploadMcpServerContract,
+    list: listContract,
+    listWithTools: listWithToolsContract,
+    get: getContract,
+    upload: uploadContract,
     uploadFromOpenApi: uploadFromOpenApiContract,
     getOpenApiDocument: getOpenApiDocumentContract,
   },

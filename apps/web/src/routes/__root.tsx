@@ -1,13 +1,15 @@
 import '../assets/app.css';
 
-import { ButtonGroup, DialogContext, MenuContext, tn } from '@libs/ui-primitives';
+import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
 import { type QueryClient, useQueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet, useRouter } from '@tanstack/react-router';
 import { createEcosystem, EcosystemProvider, useAtomInstance, useAtomValue } from '@zedux/react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { layoutAtom } from '~/atoms/layout.ts';
 import { themeAtom } from '~/atoms/theme.ts';
-import { SettingsMenu } from '~/components/SettingsMenu.tsx';
+
+import { MainSidebar } from './-components/MainSidebar.tsx';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -55,21 +57,16 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
   const theme = useAtomInstance(themeAtom);
   const themeClass = useAtomValue(theme.exports.themeClass);
   const fontClass = useAtomValue(theme.exports.fontClass);
-  // const sidebarCollapsed = true;
+  const { sidebarCollapsed } = useAtomValue(layoutAtom);
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
 
   return (
     <DialogContext value={{ portalElement: rootRef, backdrop: 'blur' }}>
       <MenuContext value={{ portalElement: rootRef }}>
-        <div className={tn('ak-layer-canvas-down min-h-dvh', themeClass, fontClass)} ref={setRootRef}>
-          <div className="isolate flex h-dvh gap-2 p-2">
-            {/* <MainSidebar className={tn('h-dvh py-2', sidebarCollapsed ? 'w-2' : 'w-80')} /> */}
-            <div className="absolute top-4 left-4 z-10">
-              <ButtonGroup size="sm" variant="outline">
-                <SettingsMenu />
-              </ButtonGroup>
-            </div>
+        <div className={tn('ak-layer-canvas-down-0.5 min-h-dvh', themeClass, fontClass)} ref={setRootRef}>
+          <div className="isolate flex h-dvh">
+            <MainSidebar className={tn('h-full', sidebarCollapsed ? 'w-2' : 'w-80')} />
             {children}
           </div>
 

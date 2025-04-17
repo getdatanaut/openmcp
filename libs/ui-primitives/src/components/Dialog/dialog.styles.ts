@@ -17,7 +17,7 @@ export const dialogStyle = tv(
       wrapper: tn('fixed inset-0 isolate flex h-[100dvh] w-screen justify-center'),
 
       base: tn(
-        'ak-frame-md/8 ak-layer-[0.5] ak-edge/5 ak-frame-border-[0.5px] bg-clip-padding shadow-sm outline-none',
+        'ak-frame-md/8 ak-layer-0.5 ak-edge/5 ak-frame-border-[0.5px] bg-clip-padding shadow-sm outline-none',
         'animate-dialog-content',
         'flex w-full flex-col',
         'mx-6 my-16 max-sm:m-1.5',

@@ -4,9 +4,12 @@ import { api, atom } from '@zedux/react';
 import { injectLocalStorage } from './local-storage.ts';
 
 export const themeAtom = atom('theme', () => {
-  const signal = injectLocalStorage('theme', {
-    themeId: 'dark',
-    fontId: 'mono',
+  const signal = injectLocalStorage({
+    key: 'theme',
+    defaultVal: {
+      themeId: 'dark',
+      fontId: 'mono',
+    },
   });
 
   return api(signal).setExports({

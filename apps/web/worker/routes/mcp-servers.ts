@@ -14,6 +14,10 @@ const listMcpServers = base.mcpServers.list.handler(async ({ context: { db, sess
   return db.queries.mcpServers.list({ userId: session?.userId });
 });
 
+const listMcpServersWithTools = base.mcpServers.listWithTools.handler(async ({ context: { db, session } }) => {
+  return db.queries.mcpServers.listWithTools({ userId: session?.userId });
+});
+
 const getMcpServer = base.mcpServers.get.handler(async ({ context: { db }, input, errors }) => {
   // @TODO: permission check
   const server = await db.queries.mcpServers.getById({ id: input.serverId });
@@ -25,14 +29,22 @@ const getMcpServer = base.mcpServers.get.handler(async ({ context: { db }, input
 });
 
 const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({ context: { db, session }, input }) => {
-  const { tools, ...serverProps } = input;
+  const { tools, transport, configSchema, ...serverProps } = input;
 
   const server = await upsertMcpServer({
     db,
     userId: session.userId,
     externalId: input.externalId,
-    server: serverProps,
-    tools,
+    server: {
+      ...serverProps,
+      transportJson: transport,
+      configSchemaJson: configSchema,
+    },
+    tools: tools.map(({ inputSchema, outputSchema, ...rest }) => ({
+      ...rest,
+      inputSchemaJson: inputSchema,
+      outputSchemaJson: outputSchema,
+    })),
   });
 
   return {
@@ -67,7 +79,7 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
         developerUrl: developerUrl || service.contact?.url,
         iconUrl: iconUrl || service.logo?.url,
         sourceUrl,
-        transport: {
+        transportJson: {
           type: 'openapi',
           serverConfig: {
             openapi: '', // doc will be available at /api/mcp-servers/{serverId}/openapi
@@ -80,10 +92,10 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
         displayName: tool.annotations?.title,
         summary: getFirstSentence(tool.description) || undefined,
         description: tool.description,
-        inputSchema: tool.parameters
+        inputSchemaJson: tool.parameters
           ? (asSchema(tool.parameters).jsonSchema as z.infer<typeof ToolInputSchemaSchema>)
           : undefined,
-        outputSchema: tool.output
+        outputSchemaJson: tool.output
           ? (asSchema(tool.output).jsonSchema as z.infer<typeof ToolOutputSchemaSchema>)
           : undefined,
         isReadonly: tool.annotations?.hints?.readOnly,
@@ -146,6 +158,7 @@ const getOpenApiDocument = base.mcpServers.getOpenApiDocument.handler(
 export const mpcServersRouter = {
   mcpServers: {
     list: listMcpServers,
+    listWithTools: listMcpServersWithTools,
     get: getMcpServer,
     upload: uploadMcpServer,
     uploadFromOpenApi: uploadFromOpenApi,

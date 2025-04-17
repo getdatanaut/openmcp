@@ -1,9 +1,10 @@
 import { Form, FormButton, FormField, FormInput, Heading, useFormStore } from '@libs/ui-primitives';
 import { isDefinedError } from '@orpc/client';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { rpc } from '~/libs/rpc.ts';
 
 export const Route = createFileRoute('/admin/upload-openapi')({
@@ -12,30 +13,39 @@ export const Route = createFileRoute('/admin/upload-openapi')({
 
 function RouteComponent() {
   return (
-    <div className="flex flex-col gap-4 p-10">
-      <Heading size={5}>Upload OpenAPI</Heading>
+    <CanvasLayout>
+      <div className="flex flex-col gap-4 p-10">
+        <Heading size={5}>Upload OpenAPI</Heading>
 
-      <div className="max-w-[40rem]">
-        <UploadOpenApiForm />
+        <div className="max-w-[40rem]">
+          <UploadOpenApiForm />
+        </div>
+
+        <div className="my-10 border-t" />
+
+        <Heading size={5}>Seed Servers</Heading>
+
+        <div className="max-w-[40rem]">
+          <UploadRawDefinitionsForm />
+        </div>
       </div>
-
-      <div className="my-10 border-t" />
-
-      <Heading size={5}>Seed Servers</Heading>
-
-      <div className="max-w-[40rem]">
-        <UploadRawDefinitionsForm />
-      </div>
-    </div>
+    </CanvasLayout>
   );
 }
 
 function UploadOpenApiForm() {
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const form = useFormStore({ defaultValues: { openapi: '', serverUrl: '' } });
   const $ = form.names;
 
-  const uploadFromOpenApi = useMutation(rpc.mcpServers.uploadFromOpenApi.mutationOptions());
+  const uploadFromOpenApi = useMutation(
+    rpc.mcpServers.uploadFromOpenApi.mutationOptions({
+      onSuccess() {
+        void queryClient.invalidateQueries({ queryKey: rpc.mcpServers.key() });
+      },
+    }),
+  );
 
   form.useSubmit(async state => {
     setError(null);
@@ -121,6 +131,7 @@ function UploadOpenApiForm() {
 }
 
 function UploadRawDefinitionsForm() {
+  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('');
   const form = useFormStore({ defaultValues: { definitions: JSON.stringify(servers, null, 2) } });
@@ -176,6 +187,8 @@ function UploadRawDefinitionsForm() {
           },
         );
       });
+
+      void queryClient.invalidateQueries({ queryKey: rpc.mcpServers.key() });
     }
 
     setStatus('');

@@ -10,7 +10,7 @@ import { tn, twMergeConfig } from './tw.ts';
 export const listBoxStyle = tv(
   {
     slots: {
-      popover: tn('ak-layer animate-popper z-30 border-[0.5px] outline-none'),
+      popover: tn('ak-layer-0.5 animate-popper z-30 border outline-none'),
       arrow: tn('fill-[var(--ak-layer)] stroke-[var(--ak-border)] stroke-2'),
 
       list: tn(
@@ -19,7 +19,7 @@ export const listBoxStyle = tv(
       ),
 
       item: tn(
-        `active:ak-layer-pop-[1.5] ak-frame flex cursor-default items-center outline-none select-none disabled:pointer-events-none disabled:opacity-40`,
+        `active:ak-layer-hover ak-frame flex cursor-default items-center outline-none select-none disabled:pointer-events-none disabled:opacity-40`,
 
         /**
          * We are using sticky for group titles and combo box inputs.
@@ -40,7 +40,7 @@ export const listBoxStyle = tv(
         `ak-layer-0 ak-text/50 sticky -top-1.5 truncate py-1.5 text-sm font-light tracking-tight uppercase select-none`,
       ),
 
-      separator: tn('ak-layer-[0.5] h-px'),
+      separator: tn('ak-layer-0.5 h-[0.5px]'),
     },
 
     defaultVariants: {

@@ -51,7 +51,7 @@ export const buttonStyle = tv(
       size: {
         xs: {
           base: tn('font-normal', formSizes.xs),
-          icon: tn('text-[0.9em]'),
+          icon: tn('text-[0.8em]'),
         },
         sm: {
           base: tn('font-normal', formSizes.sm),
@@ -85,7 +85,7 @@ export const buttonStyle = tv(
       {
         variant: 'solid',
         intent: 'neutral',
-        class: tn('ak-layer-contrast-14 ak-outline'),
+        class: tn('ak-layer-contrast-14 ak-light:ak-layer-contrast-down-12 ak-outline'),
       },
       {
         variant: 'solid',
@@ -103,24 +103,34 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
+        class: tn('hover:ak-layer-hover-0.5 active:ak-layer-hover'),
       },
 
       // outline / intent
       {
         variant: 'outline',
+        size: ['xs', 'sm'],
+        class: tn('border-default-border-width border'),
+      },
+      {
+        variant: 'outline',
+        size: ['md', 'lg'],
+        class: tn('border-default-border-width border-[1px]'),
+      },
+      {
+        variant: 'outline',
         intent: 'neutral',
-        class: tn('ak-outline-canvas border'),
+        class: tn('ak-outline-canvas'),
       },
       {
         variant: 'outline',
         intent: 'primary',
-        class: tn('ak-outline-primary ak-text-primary border'),
+        class: tn('ak-outline-primary ak-text-primary'),
       },
       {
         variant: 'outline',
         intent: 'danger',
-        class: tn('ak-outline-danger ak-text-danger border'),
+        class: tn('ak-outline-danger ak-text-danger'),
       },
       // outline / interactive
       {
@@ -129,7 +139,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
+        class: tn('hover:ak-layer-hover-0.5 active:ak-layer-hover'),
       },
       {
         variant: 'outline',
@@ -137,7 +147,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-mix-primary/20 active:ak-layer-mix-primary/30'),
+        class: tn('hover:ak-layer-mix-primary/10 active:ak-layer-mix-primary/15'),
       },
       {
         variant: 'outline',
@@ -145,7 +155,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-mix-danger/20 active:ak-layer-mix-danger/30'),
+        class: tn('hover:ak-layer-mix-danger/10 active:ak-layer-mix-danger/15'),
       },
 
       // soft / intent
@@ -157,12 +167,12 @@ export const buttonStyle = tv(
       {
         variant: 'soft',
         intent: 'primary',
-        class: tn('ak-layer-mix-primary/20 ak-text-primary ak-outline-primary'),
+        class: tn('ak-layer-mix-primary/10 ak-text-primary ak-outline-primary'),
       },
       {
         variant: 'soft',
         intent: 'danger',
-        class: tn('ak-layer-mix-danger/20 ak-text-danger ak-outline-danger'),
+        class: tn('ak-layer-mix-danger/10 ak-text-danger ak-outline-danger'),
       },
       // soft / interactive
       {
@@ -171,7 +181,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
+        class: tn('hover:ak-layer-hover-0.5 active:ak-layer-hover'),
       },
       {
         variant: 'soft',
@@ -179,7 +189,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-mix-primary/30 active:ak-layer-mix-primary/40'),
+        class: tn('hover:ak-layer-mix-primary/20 active:ak-layer-mix-primary/25'),
       },
       {
         variant: 'soft',
@@ -187,7 +197,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-mix-danger/30 active:ak-layer-mix-danger/40'),
+        class: tn('hover:ak-layer-mix-danger/20 active:ak-layer-mix-danger/25'),
       },
 
       // ghost / intent
@@ -213,7 +223,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-hover active:ak-layer-hover-2'),
+        class: tn('hover:ak-layer-hover-0.5 active:ak-layer-hover'),
       },
       {
         variant: 'ghost',
@@ -221,7 +231,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-mix-primary/20 active:ak-layer-mix-primary/30'),
+        class: tn('hover:ak-layer-mix-primary/10 active:ak-layer-mix-primary/15'),
       },
       {
         variant: 'ghost',
@@ -229,7 +239,7 @@ export const buttonStyle = tv(
         disabled: false,
         isLoading: false,
         isInteractive: true,
-        class: tn('hover:ak-layer-mix-danger/20 active:ak-layer-mix-danger/30'),
+        class: tn('hover:ak-layer-mix-danger/10 active:ak-layer-mix-danger/15'),
       },
     ],
   },

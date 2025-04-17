@@ -63,7 +63,7 @@ const MarkdownFigure: Components['figure'] = ({ className, node, children, ...pr
 
   const classes = tn(
     isCodeFigure && 'ak-frame text-sm leading-relaxed',
-    !unstyledCodeBlocks && 'ak-layer-[down-0.5] -mx-1.5',
+    !unstyledCodeBlocks && 'ak-layer-down-0.5 -mx-1.5',
     className,
   );
 

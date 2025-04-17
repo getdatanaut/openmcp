@@ -1,5 +1,6 @@
 import { type AuthSession, type AuthUser, createAuth } from '@libs/auth/server';
 import { createDbSdk } from '@libs/db-pg';
+import { onError } from '@orpc/client';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { RPCHandler } from '@orpc/server/fetch';
 import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins';
@@ -10,10 +11,20 @@ import { router } from './router.ts';
 
 const openApiHandler = new OpenAPIHandler(router, {
   plugins: [],
+  interceptors: [
+    onError(error => {
+      console.error('Error in OpenAPIHandler', error);
+    }),
+  ],
 });
 
 const rpcHandler = new RPCHandler(router, {
   plugins: [new SimpleCsrfProtectionHandlerPlugin()],
+  interceptors: [
+    onError(error => {
+      console.error('Error in RPCHandler', error);
+    }),
+  ],
 });
 
 export default {

@@ -5,13 +5,13 @@ import { z } from 'zod';
 
 import { base } from './base.ts';
 
-const listMcpToolsContract = base
+const listContract = base
   .input(z.object({ serverId: McpServerId.validator }))
   .output(type<McpToolSummarySelect[]>())
   .errors({ NOT_FOUND: {} });
 
 export const mpcToolsRouterContract = {
   mcpTools: {
-    list: listMcpToolsContract,
+    list: listContract,
   },
 };
