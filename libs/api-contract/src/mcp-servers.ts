@@ -1,5 +1,5 @@
-import type { TMcpServerId } from '@libs/db-ids';
-import type { DbSdk } from '@libs/db-pg';
+import { McpServerId, type TMcpServerId } from '@libs/db-ids';
+import type { McpServerDetailedSelect, McpServerSummarySelect } from '@libs/db-pg';
 import {
   McpClientConfigSchemaSchema,
   ToolInputSchemaSchema,
@@ -11,8 +11,12 @@ import { z } from 'zod';
 
 import { base } from './base.ts';
 
-const listMcpServersContract =
-  base.output(type<Awaited<ReturnType<DbSdk['queries']['mcpServers']['listWithTools']>>>());
+const listMcpServersContract = base.output(type<McpServerSummarySelect[]>());
+
+const getMcpServerContract = base
+  .input(z.object({ serverId: McpServerId.validator }))
+  .output(type<McpServerDetailedSelect>())
+  .errors({ NOT_FOUND: {} });
 
 const uploadMcpServerContract = base
   .route({ method: 'PUT', path: '/mcp-servers/{externalId}' })
@@ -77,6 +81,7 @@ const getOpenApiDocumentContract = base
 export const mpcServersRouterContract = {
   mcpServers: {
     list: listMcpServersContract,
+    get: getMcpServerContract,
     upload: uploadMcpServerContract,
     uploadFromOpenApi: uploadFromOpenApiContract,
     getOpenApiDocument: getOpenApiDocumentContract,

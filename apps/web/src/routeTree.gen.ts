@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as McpServersImport } from './routes/mcp-servers'
 import { Route as IndexImport } from './routes/index'
+import { Route as McpServersServerIdImport } from './routes/mcp-servers.$serverId'
 import { Route as AdminUploadOpenapiImport } from './routes/admin/upload-openapi'
 import { Route as ApiAuthCallbackProviderImport } from './routes/api.auth.callback.$provider'
 
@@ -28,6 +29,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const McpServersServerIdRoute = McpServersServerIdImport.update({
+  id: '/$serverId',
+  path: '/$serverId',
+  getParentRoute: () => McpServersRoute,
 } as any)
 
 const AdminUploadOpenapiRoute = AdminUploadOpenapiImport.update({
@@ -67,6 +74,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUploadOpenapiImport
       parentRoute: typeof rootRoute
     }
+    '/mcp-servers/$serverId': {
+      id: '/mcp-servers/$serverId'
+      path: '/$serverId'
+      fullPath: '/mcp-servers/$serverId'
+      preLoaderRoute: typeof McpServersServerIdImport
+      parentRoute: typeof McpServersImport
+    }
     '/api/auth/callback/$provider': {
       id: '/api/auth/callback/$provider'
       path: '/api/auth/callback/$provider'
@@ -79,25 +93,40 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface McpServersRouteChildren {
+  McpServersServerIdRoute: typeof McpServersServerIdRoute
+}
+
+const McpServersRouteChildren: McpServersRouteChildren = {
+  McpServersServerIdRoute: McpServersServerIdRoute,
+}
+
+const McpServersRouteWithChildren = McpServersRoute._addFileChildren(
+  McpServersRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/mcp-servers': typeof McpServersRoute
+  '/mcp-servers': typeof McpServersRouteWithChildren
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
+  '/mcp-servers/$serverId': typeof McpServersServerIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/mcp-servers': typeof McpServersRoute
+  '/mcp-servers': typeof McpServersRouteWithChildren
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
+  '/mcp-servers/$serverId': typeof McpServersServerIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/mcp-servers': typeof McpServersRoute
+  '/mcp-servers': typeof McpServersRouteWithChildren
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
+  '/mcp-servers/$serverId': typeof McpServersServerIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
 }
 
@@ -107,32 +136,35 @@ export interface FileRouteTypes {
     | '/'
     | '/mcp-servers'
     | '/admin/upload-openapi'
+    | '/mcp-servers/$serverId'
     | '/api/auth/callback/$provider'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/mcp-servers'
     | '/admin/upload-openapi'
+    | '/mcp-servers/$serverId'
     | '/api/auth/callback/$provider'
   id:
     | '__root__'
     | '/'
     | '/mcp-servers'
     | '/admin/upload-openapi'
+    | '/mcp-servers/$serverId'
     | '/api/auth/callback/$provider'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  McpServersRoute: typeof McpServersRoute
+  McpServersRoute: typeof McpServersRouteWithChildren
   AdminUploadOpenapiRoute: typeof AdminUploadOpenapiRoute
   ApiAuthCallbackProviderRoute: typeof ApiAuthCallbackProviderRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  McpServersRoute: McpServersRoute,
+  McpServersRoute: McpServersRouteWithChildren,
   AdminUploadOpenapiRoute: AdminUploadOpenapiRoute,
   ApiAuthCallbackProviderRoute: ApiAuthCallbackProviderRoute,
 }
@@ -157,10 +189,17 @@ export const routeTree = rootRoute
       "filePath": "index.tsx"
     },
     "/mcp-servers": {
-      "filePath": "mcp-servers.tsx"
+      "filePath": "mcp-servers.tsx",
+      "children": [
+        "/mcp-servers/$serverId"
+      ]
     },
     "/admin/upload-openapi": {
       "filePath": "admin/upload-openapi.tsx"
+    },
+    "/mcp-servers/$serverId": {
+      "filePath": "mcp-servers.$serverId.tsx",
+      "parent": "/mcp-servers"
     },
     "/api/auth/callback/$provider": {
       "filePath": "api.auth.callback.$provider.tsx"

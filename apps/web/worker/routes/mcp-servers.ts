@@ -10,8 +10,18 @@ import type { z } from 'zod';
 
 import { base, requireAuth } from '../middleware.ts';
 
-const listMcpServers = base.mcpServers.list.handler(async ({ context: { db } }) => {
-  return db.queries.mcpServers.listWithTools();
+const listMcpServers = base.mcpServers.list.handler(async ({ context: { db, session } }) => {
+  return db.queries.mcpServers.list({ userId: session?.userId });
+});
+
+const getMcpServer = base.mcpServers.get.handler(async ({ context: { db }, input, errors }) => {
+  // @TODO: permission check
+  const server = await db.queries.mcpServers.getById({ id: input.serverId });
+  if (!server) {
+    throw errors.NOT_FOUND();
+  }
+
+  return server;
 });
 
 const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({ context: { db, session }, input }) => {
@@ -136,6 +146,7 @@ const getOpenApiDocument = base.mcpServers.getOpenApiDocument.handler(
 export const mpcServersRouter = {
   mcpServers: {
     list: listMcpServers,
+    get: getMcpServer,
     upload: uploadMcpServer,
     uploadFromOpenApi: uploadFromOpenApi,
     getOpenApiDocument: getOpenApiDocument,
@@ -167,7 +178,7 @@ async function upsertMcpServer({
       await tx.trxQueries.mcpTools.bulkDeleteById({ ids: toolsToDelete.map(t => t.id) });
     }
 
-    const dbServer = await tx.trxQueries.mcpServers.upsert({ ...server, userId });
+    const dbServer = await tx.trxQueries.mcpServers.upsert({ ...server, userId, toolCount: tools.length });
 
     await tx.trxQueries.mcpTools.bulkUpsert(tools.map(t => ({ ...t, mcpServerId: dbServer.id })));
 

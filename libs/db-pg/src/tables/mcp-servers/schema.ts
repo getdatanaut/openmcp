@@ -1,7 +1,7 @@
 import type { TMcpServerId, TUserId } from '@libs/db-ids';
 import type { McpClientConfigSchemaSchema, TransportSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
-import { boolean, index, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 import type { z } from 'zod';
 
@@ -30,6 +30,7 @@ export const mcpServers = pgTable(
     runsRemote: boolean('runs_remote').default(false).notNull(),
     runsLocal: boolean('runs_local').default(true).notNull(),
     userId: text('user_id').$type<TUserId>().notNull(),
+    toolCount: integer('tool_count').default(0).notNull(),
     visibility: text('visibility', { enum: ['public', 'private'] })
       .default('private')
       .notNull(),

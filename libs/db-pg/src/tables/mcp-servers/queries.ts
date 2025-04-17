@@ -1,4 +1,5 @@
-import { McpServerId, type TUserId } from '@libs/db-ids';
+import { McpServerId, type TMcpServerId, type TUserId } from '@libs/db-ids';
+import type { Expression, SqlBool } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 import type { BuildQueriesOpts } from '../../types.ts';
@@ -9,8 +10,22 @@ import { MCP_SERVERS_KEY, type McpServerColNames, type NewMcpServer } from './sc
 export type McpServerQueries = ReturnType<typeof mcpServerQueries>;
 
 export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
-  function list() {
-    return db.selectFrom(MCP_SERVERS_KEY).select(summarySelect).where('visibility', '=', 'public');
+  function list({ userId }: { userId?: TUserId } = {}) {
+    return db
+      .selectFrom(MCP_SERVERS_KEY)
+      .select(summarySelect)
+      .where(eb => {
+        const ors: Expression<SqlBool>[] = [];
+
+        ors.push(eb('visibility', '=', 'public'));
+
+        if (userId) {
+          ors.push(eb('userId', '=', userId));
+        }
+
+        return eb.or(ors);
+      })
+      .execute();
   }
 
   function listWithTools() {
@@ -34,6 +49,9 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
       .executeTakeFirst();
   }
 
+  function getById({ id }: { id: TMcpServerId }) {
+    return db.selectFrom(MCP_SERVERS_KEY).select(detailedSelect).where('id', '=', id).executeTakeFirst();
+  }
   function upsert(values: NewMcpServer) {
     return db
       .insertInto(MCP_SERVERS_KEY)
@@ -57,6 +75,7 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
           runsRemote: eb => eb.ref('excluded.runsRemote'),
           runsLocal: eb => eb.ref('excluded.runsLocal'),
           visibility: eb => eb.ref('excluded.visibility'),
+          toolCount: eb => eb.ref('excluded.toolCount'),
           updatedAt: eb => eb.ref('excluded.updatedAt'),
         }),
       )
@@ -64,7 +83,7 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
       .executeTakeFirstOrThrow();
   }
 
-  return { list, listWithTools, getByExternalId, upsert };
+  return { list, listWithTools, getByExternalId, getById, upsert };
 };
 
 /**
@@ -78,6 +97,7 @@ export const summarySelect = [
   'summary',
   'runsLocal',
   'runsRemote',
+  'toolCount',
   'createdAt',
   'updatedAt',
 ] satisfies McpServerColNames[];

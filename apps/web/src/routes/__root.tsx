@@ -63,7 +63,7 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
     <DialogContext value={{ portalElement: rootRef, backdrop: 'blur' }}>
       <MenuContext value={{ portalElement: rootRef }}>
         <div className={tn('ak-layer-canvas-down min-h-dvh', themeClass, fontClass)} ref={setRootRef}>
-          <div className="isolate flex h-dvh">
+          <div className="isolate flex h-dvh gap-2 p-2">
             {/* <MainSidebar className={tn('h-dvh py-2', sidebarCollapsed ? 'w-2' : 'w-80')} /> */}
             <div className="absolute top-4 left-4 z-10">
               <ButtonGroup size="sm" variant="outline">
