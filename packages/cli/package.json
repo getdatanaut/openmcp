@@ -42,7 +42,6 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.9.0",
-    "@openmcp/manager": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "@orpc/client": "^1.0.3",
     "consola": "~3.4.2",

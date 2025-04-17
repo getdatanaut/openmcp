@@ -2624,7 +2624,6 @@ __metadata:
     "@libs/eslint-config": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.9.0"
-    "@openmcp/manager": "workspace:*"
     "@openmcp/remix": "workspace:*"
     "@orpc/client": "npm:^1.0.3"
     "@orpc/server": "npm:^1.0.3"

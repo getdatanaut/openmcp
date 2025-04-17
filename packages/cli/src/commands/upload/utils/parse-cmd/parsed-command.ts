@@ -1,6 +1,6 @@
 import type { StdioServerParameters } from '@modelcontextprotocol/sdk/client/stdio.js';
-import type { TransportConfig } from '@openmcp/manager';
 
+import type { TransportConfig } from '../../transport-definitions/types.ts';
 import type { Result, ResultArg } from './types.ts';
 
 export default class ParsedCommand {
@@ -40,11 +40,9 @@ export default class ParsedCommand {
   getTransportConfig(): TransportConfig<'stdio'> {
     return {
       type: 'stdio',
-      config: {
-        command: this.#result.command,
-        args: this.#result.args.map(arg => arg.value),
-        env: this.#result.env,
-      },
+      command: this.#result.command,
+      args: this.#result.args.map(arg => arg.value),
+      env: this.#result.env,
     };
   }
 }

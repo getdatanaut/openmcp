@@ -16,33 +16,32 @@ export const OpenAPITransportSchema = z.object({
     .optional(),
 });
 
+export type OpenAPITransport = z.infer<typeof OpenAPITransportSchema>;
+
 export const StreamableHTTPTransportSchema = z.object({
   type: z.literal('streamable-http'),
   url: z.string().url(),
-  headers: z
-    .object({
-      'x-openmcp': z.string(),
-    })
-    .passthrough()
-    .optional(),
+  headers: z.record(z.string()).optional(),
 });
+
+export type StreamableHTTPTransport = z.infer<typeof StreamableHTTPTransportSchema>;
 
 export const SSETransportSchema = z.object({
   type: z.literal('sse'),
   url: z.string().url(),
-  headers: z
-    .object({
-      'x-openmcp': z.string(),
-    })
-    .passthrough()
-    .optional(),
+  headers: z.record(z.string()).optional(),
 });
+
+export type SSETransport = z.infer<typeof SSETransportSchema>;
 
 export const StdIOTransportSchema = z.object({
   type: z.literal('stdio'),
   command: z.string().nonempty('Command must be provided'),
   args: z.array(z.string()),
+  env: z.record(z.string()).optional(),
 });
+
+export type StdIOTransport = z.infer<typeof StdIOTransportSchema>;
 
 export const TransportSchema = z.discriminatedUnion('type', [
   StreamableHTTPTransportSchema,
@@ -50,6 +49,8 @@ export const TransportSchema = z.discriminatedUnion('type', [
   OpenAPITransportSchema,
   StdIOTransportSchema,
 ]);
+
+export type Transport = z.infer<typeof TransportSchema>;
 
 export const McpClientConfigSchemaSchema = z.object({
   type: z.literal('object').optional(),
