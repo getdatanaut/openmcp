@@ -17,7 +17,7 @@ const cases = [
           value: '@modelcontextprotocol/server-google-maps',
         },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [

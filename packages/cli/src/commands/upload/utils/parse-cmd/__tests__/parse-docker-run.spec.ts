@@ -13,7 +13,7 @@ const cases = [
         { type: 'positional', raw: 'run', value: 'run' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -28,7 +28,7 @@ const cases = [
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
         { type: 'positional', raw: 'bash', value: 'bash' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -41,7 +41,7 @@ const cases = [
         { type: 'flag', name: 'd', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -54,7 +54,7 @@ const cases = [
         { type: 'flag', name: 'p', raw: '8080:80', value: '8080:80' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -93,7 +93,7 @@ const cases = [
         { type: 'flag', name: 'v', raw: '/host/path:/container/path', value: '/host/path:/container/path' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -107,7 +107,7 @@ const cases = [
         { type: 'flag', name: 'memory', raw: '512m', value: '512m' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -120,7 +120,7 @@ const cases = [
         { type: 'flag', name: 'name', raw: 'my_container', value: 'my_container' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -133,7 +133,7 @@ const cases = [
         { type: 'flag', name: 'rm', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -146,7 +146,7 @@ const cases = [
         { type: 'flag', name: 'network', raw: 'my_network', value: 'my_network' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -159,7 +159,7 @@ const cases = [
         { type: 'flag', name: 'u', raw: '1000:1000', value: '1000:1000' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -172,7 +172,7 @@ const cases = [
         { type: 'flag', name: 'restart', raw: 'always', value: 'always' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -185,7 +185,7 @@ const cases = [
         { type: 'flag', name: 'hostname', raw: 'myhost', value: 'myhost' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -198,7 +198,7 @@ const cases = [
         { type: 'flag', name: 'cpus', raw: '1.5', value: '1.5' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -211,7 +211,7 @@ const cases = [
         { type: 'flag', name: 'entrypoint', raw: '/bin/sh', value: '/bin/sh' },
         { type: 'positional', raw: 'ubuntu', value: 'ubuntu' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -224,7 +224,7 @@ const cases = [
         { type: 'flag', name: 'read-only', raw: 'true', value: 'true' },
         { type: 'positional', raw: 'nginx', value: 'nginx' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -267,7 +267,7 @@ const cases = [
         },
         { type: 'positional', raw: 'mcp/git', value: 'mcp/git' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
   [
@@ -283,7 +283,7 @@ const cases = [
         { type: 'flag', name: 'e', raw: 'DOCKER_CONTAINER=true', value: 'DOCKER_CONTAINER=true' },
         { type: 'positional', raw: 'mcp/puppeteer', value: 'mcp/puppeteer' },
       ],
-      configSchema: null,
+      configSchema: undefined,
     },
   ],
 ] as const;
