@@ -46,7 +46,6 @@
     "typescript": "5.8.3"
   },
   "resolutions": {
-    "@modelcontextprotocol/sdk": "patch:@modelcontextprotocol/sdk@npm%3A1.9.0#~/.yarn/patches/@modelcontextprotocol-sdk-npm-1.9.0-5b54c94454.patch",
     "@stoplight/http-spec/openapi3-ts": "4.4.x",
     "kysely": "0.28.0"
   },

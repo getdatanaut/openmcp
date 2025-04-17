@@ -30,7 +30,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.9.0",
+    "@modelcontextprotocol/sdk": "1.10.0",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/server": "workspace:*",

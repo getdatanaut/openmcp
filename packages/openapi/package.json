@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "11.9.3",
-    "@modelcontextprotocol/sdk": "1.9.0",
+    "@modelcontextprotocol/sdk": "1.10.0",
     "@openmcp/server": "workspace:*",
     "@stoplight/http-spec": "7.1.0",
     "@stoplight/json": "3.21.7",
