@@ -1,4 +1,5 @@
 import type { rpcClient } from '../../../libs/client.ts';
+import { getSummary } from '../utils/string.ts';
 import type { ConnectedClient } from './create-client.ts';
 
 type Tool = NonNullable<Parameters<typeof rpcClient.mcpServers.upload>[0]['tools']>[number];
@@ -20,8 +21,9 @@ export default async function getTools(client: ConnectedClient): Promise<Tool[]>
       const title = annotations?.['title'];
       return {
         name: tool.name,
-        displayName: typeof title === 'string' ? title : undefined,
         description: tool.description,
+        summary: tool.description ? getSummary(tool.description) : undefined,
+        displayName: typeof title === 'string' ? title : undefined,
         inputSchema: tool.inputSchema,
         outputSchema: tool['outputSchema'] as Tool['outputSchema'] | undefined,
         isReadonly: unwrapBooleanOrUndefined(annotations?.['readOnlyHint']),

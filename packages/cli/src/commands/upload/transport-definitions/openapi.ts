@@ -4,6 +4,7 @@ import type { JSONRPCMessage } from '@modelcontextprotocol/sdk/types.js';
 import { openApiToMcpServerOptions } from '@openmcp/openapi';
 import { OpenMcpServer } from '@openmcp/server';
 
+import { getSummary } from '../utils/string.ts';
 import type { TransportDefinition } from './types.ts';
 
 export type OpenAPITransportDefinition = TransportDefinition<'openapi'>;
@@ -37,6 +38,14 @@ export default async function createOpenAPITransportDefinition(
     },
     configSchema: undefined,
     externalId: resolvedServerUrl,
+    metadata: {
+      name: service.name,
+      summary: service.description ? getSummary(service.description) : undefined,
+      description: service.description,
+      developer: service.contact?.name,
+      developerUrl: service.contact?.url,
+      iconUrl: service.logo?.url,
+    },
   };
 }
 

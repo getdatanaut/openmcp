@@ -27,6 +27,15 @@ export type TransportDefinition<T extends TransportType> = {
       }
     | undefined;
   readonly externalId: string | undefined;
+  // some of that won't be needed once we MCP supports more robust server annotations
+  readonly metadata?: {
+    readonly name?: string;
+    readonly summary?: string;
+    readonly description?: string;
+    readonly developer?: string;
+    readonly developerUrl?: string;
+    readonly iconUrl?: string;
+  };
 };
 
 export type TransportConfigs = {

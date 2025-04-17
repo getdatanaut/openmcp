@@ -5,7 +5,8 @@ import createTransportDefinition from './transport-definitions/index.ts';
 import type { ServerDefinition } from './types.ts';
 
 export default async function handler(definition: ServerDefinition): Promise<void> {
-  const { transport, transportConfig, configSchema, externalId } = await createTransportDefinition(definition);
+  const { transport, transportConfig, configSchema, externalId, metadata } =
+    await createTransportDefinition(definition);
   const defaultAnnotations = {
     iconUrl: definition.iconUrl,
     developer: definition.developer,
@@ -19,12 +20,12 @@ export default async function handler(definition: ServerDefinition): Promise<voi
   const serverAnnotations = client.getServerAnnotations();
 
   const mcpServer = {
-    name: serverVersion.name,
+    name: serverAnnotations?.serverName ?? metadata?.name ?? serverVersion.name,
     externalId: externalId ?? serverVersion.name,
-    description: unwrapStringOrUndefined(serverAnnotations?.['description']),
-    developer: definition.developer ?? unwrapStringOrUndefined(serverAnnotations?.['developer']),
-    developerUrl: definition.developerUrl || unwrapStringOrUndefined(serverAnnotations?.['developerUrl']),
-    iconUrl: definition.iconUrl ?? serverAnnotations?.iconUrl,
+    description: metadata?.description,
+    developer: definition.developer ?? metadata?.developer,
+    developerUrl: definition.developerUrl || metadata?.developerUrl,
+    iconUrl: definition.iconUrl ?? serverAnnotations?.iconUrl ?? metadata?.iconUrl,
     sourceUrl: definition.sourceUrl,
     configSchema,
     transport: transportConfig,
@@ -33,8 +34,4 @@ export default async function handler(definition: ServerDefinition): Promise<voi
 
   console.log(mcpServer);
   // await rpcClient.mcpServers.upload(mcpServer);
-}
-
-function unwrapStringOrUndefined(value: unknown): string | undefined {
-  return typeof value === 'string' ? value : undefined;
 }
