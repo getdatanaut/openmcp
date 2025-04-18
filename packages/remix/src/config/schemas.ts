@@ -1,6 +1,11 @@
+import {
+  OpenAPITransportSchema,
+  SSETransportSchema,
+  StdIOTransportSchema,
+  StreamableHTTPTransportSchema,
+  ToolName,
+} from '@libs/schemas/mcp';
 import { z } from 'zod';
-
-export const ToolName = z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Tool name must match /^[a-zA-Z0-9_-]{1,64}$/');
 
 export const ToolSchema = z.object({
   name: ToolName,
@@ -10,49 +15,25 @@ export type Tool = z.infer<typeof ToolSchema>;
 
 const tools = z.array(ToolSchema).nonempty('Tools must be provided and non-empty');
 
-export const OpenAPIServerSchema = z.object({
-  type: z.literal('openapi'),
-  serverConfig: z.object({
-    openapi: z.union([z.record(z.unknown()), z.string().url()]),
-    serverUrl: z.string().url(),
-  }),
-  clientConfig: z
-    .object({
-      path: z.record(z.unknown()).optional(),
-      query: z.record(z.unknown()).optional(),
-      headers: z.record(z.unknown()).optional(),
-      body: z.record(z.unknown()).optional(),
-    })
-    .optional(),
+export const OpenAPIServerSchema = OpenAPITransportSchema.extend({
   tools,
 });
 
 export type OpenAPIServer = z.infer<typeof OpenAPIServerSchema>;
 
-export const StreamableHTTPServerSchema = z.object({
-  type: z.literal('streamable-http'),
-  url: z.string().url(),
-  headers: z.record(z.string()).optional(),
+export const StreamableHTTPServerSchema = StreamableHTTPTransportSchema.extend({
   tools,
 });
 
 export type StreamableHTTPServer = z.infer<typeof StreamableHTTPServerSchema>;
 
-export const SSEServerSchema = z.object({
-  type: z.literal('sse'),
-  url: z.string().url(),
-  headers: z.record(z.string()).optional(),
+export const SSEServerSchema = SSETransportSchema.extend({
   tools,
 });
 
 export type SSEServer = z.infer<typeof SSEServerSchema>;
 
-export const StdIOServerSchema = z.object({
-  type: z.literal('stdio'),
-  command: z.string().nonempty('Command must be provided'),
-  args: z.array(z.string()),
-  env: z.record(z.string()).optional(),
-  cwd: z.string().optional(),
+export const StdIOServerSchema = StdIOTransportSchema.extend({
   tools,
 });
 

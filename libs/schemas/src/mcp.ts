@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const ToolName = z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Tool name must match /^[a-zA-Z0-9_-]{1,64}$/');
+
 export const OpenAPITransportSchema = z.object({
   type: z.literal('openapi'),
   serverConfig: z.object({
@@ -39,6 +41,7 @@ export const StdIOTransportSchema = z.object({
   command: z.string().nonempty('Command must be provided'),
   args: z.array(z.string()),
   env: z.record(z.string()).optional(),
+  cwd: z.string().optional(),
 });
 
 export type StdIOTransport = z.infer<typeof StdIOTransportSchema>;
