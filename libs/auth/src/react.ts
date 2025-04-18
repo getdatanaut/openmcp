@@ -1,9 +1,10 @@
+import { oidcClient } from 'better-auth/client/plugins';
 import { createAuthClient as baseCreateAuthClient } from 'better-auth/react';
 
 export const createAuthClient = ({ baseURL, basePath }: { baseURL?: string; basePath: string }) => {
   return baseCreateAuthClient({
     baseURL,
     basePath,
-    plugins: [],
+    plugins: [oidcClient()],
   });
 };

@@ -8,6 +8,9 @@ import { agentMcpServerQueries, AGENTS_MCP_SERVERS_KEY } from './tables/agents-m
 import { AUTH_VERIFICATIONS_KEY, authVerificationQueries } from './tables/auth-verifications/index.ts';
 import { MCP_SERVERS_KEY, mcpServerQueries } from './tables/mcp-servers/index.ts';
 import { MCP_TOOLS_KEY, mcpToolQueries } from './tables/mcp-tools/index.ts';
+import { OAUTH_ACCESS_TOKEN_KEY, oauthAccessTokenQueries } from './tables/oauth-access-token/index.ts';
+import { OAUTH_APPLICATION_KEY, oauthApplicationQueries } from './tables/oauth-application/index.ts';
+import { OAUTH_CONSENT_KEY, oauthConsentQueries } from './tables/oauth-consent/index.ts';
 import { USER_ACCOUNTS_KEY, userAccountQueries } from './tables/user-accounts/index.ts';
 import { USER_SESSIONS_KEY, userSessionQueries } from './tables/user-sessions/index.ts';
 import { userQueries, USERS_KEY } from './tables/users/index.ts';
@@ -31,6 +34,9 @@ const initSdk = ({ db, metrics }: { db: Kysely<DbSchema>; metrics: PgClientMetri
     [AUTH_VERIFICATIONS_KEY]: authVerificationQueries({ db }),
     [MCP_SERVERS_KEY]: mcpServerQueries({ db }),
     [MCP_TOOLS_KEY]: mcpToolQueries({ db }),
+    [OAUTH_ACCESS_TOKEN_KEY]: oauthAccessTokenQueries({ db }),
+    [OAUTH_APPLICATION_KEY]: oauthApplicationQueries({ db }),
+    [OAUTH_CONSENT_KEY]: oauthConsentQueries({ db }),
     [USER_ACCOUNTS_KEY]: userAccountQueries({ db }),
     [USER_SESSIONS_KEY]: userSessionQueries({ db }),
     [USERS_KEY]: userQueries({ db }),
