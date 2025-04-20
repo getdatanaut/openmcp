@@ -13,8 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as McpServersImport } from './routes/mcp-servers'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthConsentImport } from './routes/auth.consent'
 import { Route as AgentsAgentIdImport } from './routes/agents.$agentId'
 import { Route as AdminUploadOpenapiImport } from './routes/admin/upload-openapi'
+import { Route as ApiAuthOauth2AuthorizeImport } from './routes/api.auth.oauth2.authorize'
 import { Route as ApiAuthCallbackProviderImport } from './routes/api.auth.callback.$provider'
 
 // Create/Update Routes
@@ -31,6 +33,12 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AuthConsentRoute = AuthConsentImport.update({
+  id: '/auth/consent',
+  path: '/auth/consent',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AgentsAgentIdRoute = AgentsAgentIdImport.update({
   id: '/agents/$agentId',
   path: '/agents/$agentId',
@@ -40,6 +48,12 @@ const AgentsAgentIdRoute = AgentsAgentIdImport.update({
 const AdminUploadOpenapiRoute = AdminUploadOpenapiImport.update({
   id: '/admin/upload-openapi',
   path: '/admin/upload-openapi',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ApiAuthOauth2AuthorizeRoute = ApiAuthOauth2AuthorizeImport.update({
+  id: '/api/auth/oauth2/authorize',
+  path: '/api/auth/oauth2/authorize',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,11 +95,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentsAgentIdImport
       parentRoute: typeof rootRoute
     }
+    '/auth/consent': {
+      id: '/auth/consent'
+      path: '/auth/consent'
+      fullPath: '/auth/consent'
+      preLoaderRoute: typeof AuthConsentImport
+      parentRoute: typeof rootRoute
+    }
     '/api/auth/callback/$provider': {
       id: '/api/auth/callback/$provider'
       path: '/api/auth/callback/$provider'
       fullPath: '/api/auth/callback/$provider'
       preLoaderRoute: typeof ApiAuthCallbackProviderImport
+      parentRoute: typeof rootRoute
+    }
+    '/api/auth/oauth2/authorize': {
+      id: '/api/auth/oauth2/authorize'
+      path: '/api/auth/oauth2/authorize'
+      fullPath: '/api/auth/oauth2/authorize'
+      preLoaderRoute: typeof ApiAuthOauth2AuthorizeImport
       parentRoute: typeof rootRoute
     }
   }
@@ -98,7 +126,9 @@ export interface FileRoutesByFullPath {
   '/mcp-servers': typeof McpServersRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
+  '/auth/consent': typeof AuthConsentRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
+  '/api/auth/oauth2/authorize': typeof ApiAuthOauth2AuthorizeRoute
 }
 
 export interface FileRoutesByTo {
@@ -106,7 +136,9 @@ export interface FileRoutesByTo {
   '/mcp-servers': typeof McpServersRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
+  '/auth/consent': typeof AuthConsentRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
+  '/api/auth/oauth2/authorize': typeof ApiAuthOauth2AuthorizeRoute
 }
 
 export interface FileRoutesById {
@@ -115,7 +147,9 @@ export interface FileRoutesById {
   '/mcp-servers': typeof McpServersRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
+  '/auth/consent': typeof AuthConsentRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
+  '/api/auth/oauth2/authorize': typeof ApiAuthOauth2AuthorizeRoute
 }
 
 export interface FileRouteTypes {
@@ -125,21 +159,27 @@ export interface FileRouteTypes {
     | '/mcp-servers'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
+    | '/auth/consent'
     | '/api/auth/callback/$provider'
+    | '/api/auth/oauth2/authorize'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/mcp-servers'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
+    | '/auth/consent'
     | '/api/auth/callback/$provider'
+    | '/api/auth/oauth2/authorize'
   id:
     | '__root__'
     | '/'
     | '/mcp-servers'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
+    | '/auth/consent'
     | '/api/auth/callback/$provider'
+    | '/api/auth/oauth2/authorize'
   fileRoutesById: FileRoutesById
 }
 
@@ -148,7 +188,9 @@ export interface RootRouteChildren {
   McpServersRoute: typeof McpServersRoute
   AdminUploadOpenapiRoute: typeof AdminUploadOpenapiRoute
   AgentsAgentIdRoute: typeof AgentsAgentIdRoute
+  AuthConsentRoute: typeof AuthConsentRoute
   ApiAuthCallbackProviderRoute: typeof ApiAuthCallbackProviderRoute
+  ApiAuthOauth2AuthorizeRoute: typeof ApiAuthOauth2AuthorizeRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -156,7 +198,9 @@ const rootRouteChildren: RootRouteChildren = {
   McpServersRoute: McpServersRoute,
   AdminUploadOpenapiRoute: AdminUploadOpenapiRoute,
   AgentsAgentIdRoute: AgentsAgentIdRoute,
+  AuthConsentRoute: AuthConsentRoute,
   ApiAuthCallbackProviderRoute: ApiAuthCallbackProviderRoute,
+  ApiAuthOauth2AuthorizeRoute: ApiAuthOauth2AuthorizeRoute,
 }
 
 export const routeTree = rootRoute
@@ -173,7 +217,9 @@ export const routeTree = rootRoute
         "/mcp-servers",
         "/admin/upload-openapi",
         "/agents/$agentId",
-        "/api/auth/callback/$provider"
+        "/auth/consent",
+        "/api/auth/callback/$provider",
+        "/api/auth/oauth2/authorize"
       ]
     },
     "/": {
@@ -188,8 +234,14 @@ export const routeTree = rootRoute
     "/agents/$agentId": {
       "filePath": "agents.$agentId.tsx"
     },
+    "/auth/consent": {
+      "filePath": "auth.consent.tsx"
+    },
     "/api/auth/callback/$provider": {
       "filePath": "api.auth.callback.$provider.tsx"
+    },
+    "/api/auth/oauth2/authorize": {
+      "filePath": "api.auth.oauth2.authorize.tsx"
     }
   }
 }
