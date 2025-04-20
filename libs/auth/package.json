@@ -6,6 +6,7 @@
   "sideEffects": false,
   "exports": {
     "./server": "./src/server.ts",
+    "./cli": "./src/cli.ts",
     "./react": "./src/react.ts"
   },
   "scripts": {
