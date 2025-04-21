@@ -5,7 +5,20 @@ export const ToolName = z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Tool name mus
 export const OpenAPITransportSchema = z.object({
   type: z.literal('openapi'),
   serverConfig: z.object({
-    openapi: z.string().url(),
+    openapi: z.string().refine(
+      value => {
+        if (URL.canParse(value)) {
+          return true;
+        }
+
+        // If not a URL, check if it looks like a file path
+        return value.startsWith('/') || /^[a-zA-Z]:\\/.test(value);
+      },
+      {
+        message: 'openapi must be a valid URL or file path',
+      },
+    ),
+
     serverUrl: z.string().url(),
   }),
   clientConfig: z
