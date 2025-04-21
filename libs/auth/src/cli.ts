@@ -90,7 +90,7 @@ export class AuthClient {
 
   #unwrapToken(name: 'idToken' | 'accessToken' | 'refreshToken'): string {
     if (this.#tokens === null) {
-      throw new Error('No tokens available. You may need to log in again.');
+      throw new Error('You seem to be logged out. Please log in again.');
     }
 
     const value = this.#tokens[name];
@@ -120,7 +120,7 @@ export class AuthClient {
    * @returns The decoded payload
    * @throws If the ID token is invalid or missing
    */
-  getDecodedIdToken(): Record<string, unknown> {
+  getDecodedIdToken() {
     return decodeJwt(this.#unwrapToken('idToken'));
   }
 

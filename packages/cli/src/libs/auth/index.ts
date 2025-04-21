@@ -13,7 +13,11 @@ export const client = await createAuthClient({
   storage: await Storage.create('auth'),
 });
 
-export async function login() {
+interface Prompts {
+  openPage(url: URL): Promise<boolean>;
+}
+
+export async function login(prompts: Prompts) {
   const LOGIN_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 
   const controller = new AbortController();
@@ -21,11 +25,14 @@ export async function login() {
   using server = await startServer(controller.signal);
   try {
     const authorizeUrl = await client.initiateAuthFlow(server.address);
-    console.log(`Opening ${authorizeUrl.toString()}`);
 
     await Promise.all([
       waitForAuthorizationCallback(server, client).then(code => client.exchangeCodeForTokens(code)),
-      open(authorizeUrl.toString()),
+      prompts.openPage(authorizeUrl).then(consent => {
+        if (consent) {
+          return open(authorizeUrl.toString());
+        }
+      }),
     ]);
 
     const decoded = client.getDecodedIdToken();

@@ -65,7 +65,7 @@ describe('Mutex', () => {
         executionOrder.push('error operation start');
         throw new Error('Test error');
       });
-    } catch (error) {
+    } catch {
       executionOrder.push('error caught');
     }
 

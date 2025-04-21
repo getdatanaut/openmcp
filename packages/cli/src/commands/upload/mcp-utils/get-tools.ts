@@ -1,3 +1,4 @@
+import consola from '../../../consola/index.ts';
 import type { rpcClient } from '../../../libs/client.ts';
 import { getSummary } from '../utils/string.ts';
 import type { ConnectedClient } from './create-client.ts';
@@ -11,7 +12,7 @@ function unwrapBooleanOrUndefined(value: unknown) {
 export default async function getTools(client: ConnectedClient): Promise<Tool[]> {
   const capabilities = client.getServerCapabilities();
   if (!capabilities?.tools) {
-    console.warn(`No "tools" capability found`);
+    consola.warn(`No "tools" capability found`);
     return [];
   }
 

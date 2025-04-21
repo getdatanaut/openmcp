@@ -12,6 +12,7 @@ const LOG_LEVELS = {
 export default {
   log(logObject) {
     const args = logObject.message === undefined ? logObject.args : [logObject.message, ...logObject.args];
+    // eslint-disable-next-line no-console
     console[LOG_LEVELS[logObject.level]](...args);
   },
 } as const satisfies ConsolaReporter;

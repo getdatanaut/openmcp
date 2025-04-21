@@ -1,12 +1,13 @@
 import type { CommandModule } from 'yargs';
 
+import consola from '../../consola/index.ts';
 import { logout } from '../../libs/auth/index.ts';
 
 export default {
   command: 'logout',
   async handler() {
-    console.log('Logging out...');
+    consola.start('Logging out...');
     await logout();
-    console.log('Logged out successfully');
+    consola.success('Logged out successfully');
   },
 } satisfies CommandModule;

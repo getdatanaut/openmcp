@@ -1,3 +1,4 @@
+import consola from '../../consola/index.ts';
 import { rpcClient } from '../../libs/client.ts';
 import createConnectedClient from './mcp-utils/create-client.ts';
 import listMcpTools from './mcp-utils/get-tools.ts';
@@ -32,5 +33,7 @@ export default async function handler(definition: ServerDefinition): Promise<voi
     tools: await listMcpTools(client),
   };
 
+  consola.start(`Uploading server "${mcpServer.name}"...`);
   await rpcClient.mcpServers.upload(mcpServer);
+  consola.success(`Server "${mcpServer.name}" successfully uploaded`);
 }

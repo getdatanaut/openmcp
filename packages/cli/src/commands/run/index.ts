@@ -1,6 +1,6 @@
 import type { Argv, CommandModule } from 'yargs';
 
-import { wrapConsole } from '../../console/index.ts';
+import { createSilentConsole } from '../../consola/index.ts';
 
 const builder = (yargs: Argv) =>
   yargs.strict().options({
@@ -26,7 +26,7 @@ export default {
   command: 'run',
   builder,
   async handler(args) {
-    const restoreConsole = await wrapConsole();
+    const console = await createSilentConsole();
     const { default: handler } = await import('./handler.ts');
 
     const { server, secret, config } = args as Awaited<ReturnType<typeof builder>['argv']>;
@@ -42,7 +42,7 @@ export default {
         });
       }
     } finally {
-      restoreConsole();
+      console.restoreConsole();
     }
   },
 } satisfies CommandModule;
