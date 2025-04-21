@@ -38,7 +38,7 @@ export const base = root.use(
 );
 
 export const requireAuth = root.middleware(async ({ context, next, errors }) => {
-  if (context.user && context.session) {
+  if (context.user) {
     return next({ context: { user: context.user, session: context.session } });
   }
 
