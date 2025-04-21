@@ -1,4 +1,4 @@
-import { AuthVerificationId, UserAccountId, UserId, UserSessionId } from '@libs/db-ids';
+import { AuthVerificationId, type TUserId, UserAccountId, UserId, UserSessionId } from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
 import { type BetterAuthOptions, generateId } from 'better-auth';
 import { oidcProvider } from 'better-auth/plugins/oidc-provider';
@@ -58,6 +58,20 @@ export const createAuthOptions = ({
     },
     verification: {
       modelName: 'authVerifications',
+    },
+    databaseHooks: {
+      user: {
+        create: {
+          after: async user => {
+            // openmcp-cli is our own app and thus a trusted client
+            await db.queries.oauthConsent.giveConsent({
+              userId: user.id as TUserId,
+              clientId: 'openmcp-cli',
+              scopes: ['openid', 'profile', 'email', 'offline_access'],
+            });
+          },
+        },
+      },
     },
     advanced: {
       database: {

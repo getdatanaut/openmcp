@@ -1,4 +1,4 @@
-import type { TUserId } from '@libs/db-ids';
+import type { TOauthConsentId, TUserId } from '@libs/db-ids';
 import { boolean, pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
@@ -8,7 +8,7 @@ export const OAUTH_CONSENT_KEY = 'oauthConsent' as const;
 export const OAUTH_CONSENT_TABLE = 'oauth_consent' as const;
 
 export const oauthConsent = pgTable(OAUTH_CONSENT_TABLE, {
-  id: text('id').primaryKey(),
+  id: text('id').$type<TOauthConsentId>().primaryKey(),
   clientId: text('client_id'),
   userId: text('user_id').$type<TUserId>().notNull(),
   scopes: text('scopes'),

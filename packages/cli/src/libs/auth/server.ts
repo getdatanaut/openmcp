@@ -78,6 +78,7 @@ export async function waitForAuthorizationCallback(server: Server, client: AuthC
   const origin = new URL(env.DN_API_URL).origin;
   server.events.on('request', function handler(req, res) {
     res.appendHeader('Access-Control-Allow-Origin', origin);
+    res.appendHeader('Access-Control-Allow-Credentials', 'true');
     if (req.method === 'OPTIONS') {
       res.writeHead(200).end();
       return;

@@ -35,3 +35,11 @@ export type TAgentMcpServerId = ReturnType<(typeof AgentMcpServerId)['generate']
 export const AgentMcpToolId = Id.dbIdFactory('agmt');
 export type AgentMcpToolNamespace = (typeof AgentMcpToolId)['namespace'];
 export type TAgentMcpToolId = ReturnType<(typeof AgentMcpToolId)['generate']>;
+
+export const OauthConsentId = Id.dbIdFactory('oauthcon');
+export type OauthConsentNamespace = (typeof OauthConsentId)['namespace'];
+export type TOauthConsentId = ReturnType<(typeof OauthConsentId)['generate']>;
+
+export const OauthApplicationId = Id.dbIdFactory('oauthapp');
+export type OauthApplicationNamespace = (typeof OauthApplicationId)['namespace'];
+export type TOauthApplicationId = ReturnType<(typeof OauthApplicationId)['generate']>;

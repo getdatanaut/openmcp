@@ -1,5 +1,7 @@
 import { randomBytes } from 'node:crypto';
 
+import { OauthApplicationId } from '@libs/db-ids';
+
 import type { BuildQueriesOpts } from '../../types.ts';
 import { OAUTH_APPLICATION_KEY } from './schema.ts';
 
@@ -55,11 +57,11 @@ export const oauthApplicationQueries = ({ db }: BuildQueriesOpts) => {
       const result = await db
         .insertInto(OAUTH_APPLICATION_KEY)
         .values({
-          id: crypto.randomUUID(),
+          id: OauthApplicationId.generate(),
           name: params.name,
           clientId: params.clientId,
           clientSecret,
-          // @ts-expect-error: fixme, there's a mismatch in how column names are processed
+          // @ts-expect-error: there's a mismatch in how column names are processed
           redirectU_r_ls: params.redirectURLs.join(','),
           icon: params.icon,
           metadata: params.metadata,
