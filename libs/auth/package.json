@@ -15,10 +15,13 @@
     "schema.generate": "npx @better-auth/cli generate -y --config ./src/drizzle.ts --output ./src/schema.gen.ts && npx prepend-file-cli ./src/schema.gen.ts \"/* eslint-disable */\n\n\""
   },
   "dependencies": {
+    "@better-fetch/fetch": "1.1.18",
     "@libs/db-ids": "workspace:*",
     "@libs/utils-types": "workspace:*",
     "better-auth": "1.2.7",
-    "drizzle-orm": "0.41.0"
+    "drizzle-orm": "0.41.0",
+    "jose": "5.10.0",
+    "zod": "3.24.2"
   },
   "devDependencies": {
     "@better-auth/cli": "1.2.7",

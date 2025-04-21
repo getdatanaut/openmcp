@@ -1,11 +1,11 @@
-import type { Storage } from '@libs/auth/cli';
+import type { OAuth2Tokens, Storage } from '@libs/auth/cli';
 
 import { readFile, writeFile } from '../../config-dir.ts';
 import Mutex from './mutex.ts';
 
 export default class StorageImpl implements Storage {
   readonly #filename: string;
-  readonly #data: Record<string, string>;
+  readonly #data: OAuth2Tokens;
   readonly #mutex = new Mutex();
 
   constructor(filename: string, data: Record<string, string>) {
@@ -32,11 +32,6 @@ export default class StorageImpl implements Storage {
     await writeFile(this.#filename, JSON.stringify(this.#data));
   }
 
-  /**
-   * Stores a value securely
-   * @param key The key to store the value under
-   * @param value The value to store
-   */
   async setItem(key: string, value: unknown): Promise<void> {
     await this.#mutex.lock(async () => {
       this.#data[key as string] = value as string;
@@ -44,22 +39,22 @@ export default class StorageImpl implements Storage {
     });
   }
 
-  /**
-   * Retrieves a value from secure storage
-   * @param key The key to retrieve
-   * @returns The stored value, or null if not found
-   */
-  async getItem(key: string): Promise<string | null> {
+  async getItem<K extends keyof OAuth2Tokens>(key: K): Promise<OAuth2Tokens[K] | null> {
     return this.#data[key] ?? null;
   }
 
-  /**
-   * Removes a value from secure storage
-   * @param key The key to remove
-   */
   async removeItem(key: string): Promise<void> {
     await this.#mutex.lock(async () => {
       delete this.#data[key as string];
+      await this.#flush();
+    });
+  }
+
+  async clear() {
+    await this.#mutex.lock(async () => {
+      for (const key of Object.keys(this.#data)) {
+        delete this.#data[key];
+      }
       await this.#flush();
     });
   }

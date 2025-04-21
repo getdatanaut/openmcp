@@ -59,7 +59,7 @@ function ApiOauth2Handler() {
         {error !== null ? (
           <div className="text-red-500">{error}</div>
         ) : (
-          <div>'Connecting to authorization service...</div>
+          <div>Connecting to authorization service...</div>
         )}
       </div>
     </div>

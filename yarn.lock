@@ -2257,13 +2257,16 @@ __metadata:
   resolution: "@libs/auth@workspace:libs/auth"
   dependencies:
     "@better-auth/cli": "npm:1.2.7"
+    "@better-fetch/fetch": "npm:1.1.18"
     "@libs/db-ids": "workspace:*"
     "@libs/db-pg": "workspace:*"
     "@libs/utils-types": "workspace:*"
     better-auth: "npm:1.2.7"
     drizzle-orm: "npm:0.41.0"
     eslint: "npm:9.24.0"
+    jose: "npm:5.10.0"
     prepend-file-cli: "npm:1.0.6"
+    zod: "npm:3.24.2"
   languageName: unknown
   linkType: soft
 
@@ -9113,7 +9116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^5.9.6":
+"jose@npm:5.10.0, jose@npm:^5.9.6":
   version: 5.10.0
   resolution: "jose@npm:5.10.0"
   checksum: 10c0/e20d9fc58d7e402f2e5f04e824b8897d5579aae60e64cb88ebdea1395311c24537bf4892f7de413fab1acf11e922797fb1b42269bc8fc65089a3749265ccb7b0
