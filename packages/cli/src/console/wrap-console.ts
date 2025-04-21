@@ -1,13 +1,13 @@
 import fs from 'node:fs';
-import { homedir } from 'node:os';
 import path from 'node:path';
 
+import env from '../env.ts';
 import console from './index.ts';
 
 export default async function wrapConsole() {
   let logFileWStream;
   try {
-    const logFile = path.join(homedir(), '.datanaut', 'openmcp-cli-server.log');
+    const logFile = path.join(env.DN_HOME_DIR, 'openmcp-cli-server.log');
     fs.mkdirSync(path.dirname(logFile), { recursive: true });
     logFileWStream = fs.createWriteStream(logFile, {
       flags: 'a',

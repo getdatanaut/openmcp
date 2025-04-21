@@ -46,6 +46,7 @@
     "@openmcp/remix": "workspace:*",
     "@orpc/client": "1.0.3",
     "consola": "~3.4.2",
+    "envalid": "~8.0.0",
     "yargs": "~17.7.2",
     "yargs-parser": "~21.1.1"
   },
