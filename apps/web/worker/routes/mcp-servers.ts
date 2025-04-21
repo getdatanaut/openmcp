@@ -28,12 +28,12 @@ const getMcpServer = base.mcpServers.get.handler(async ({ context: { db }, input
   return server;
 });
 
-const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({ context: { db, session }, input }) => {
+const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({ context: { db, user }, input }) => {
   const { tools, transport, configSchema, ...serverProps } = input;
 
   const server = await upsertMcpServer({
     db,
-    userId: session.userId,
+    userId: user.id,
     externalId: input.externalId,
     server: {
       ...serverProps,
@@ -54,7 +54,7 @@ const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({
 
 const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
   .use(requireAuth)
-  .handler(async ({ context: { db, session, r2OpenApiBucket }, input, errors }) => {
+  .handler(async ({ context: { db, user, r2OpenApiBucket }, input, errors }) => {
     const { openapi, sourceUrl, iconUrl, developer, developerUrl } = input;
 
     const { service, options } = await openApiToMcpServerOptions({ openapi, serverUrl: input.serverUrl });
@@ -68,7 +68,7 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
 
     const server = await upsertMcpServer({
       db,
-      userId: session.userId,
+      userId: user.id,
       externalId: serverUrl,
       server: {
         name: input.name || service.name,

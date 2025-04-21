@@ -1,4 +1,5 @@
 import type { TUserId, TUserSessionId } from '@libs/db-ids';
+import type { DbSdk } from '@libs/db-pg';
 import { betterAuth, type InferSession, type InferUser } from 'better-auth';
 
 import { type AuthOptions, type CreateAuthOptions, createAuthOptions } from './auth-options.ts';
@@ -30,3 +31,38 @@ export const createAuth = (options: CreateAuthOptions) => {
   };
   return sdk;
 };
+
+type UserResult = {
+  user: AuthUser;
+  session: AuthSession | null;
+};
+
+export async function getUser(
+  auth: Auth,
+  db: DbSdk,
+  { headers }: { headers: Request['headers'] },
+): Promise<UserResult | null> {
+  const authenticationHeader = headers.get('Authorization');
+  if (!authenticationHeader) {
+    return auth.api.getSession({ headers }) as Promise<UserResult | null>;
+  }
+
+  if (!authenticationHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const value = authenticationHeader.slice(7).trim();
+  const token = await db.queries.oauthAccessToken.getByAccessToken(value);
+  if (token === null) {
+    return null;
+  }
+
+  if (token.accessTokenExpiresAt < new Date()) {
+    return null;
+  }
+
+  return {
+    user: await db.queries.users.byId({ id: token.userId }),
+    session: null,
+  };
+}

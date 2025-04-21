@@ -1,4 +1,5 @@
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import type { TUserId } from '@libs/db-ids';
+import { boolean, pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
@@ -16,7 +17,7 @@ export const oauthApplication = pgTable(OAUTH_APPLICATION_TABLE, {
   redirectURLs: text('redirect_u_r_ls'),
   type: text('type'),
   disabled: boolean('disabled'),
-  userId: text('user_id'),
+  userId: text('user_id').$type<TUserId>().notNull(),
   createdAt: timestampCol('created_at'),
   updatedAt: timestampCol('updated_at'),
 });

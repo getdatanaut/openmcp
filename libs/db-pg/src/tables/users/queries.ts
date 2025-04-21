@@ -19,7 +19,15 @@ export const userQueries = ({ db }: BuildQueriesOpts) => {
 /**
  * The values that are returned by default for queries that return a list of records.
  */
-export const summarySelect = ['id', 'name', 'email', 'image', 'createdAt', 'updatedAt'] satisfies UserColNames[];
+export const summarySelect = [
+  'id',
+  'name',
+  'email',
+  'emailVerified',
+  'image',
+  'createdAt',
+  'updatedAt',
+] satisfies UserColNames[];
 
 export type SummarySelectCols = (typeof summarySelect)[number];
 

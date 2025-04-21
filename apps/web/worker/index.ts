@@ -1,4 +1,4 @@
-import { type AuthSession, type AuthUser, createAuth } from '@libs/auth/server';
+import { createAuth, getUser } from '@libs/auth/server';
 import { createDbSdk } from '@libs/db-pg';
 import { onError } from '@orpc/client';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
@@ -50,10 +50,7 @@ export default {
         return res;
       }
 
-      const session = (await auth.api.getSession({ headers: req.headers })) as {
-        user: AuthUser;
-        session: AuthSession;
-      } | null;
+      const session = await getUser(auth, db, { headers: req.headers });
 
       const orpcContext = {
         db,

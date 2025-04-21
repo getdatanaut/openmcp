@@ -1,4 +1,5 @@
-import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import type { TUserId } from '@libs/db-ids';
+import { pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
@@ -10,10 +11,10 @@ export const oauthAccessToken = pgTable(OAUTH_ACCESS_TOKEN_TABLE, {
   id: text('id').primaryKey(),
   accessToken: text('access_token').unique(),
   refreshToken: text('refresh_token').unique(),
-  accessTokenExpiresAt: timestampCol('access_token_expires_at'),
-  refreshTokenExpiresAt: timestampCol('refresh_token_expires_at'),
-  clientId: text('client_id'),
-  userId: text('user_id'),
+  accessTokenExpiresAt: timestampCol('access_token_expires_at').notNull(),
+  refreshTokenExpiresAt: timestampCol('refresh_token_expires_at').notNull(),
+  clientId: text('client_id').notNull(),
+  userId: text('user_id').$type<TUserId>().notNull(),
   scopes: text('scopes'),
   createdAt: timestampCol('created_at'),
   updatedAt: timestampCol('updated_at'),

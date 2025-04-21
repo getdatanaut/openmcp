@@ -1,4 +1,5 @@
-import { boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import type { TUserId } from '@libs/db-ids';
+import { boolean, pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
@@ -9,7 +10,7 @@ export const OAUTH_CONSENT_TABLE = 'oauth_consent' as const;
 export const oauthConsent = pgTable(OAUTH_CONSENT_TABLE, {
   id: text('id').primaryKey(),
   clientId: text('client_id'),
-  userId: text('user_id'),
+  userId: text('user_id').$type<TUserId>().notNull(),
   scopes: text('scopes'),
   createdAt: timestampCol('created_at'),
   updatedAt: timestampCol('updated_at'),

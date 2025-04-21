@@ -188,7 +188,7 @@ export class AuthClient {
     }
 
     if (!this.#tokens?.refresh_token) {
-      throw new Error('No refresh_token available');
+      throw new Error('You seem to be logged out. Please log in again.');
     }
 
     const res = await fetch(this.#resolveRoute(Routes.token), {
@@ -204,7 +204,7 @@ export class AuthClient {
     });
 
     if (!res.ok) {
-      throw new Error('Failed to generate access token');
+      throw new Error('Failed to generate access token. You may need to log in again.');
     }
 
     const tokens = (await res.json()) as {
