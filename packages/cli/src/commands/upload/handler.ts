@@ -1,4 +1,4 @@
-// import { rpcClient } from '../../libs/client.ts';
+import { rpcClient } from '../../libs/client.ts';
 import createConnectedClient from './mcp-utils/create-client.ts';
 import listMcpTools from './mcp-utils/get-tools.ts';
 import createTransportDefinition from './transport-definitions/index.ts';
@@ -32,6 +32,5 @@ export default async function handler(definition: ServerDefinition): Promise<voi
     tools: await listMcpTools(client),
   };
 
-  console.log(mcpServer);
-  // await rpcClient.mcpServers.upload(mcpServer);
+  await rpcClient.mcpServers.upload(mcpServer);
 }
