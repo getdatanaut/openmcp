@@ -47,6 +47,7 @@ export const initClient: InitClientFn = <DB>(opts: InitClientOpts): PgClient<DB>
     plugins: [
       new MyCamelCasePlugin({
         excludeColumns: skipCamelCase,
+        underscoreBetweenUppercaseLetters: true,
       }),
     ],
     log: evt => {

@@ -17,7 +17,7 @@ export const oauthApplication = pgTable(OAUTH_APPLICATION_TABLE, {
   redirectURLs: text('redirect_u_r_ls'),
   type: text('type'),
   disabled: boolean('disabled'),
-  userId: text('user_id').$type<TUserId>().notNull(),
+  userId: text('user_id').$type<TUserId>(),
   createdAt: timestampCol('created_at'),
   updatedAt: timestampCol('updated_at'),
 });

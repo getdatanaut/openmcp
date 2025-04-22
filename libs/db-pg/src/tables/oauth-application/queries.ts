@@ -61,8 +61,7 @@ export const oauthApplicationQueries = ({ db }: BuildQueriesOpts) => {
           name: params.name,
           clientId: params.clientId,
           clientSecret,
-          // @ts-expect-error: there's a mismatch in how column names are processed
-          redirectU_r_ls: params.redirectURLs.join(','),
+          redirectURLs: params.redirectURLs.join(','),
           icon: params.icon,
           metadata: params.metadata,
           type: params.type,
