@@ -18,6 +18,9 @@
     "LICENSE",
     "package.json"
   ],
+  "bin": {
+    "openmcp": "./bin/index.js"
+  },
   "imports": {
     "#register": {
       "types": "./src/register.ts",
@@ -33,7 +36,7 @@
     }
   },
   "scripts": {
-    "exec": "TS_NODE_TRANSPILE_ONLY=1 node --conditions=development --no-warnings --loader ts-node/esm ./bin/index.js",
+    "exec": "NODE_ENV=development TS_NODE_TRANSPILE_ONLY=1 node --conditions=development --no-warnings --loader ts-node/esm ./bin/index.js",
     "build": "tsup",
     "lint": "eslint .",
     "test": "vitest run",

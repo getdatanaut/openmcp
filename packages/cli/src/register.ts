@@ -12,7 +12,7 @@ export default async function register(argv: string[]) {
   consola.wrapAll();
   try {
     await yargs(hideBin(process.argv))
-      .scriptName(packageJson.name)
+      .scriptName('openmcp')
       .version()
       .help(true)
       .showHelpOnFail(false)

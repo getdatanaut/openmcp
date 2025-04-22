@@ -5,6 +5,7 @@ import { login } from '../../libs/auth/index.ts';
 
 export default {
   command: 'login',
+  describe: 'Login to the CLI',
   async handler() {
     consola.start('Logging in...');
     const { email } = await login({

@@ -5,6 +5,7 @@ import { logout } from '../../libs/auth/index.ts';
 
 export default {
   command: 'logout',
+  describe: 'Logout from the CLI',
   async handler() {
     consola.start('Logging out...');
     await logout();
