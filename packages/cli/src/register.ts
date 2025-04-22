@@ -24,7 +24,6 @@ export default async function register(argv: string[]) {
       .command(uploadCommand)
       .demandCommand(1, '')
       .parse(argv);
-    process.exit(0);
   } catch {
     consola.restoreAll();
     process.exit(1);
