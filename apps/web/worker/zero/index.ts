@@ -7,9 +7,9 @@ import type postgres from 'postgres';
 import type { AuthData } from '~shared/auth.ts';
 import { schema } from '~shared/zero-schema.ts';
 
-import { createServerMutators, type PostCommitTask } from '../server-mutators.ts';
+import { createServerMutators, type PostCommitTask } from './server-mutators.ts';
 
-export async function handlePushReq({
+export async function handler({
   req,
   getJwks,
   sql,

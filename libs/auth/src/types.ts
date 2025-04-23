@@ -12,4 +12,9 @@ export interface AuthUser extends Omit<InferUser<AuthOptions>, 'id'> {
   id: TUserId;
 }
 
+export type GetUserResult = {
+  user: AuthUser;
+  session: AuthSession | null;
+};
+
 export interface JwtPayload {}
