@@ -1,4 +1,5 @@
 import { createAuth, getUser } from '@libs/auth/server';
+import type { TUserId } from '@libs/db-ids';
 import { createDbSdk } from '@libs/db-pg';
 import { onError } from '@orpc/client';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
@@ -40,6 +41,14 @@ export default {
           clientId: env.GITHUB_CLIENT_ID,
           clientSecret: env.GITHUB_CLIENT_SECRET,
         },
+      },
+      async generateOrgData(user) {
+        const username = user.email.split('@')[0]!;
+        const randomStr = Math.random().toString(16).slice(4, 10);
+        return {
+          name: `${username}'s Organization`,
+          slug: `${username}_${randomStr}`,
+        };
       },
     });
 

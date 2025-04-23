@@ -12,6 +12,7 @@ export const oauthConsentQueries = ({ db }: BuildQueriesOpts) => {
   function giveConsent({ userId, clientId, scopes }: { userId: TUserId; clientId: string; scopes: string[] }) {
     return db
       .insertInto(OAUTH_CONSENT_KEY)
+      .onConflict(oc => oc.columns(['userId', 'clientId']).doNothing())
       .values({
         id: OauthConsentId.generate(),
         userId,

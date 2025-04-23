@@ -19,11 +19,24 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   basePath: string;
   socialProviders?: SocialProviders;
   loginPage?: string;
+  generateOrgData(user: { id: TUserId; name: string; email: string }): Promise<{
+    name: string;
+    slug: string;
+    logo?: string;
+    metadata?: string;
+  }>;
 }
 
 export type AuthOptions = ReturnType<typeof createAuthOptions>;
 
-export const createAuthOptions = ({ db, socialProviders, basePath, baseURL, loginPage = '/' }: CreateAuthOptions) => {
+export const createAuthOptions = ({
+  db,
+  socialProviders,
+  basePath,
+  baseURL,
+  loginPage = '/',
+  generateOrgData,
+}: CreateAuthOptions) => {
   return {
     appName: 'Datanaut',
     baseURL,
@@ -36,6 +49,9 @@ export const createAuthOptions = ({ db, socialProviders, basePath, baseURL, logi
     },
     plugins: [
       organization({
+        allowUserToCreateOrganization: false,
+        // ac: accessControl,
+        // organizationCreation:
         schema: {
           organization: {
             modelName: 'organizations',
@@ -74,14 +90,45 @@ export const createAuthOptions = ({ db, socialProviders, basePath, baseURL, logi
       modelName: 'authVerifications',
     },
     databaseHooks: {
+      session: {
+        create: {
+          before: async session => {
+            const activeOrganizationId = await db.queries.users.getActiveOrganizationId({
+              userId: session.userId as TUserId,
+            });
+            return {
+              data: {
+                ...session,
+                activeOrganizationId,
+              },
+            };
+          },
+        },
+      },
       user: {
         create: {
           after: async user => {
-            // openmcp-cli is our own app and thus a trusted client
-            await db.queries.oauthConsent.giveConsent({
-              userId: user.id as TUserId,
-              clientId: 'openmcp-cli',
-              scopes: ['openid', 'profile', 'email', 'offline_access'],
+            const userId = user.id as TUserId;
+            const [, org] = await Promise.all([
+              // openmcp-cli is our own app and thus a trusted client
+              await db.queries.oauthConsent.giveConsent({
+                userId,
+                clientId: 'openmcp-cli',
+                scopes: ['openid', 'profile', 'email', 'offline_access'],
+              }),
+              db.queries.organizations.create(
+                await generateOrgData({
+                  id: userId,
+                  name: user.name,
+                  email: user.email,
+                }),
+              ),
+            ]);
+
+            await db.queries.members.create({
+              role: 'owner',
+              userId,
+              organizationId: org.id,
             });
           },
         },

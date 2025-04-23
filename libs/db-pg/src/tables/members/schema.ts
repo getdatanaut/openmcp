@@ -1,4 +1,4 @@
-import type { TMemberId } from '@libs/db-ids';
+import type { TMemberId, TOrganizationId, TUserId } from '@libs/db-ids';
 import { pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
@@ -20,9 +20,11 @@ export const MEMBERS_TABLE = 'members' as const;
 export const members = pgTable(MEMBERS_TABLE, {
   id: text('id').$type<TMemberId>().primaryKey(),
   organizationId: text('organization_id')
+    .$type<TOrganizationId>()
     .notNull()
     .references(() => organizations.id, { onDelete: 'cascade' }),
   userId: text('user_id')
+    .$type<TUserId>()
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   role: text('role').notNull(),
@@ -31,4 +33,5 @@ export const members = pgTable(MEMBERS_TABLE, {
 
 export type MembersTableCols = DrizzleToKysely<typeof members>;
 export type Member = typeof members.$inferSelect;
+export type NewMember = typeof members.$inferInsert;
 export type MemberColNames = NonNullable<keyof Member>;
