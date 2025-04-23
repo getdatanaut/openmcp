@@ -2,7 +2,10 @@ import { betterFetch } from '@better-fetch/fetch';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@libs/ui-primitives';
 import { createFileRoute } from '@tanstack/react-router';
+import { useAtomInstance } from '@zedux/react';
 import { useEffect } from 'react';
+
+import { authAtom } from '~/atoms/auth.ts';
 
 export const Route = createFileRoute('/api/auth/callback/$provider')({
   component: RouteComponent,
@@ -10,6 +13,7 @@ export const Route = createFileRoute('/api/auth/callback/$provider')({
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
+  const auth = useAtomInstance(authAtom);
 
   /**
    * Making the request from the client because top level browser requests
@@ -20,7 +24,7 @@ function RouteComponent() {
   useEffect(() => {
     void betterFetch(window.location.href, {
       method: 'get',
-      onSuccess(context) {
+      async onSuccess(context) {
         // URL will be the better-auth redirect URL
         const url = new URL(context.response.url);
 
@@ -35,6 +39,8 @@ function RouteComponent() {
           return;
         }
 
+        await auth.exports.getSession();
+
         void navigate({ href: `${url.pathname}${url.search}`, replace: true });
       },
       onError(context) {
@@ -43,7 +49,7 @@ function RouteComponent() {
         void navigate({ to: '/', replace: true });
       },
     });
-  });
+  }, [auth, navigate]);
 
   return (
     <div className="flex h-screen w-screen items-center justify-center">

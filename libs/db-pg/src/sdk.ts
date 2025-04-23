@@ -2,10 +2,12 @@ import { initClient, type InitClientOpts, type PgClientMetrics } from '@libs/db-
 import type { Kysely, Transaction } from 'kysely';
 
 import type { DbSchema } from './db.ts';
+import { AGENT_MCP_SERVERS_KEY, agentMcpServerQueries } from './tables/agent-mcp-servers/index.ts';
 import { AGENT_MCP_TOOLS_KEY, agentMcpToolQueries } from './tables/agent-mcp-tools/index.ts';
 import { agentQueries, AGENTS_KEY } from './tables/agents/index.ts';
-import { agentMcpServerQueries, AGENTS_MCP_SERVERS_KEY } from './tables/agents-mcp-servers/index.ts';
 import { AUTH_VERIFICATIONS_KEY, authVerificationQueries } from './tables/auth-verifications/index.ts';
+import { jwksQueries } from './tables/jwks/queries.ts';
+import { JWKS_KEY } from './tables/jwks/schema.ts';
 import { MCP_SERVERS_KEY, mcpServerQueries } from './tables/mcp-servers/index.ts';
 import { MCP_TOOLS_KEY, mcpToolQueries } from './tables/mcp-tools/index.ts';
 import { OAUTH_ACCESS_TOKEN_KEY, oauthAccessTokenQueries } from './tables/oauth-access-token/index.ts';
@@ -30,8 +32,9 @@ const initSdk = ({ db, metrics }: { db: Kysely<DbSchema>; metrics: PgClientMetri
   const queries = {
     [AGENT_MCP_TOOLS_KEY]: agentMcpToolQueries({ db }),
     [AGENTS_KEY]: agentQueries({ db }),
-    [AGENTS_MCP_SERVERS_KEY]: agentMcpServerQueries({ db }),
+    [AGENT_MCP_SERVERS_KEY]: agentMcpServerQueries({ db }),
     [AUTH_VERIFICATIONS_KEY]: authVerificationQueries({ db }),
+    [JWKS_KEY]: jwksQueries({ db }),
     [MCP_SERVERS_KEY]: mcpServerQueries({ db }),
     [MCP_TOOLS_KEY]: mcpToolQueries({ db }),
     [OAUTH_ACCESS_TOKEN_KEY]: oauthAccessTokenQueries({ db }),

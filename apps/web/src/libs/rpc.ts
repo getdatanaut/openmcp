@@ -4,7 +4,7 @@ import { RPCLink } from '@orpc/client/fetch';
 import { SimpleCsrfProtectionLinkPlugin } from '@orpc/client/plugins';
 import { createORPCReactQueryUtils } from '@orpc/react-query';
 
-import { RPC_BASE_PATH } from '../../worker/consts.ts';
+import { RPC_BASE_PATH } from '~shared/consts.ts';
 
 const link = new RPCLink({
   url: `${window.location.origin}${RPC_BASE_PATH}`,

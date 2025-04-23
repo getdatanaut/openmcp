@@ -1,0 +1,10 @@
+{
+  "extends": "@libs/tsconfig/tsconfig.isomorphic.json",
+  "include": ["shared"],
+  "compilerOptions": {
+    "rootDir": ".",
+    "paths": {
+      "~/*": ["./shared/*"]
+    }
+  }
+}

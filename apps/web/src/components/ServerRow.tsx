@@ -1,34 +1,16 @@
-import { faPlus, faTrash, faWrench } from '@fortawesome/free-solid-svg-icons';
-import type {
-  AgentMcpServerSummarySelect,
-  AgentMcpToolSummarySelect,
-  McpServerSummarySelect,
-  McpToolSummarySelect,
-} from '@libs/db-pg';
-import { Avatar, Button, Icon, tn } from '@libs/ui-primitives';
+import { faWrench } from '@fortawesome/free-solid-svg-icons';
+import { Avatar, Icon, tn } from '@libs/ui-primitives';
 import { Link } from '@tanstack/react-router';
 
-export function ServerRow({
-  server,
-  tools,
-  installedServer,
-  installedTools,
-  isActive,
-  handleToolToggle,
-}: {
-  server: McpServerSummarySelect;
-  tools: McpToolSummarySelect[];
-  installedServer?: AgentMcpServerSummarySelect;
-  installedTools?: AgentMcpToolSummarySelect[];
+import type { McpServer } from '~shared/zero-schema.ts';
+
+export interface ServerRowProps {
+  server: Pick<McpServer, 'id' | 'name' | 'summary' | 'iconUrl' | 'toolCount'>;
   isActive: boolean;
-  handleToolToggle?: ({
-    installedTool,
-    tool,
-  }: {
-    installedTool?: AgentMcpToolSummarySelect;
-    tool: McpToolSummarySelect;
-  }) => void;
-}) {
+  children?: React.ReactNode;
+}
+
+export function ServerRow({ server, isActive, children }: ServerRowProps) {
   const iconElem = server.iconUrl ? (
     <img src={server.iconUrl} alt={server.name} className="ak-frame-xs h-full w-full" />
   ) : (
@@ -57,65 +39,10 @@ export function ServerRow({
     </Link>
   );
 
-  let installedToolElems: React.ReactNode[] = [];
-  let toolElems: React.ReactNode[] = [];
-  if (isActive || installedServer) {
-    for (const tool of tools) {
-      const installedTool = installedTools?.find(t => t.mcpToolId === tool.id);
-      if (installedTool) {
-        installedToolElems.push(
-          <ServerToolRow key={tool.id} tool={tool} installedTool={installedTool} handleToolToggle={handleToolToggle} />,
-        );
-      } else if (isActive) {
-        toolElems.push(<ServerToolRow key={tool.id} tool={tool} handleToolToggle={handleToolToggle} />);
-      }
-    }
-  }
-
   return (
     <div className={tn(!isActive && 'hover:ak-layer-hover-0.2', isActive && 'ak-layer-hover-0.3')}>
       {serverElem}
-
-      {installedToolElems.length || toolElems.length ? (
-        <div className="flex max-h-[30rem] flex-col gap-1 overflow-auto px-4 pt-2 pb-5">
-          {installedToolElems}
-          {toolElems}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ServerToolRow({
-  tool,
-  installedTool,
-  handleToolToggle,
-}: {
-  tool: McpToolSummarySelect;
-  installedTool?: AgentMcpToolSummarySelect;
-  handleToolToggle?: ({
-    installedTool,
-    tool,
-  }: {
-    installedTool?: AgentMcpToolSummarySelect;
-    tool: McpToolSummarySelect;
-  }) => void;
-}) {
-  return (
-    <div className="flex items-center gap-1">
-      <Button
-        variant="soft"
-        size="sm"
-        intent={installedTool ? 'danger' : 'primary'}
-        icon={installedTool ? faTrash : faPlus}
-        title={installedTool ? 'Remove tool from agent' : 'Add tool to agent'}
-        onClick={() => handleToolToggle?.({ installedTool, tool })}
-      />
-
-      <div className="ak-layer-pop-0.7 flex flex-1 items-center gap-2 self-stretch rounded-xs px-2 text-sm">
-        <div className="shrink-0">{tool.displayName || tool.name}</div>
-        <div className="ak-text/50 truncate">{tool.summary}</div>
-      </div>
+      {children}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import * as AK from '@ariakit/react';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { type ReactNode, type Ref, useMemo } from 'react';
+import { memo, type ReactNode, type Ref, useMemo } from 'react';
 
 import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
@@ -34,7 +34,7 @@ export interface ButtonProps extends AKProps, ButtonStyleProps, ButtonSlotProps 
 
 const DEFAULT_SPINNER: IconProps['icon'] = faSpinner;
 
-export function Button({ ref, ...originalProps }: ButtonProps) {
+export const Button = memo(function Button({ ref, ...originalProps }: ButtonProps) {
   [originalProps, ref] = useContextProps(originalProps, ButtonContext, ref);
 
   const [
@@ -87,4 +87,4 @@ export function Button({ ref, ...originalProps }: ButtonProps) {
       {endIcon ? <Icon className={endIconTw} icon={endIcon} /> : null}
     </AK.Button>
   );
-}
+});

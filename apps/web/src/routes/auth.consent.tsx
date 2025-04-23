@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
+import { useAtomInstance } from '@zedux/react';
 import { useState } from 'react';
 
-import { oauth2 } from '~/libs/auth.ts';
+import { authAtom } from '~/atoms/auth.ts';
 
 export const Route = createFileRoute('/auth/consent')({
   component: ConsentPage,
@@ -13,9 +14,10 @@ function ConsentPage() {
   const clientId = searchParams.get('client_id');
   const scope = searchParams.get('scope');
   const [error, setError] = useState<string | null>(null);
+  const auth = useAtomInstance(authAtom);
 
   const handleConsent = async () => {
-    const res = await oauth2.consent({
+    const res = await auth.exports.oauth2.consent({
       accept: true,
     });
     if (res.error) {
@@ -26,7 +28,7 @@ function ConsentPage() {
   };
 
   const handleDeny = async () => {
-    await oauth2.consent({
+    await auth.exports.oauth2.consent({
       accept: false,
     });
   };

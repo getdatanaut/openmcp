@@ -28,4 +28,14 @@
       "binding": "OPENMCP_OPENAPI",
     },
   ],
+  "vars": {
+    "PUBLIC_URL": "http://localhost:3001",
+  },
+  "env": {
+    "production": {
+      "vars": {
+        "PUBLIC_URL": "https://datanaut.ai",
+      },
+    },
+  },
 }

@@ -1,7 +1,8 @@
+import type { AGENT_MCP_SERVERS_KEY, AgentMcpServersTableCols } from './tables/agent-mcp-servers/schema.ts';
 import type { AGENT_MCP_TOOLS_KEY, AgentMcpToolsTableCols } from './tables/agent-mcp-tools/schema.ts';
 import type { AGENTS_KEY, AgentsTableCols } from './tables/agents/schema.ts';
-import type { AGENTS_MCP_SERVERS_KEY, AgentsMcpServersTableCols } from './tables/agents-mcp-servers/schema.ts';
 import type { AUTH_VERIFICATIONS_KEY, AuthVerificationsTableCols } from './tables/auth-verifications/schema.ts';
+import type { JWKS_KEY, JwksTableCols } from './tables/jwks/schema.ts';
 import type { MCP_SERVERS_KEY, McpServersTableCols } from './tables/mcp-servers/schema.ts';
 import type { MCP_TOOLS_KEY, McpToolsTableCols } from './tables/mcp-tools/schema.ts';
 import type { OAUTH_ACCESS_TOKEN_KEY, OauthAccessTokenTableCols } from './tables/oauth-access-token/schema.ts';
@@ -21,8 +22,9 @@ import type { USERS_KEY, UsersTableCols } from './tables/users/schema.ts';
 export interface DbSchema {
   [AGENT_MCP_TOOLS_KEY]: AgentMcpToolsTableCols;
   [AGENTS_KEY]: AgentsTableCols;
-  [AGENTS_MCP_SERVERS_KEY]: AgentsMcpServersTableCols;
+  [AGENT_MCP_SERVERS_KEY]: AgentMcpServersTableCols;
   [AUTH_VERIFICATIONS_KEY]: AuthVerificationsTableCols;
+  [JWKS_KEY]: JwksTableCols;
   [MCP_SERVERS_KEY]: McpServersTableCols;
   [MCP_TOOLS_KEY]: McpToolsTableCols;
   [OAUTH_ACCESS_TOKEN_KEY]: OauthAccessTokenTableCols;

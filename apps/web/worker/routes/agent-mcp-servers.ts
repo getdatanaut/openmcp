@@ -9,13 +9,13 @@ const listAgentMcpServers = base.agentMcpServers.listWithTools
       throw errors.NOT_FOUND();
     }
 
-    return db.queries.agentsMcpServers.listWithTools({ agentId });
+    return db.queries.agentMcpServers.listWithTools({ agentId });
   });
 
 // @TODO permissions
 const addTool = base.agentMcpServers.addTool
   .use(requireAuth)
-  .handler(async ({ context: { db, session }, input: { agentId, toolId }, errors }) => {
+  .handler(async ({ context: { db, user }, input: { agentId, toolId }, errors }) => {
     const agent = await db.queries.agents.getById({ id: agentId });
     if (!agent) {
       throw errors.NOT_FOUND();
@@ -26,7 +26,7 @@ const addTool = base.agentMcpServers.addTool
       throw errors.NOT_FOUND();
     }
 
-    await db.queries.agentsMcpServers.upsert({ agentId, mcpServerId: tool.mcpServerId, userId: session.userId });
+    await db.queries.agentMcpServers.upsert({ agentId, mcpServerId: tool.mcpServerId, userId: user.id });
 
     return db.queries.agentMcpTools.create({ agentId, mcpServerId: tool.mcpServerId, mcpToolId: tool.id });
   });

@@ -1,15 +1,16 @@
 import '../assets/app.css';
 
 import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
-import { type QueryClient, useQueryClient } from '@tanstack/react-query';
-import { createRootRouteWithContext, Outlet, useRouter } from '@tanstack/react-router';
-import { createEcosystem, EcosystemProvider, useAtomInstance, useAtomValue } from '@zedux/react';
-import { useEffect, useMemo, useState } from 'react';
+import { type QueryClient } from '@tanstack/react-query';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
+import { useAtomInstance, useAtomValue } from '@zedux/react';
+import { useEffect, useState } from 'react';
 
 import { layoutAtom } from '~/atoms/layout.ts';
 import { themeAtom } from '~/atoms/theme.ts';
 
 import { MainSidebar } from './-components/MainSidebar.tsx';
+import { Providers } from './-components/Providers.tsx';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -31,26 +32,6 @@ function RootComponent() {
       </SidebarLayout>
     </Providers>
   );
-}
-
-function Providers({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-
-  const ecosystem = useMemo(() => {
-    const ecosystem = // for debugging: make the ecosystem globally accessible
-      ((globalThis as any).ecosystem = createEcosystem({
-        ssr: typeof window === 'undefined',
-        context: {
-          router,
-          queryClient,
-        },
-      }));
-
-    return ecosystem;
-  }, [router, queryClient]);
-
-  return <EcosystemProvider ecosystem={ecosystem}>{children}</EcosystemProvider>;
 }
 
 function SidebarLayout({ children }: { children: React.ReactNode }) {

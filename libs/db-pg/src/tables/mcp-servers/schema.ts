@@ -1,12 +1,15 @@
 import type { TMcpServerId, TUserId } from '@libs/db-ids';
 import type { McpClientConfigSchemaSchema, TransportSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
+import { relations } from 'drizzle-orm';
 import { boolean, index, integer, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 import type { z } from 'zod';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
+import { agentMcpServers } from '../agent-mcp-servers/schema.ts';
+import { mcpTools } from '../mcp-tools/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_SERVERS_KEY = 'mcpServers' as const;
@@ -45,6 +48,11 @@ export const mcpServers = pgTable(
     index('mcp_servers_visibility_idx').on(t.visibility),
   ],
 );
+
+export const mcpServersRelations = relations(mcpServers, ({ many }) => ({
+  mcpTools: many(mcpTools),
+  agentMcpServers: many(agentMcpServers),
+}));
 
 export type McpServersTableCols = DrizzleToKysely<typeof mcpServers>;
 export type NewMcpServer = SetOptional<typeof mcpServers.$inferInsert, 'id'>;

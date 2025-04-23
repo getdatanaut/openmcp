@@ -1,13 +1,16 @@
 import { Form, FormButton, FormField, FormInput, useFormStore } from '@libs/ui-primitives';
+import { useAtomInstance } from '@zedux/react';
 
-import { signIn } from '~/libs/auth.ts';
+import { authAtom } from '~/atoms/auth.ts';
 
 export function LoginForm() {
+  const auth = useAtomInstance(authAtom);
+
   const form = useFormStore({ defaultValues: { email: '', password: '' } });
   const $ = form.names;
 
   form.useSubmit(async state => {
-    await signIn.email(
+    await auth.exports.signIn.email(
       {
         email: state.values.email,
         password: state.values.password,
@@ -16,8 +19,8 @@ export function LoginForm() {
         onRequest: ctx => {
           //show loading
         },
-        onSuccess: ctx => {
-          //redirect to the dashboard or sign in page
+        onSuccess: async ctx => {
+          await auth.exports.getSession();
         },
         onError: ctx => {
           // display the error message

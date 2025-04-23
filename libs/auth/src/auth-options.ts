@@ -1,8 +1,11 @@
 import { AuthVerificationId, type TUserId, UserAccountId, UserId, UserSessionId } from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
 import { type BetterAuthOptions, generateId } from 'better-auth';
+import { jwt } from 'better-auth/plugins/jwt';
 import { oidcProvider } from 'better-auth/plugins/oidc-provider';
 import type { SocialProviders } from 'better-auth/social-providers';
+
+import type { JwtPayload } from './types.ts';
 
 export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   db: DbSdk;
@@ -10,6 +13,9 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   socialProviders?: SocialProviders;
   loginPage?: string;
   consentPage?: string;
+  jwtOpts?: {
+    expirationTime: number | string | Date;
+  };
 }
 
 export type AuthOptions = ReturnType<typeof createAuthOptions>;
@@ -21,6 +27,7 @@ export const createAuthOptions = ({
   baseURL,
   loginPage = '/',
   consentPage = '/auth/consent',
+  jwtOpts,
 }: CreateAuthOptions) => {
   return {
     appName: 'Datanaut',
@@ -33,6 +40,14 @@ export const createAuthOptions = ({
       ...socialProviders,
     },
     plugins: [
+      jwt({
+        jwt: {
+          definePayload(_session) {
+            return {} satisfies JwtPayload;
+          },
+          ...jwtOpts,
+        },
+      }),
       oidcProvider({
         // the default for access token is 1 hour,
         // while the default for refresh token is 7 days

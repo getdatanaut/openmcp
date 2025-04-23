@@ -1,13 +1,15 @@
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { McpServerId, McpToolId } from '@libs/db-ids';
-import { Input } from '@libs/ui-primitives';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Button, Input } from '@libs/ui-primitives';
 import { createFileRoute } from '@tanstack/react-router';
-import { Suspense, useCallback } from 'react';
+import { Suspense } from 'react';
 import { z } from 'zod';
 
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
-import { ServerRow } from '~/components/ServerRow.tsx';
-import { rpc } from '~/libs/rpc.ts';
+import { ServerRow, type ServerRowProps } from '~/components/ServerRow.tsx';
+import { ServerRowTools } from '~/components/ServerRowTools.tsx';
+import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
+import { useQuery } from '~/hooks/use-query.ts';
 
 export const Route = createFileRoute('/mcp-servers')({
   component: RouteComponent,
@@ -15,9 +17,6 @@ export const Route = createFileRoute('/mcp-servers')({
     serverId: McpServerId.validator.optional(),
     toolId: McpToolId.validator.optional(),
   }),
-  beforeLoad: ({ context: { queryClient } }) => {
-    void queryClient.prefetchQuery(rpc.mcpServers.listWithTools.queryOptions());
-  },
 });
 
 function RouteComponent() {
@@ -49,26 +48,59 @@ function ServerFilters() {
 
 function ServersList() {
   const { serverId } = Route.useSearch();
-  const { data: servers } = useSuspenseQuery(rpc.mcpServers.listWithTools.queryOptions());
 
-  const handleToolToggle = useCallback(() => {
-    alert('TODO.. for now create an agent via the sidebar and then add a tool to it');
-  }, []);
+  const [servers] = useQuery(z => z.query.mcpServers.orderBy('name', 'asc'));
 
   let content;
   if (servers.length) {
-    content = servers.map(({ tools, ...server }) => (
-      <ServerRow
-        key={server.id}
-        server={server}
-        tools={tools}
-        isActive={server.id === serverId}
-        handleToolToggle={handleToolToggle}
-      />
+    content = servers.map(server => (
+      <ServerRowWrapper key={server.id} server={server} isActive={server.id === serverId} />
     ));
   } else {
     content = <div>No servers found</div>;
   }
 
   return <div className="flex-1 divide-y pb-32">{content}</div>;
+}
+
+function ServerRowWrapper({ server, isActive }: { server: ServerRowProps['server']; isActive: boolean }) {
+  const [tools] = useQuery(
+    z => z.query.mcpTools.orderBy('displayName', 'asc').orderBy('name', 'asc').where('mcpServerId', '=', server.id),
+    {
+      enabled: isActive,
+    },
+  );
+
+  let toolsListElem: React.ReactNode;
+  if (tools.length) {
+    toolsListElem = (
+      <ServerRowTools>
+        {tools.map(tool => (
+          <ServerToolRowWrapper key={tool.id} tool={tool} />
+        ))}
+      </ServerRowTools>
+    );
+  }
+
+  return (
+    <ServerRow server={server} isActive={isActive}>
+      {toolsListElem}
+    </ServerRow>
+  );
+}
+
+function ServerToolRowWrapper({ tool }: { tool: ServerToolRowProps['tool'] }) {
+  const installedTool = false;
+
+  const actionElem = (
+    <Button
+      variant="soft"
+      size="sm"
+      intent={installedTool ? 'danger' : 'primary'}
+      icon={installedTool ? faTrash : faPlus}
+      title={installedTool ? 'Remove tool from agent' : 'Add tool to agent'}
+    />
+  );
+
+  return <ServerToolRow tool={tool} actionElem={actionElem} />;
 }

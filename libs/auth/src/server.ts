@@ -1,21 +1,14 @@
-import type { TUserId, TUserSessionId } from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
-import { betterAuth, type InferSession, type InferUser } from 'better-auth';
+import { betterAuth } from 'better-auth';
 
-import { type AuthOptions, type CreateAuthOptions, createAuthOptions } from './auth-options.ts';
+import { type CreateAuthOptions, createAuthOptions } from './auth-options.ts';
 import { exchangeToken } from './oauth2.ts';
 import ROUTES from './routes.ts';
+import type { AuthSession, AuthUser } from './types.ts';
 
 export type Auth = ReturnType<typeof createAuth>;
 
-export interface AuthSession extends Omit<InferSession<AuthOptions>, 'id' | 'userId'> {
-  id: TUserSessionId;
-  userId: TUserId;
-}
-
-export interface AuthUser extends Omit<InferUser<AuthOptions>, 'id'> {
-  id: TUserId;
-}
+export type { AuthSession, AuthUser, JwtPayload } from './types.ts';
 
 export const createAuth = (options: CreateAuthOptions) => {
   const sdk = betterAuth(createAuthOptions(options));

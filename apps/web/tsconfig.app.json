@@ -5,7 +5,8 @@
     "rootDir": ".",
     "types": ["vite/client"],
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "~shared/*": ["./shared/*"]
     }
   }
 }

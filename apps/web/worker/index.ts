@@ -4,10 +4,13 @@ import { onError } from '@orpc/client';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { RPCHandler } from '@orpc/server/fetch';
 import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins';
+import postgres from 'postgres';
 
-import { API_BASE_PATH, AUTH_BASE_PATH, RPC_BASE_PATH } from './consts.ts';
+import { API_BASE_PATH, AUTH_BASE_PATH, RPC_BASE_PATH, ZERO_PUSH_PATH } from '~shared/consts.ts';
+
 import type { RootContext } from './middleware.ts';
 import { router } from './router.ts';
+import { handlePushReq } from './routes/push.ts';
 
 const openApiHandler = new OpenAPIHandler(router, {
   plugins: [],
@@ -31,10 +34,15 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
 
-    const db = createDbSdk({ uri: env.HYPERDRIVE.connectionString, max: 5 });
+    const sql = postgres(env.HYPERDRIVE.connectionString, { max: 5 });
+    const db = createDbSdk({ sql });
     const auth = createAuth({
       db,
+      baseURL: env.PUBLIC_URL,
       basePath: AUTH_BASE_PATH,
+      jwtOpts: {
+        expirationTime: '1h', // can set to a low number for things like testing refresh process
+      },
       socialProviders: {
         github: {
           clientId: env.GITHUB_CLIENT_ID,
@@ -45,9 +53,16 @@ export default {
 
     try {
       if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith(AUTH_BASE_PATH)) {
-        const res = await auth.handler(req);
+        return auth.handler(req);
+      }
 
-        return res;
+      if (url.pathname.startsWith(ZERO_PUSH_PATH)) {
+        return handlePushReq({
+          req,
+          sql,
+          publicUrl: env.PUBLIC_URL,
+          getJwks: () => auth.api.getJwks(),
+        });
       }
 
       const session = await getUser(auth, db, { headers: req.headers });

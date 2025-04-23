@@ -4,26 +4,26 @@ import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import type { BuildQueriesOpts } from '../../types.ts';
 import { summarySelect as agentMcpToolSummarySelect } from '../agent-mcp-tools/queries.ts';
 import { AGENT_MCP_TOOLS_KEY } from '../agent-mcp-tools/schema.ts';
-import { type AgentMcpServerColNames, AGENTS_MCP_SERVERS_KEY, type NewAgentMcpServer } from './schema.ts';
+import { AGENT_MCP_SERVERS_KEY, type AgentMcpServerColNames, type NewAgentMcpServer } from './schema.ts';
 
 export type AgentMcpServerQueries = ReturnType<typeof agentMcpServerQueries>;
 
 export const agentMcpServerQueries = ({ db }: BuildQueriesOpts) => {
   function list({ userId }: { userId: TUserId }) {
-    return db.selectFrom(AGENTS_MCP_SERVERS_KEY).select(summarySelect).where('userId', '=', userId).execute();
+    return db.selectFrom(AGENT_MCP_SERVERS_KEY).select(summarySelect).where('userId', '=', userId).execute();
   }
 
   function listWithTools({ agentId }: { agentId: TAgentId }) {
     return db
-      .selectFrom(AGENTS_MCP_SERVERS_KEY)
+      .selectFrom(AGENT_MCP_SERVERS_KEY)
       .select(eb => [
         ...summarySelect,
         jsonArrayFrom(
           eb
             .selectFrom(AGENT_MCP_TOOLS_KEY)
             .select(agentMcpToolSummarySelect.map(t => `${AGENT_MCP_TOOLS_KEY}.${t}` as const))
-            .whereRef(`${AGENT_MCP_TOOLS_KEY}.agentId`, '=', `${AGENTS_MCP_SERVERS_KEY}.agentId`)
-            .whereRef(`${AGENT_MCP_TOOLS_KEY}.mcpServerId`, '=', `${AGENTS_MCP_SERVERS_KEY}.mcpServerId`),
+            .whereRef(`${AGENT_MCP_TOOLS_KEY}.agentId`, '=', `${AGENT_MCP_SERVERS_KEY}.agentId`)
+            .whereRef(`${AGENT_MCP_TOOLS_KEY}.mcpServerId`, '=', `${AGENT_MCP_SERVERS_KEY}.mcpServerId`),
         ).as('tools'),
       ])
       .where('agentId', '=', agentId)
@@ -32,7 +32,7 @@ export const agentMcpServerQueries = ({ db }: BuildQueriesOpts) => {
 
   function upsert(values: NewAgentMcpServer) {
     return db
-      .insertInto(AGENTS_MCP_SERVERS_KEY)
+      .insertInto(AGENT_MCP_SERVERS_KEY)
       .values({
         id: AgentMcpServerId.generate(),
         ...values,

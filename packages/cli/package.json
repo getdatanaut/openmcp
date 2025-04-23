@@ -47,7 +47,7 @@
     "@modelcontextprotocol/sdk": "1.10.0",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/remix": "workspace:*",
-    "@orpc/client": "1.0.3",
+    "@orpc/client": "1.1.0",
     "consola": "~3.4.2",
     "envalid": "~8.0.0",
     "open": "~10.1.1",
