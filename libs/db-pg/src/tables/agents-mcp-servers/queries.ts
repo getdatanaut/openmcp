@@ -1,4 +1,4 @@
-import { AgentMcpServerId, type TAgentId, type TUserId } from '@libs/db-ids';
+import { AgentMcpServerId, type TAgentId, type TOrganizationId, type TUserId } from '@libs/db-ids';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 import type { BuildQueriesOpts } from '../../types.ts';
@@ -9,8 +9,12 @@ import { type AgentMcpServerColNames, AGENTS_MCP_SERVERS_KEY, type NewAgentMcpSe
 export type AgentMcpServerQueries = ReturnType<typeof agentMcpServerQueries>;
 
 export const agentMcpServerQueries = ({ db }: BuildQueriesOpts) => {
-  function list({ userId }: { userId: TUserId }) {
-    return db.selectFrom(AGENTS_MCP_SERVERS_KEY).select(summarySelect).where('userId', '=', userId).execute();
+  function list({ organizationId }: { organizationId: TOrganizationId }) {
+    return db
+      .selectFrom(AGENTS_MCP_SERVERS_KEY)
+      .select(summarySelect)
+      .where('organizationId', '=', organizationId)
+      .execute();
   }
 
   function listWithTools({ agentId }: { agentId: TAgentId }) {
@@ -38,7 +42,7 @@ export const agentMcpServerQueries = ({ db }: BuildQueriesOpts) => {
         ...values,
       })
       .onConflict(oc =>
-        oc.columns(['agentId', 'mcpServerId', 'userId']).doUpdateSet({
+        oc.columns(['agentId', 'mcpServerId', 'organizationId']).doUpdateSet({
           configJson: eb => eb.ref('excluded.configJson'),
         }),
       )

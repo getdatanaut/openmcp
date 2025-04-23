@@ -1,4 +1,4 @@
-import type { TUserId, TUserSessionId } from '@libs/db-ids';
+import type { TOrganizationId, TUserId, TUserSessionId } from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
 import { betterAuth, type InferSession, type InferUser } from 'better-auth';
 
@@ -8,8 +8,9 @@ import ROUTES from './routes.ts';
 
 export type Auth = ReturnType<typeof createAuth>;
 
-export interface AuthSession extends Omit<InferSession<AuthOptions>, 'id' | 'userId'> {
+export interface AuthSession extends Omit<InferSession<AuthOptions>, 'id' | 'userId' | 'activeOrganizationId'> {
   id: TUserSessionId;
+  activeOrganizationId: TOrganizationId | null;
   userId: TUserId;
 }
 

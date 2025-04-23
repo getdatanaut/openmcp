@@ -41,6 +41,14 @@ export default {
           clientSecret: env.GITHUB_CLIENT_SECRET,
         },
       },
+      async generateOrgData(user) {
+        const username = user.email.split('@')[0]!;
+        const randomStr = Math.random().toString(16).slice(4, 10);
+        return {
+          name: `${username}'s Organization`,
+          slug: `${username}_${randomStr}`,
+        };
+      },
     });
 
     try {
@@ -55,6 +63,7 @@ export default {
       const orpcContext = {
         db,
         user: session?.user ?? null,
+        organizationId: session?.session?.activeOrganizationId ?? null,
         session: session?.session ?? null,
         r2OpenApiBucket: env.OPENMCP_OPENAPI,
       } satisfies RootContext;

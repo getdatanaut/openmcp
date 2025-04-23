@@ -1,4 +1,4 @@
-import type { TMcpServerId, TUserId } from '@libs/db-ids';
+import type { TMcpServerId, TOrganizationId, TUserId } from '@libs/db-ids';
 import type { McpClientConfigSchemaSchema, TransportSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
 import { boolean, index, integer, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
@@ -7,6 +7,8 @@ import type { z } from 'zod';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
+import { organizations } from '../organizations/schema.ts';
+import { users } from '../users/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_SERVERS_KEY = 'mcpServers' as const;
@@ -32,7 +34,8 @@ export const mcpServers = pgTable(
     transportJson: jsonb('transport_json').$type<z.infer<typeof TransportSchema>>().notNull(),
     runsRemote: boolean('runs_remote').default(false).notNull(),
     runsLocal: boolean('runs_local').default(true).notNull(),
-    userId: text('user_id').$type<TUserId>().notNull(),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
+    createdBy: text('created_by').$type<TUserId>().notNull(),
     toolCount: integer('tool_count').default(0).notNull(),
     visibility: text('visibility', { enum: ['public', 'private'] })
       .default('private')
@@ -41,7 +44,7 @@ export const mcpServers = pgTable(
     updatedAt: timestampCol('updated_at').defaultNow().notNull(),
   },
   t => [
-    uniqueIndex('mcp_servers_user_id_external_id_unique').on(t.userId, t.externalId),
+    uniqueIndex('mcp_servers_organization_id_external_id_unique').on(t.organizationId, t.externalId),
     index('mcp_servers_visibility_idx').on(t.visibility),
   ],
 );

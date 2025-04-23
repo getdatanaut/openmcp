@@ -1,8 +1,9 @@
-import type { TUserId } from '@libs/db-ids';
+import type { TOrganizationId, TUserId } from '@libs/db-ids';
 import { boolean, index, pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
+import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const USERS_KEY = 'users' as const;
@@ -26,6 +27,7 @@ export const users = pgTable(
     name: text('name').notNull(),
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').notNull(),
+    activeOrganizationId: text('active_organization_id').$type<TOrganizationId>(),
     image: text('image'),
     createdAt: timestampCol('created_at').defaultNow().notNull(),
     updatedAt: timestampCol('updated_at').defaultNow().notNull(),

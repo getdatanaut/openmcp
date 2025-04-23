@@ -29,4 +29,5 @@ export const organizations = pgTable(ORGANIZATIONS_TABLE, {
 
 export type OrganizationsTableCols = DrizzleToKysely<typeof organizations>;
 export type Organization = typeof organizations.$inferSelect;
+export type NewOrganization = typeof organizations.$inferInsert;
 export type OrganizationColNames = NonNullable<keyof Organization>;

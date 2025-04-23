@@ -15,6 +15,9 @@ export const auth = betterAuth({
     db: {} as any,
     loginPage: '/',
     basePath: '/api/auth',
+    generateOrgData() {
+      throw new Error('Unreachable');
+    },
   }),
   database: drizzleAdapter(db, {
     provider: 'pg',

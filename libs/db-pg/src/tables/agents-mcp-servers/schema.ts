@@ -1,9 +1,10 @@
-import type { TAgentId, TAgentMcpServerId, TMcpServerId, TUserId } from '@libs/db-ids';
+import type { TAgentId, TAgentMcpServerId, TMcpServerId, TOrganizationId, TUserId } from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
 import { index, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import type { DrizzleToKysely } from '../../types.ts';
+import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENTS_MCP_SERVERS_KEY = 'agentsMcpServers' as const;
@@ -15,16 +16,17 @@ export const agentsMcpServers = pgTable(
     id: text('id').$type<TAgentMcpServerId>().primaryKey(),
     agentId: text('agent_id').$type<TAgentId>().notNull(),
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
-    userId: text('user_id').$type<TUserId>().notNull(),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
+    createdBy: text('created_by').$type<TUserId>().notNull(),
     configJson: jsonb('config_json').$type<Record<string, unknown>>().notNull().default({}),
   },
   table => [
-    uniqueIndex('agents_mcp_servers_agent_id_mcp_server_id_user_id_idx').on(
+    uniqueIndex('agents_mcp_servers_agent_id_mcp_server_id_organization_id_idx').on(
       table.agentId,
       table.mcpServerId,
-      table.userId,
+      table.organizationId,
     ),
-    index('agents_mcp_servers_user_id_idx').on(table.userId),
+    index('agents_mcp_servers_organization_id_idx').on(table.organizationId),
   ],
 );
 

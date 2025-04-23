@@ -1,9 +1,10 @@
-import type { TAgentId, TAgentMcpToolId, TMcpServerId, TMcpToolId } from '@libs/db-ids';
+import type { TAgentId, TAgentMcpToolId, TMcpServerId, TMcpToolId, TOrganizationId, TUserId } from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
 import { index, pgTable, text } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import type { DrizzleToKysely } from '../../types.ts';
+import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENT_MCP_TOOLS_KEY = 'agentMcpTools' as const;
@@ -14,6 +15,8 @@ export const agentMcpTools = pgTable(
   {
     id: text('id').$type<TAgentMcpToolId>().primaryKey(),
     agentId: text('agent_id').$type<TAgentId>().notNull(),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
+    createdBy: text('created_by').$type<TUserId>().notNull(),
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
     mcpToolId: text('mcp_tool_id').$type<TMcpToolId>().notNull(),
   },

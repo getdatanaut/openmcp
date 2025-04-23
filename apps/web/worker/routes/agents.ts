@@ -1,7 +1,7 @@
 import { base, requireAuth } from '../middleware.ts';
 
-const listAgents = base.agents.list.use(requireAuth).handler(async ({ context: { db, user } }) => {
-  return db.queries.agents.listByUserId({ userId: user.id });
+const listAgents = base.agents.list.use(requireAuth).handler(async ({ context: { db, organizationId } }) => {
+  return db.queries.agents.listByOrganizationId({ organizationId });
 });
 
 // @TODO permissions
@@ -14,15 +14,21 @@ const getAgent = base.agents.get.use(requireAuth).handler(async ({ context: { db
   return agent;
 });
 
-const createAgent = base.agents.create.use(requireAuth).handler(async ({ context: { db, user }, input }) => {
-  let name = input.name;
-  if (!name) {
-    const agents = await db.queries.agents.listByUserId({ userId: user.id });
-    name = `Agent ${agents.length + 1}`;
-  }
+const createAgent = base.agents.create
+  .use(requireAuth)
+  .handler(async ({ context: { db, user, organizationId }, input }) => {
+    let name = input.name;
+    if (!name) {
+      const agents = await db.queries.agents.listByOrganizationId({ organizationId });
+      name = `Agent ${agents.length + 1}`;
+    }
 
-  return db.queries.agents.create({ userId: user.id, name });
-});
+    return db.queries.agents.create({
+      organizationId,
+      createdBy: user.id,
+      name,
+    });
+  });
 
 export const agentsRouter = {
   agents: {
