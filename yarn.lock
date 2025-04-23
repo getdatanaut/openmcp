@@ -15831,6 +15831,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vite-bundle-analyzer@npm:0.19.0":
+  version: 0.19.0
+  resolution: "vite-bundle-analyzer@npm:0.19.0"
+  bin:
+    analyze: dist/bin.js
+  checksum: 10c0/c3719dd175d062f92c3b223aaaf6978c0817b226059fbc7c9f008109d9beea0e77f763cc4b9343357898ca5896d5268bf17b750f0ff6978ffceb1ed2a9f9d34a
+  languageName: node
+  linkType: hard
+
 "vite-node@npm:3.1.2":
   version: 3.1.2
   resolution: "vite-node@npm:3.1.2"
@@ -16085,6 +16094,7 @@ __metadata:
     tailwindcss: "npm:4.1.4"
     typescript: "npm:5.8.3"
     vite: "npm:6.3.2"
+    vite-bundle-analyzer: "npm:0.19.0"
     vite-tsconfig-paths: "npm:5.1.4"
     wrangler: "npm:4.13.0"
     zod: "npm:3.24.3"

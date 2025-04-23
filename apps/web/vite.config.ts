@@ -3,6 +3,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { analyzer } from 'vite-bundle-analyzer';
 import tsConfigPaths from 'vite-tsconfig-paths';
 
 // https://vitejs.dev/config/
@@ -21,6 +22,7 @@ export default defineConfig({
     react(),
     cloudflare(),
     tsConfigPaths(),
+    process.argv.includes('--analyze') ? analyzer() : null,
   ],
 
   define: {

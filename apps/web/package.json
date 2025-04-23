@@ -8,6 +8,7 @@
     "dev.app": "vite --port=3001",
     "dev.zero": "zero-cache-dev -p shared/zero-schema.ts",
     "build": "CLOUDFLARE_ENV=production vite build",
+    "build.analyze": "CLOUDFLARE_ENV=production vite build -- --analyze",
     "preview": "concurrently -c auto --names app,zero \"vite preview --port=3001\" \"yarn dev.zero\"",
     "deploy": "yarn build && wrangler deploy",
     "typecheck": "tsc",
@@ -70,6 +71,7 @@
     "tailwindcss": "4.1.4",
     "typescript": "5.8.3",
     "vite": "6.3.2",
+    "vite-bundle-analyzer": "0.19.0",
     "vite-tsconfig-paths": "5.1.4",
     "wrangler": "4.13.0"
   }
