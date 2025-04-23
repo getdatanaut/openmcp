@@ -2,7 +2,7 @@ import { AgentId, AgentMcpServerId, AgentMcpToolId, McpToolId } from '@libs/db-i
 import type { CustomMutatorDefs } from '@rocicorp/zero';
 import { z } from 'zod';
 
-import { assertIsLoggedIn, type AuthData } from './auth.ts';
+import { assertFound, assertIsLoggedIn, assertIsRecordOwner, type AuthData } from './auth.ts';
 import type { Schema } from './zero-schema.ts';
 
 const CreateAgentSchema = z.object({
@@ -51,14 +51,10 @@ export function createMutators(authData: AuthData | undefined) {
         const data = CreateAgentMcpToolSchema.parse(props);
 
         const agent = await tx.query.agents.where('id', data.agentId).one().run();
-        if (!agent) {
-          throw new Error('Agent not found');
-        }
+        assertFound(agent, 'Agent not found');
 
         const tool = await tx.query.mcpTools.where('id', data.mcpToolId).one().run();
-        if (!tool) {
-          throw new Error('Tool not found');
-        }
+        assertFound(tool, 'Tool not found');
 
         const agentServer = await tx.query.agentMcpServers
           .where('agentId', agent.id)
@@ -85,6 +81,13 @@ export function createMutators(authData: AuthData | undefined) {
 
       async delete(tx, props: z.infer<typeof RemoveAgentMcpToolSchema>) {
         assertIsLoggedIn(authData);
+
+        const existing = await tx.query.agentMcpTools.where('id', props.id).one().run();
+        assertFound(existing, 'Agent MCP tool not found');
+
+        const agent = await tx.query.agents.where('id', existing.agentId).one().run();
+        assertFound(agent, 'Agent not found');
+        assertIsRecordOwner(authData, agent);
 
         const data = RemoveAgentMcpToolSchema.parse(props);
 

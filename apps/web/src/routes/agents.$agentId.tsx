@@ -251,9 +251,9 @@ function ServerToolRowWrapper({ tool, agentTool }: { tool: ServerToolRowProps['t
     z => {
       if (agentToolId) {
         return z.mutate.agentMcpTools.delete({ id: agentToolId });
-      } else {
-        return z.mutate.agentMcpTools.insert({ agentId, mcpToolId: toolId });
       }
+
+      return z.mutate.agentMcpTools.insert({ agentId, mcpToolId: toolId });
     },
     [toolId, agentId, agentToolId],
   );

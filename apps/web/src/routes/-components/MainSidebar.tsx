@@ -24,7 +24,7 @@ import {
   tn,
   twMerge,
 } from '@libs/ui-primitives';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 import { useAtomInstance, useAtomState } from '@zedux/react';
 import { useEffect } from 'react';
 
@@ -200,6 +200,7 @@ function SettingsMenu() {
 
 function AgentsSidebar() {
   const navigate = useNavigate();
+  const router = useRouter();
   const [agents] = useQuery(z => z.query.agents.orderBy('name', 'asc'));
 
   const { mutate: addAgent } = useMutation(
@@ -209,9 +210,13 @@ function AgentsSidebar() {
       return {
         op: z.mutate.agents.insert({ id }),
         onClientSuccess: () => navigate({ to: '/agents/$agentId', params: { agentId: id } }),
+        onServerError: () => {
+          // @TODO: toast
+          router.history.back();
+        },
       };
     },
-    [navigate],
+    [navigate, router.history],
   );
 
   return (
