@@ -11,7 +11,7 @@ import { ServerRowTools } from '~/components/ServerRowTools.tsx';
 import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
 import { useQuery } from '~/hooks/use-query.ts';
 
-export const Route = createFileRoute('/mcp-servers')({
+export const Route = createFileRoute('/mcp')({
   component: RouteComponent,
   validateSearch: z.object({
     serverId: McpServerId.validator.optional(),

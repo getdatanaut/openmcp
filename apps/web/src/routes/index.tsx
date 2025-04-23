@@ -34,7 +34,7 @@ const TempAuthDebug = () => {
   } else if (error) {
     content = <div>Auth error: {error.message}</div>;
   } else if (user) {
-    return <Navigate to="/mcp-servers" />;
+    return <Navigate to="/mcp" />;
   } else {
     content = (
       <>

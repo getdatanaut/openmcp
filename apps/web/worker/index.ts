@@ -4,7 +4,7 @@ import postgres from 'postgres';
 
 import { API_BASE_PATH, AUTH_BASE_PATH, RPC_BASE_PATH, ZERO_PUSH_PATH } from '~shared/consts.ts';
 
-import { handler as orpcHandler } from './routes/orpc/index.ts';
+import { handler as orpcHandler } from './orpc/index.ts';
 import { handler as zeroPushHandler } from './zero/index.ts';
 
 export default {
@@ -42,7 +42,7 @@ export default {
        * Zero push route handling
        */
       if (url.pathname.startsWith(ZERO_PUSH_PATH)) {
-        return handlePushReq({
+        return zeroPushHandler({
           req,
           sql,
           publicUrl: env.PUBLIC_URL,
