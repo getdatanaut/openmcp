@@ -134,7 +134,7 @@ export function useZeroMutation<TArg = void>(
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    deps,
+    [...deps, z],
   );
 
   // The return type is correctly inferred based on TArg
