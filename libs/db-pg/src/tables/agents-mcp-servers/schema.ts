@@ -4,7 +4,6 @@ import { index, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import type { DrizzleToKysely } from '../../types.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENTS_MCP_SERVERS_KEY = 'agentsMcpServers' as const;

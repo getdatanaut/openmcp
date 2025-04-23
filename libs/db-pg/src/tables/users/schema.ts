@@ -3,7 +3,6 @@ import { boolean, index, pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const USERS_KEY = 'users' as const;

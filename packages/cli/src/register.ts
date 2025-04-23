@@ -1,7 +1,6 @@
 import { default as yargs } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import packageJson from '../package.json' with { type: 'json' };
 import loginCommand from './commands/login/index.ts';
 import logoutCommand from './commands/logout/index.ts';
 import runCommand from './commands/run/index.ts';

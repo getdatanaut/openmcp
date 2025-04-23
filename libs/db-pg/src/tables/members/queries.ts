@@ -1,4 +1,4 @@
-import { MemberId, OrganizationId, type TUserId } from '@libs/db-ids';
+import { MemberId } from '@libs/db-ids';
 
 import type { BuildQueriesOpts } from '../../types.ts';
 import { MEMBERS_KEY, type NewMember } from './schema.ts';

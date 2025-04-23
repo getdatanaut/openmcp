@@ -4,7 +4,6 @@ import { index, pgTable, text } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import type { DrizzleToKysely } from '../../types.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENT_MCP_TOOLS_KEY = 'agentMcpTools' as const;

@@ -7,7 +7,6 @@ import type { z } from 'zod';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_TOOLS_KEY = 'mcpTools' as const;

@@ -5,7 +5,6 @@ import type { Updateable } from 'kysely';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENTS_KEY = 'agents' as const;

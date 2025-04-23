@@ -1,5 +1,4 @@
 import { oc, type } from '@orpc/contract';
-import { z } from 'zod';
 
 export const base = oc.errors({
   UNAUTHORIZED: {},
