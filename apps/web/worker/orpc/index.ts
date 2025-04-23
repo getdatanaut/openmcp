@@ -51,6 +51,7 @@ export async function handler({
     db,
     user: user ?? null,
     session: session ?? null,
+    organizationId: session?.activeOrganizationId ?? null,
     r2OpenApiBucket: env.OPENMCP_OPENAPI,
   } satisfies RootContext;
 

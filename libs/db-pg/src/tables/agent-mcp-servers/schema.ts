@@ -8,7 +8,6 @@ import type { DrizzleToKysely } from '../../types.ts';
 import { agentMcpTools } from '../agent-mcp-tools/schema.ts';
 import { agents } from '../agents/schema.ts';
 import { mcpServers } from '../mcp-servers/schema.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENT_MCP_SERVERS_KEY = 'agentMcpServers' as const;
@@ -20,10 +19,7 @@ export const agentMcpServers = pgTable(
     id: text('id').$type<TAgentMcpServerId>().primaryKey(),
     agentId: text('agent_id').$type<TAgentId>().notNull(),
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
-    organizationId: text('organization_id')
-      .$type<TOrganizationId>()
-      .notNull()
-      .references(() => organizations.id),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
     createdBy: text('created_by').$type<TUserId>().notNull(),
     configJson: jsonb('config_json').$type<Record<string, unknown>>().notNull().default({}),
   },

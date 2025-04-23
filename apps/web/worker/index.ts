@@ -1,5 +1,4 @@
 import { createAuth, getUser } from '@libs/auth/server';
-import type { TUserId } from '@libs/db-ids';
 import { createDbSdk } from '@libs/db-pg';
 import postgres from 'postgres';
 

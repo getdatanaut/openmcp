@@ -1,6 +1,6 @@
 import { asSchema } from '@ai-sdk/ui-utils';
 import { routerContract } from '@libs/api-contract';
-import type { TUserId } from '@libs/db-ids';
+import type { TOrganizationId, TUserId } from '@libs/db-ids';
 import type { DbSdk, NewMcpServer, NewMcpTool } from '@libs/db-pg';
 import type { ToolInputSchemaSchema, ToolOutputSchemaSchema } from '@libs/schemas/mcp';
 import { openApiToMcpServerOptions } from '@openmcp/openapi';
@@ -10,33 +10,38 @@ import type { z } from 'zod';
 
 import { base, requireAuth } from './middleware.ts';
 
-const uploadMcpServer = base.mcpServers.upload.use(requireAuth).handler(async ({ context: { db, user }, input }) => {
-  const { tools, transport, configSchema, ...serverProps } = input;
+const uploadMcpServer = base.mcpServers.upload
+  .use(requireAuth)
+  .handler(async ({ context: { db, user, organizationId }, input }) => {
+    const { tools, transport, configSchema, ...serverProps } = input;
 
-  const server = await upsertMcpServer({
-    db,
-    userId: user.id,
-    externalId: input.externalId,
-    server: {
-      ...serverProps,
-      transportJson: transport,
-      configSchemaJson: configSchema,
-    },
-    tools: tools.map(({ inputSchema, outputSchema, ...rest }) => ({
-      ...rest,
-      inputSchemaJson: inputSchema,
-      outputSchemaJson: outputSchema,
-    })),
+    const server = await upsertMcpServer({
+      db,
+      userId: user.id,
+      organizationId,
+      externalId: input.externalId,
+      server: {
+        ...serverProps,
+        transportJson: transport,
+        configSchemaJson: configSchema,
+      },
+      tools: tools.map(({ inputSchema, outputSchema, ...rest }) => ({
+        ...rest,
+        organizationId,
+        createdBy: user.id,
+        inputSchemaJson: inputSchema,
+        outputSchemaJson: outputSchema,
+      })),
+    });
+
+    return {
+      id: server.id,
+    };
   });
-
-  return {
-    id: server.id,
-  };
-});
 
 const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
   .use(requireAuth)
-  .handler(async ({ context: { db, user, r2OpenApiBucket }, input, errors }) => {
+  .handler(async ({ context: { db, user, organizationId, r2OpenApiBucket }, input, errors }) => {
     const { openapi, sourceUrl, iconUrl, developer, developerUrl } = input;
 
     const { service, options } = await openApiToMcpServerOptions({ openapi, serverUrl: input.serverUrl });
@@ -51,6 +56,7 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
     const server = await upsertMcpServer({
       db,
       userId: user.id,
+      organizationId,
       externalId: serverUrl,
       server: {
         name: input.name || service.name,
@@ -73,6 +79,8 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
         name,
         displayName: tool.annotations?.title,
         summary: getFirstSentence(tool.description) || undefined,
+        organizationId,
+        createdBy: user.id,
         description: tool.description,
         inputSchemaJson: tool.parameters
           ? (asSchema(tool.parameters).jsonSchema as z.infer<typeof ToolInputSchemaSchema>)
@@ -148,18 +156,20 @@ export const mpcServersRouter = {
 async function upsertMcpServer({
   db,
   userId,
+  organizationId,
   externalId,
   server,
   tools,
 }: {
   db: DbSdk;
   userId: TUserId;
+  organizationId: TOrganizationId;
   externalId: string;
-  server: Omit<NewMcpServer, 'userId'>;
-  tools: Omit<NewMcpTool, 'mcpServerId'>[];
+  server: Omit<NewMcpServer, 'createdBy' | 'organizationId'>;
+  tools: Omit<NewMcpTool, 'mcpServerId' | 'organizationId'>[];
 }) {
   const existing = await db.queries.mcpServers.getByExternalId({
-    userId,
+    organizationId,
     externalId,
   });
   const existingTools = existing ? await db.queries.mcpTools.listByServerId({ serverId: existing.id }) : [];
@@ -170,9 +180,14 @@ async function upsertMcpServer({
       await tx.trxQueries.mcpTools.bulkDeleteById({ ids: toolsToDelete.map(t => t.id) });
     }
 
-    const dbServer = await tx.trxQueries.mcpServers.upsert({ ...server, userId, toolCount: tools.length });
+    const dbServer = await tx.trxQueries.mcpServers.upsert({
+      ...server,
+      organizationId,
+      createdBy: userId,
+      toolCount: tools.length,
+    });
 
-    await tx.trxQueries.mcpTools.bulkUpsert(tools.map(t => ({ ...t, mcpServerId: dbServer.id })));
+    await tx.trxQueries.mcpTools.bulkUpsert(tools.map(t => ({ ...t, organizationId, mcpServerId: dbServer.id })));
 
     return dbServer;
   });

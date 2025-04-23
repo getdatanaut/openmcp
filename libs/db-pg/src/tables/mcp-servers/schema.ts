@@ -37,14 +37,8 @@ export const mcpServers = pgTable(
     transportJson: jsonb('transport_json').$type<z.infer<typeof TransportSchema>>().notNull(),
     runsRemote: boolean('runs_remote').default(false).notNull(),
     runsLocal: boolean('runs_local').default(true).notNull(),
-    organizationId: text('organization_id')
-      .$type<TOrganizationId>()
-      .notNull()
-      .references(() => organizations.id),
-    createdBy: text('created_by')
-      .$type<TUserId>()
-      .notNull()
-      .references(() => users.id),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
+    createdBy: text('created_by').$type<TUserId>().notNull(),
     toolCount: integer('tool_count').default(0).notNull(),
     visibility: text('visibility', { enum: ['public', 'private'] })
       .default('private')

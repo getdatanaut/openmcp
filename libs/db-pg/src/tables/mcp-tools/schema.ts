@@ -1,4 +1,4 @@
-import type { TMcpServerId, TMcpToolId, TOrganizationId } from '@libs/db-ids';
+import type { TMcpServerId, TMcpToolId, TOrganizationId, TUserId } from '@libs/db-ids';
 import type { ToolInputSchemaSchema, ToolOutputSchemaSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
 import { relations } from 'drizzle-orm';
@@ -10,7 +10,6 @@ import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
 import { agentMcpTools } from '../agent-mcp-tools/schema.ts';
 import { mcpServers } from '../mcp-servers/schema.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_TOOLS_KEY = 'mcpTools' as const;
@@ -21,10 +20,7 @@ export const mcpTools = pgTable(
   {
     id: text('id').$type<TMcpToolId>().primaryKey(),
     name: text('name').notNull(),
-    organizationId: text('organization_id')
-      .$type<TOrganizationId>()
-      .notNull()
-      .references(() => organizations.id),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
     displayName: text('display_name'),
     summary: text('summary'),
     description: text('description'),
@@ -36,6 +32,7 @@ export const mcpTools = pgTable(
     isIdempotent: boolean('is_idempotent'),
     isOpenWorld: boolean('is_open_world'),
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
+    createdBy: text('created_by').$type<TUserId>().notNull(),
     createdAt: timestampCol('created_at').defaultNow().notNull(),
     updatedAt: timestampCol('updated_at').defaultNow().notNull(),
   },

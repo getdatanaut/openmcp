@@ -7,7 +7,6 @@ import type { Updateable } from 'kysely';
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
 import { agentMcpServers } from '../agent-mcp-servers/schema.ts';
-import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const AGENTS_KEY = 'agents' as const;
@@ -19,10 +18,7 @@ export const agents = pgTable(
     id: text('id').$type<TAgentId>().primaryKey(),
     name: text('name').notNull(),
     instructions: text('instructions'),
-    organizationId: text('organization_id')
-      .$type<TOrganizationId>()
-      .notNull()
-      .references(() => organizations.id),
+    organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
     createdBy: text('created_by').$type<TUserId>().notNull(),
     createdAt: timestampCol('created_at').defaultNow().notNull(),
     updatedAt: timestampCol('updated_at').defaultNow().notNull(),
