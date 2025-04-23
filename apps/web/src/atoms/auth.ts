@@ -77,6 +77,7 @@ export const authAtom = atom('auth', () => {
       hasBootstrapped: () => signal.get().hasBootstrapped,
       jwt: () => signal.get().jwt,
       userId: () => signal.get().user?.id,
+      orgId: () => signal.get().session?.activeOrganizationId,
       user: () => signal.get().user,
     },
     { wrap: false },

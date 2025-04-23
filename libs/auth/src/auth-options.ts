@@ -3,6 +3,7 @@ import {
   InviteId,
   MemberId,
   OrganizationId,
+  type TOrganizationId,
   type TUserId,
   UserAccountId,
   UserId,
@@ -57,8 +58,13 @@ export const createAuthOptions = ({
     plugins: [
       jwt({
         jwt: {
-          definePayload(_session) {
-            return {} satisfies JwtPayload;
+          definePayload(session) {
+            // Little bit of type unsafety here, but `activeOrganizationId` is relatively stable
+            const orgId = session.session['activeOrganizationId'] as (null | TOrganizationId) | undefined;
+
+            return {
+              orgId,
+            } satisfies JwtPayload;
           },
           ...jwtOpts,
         },

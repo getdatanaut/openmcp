@@ -1,4 +1,4 @@
-import type { TUserId } from '@libs/db-ids';
+import type { TOrganizationId, TUserId } from '@libs/db-ids';
 import { Zero } from '@rocicorp/zero';
 import { atom, injectAtomInstance, injectAtomValue, injectEffect, injectSignal } from '@zedux/react';
 
@@ -11,17 +11,19 @@ import { authAtom } from './auth.ts';
 function createZero({
   jwt,
   userId,
+  orgId,
   refreshToken,
 }: {
   jwt?: string | null;
   userId?: TUserId;
+  orgId?: TOrganizationId | null;
   refreshToken: () => Promise<string | undefined>;
 }) {
   return new Zero({
     userID: userId ?? 'anon',
     server: import.meta.env.VITE_PUBLIC_ZERO_SERVER,
     schema,
-    mutators: createMutators(userId ? { sub: userId } : undefined),
+    mutators: createMutators(userId ? { sub: userId, orgId } : undefined),
     kvStore: import.meta.env.DEV ? 'mem' : 'idb',
     auth: (error?: 'invalid-token') => {
       if (error === 'invalid-token') {
@@ -47,13 +49,14 @@ export const zeroAtom = atom('zero', () => {
    * to tear down the entire zero instance when the jwt is refreshed
    */
   const userId = injectAtomValue(auth.exports.userId);
+  const orgId = injectAtomValue(auth.exports.orgId);
   const { jwt } = auth.getOnce();
 
   const signal = injectSignal(null as unknown as ReturnType<typeof createZero>);
 
   injectEffect(
     () => {
-      const z = createZero({ jwt, userId, refreshToken: auth.exports.refreshToken });
+      const z = createZero({ jwt, userId, orgId, refreshToken: auth.exports.refreshToken });
 
       signal.set(z);
 

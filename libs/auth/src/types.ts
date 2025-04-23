@@ -18,4 +18,6 @@ export type GetUserResult = {
   session: AuthSession | null;
 };
 
-export interface JwtPayload {}
+export interface JwtPayload {
+  orgId?: TOrganizationId | null;
+}

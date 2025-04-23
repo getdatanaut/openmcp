@@ -2,7 +2,7 @@ import { AgentId, AgentMcpServerId, AgentMcpToolId, McpToolId } from '@libs/db-i
 import type { CustomMutatorDefs } from '@rocicorp/zero';
 import { z } from 'zod';
 
-import { assertFound, assertIsLoggedIn, assertIsRecordOwner, type AuthData } from './auth.ts';
+import { assertFound, assertIsLoggedInWithOrg, assertIsRecordOwner, type AuthData } from './auth.ts';
 import type { Schema } from './zero-schema.ts';
 
 const CreateAgentSchema = z.object({
@@ -26,7 +26,7 @@ export function createMutators(authData: AuthData | undefined) {
   return {
     agents: {
       async insert(tx, props: z.infer<typeof CreateAgentSchema> = {}) {
-        assertIsLoggedIn(authData);
+        assertIsLoggedInWithOrg(authData);
 
         const data = CreateAgentSchema.parse(props);
 
@@ -39,14 +39,15 @@ export function createMutators(authData: AuthData | undefined) {
         await tx.mutate.agents.insert({
           id: data.id ?? AgentId.generate(),
           name,
-          userId: authData.sub,
+          organizationId: authData.orgId,
+          createdBy: authData.sub,
         });
       },
     },
 
     agentMcpTools: {
       async insert(tx, props: z.infer<typeof CreateAgentMcpToolSchema>) {
-        assertIsLoggedIn(authData);
+        assertIsLoggedInWithOrg(authData);
 
         const data = CreateAgentMcpToolSchema.parse(props);
 
@@ -67,7 +68,8 @@ export function createMutators(authData: AuthData | undefined) {
             id: AgentMcpServerId.generate(),
             agentId: agent.id,
             mcpServerId: tool.mcpServerId,
-            userId: authData.sub,
+            organizationId: authData.orgId,
+            createdBy: authData.sub,
           });
         }
 
@@ -76,11 +78,13 @@ export function createMutators(authData: AuthData | undefined) {
           agentId: agent.id,
           mcpServerId: tool.mcpServerId,
           mcpToolId: tool.id,
+          organizationId: authData.orgId,
+          createdBy: authData.sub,
         });
       },
 
       async delete(tx, props: z.infer<typeof RemoveAgentMcpToolSchema>) {
-        assertIsLoggedIn(authData);
+        assertIsLoggedInWithOrg(authData);
 
         const existing = await tx.query.agentMcpTools.where('id', props.id).one().run();
         assertFound(existing, 'Agent MCP tool not found');

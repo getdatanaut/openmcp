@@ -47,12 +47,19 @@ export const schema = {
             null as (typeof DrizzleConfigSchema)["tables"]["agentMcpServers"]["columns"]["mcpServerId"]["customType"],
           serverName: "mcp_server_id",
         },
-        userId: {
+        organizationId: {
           type: "string",
           optional: false,
           customType:
-            null as (typeof DrizzleConfigSchema)["tables"]["agentMcpServers"]["columns"]["userId"]["customType"],
-          serverName: "user_id",
+            null as (typeof DrizzleConfigSchema)["tables"]["agentMcpServers"]["columns"]["organizationId"]["customType"],
+          serverName: "organization_id",
+        },
+        createdBy: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["agentMcpServers"]["columns"]["createdBy"]["customType"],
+          serverName: "created_by",
         },
         configJson: {
           type: "json",
@@ -80,6 +87,20 @@ export const schema = {
           customType:
             null as (typeof DrizzleConfigSchema)["tables"]["agentMcpTools"]["columns"]["agentId"]["customType"],
           serverName: "agent_id",
+        },
+        organizationId: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["agentMcpTools"]["columns"]["organizationId"]["customType"],
+          serverName: "organization_id",
+        },
+        createdBy: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["agentMcpTools"]["columns"]["createdBy"]["customType"],
+          serverName: "created_by",
         },
         mcpServerId: {
           type: "string",
@@ -120,12 +141,19 @@ export const schema = {
           customType:
             null as (typeof DrizzleConfigSchema)["tables"]["agents"]["columns"]["instructions"]["customType"],
         },
-        userId: {
+        organizationId: {
           type: "string",
           optional: false,
           customType:
-            null as (typeof DrizzleConfigSchema)["tables"]["agents"]["columns"]["userId"]["customType"],
-          serverName: "user_id",
+            null as (typeof DrizzleConfigSchema)["tables"]["agents"]["columns"]["organizationId"]["customType"],
+          serverName: "organization_id",
+        },
+        createdBy: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["agents"]["columns"]["createdBy"]["customType"],
+          serverName: "created_by",
         },
         createdAt: {
           type: "number",
@@ -239,12 +267,19 @@ export const schema = {
             null as (typeof DrizzleConfigSchema)["tables"]["mcpServers"]["columns"]["runsLocal"]["customType"],
           serverName: "runs_local",
         },
-        userId: {
+        organizationId: {
           type: "string",
           optional: false,
           customType:
-            null as (typeof DrizzleConfigSchema)["tables"]["mcpServers"]["columns"]["userId"]["customType"],
-          serverName: "user_id",
+            null as (typeof DrizzleConfigSchema)["tables"]["mcpServers"]["columns"]["organizationId"]["customType"],
+          serverName: "organization_id",
+        },
+        createdBy: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["mcpServers"]["columns"]["createdBy"]["customType"],
+          serverName: "created_by",
         },
         toolCount: {
           type: "number",
@@ -291,6 +326,13 @@ export const schema = {
           optional: false,
           customType:
             null as (typeof DrizzleConfigSchema)["tables"]["mcpTools"]["columns"]["name"]["customType"],
+        },
+        organizationId: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["mcpTools"]["columns"]["organizationId"]["customType"],
+          serverName: "organization_id",
         },
         displayName: {
           type: "string",
@@ -366,6 +408,13 @@ export const schema = {
             null as (typeof DrizzleConfigSchema)["tables"]["mcpTools"]["columns"]["mcpServerId"]["customType"],
           serverName: "mcp_server_id",
         },
+        createdBy: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["mcpTools"]["columns"]["createdBy"]["customType"],
+          serverName: "created_by",
+        },
         createdAt: {
           type: "number",
           optional: true,
@@ -383,6 +432,43 @@ export const schema = {
       },
       primaryKey: ["id"],
       serverName: "mcp_tools",
+    },
+    organizations: {
+      name: "organizations",
+      columns: {
+        id: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["organizations"]["columns"]["id"]["customType"],
+        },
+        name: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["organizations"]["columns"]["name"]["customType"],
+        },
+        slug: {
+          type: "string",
+          optional: true,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["organizations"]["columns"]["slug"]["customType"],
+        },
+        logo: {
+          type: "string",
+          optional: true,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["organizations"]["columns"]["logo"]["customType"],
+        },
+        createdAt: {
+          type: "number",
+          optional: true,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["organizations"]["columns"]["createdAt"]["customType"],
+          serverName: "created_at",
+        },
+      },
+      primaryKey: ["id"],
     },
     users: {
       name: "users",
@@ -412,25 +498,18 @@ export const schema = {
             null as (typeof DrizzleConfigSchema)["tables"]["users"]["columns"]["emailVerified"]["customType"],
           serverName: "email_verified",
         },
+        activeOrganizationId: {
+          type: "string",
+          optional: true,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["users"]["columns"]["activeOrganizationId"]["customType"],
+          serverName: "active_organization_id",
+        },
         image: {
           type: "string",
           optional: true,
           customType:
             null as (typeof DrizzleConfigSchema)["tables"]["users"]["columns"]["image"]["customType"],
-        },
-        createdAt: {
-          type: "number",
-          optional: true,
-          customType:
-            null as (typeof DrizzleConfigSchema)["tables"]["users"]["columns"]["createdAt"]["customType"],
-          serverName: "created_at",
-        },
-        updatedAt: {
-          type: "number",
-          optional: true,
-          customType:
-            null as (typeof DrizzleConfigSchema)["tables"]["users"]["columns"]["updatedAt"]["customType"],
-          serverName: "updated_at",
         },
       },
       primaryKey: ["id"],

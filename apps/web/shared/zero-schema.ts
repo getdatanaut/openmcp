@@ -21,7 +21,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
   const allowIfUserIdMatchesLoggedInUser = (
     authData: AuthData,
     { and, cmp, eb }: ExpressionBuilder<Schema, 'agents'>,
-  ) => and(userIsLoggedIn(authData, eb), cmp('userId', '=', authData.sub));
+  ) => and(userIsLoggedIn(authData, eb), cmp('createdBy', '=', authData.sub));
 
   const allowIfVisibilityIsPublic = (_authData: AuthData, { cmp }: ExpressionBuilder<Schema, 'mcpServers'>) =>
     cmp('visibility', '=', 'public');
