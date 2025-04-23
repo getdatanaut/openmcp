@@ -1,4 +1,4 @@
-import { AgentId, type TAgentId, type TUserId } from '@libs/db-ids';
+import { AgentId, type TAgentId, type TOrganizationId } from '@libs/db-ids';
 
 import type { BuildQueriesOpts } from '../../types.ts';
 import { type AgentColNames, AGENTS_KEY, type NewAgent } from './schema.ts';
@@ -10,8 +10,8 @@ export const agentQueries = ({ db }: BuildQueriesOpts) => {
     return db.selectFrom(AGENTS_KEY).select(detailedSelect).where('id', '=', id).executeTakeFirst();
   }
 
-  function listByUserId({ userId }: { userId: TUserId }) {
-    return db.selectFrom(AGENTS_KEY).select(summarySelect).where('userId', '=', userId).execute();
+  function listByOrganizationId({ organizationId }: { organizationId: TOrganizationId }) {
+    return db.selectFrom(AGENTS_KEY).select(summarySelect).where('organizationId', '=', organizationId).execute();
   }
 
   function create(values: NewAgent) {
@@ -27,7 +27,7 @@ export const agentQueries = ({ db }: BuildQueriesOpts) => {
 
   return {
     getById,
-    listByUserId,
+    listByOrganizationId,
     create,
   };
 };

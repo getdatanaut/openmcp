@@ -25,6 +25,12 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   jwtOpts?: {
     expirationTime: number | string | Date;
   };
+  generateOrgData(user: { id: TUserId; name: string; email: string }): Promise<{
+    name: string;
+    slug: string;
+    logo?: string;
+    metadata?: string;
+  }>;
 }
 
 export type AuthOptions = ReturnType<typeof createAuthOptions>;
@@ -36,6 +42,7 @@ export const createAuthOptions = ({
   baseURL,
   loginPage = '/',
   jwtOpts,
+  generateOrgData,
 }: CreateAuthOptions) => {
   return {
     appName: 'Datanaut',
@@ -57,6 +64,9 @@ export const createAuthOptions = ({
         },
       }),
       organization({
+        allowUserToCreateOrganization: false,
+        // ac: accessControl,
+        // organizationCreation:
         schema: {
           organization: {
             modelName: 'organizations',
@@ -95,14 +105,45 @@ export const createAuthOptions = ({
       modelName: 'authVerifications',
     },
     databaseHooks: {
+      session: {
+        create: {
+          before: async session => {
+            const activeOrganizationId = await db.queries.users.getActiveOrganizationId({
+              userId: session.userId as TUserId,
+            });
+            return {
+              data: {
+                ...session,
+                activeOrganizationId,
+              },
+            };
+          },
+        },
+      },
       user: {
         create: {
           after: async user => {
-            // openmcp-cli is our own app and thus a trusted client
-            await db.queries.oauthConsent.giveConsent({
-              userId: user.id as TUserId,
-              clientId: 'openmcp-cli',
-              scopes: ['openid', 'profile', 'email', 'offline_access'],
+            const userId = user.id as TUserId;
+            const [, org] = await Promise.all([
+              // openmcp-cli is our own app and thus a trusted client
+              await db.queries.oauthConsent.giveConsent({
+                userId,
+                clientId: 'openmcp-cli',
+                scopes: ['openid', 'profile', 'email', 'offline_access'],
+              }),
+              db.queries.organizations.create(
+                await generateOrgData({
+                  id: userId,
+                  name: user.name,
+                  email: user.email,
+                }),
+              ),
+            ]);
+
+            await db.queries.members.create({
+              role: 'owner',
+              userId,
+              organizationId: org.id,
             });
           },
         },

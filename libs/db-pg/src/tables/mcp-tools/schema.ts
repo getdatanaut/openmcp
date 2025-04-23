@@ -1,4 +1,4 @@
-import type { TMcpServerId, TMcpToolId } from '@libs/db-ids';
+import type { TMcpServerId, TMcpToolId, TOrganizationId } from '@libs/db-ids';
 import type { ToolInputSchemaSchema, ToolOutputSchemaSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
 import { relations } from 'drizzle-orm';
@@ -10,6 +10,7 @@ import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
 import { agentMcpTools } from '../agent-mcp-tools/schema.ts';
 import { mcpServers } from '../mcp-servers/schema.ts';
+import { organizations } from '../organizations/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_TOOLS_KEY = 'mcpTools' as const;
@@ -20,6 +21,10 @@ export const mcpTools = pgTable(
   {
     id: text('id').$type<TMcpToolId>().primaryKey(),
     name: text('name').notNull(),
+    organizationId: text('organization_id')
+      .$type<TOrganizationId>()
+      .notNull()
+      .references(() => organizations.id),
     displayName: text('display_name'),
     summary: text('summary'),
     description: text('description'),

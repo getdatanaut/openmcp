@@ -1,4 +1,4 @@
-import { McpServerId, type TMcpServerId, type TUserId } from '@libs/db-ids';
+import { McpServerId, type TMcpServerId, type TOrganizationId, type TUserId } from '@libs/db-ids';
 import type { Expression, SqlBool } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
@@ -10,7 +10,7 @@ import { MCP_SERVERS_KEY, type McpServerColNames, type NewMcpServer } from './sc
 export type McpServerQueries = ReturnType<typeof mcpServerQueries>;
 
 export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
-  function list({ userId }: { userId?: TUserId } = {}) {
+  function list({ organizationId }: { organizationId?: TOrganizationId } = {}) {
     return db
       .selectFrom(MCP_SERVERS_KEY)
       .select(summarySelect)
@@ -19,8 +19,8 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
 
         ors.push(eb('visibility', '=', 'public'));
 
-        if (userId) {
-          ors.push(eb('userId', '=', userId));
+        if (organizationId) {
+          ors.push(eb('organizationId', '=', organizationId));
         }
 
         return eb.or(ors);
@@ -28,7 +28,7 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
       .execute();
   }
 
-  function listWithTools({ userId }: { userId?: TUserId } = {}) {
+  function listWithTools({ organizationId }: { organizationId?: TOrganizationId } = {}) {
     return db
       .selectFrom(MCP_SERVERS_KEY)
       .select(eb => [
@@ -45,8 +45,8 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
 
         ors.push(eb('visibility', '=', 'public'));
 
-        if (userId) {
-          ors.push(eb('userId', '=', userId));
+        if (organizationId) {
+          ors.push(eb('organizationId', '=', organizationId));
         }
 
         return eb.or(ors);
@@ -54,11 +54,11 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
       .execute();
   }
 
-  function getByExternalId({ userId, externalId }: { userId: TUserId; externalId: string }) {
+  function getByExternalId({ organizationId, externalId }: { organizationId: TOrganizationId; externalId: string }) {
     return db
       .selectFrom(MCP_SERVERS_KEY)
       .select(detailedSelect)
-      .where('userId', '=', userId)
+      .where('organizationId', '=', organizationId)
       .where('externalId', '=', externalId)
       .executeTakeFirst();
   }
@@ -75,7 +75,7 @@ export const mcpServerQueries = ({ db }: BuildQueriesOpts) => {
         ...values,
       })
       .onConflict(oc =>
-        oc.columns(['userId', 'externalId']).doUpdateSet({
+        oc.columns(['organizationId', 'externalId']).doUpdateSet({
           name: eb => eb.ref('excluded.name'),
           summary: eb => eb.ref('excluded.summary'),
           description: eb => eb.ref('excluded.description'),
