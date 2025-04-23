@@ -33,19 +33,19 @@ export const createDbSdk = (opts: InitDbSdkOpts) => {
 const initSdk = ({ db, metrics }: { db: Kysely<DbSchema>; metrics: PgClientMetrics }) => {
   // Please keep in alphabetical order.
   const queries = {
+    [AGENT_MCP_SERVERS_KEY]: agentMcpServerQueries({ db }),
     [AGENT_MCP_TOOLS_KEY]: agentMcpToolQueries({ db }),
     [AGENTS_KEY]: agentQueries({ db }),
-    [AGENT_MCP_SERVERS_KEY]: agentMcpServerQueries({ db }),
     [AUTH_VERIFICATIONS_KEY]: authVerificationQueries({ db }),
+    [INVITATIONS_KEY]: invitationQueries({ db }),
     [JWKS_KEY]: jwksQueries({ db }),
     [MCP_SERVERS_KEY]: mcpServerQueries({ db }),
     [MCP_TOOLS_KEY]: mcpToolQueries({ db }),
+    [MEMBERS_KEY]: memberQueries({ db }),
     [OAUTH_ACCESS_TOKEN_KEY]: oauthAccessTokenQueries({ db }),
     [OAUTH_APPLICATION_KEY]: oauthApplicationQueries({ db }),
     [OAUTH_CONSENT_KEY]: oauthConsentQueries({ db }),
     [ORGANIZATIONS_KEY]: organizationQueries({ db }),
-    [MEMBERS_KEY]: memberQueries({ db }),
-    [INVITATIONS_KEY]: invitationQueries({ db }),
     [USER_ACCOUNTS_KEY]: userAccountQueries({ db }),
     [USER_SESSIONS_KEY]: userSessionQueries({ db }),
     [USERS_KEY]: userQueries({ db }),

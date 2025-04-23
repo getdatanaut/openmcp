@@ -23,9 +23,9 @@ import type { USERS_KEY, UsersTableCols } from './tables/users/schema.ts';
  * Please keep in alphabetical order.
  */
 export interface DbSchema {
+  [AGENT_MCP_SERVERS_KEY]: AgentMcpServersTableCols;
   [AGENT_MCP_TOOLS_KEY]: AgentMcpToolsTableCols;
   [AGENTS_KEY]: AgentsTableCols;
-  [AGENT_MCP_SERVERS_KEY]: AgentMcpServersTableCols;
   [AUTH_VERIFICATIONS_KEY]: AuthVerificationsTableCols;
   [INVITATIONS_KEY]: InvitationsTableCols;
   [JWKS_KEY]: JwksTableCols;
