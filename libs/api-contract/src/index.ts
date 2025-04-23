@@ -4,10 +4,12 @@ import type {
   InferContractRouterOutputs,
 } from '@orpc/contract';
 
+import { agentsRouterContract } from './agents.ts';
 import { mpcServersRouterContract } from './mcp-servers.ts';
 
 export const routerContract = {
   ...mpcServersRouterContract,
+  ...agentsRouterContract,
 };
 
 export type RouterInputs = InferContractRouterInputs<typeof routerContract>;

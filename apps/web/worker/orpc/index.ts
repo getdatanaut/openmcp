@@ -5,11 +5,13 @@ import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { RPCHandler } from '@orpc/server/fetch';
 import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins';
 
+import { agentsRouter } from './agents.ts';
 import { mpcServersRouter } from './mcp-servers.ts';
 import { base, type RootContext } from './middleware.ts';
 
 const router = base.router({
   mcpServers: mpcServersRouter.mcpServers,
+  agents: agentsRouter.agents,
 });
 
 const openApiHandler = new OpenAPIHandler(router, {
@@ -48,6 +50,7 @@ export async function handler({
   apiBasePath: `/${string}`;
 }) {
   const orpcContext = {
+    publicUrl: env.PUBLIC_URL,
     db,
     user: user ?? null,
     session: session ?? null,

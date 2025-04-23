@@ -6,6 +6,7 @@ import { implement, onError, ORPCError, ValidationError } from '@orpc/server';
 import { ZodError, type ZodIssue } from 'zod';
 
 export interface RootContext {
+  readonly publicUrl: string;
   db: DbSdk;
   user: AuthUser | null;
   organizationId: TOrganizationId | null;

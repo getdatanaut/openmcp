@@ -1,3 +1,5 @@
+import { randomBytes } from 'node:crypto';
+
 import { createDbSdk } from '@libs/db-pg';
 import { truncateSchemaTables } from '@libs/db-pg-migrations';
 
@@ -14,6 +16,7 @@ async function seed() {
   await db.queries.oauthApplication.createOAuthApplication({
     name: '@openmcp/cli',
     clientId: 'openmcp-cli',
+    clientSecret: randomBytes(24).toString('base64url').slice(0, 32),
     redirectURLs: [3000, 3001, 3002, 4555, 4556, 4557, 8000, 8001, 8002].map(port => `http://localhost:${port}/`),
   });
 }

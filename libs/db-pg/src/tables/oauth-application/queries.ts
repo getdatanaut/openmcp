@@ -1,22 +1,9 @@
-import { randomBytes } from 'node:crypto';
-
 import { OauthApplicationId } from '@libs/db-ids';
 
 import type { BuildQueriesOpts } from '../../types.ts';
 import { OAUTH_APPLICATION_KEY } from './schema.ts';
 
 export type OauthApplicationQueries = ReturnType<typeof oauthApplicationQueries>;
-
-/**
- * Generates a cryptographically secure random string for use as a client secret
- * @param length Length of the secret to generate
- * @returns A random string of specified length
- */
-const generateSecureSecret = (length: number = 32): string => {
-  return randomBytes(Math.ceil(length * 0.75))
-    .toString('base64url')
-    .slice(0, length);
-};
 
 /**
  * Queries for the oauth-application table
@@ -46,21 +33,20 @@ export const oauthApplicationQueries = ({ db }: BuildQueriesOpts) => {
     createOAuthApplication: async (params: {
       name: string;
       clientId: string;
+      clientSecret: string;
       redirectURLs: string[];
       icon?: string;
       metadata?: string;
       type?: string;
       disabled?: boolean;
     }) => {
-      const clientSecret = generateSecureSecret(48);
-
       const result = await db
         .insertInto(OAUTH_APPLICATION_KEY)
         .values({
           id: OauthApplicationId.generate(),
           name: params.name,
           clientId: params.clientId,
-          clientSecret,
+          clientSecret: params.clientSecret,
           redirectURLs: params.redirectURLs.join(','),
           icon: params.icon,
           metadata: params.metadata,
