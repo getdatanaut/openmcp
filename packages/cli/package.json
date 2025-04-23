@@ -44,7 +44,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.10.0",
+    "@modelcontextprotocol/sdk": "1.10.2",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "@orpc/client": "1.1.0",
@@ -62,12 +62,12 @@
     "@libs/tsconfig": "workspace:*",
     "@types/yargs": "^17.0.33",
     "@types/yargs-parser": "^21",
-    "eslint": "9.24.0",
-    "msw": "2.7.3",
+    "eslint": "9.25.1",
+    "msw": "2.7.5",
     "ts-node": "^10.9.2",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
-    "vitest": "3.1.1"
+    "vitest": "3.1.2"
   },
   "publishConfig": {
     "access": "public"

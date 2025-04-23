@@ -33,23 +33,23 @@
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "11.9.3",
-    "@modelcontextprotocol/sdk": "1.10.0",
+    "@modelcontextprotocol/sdk": "1.10.2",
     "@openmcp/server": "workspace:*",
     "@stoplight/http-spec": "7.1.0",
     "@stoplight/json": "3.21.7",
-    "ai": "4.3.4",
+    "ai": "4.3.9",
     "lodash": "4.17.21",
     "neverthrow": "8.2.0"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "eslint": "9.24.0",
+    "eslint": "9.25.1",
     "json-schema": "0.4.0",
-    "msw": "2.7.3",
+    "msw": "2.7.5",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
-    "vitest": "3.1.1"
+    "vitest": "3.1.2"
   },
   "publishConfig": {
     "access": "public"

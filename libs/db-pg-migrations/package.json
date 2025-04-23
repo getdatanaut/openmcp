@@ -13,8 +13,8 @@
   "dependencies": {
     "@libs/db-pg-client": "workspace:*",
     "drizzle-orm": "0.42.0",
-    "eslint": "9.24.0",
-    "kysely": "0.28.0",
+    "eslint": "9.25.1",
+    "kysely": "0.28.1",
     "postgres": "3.4.5"
   }
 }

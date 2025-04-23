@@ -16,6 +16,6 @@
     "zod": "3.24.3"
   },
   "devDependencies": {
-    "eslint": "9.24.0"
+    "eslint": "9.25.1"
   }
 }
