@@ -11,7 +11,7 @@
     "build.analyze": "CLOUDFLARE_ENV=production vite build -- --analyze",
     "preview": "concurrently -c auto --names app,zero \"vite preview --port=3001\" \"yarn dev.zero\"",
     "deploy": "yarn build && wrangler deploy",
-    "typecheck": "tsc",
+    "typecheck": "tsc -b",
     "lint": "eslint .",
     "typegen": "wrangler types",
     "generate.zero-schema": "drizzle-zero generate -f -c shared/drizzle-zero.config.ts -o shared/zero-schema.gen.ts -t tsconfig.shared.json"

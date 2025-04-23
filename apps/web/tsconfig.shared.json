@@ -3,6 +3,7 @@
   "include": ["shared"],
   "compilerOptions": {
     "rootDir": ".",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.shared.tsbuildinfo",
     "paths": {
       "~/*": ["./shared/*"]
     }
