@@ -1,7 +1,17 @@
-import { AuthVerificationId, type TUserId, UserAccountId, UserId, UserSessionId } from '@libs/db-ids';
+import {
+  AuthVerificationId,
+  InviteId,
+  MemberId,
+  OrganizationId,
+  type TUserId,
+  UserAccountId,
+  UserId,
+  UserSessionId,
+} from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
 import { type BetterAuthOptions, generateId } from 'better-auth';
 import { oidcProvider } from 'better-auth/plugins/oidc-provider';
+import { organization } from 'better-auth/plugins/organization';
 import type { SocialProviders } from 'better-auth/social-providers';
 
 export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
@@ -25,6 +35,19 @@ export const createAuthOptions = ({ db, socialProviders, basePath, baseURL, logi
       ...socialProviders,
     },
     plugins: [
+      organization({
+        schema: {
+          organization: {
+            modelName: 'organizations',
+          },
+          member: {
+            modelName: 'members',
+          },
+          invitation: {
+            modelName: 'invitations',
+          },
+        },
+      }),
       oidcProvider({
         // the default for access token is 1 hour,
         // while the default for refresh token is 7 days
@@ -77,9 +100,12 @@ export const createAuthOptions = ({ db, socialProviders, basePath, baseURL, logi
             case 'verification':
               return AuthVerificationId.generate();
             case 'invitation':
-            case 'jwks':
+              return InviteId.generate();
             case 'member':
+              return MemberId.generate();
             case 'organization':
+              return OrganizationId.generate();
+            case 'jwks':
             case 'passkey':
             case 'rate-limit':
             case 'two-factor':
