@@ -11,7 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as McpServersImport } from './routes/mcp-servers'
+import { Route as McpImport } from './routes/mcp'
 import { Route as IndexImport } from './routes/index'
 import { Route as AgentsAgentIdImport } from './routes/agents.$agentId'
 import { Route as AdminUploadOpenapiImport } from './routes/admin/upload-openapi'
@@ -20,9 +20,9 @@ import { Route as ApiAuthCallbackProviderImport } from './routes/api.auth.callba
 
 // Create/Update Routes
 
-const McpServersRoute = McpServersImport.update({
-  id: '/mcp-servers',
-  path: '/mcp-servers',
+const McpRoute = McpImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,11 +67,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/mcp-servers': {
-      id: '/mcp-servers'
-      path: '/mcp-servers'
-      fullPath: '/mcp-servers'
-      preLoaderRoute: typeof McpServersImport
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpImport
       parentRoute: typeof rootRoute
     }
     '/admin/upload-openapi': {
@@ -109,7 +109,7 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/mcp-servers': typeof McpServersRoute
+  '/mcp': typeof McpRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
@@ -118,7 +118,7 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/mcp-servers': typeof McpServersRoute
+  '/mcp': typeof McpRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
@@ -128,7 +128,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/mcp-servers': typeof McpServersRoute
+  '/mcp': typeof McpRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
@@ -139,7 +139,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/mcp-servers'
+    | '/mcp'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
     | '/api/auth/callback/$provider'
@@ -147,7 +147,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/mcp-servers'
+    | '/mcp'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
     | '/api/auth/callback/$provider'
@@ -155,7 +155,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/mcp-servers'
+    | '/mcp'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
     | '/api/auth/callback/$provider'
@@ -165,7 +165,7 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  McpServersRoute: typeof McpServersRoute
+  McpRoute: typeof McpRoute
   AdminUploadOpenapiRoute: typeof AdminUploadOpenapiRoute
   AgentsAgentIdRoute: typeof AgentsAgentIdRoute
   ApiAuthCallbackProviderRoute: typeof ApiAuthCallbackProviderRoute
@@ -174,7 +174,7 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  McpServersRoute: McpServersRoute,
+  McpRoute: McpRoute,
   AdminUploadOpenapiRoute: AdminUploadOpenapiRoute,
   AgentsAgentIdRoute: AgentsAgentIdRoute,
   ApiAuthCallbackProviderRoute: ApiAuthCallbackProviderRoute,
@@ -192,7 +192,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/mcp-servers",
+        "/mcp",
         "/admin/upload-openapi",
         "/agents/$agentId",
         "/api/auth/callback/$provider",
@@ -202,8 +202,8 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
-    "/mcp-servers": {
-      "filePath": "mcp-servers.tsx"
+    "/mcp": {
+      "filePath": "mcp.tsx"
     },
     "/admin/upload-openapi": {
       "filePath": "admin/upload-openapi.tsx"

@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "name": "datanaut-web",
+      "type": "node",
+      "request": "attach",
+      "websocketAddress": "ws://localhost:9229/datanaut-web",
+      "resolveSourceMapLocations": null,
+      "attachExistingChildren": false,
+      "autoAttachChildProcesses": false,
+      "sourceMaps": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Workers",
+      "configurations": ["<NAME_OF_WORKER>"],
+      "stopAll": true
+    }
+  ]
+}

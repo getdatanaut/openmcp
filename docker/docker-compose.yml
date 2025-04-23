@@ -6,15 +6,13 @@ services:
     restart: unless-stopped
     shm_size: 1g
     ports:
-      - '5445:5432'
+      - 5445:5432
     environment:
       POSTGRES_USER: datanaut_user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: datanaut
     volumes:
-      - pg:/var/lib/postgresql/data
-    networks:
-      - internal
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
@@ -29,7 +27,4 @@ services:
       -c hot_standby_feedback=on
 
 volumes:
-  pg:
-
-networks:
-  internal:
+  pg_data:

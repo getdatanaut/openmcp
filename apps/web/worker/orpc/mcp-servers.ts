@@ -8,27 +8,7 @@ import type { ResultAsync } from 'neverthrow';
 import { fromPromise, okAsync } from 'neverthrow';
 import type { z } from 'zod';
 
-import { base, requireAuth } from '../middleware.ts';
-
-const listMcpServers = base.mcpServers.list.use(requireAuth).handler(async ({ context: { db, organizationId } }) => {
-  return db.queries.mcpServers.list({ organizationId });
-});
-
-const listMcpServersWithTools = base.mcpServers.listWithTools
-  .use(requireAuth)
-  .handler(async ({ context: { db, organizationId } }) => {
-    return db.queries.mcpServers.listWithTools({ organizationId });
-  });
-
-const getMcpServer = base.mcpServers.get.handler(async ({ context: { db }, input, errors }) => {
-  // @TODO: permission check
-  const server = await db.queries.mcpServers.getById({ id: input.serverId });
-  if (!server) {
-    throw errors.NOT_FOUND();
-  }
-
-  return server;
-});
+import { base, requireAuth } from './middleware.ts';
 
 const uploadMcpServer = base.mcpServers.upload
   .use(requireAuth)
@@ -167,9 +147,6 @@ const getOpenApiDocument = base.mcpServers.getOpenApiDocument.handler(
 
 export const mpcServersRouter = {
   mcpServers: {
-    list: listMcpServers,
-    listWithTools: listMcpServersWithTools,
-    get: getMcpServer,
     upload: uploadMcpServer,
     uploadFromOpenApi: uploadFromOpenApi,
     getOpenApiDocument: getOpenApiDocument,

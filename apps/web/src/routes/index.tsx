@@ -1,21 +1,15 @@
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { Button, Heading, type IconProps } from '@libs/ui-primitives';
-import { createFileRoute, Navigate, redirect } from '@tanstack/react-router';
+import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { useAtomInstance, useAtomValue } from '@zedux/react';
 import { useCallback } from 'react';
 
+import { authAtom } from '~/atoms/auth.ts';
 import { LoginForm } from '~/components/LoginForm.tsx';
 import { RegisterForm } from '~/components/RegisterForm.tsx';
-import { signIn, signOut, useSession } from '~/libs/auth.ts';
 
 export const Route = createFileRoute('/')({
   component: HomeRoute,
-  // beforeLoad: async () => {
-  //   throw redirect({
-  //     replace: true,
-  //     from: Route.id,
-  //     to: '/threads',
-  //   });
-  // },
 });
 
 function HomeRoute() {
@@ -27,27 +21,20 @@ const HomeComponentComponent = () => {
 };
 
 const TempAuthDebug = () => {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
-  } = useSession();
+  const auth = useAtomInstance(authAtom);
+  const isBootstrapped = useAtomValue(auth.exports.hasBootstrapped);
+  const user = useAtomValue(auth.exports.user);
+
+  let error = false as any;
 
   let content: React.ReactNode = null;
 
-  if (isPending) {
+  if (!isBootstrapped) {
     content = <div>Loading...</div>;
   } else if (error) {
     content = <div>Auth error: {error.message}</div>;
-  } else if (session) {
-    return <Navigate to="/mcp-servers" />;
-    // content = (
-    //   <div className="flex flex-col gap-6">
-    //     <div>Signed in as {session.user.email}</div>
-    //     <Button onClick={() => signOut()}>Sign out</Button>
-    //   </div>
-    // );
+  } else if (user) {
+    return <Navigate to="/mcp" />;
   } else {
     content = (
       <>
@@ -81,13 +68,15 @@ const SocialLoginButton = ({
   provider: 'github';
   children: React.ReactNode;
 }) => {
+  const auth = useAtomInstance(authAtom);
+
   const handleClick = useCallback(async () => {
-    const res = await signIn.social({
+    const res = await auth.exports.signIn.social({
       provider,
     });
 
     console.log('social login res', res);
-  }, [provider]);
+  }, [auth.exports.signIn, provider]);
 
   return (
     <Button icon={icon} variant="outline" onClick={handleClick}>

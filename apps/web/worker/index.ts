@@ -1,40 +1,25 @@
 import { createAuth, getUser } from '@libs/auth/server';
 import { createDbSdk } from '@libs/db-pg';
-import { onError } from '@orpc/client';
-import { OpenAPIHandler } from '@orpc/openapi/fetch';
-import { RPCHandler } from '@orpc/server/fetch';
-import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins';
+import postgres from 'postgres';
 
-import { API_BASE_PATH, AUTH_BASE_PATH, RPC_BASE_PATH } from './consts.ts';
-import type { RootContext } from './middleware.ts';
-import { router } from './router.ts';
+import { API_BASE_PATH, AUTH_BASE_PATH, RPC_BASE_PATH, ZERO_PUSH_PATH } from '~shared/consts.ts';
 
-const openApiHandler = new OpenAPIHandler(router, {
-  plugins: [],
-  interceptors: [
-    onError(error => {
-      console.error('Error in OpenAPIHandler', error);
-    }),
-  ],
-});
-
-const rpcHandler = new RPCHandler(router, {
-  plugins: [new SimpleCsrfProtectionHandlerPlugin()],
-  interceptors: [
-    onError(error => {
-      console.error('Error in RPCHandler', error);
-    }),
-  ],
-});
+import { handler as orpcHandler } from './orpc/index.ts';
+import { handler as zeroPushHandler } from './zero/index.ts';
 
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
 
-    const db = createDbSdk({ uri: env.HYPERDRIVE.connectionString, max: 5 });
+    const sql = postgres(env.HYPERDRIVE.connectionString, { max: 5 });
+    const db = createDbSdk({ sql });
     const auth = createAuth({
       db,
+      baseURL: env.PUBLIC_URL,
       basePath: AUTH_BASE_PATH,
+      jwtOpts: {
+        expirationTime: '1h', // can set to a low number for things like testing refresh process
+      },
       socialProviders: {
         github: {
           clientId: env.GITHUB_CLIENT_ID,
@@ -51,43 +36,48 @@ export default {
       },
     });
 
-    try {
-      if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith(AUTH_BASE_PATH)) {
-        const res = await auth.handler(req);
+    let res: Response | undefined;
 
-        return res;
+    try {
+      /**
+       * Auth route handling
+       */
+      if (['GET', 'POST'].includes(req.method) && url.pathname.startsWith(AUTH_BASE_PATH)) {
+        return auth.handler(req);
+      }
+
+      /**
+       * Zero push route handling
+       */
+      if (url.pathname.startsWith(ZERO_PUSH_PATH)) {
+        return zeroPushHandler({
+          req,
+          sql,
+          publicUrl: env.PUBLIC_URL,
+          getJwks: () => auth.api.getJwks(),
+        });
       }
 
       const session = await getUser(auth, db, { headers: req.headers });
 
-      const orpcContext = {
+      /**
+       * ORPC route handling
+       */
+      res = await orpcHandler({
+        req,
+        env,
         db,
-        user: session?.user ?? null,
-        organizationId: session?.session?.activeOrganizationId ?? null,
-        session: session?.session ?? null,
-        r2OpenApiBucket: env.OPENMCP_OPENAPI,
-      } satisfies RootContext;
-
-      const rpcRes = await rpcHandler.handle(req, {
-        prefix: RPC_BASE_PATH,
-        context: orpcContext,
+        user: session?.user,
+        session: session?.session,
+        rpcBasePath: RPC_BASE_PATH,
+        apiBasePath: API_BASE_PATH,
       });
 
-      if (rpcRes.matched) {
-        ctx.waitUntil(db.client.destroy());
+      if (res) return res;
 
-        return rpcRes.response;
-      }
-
-      const openApiRes = await openApiHandler.handle(req, {
-        prefix: API_BASE_PATH,
-        context: orpcContext,
-      });
-
-      if (openApiRes.matched) {
-        return openApiRes.response;
-      }
-
+      /**
+       * Fallback handling
+       */
       return new Response(null, { status: 404 });
     } catch (error) {
       console.error(error);

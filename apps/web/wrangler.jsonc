@@ -15,6 +15,9 @@
   "observability": {
     "enabled": true,
   },
+  "vars": {
+    "PUBLIC_URL": "http://localhost:3001",
+  },
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
@@ -28,4 +31,24 @@
       "binding": "OPENMCP_OPENAPI",
     },
   ],
+  "env": {
+    "production": {
+      "vars": {
+        "PUBLIC_URL": "https://datanaut.ai",
+      },
+      "hyperdrive": [
+        {
+          "binding": "HYPERDRIVE",
+          "id": "fc1e454e972a4c10bbf2368c79b35acd",
+          "localConnectionString": "postgres://datanaut_user:password@localhost:5445/datanaut",
+        },
+      ],
+      "r2_buckets": [
+        {
+          "bucket_name": "openmcp-openapi",
+          "binding": "OPENMCP_OPENAPI",
+        },
+      ],
+    },
+  },
 }

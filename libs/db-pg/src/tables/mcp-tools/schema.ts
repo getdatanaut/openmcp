@@ -1,12 +1,15 @@
 import type { TMcpServerId, TMcpToolId, TOrganizationId, TUserId } from '@libs/db-ids';
 import type { ToolInputSchemaSchema, ToolOutputSchemaSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
+import { relations } from 'drizzle-orm';
 import { boolean, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 import type { z } from 'zod';
 
 import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
+import { agentMcpTools } from '../agent-mcp-tools/schema.ts';
+import { mcpServers } from '../mcp-servers/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_TOOLS_KEY = 'mcpTools' as const;
@@ -35,6 +38,14 @@ export const mcpTools = pgTable(
   },
   table => [uniqueIndex('mcp_tools_mcp_server_id_name_unique').on(table.mcpServerId, table.name)],
 );
+
+export const mcpToolsRelations = relations(mcpTools, ({ one, many }) => ({
+  mcpServer: one(mcpServers, {
+    fields: [mcpTools.mcpServerId],
+    references: [mcpServers.id],
+  }),
+  agentMcpTools: many(agentMcpTools),
+}));
 
 export type McpToolsTableCols = DrizzleToKysely<typeof mcpTools>;
 export type NewMcpTool = SetOptional<typeof mcpTools.$inferInsert, 'id'>;

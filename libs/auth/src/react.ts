@@ -1,10 +1,12 @@
-import { oidcClient } from 'better-auth/client/plugins';
+import type { ClientOptions } from 'better-auth';
+import { jwtClient, oidcClient } from 'better-auth/client/plugins';
 import { createAuthClient as baseCreateAuthClient } from 'better-auth/react';
 
-export const createAuthClient = ({ baseURL, basePath }: { baseURL?: string; basePath: string }) => {
+export type { AuthSession, AuthUser, JwtPayload } from './types.ts';
+
+export const createAuthClient = (options: Omit<ClientOptions, 'plugins'>) => {
   return baseCreateAuthClient({
-    baseURL,
-    basePath,
-    plugins: [oidcClient()],
+    ...options,
+    plugins: [jwtClient(), oidcClient()],
   });
 };

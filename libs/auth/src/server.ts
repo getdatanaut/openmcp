@@ -1,22 +1,14 @@
-import type { TOrganizationId, TUserId, TUserSessionId } from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
-import { betterAuth, type InferSession, type InferUser } from 'better-auth';
+import { betterAuth } from 'better-auth';
 
-import { type AuthOptions, type CreateAuthOptions, createAuthOptions } from './auth-options.ts';
+import { type CreateAuthOptions, createAuthOptions } from './auth-options.ts';
 import { exchangeToken } from './oauth2.ts';
 import ROUTES from './routes.ts';
+import type { GetUserResult } from './types.ts';
 
 export type Auth = ReturnType<typeof createAuth>;
 
-export interface AuthSession extends Omit<InferSession<AuthOptions>, 'id' | 'userId' | 'activeOrganizationId'> {
-  id: TUserSessionId;
-  activeOrganizationId: TOrganizationId | null;
-  userId: TUserId;
-}
-
-export interface AuthUser extends Omit<InferUser<AuthOptions>, 'id'> {
-  id: TUserId;
-}
+export type { AuthSession, AuthUser, GetUserResult, JwtPayload } from './types.ts';
 
 export const createAuth = (options: CreateAuthOptions) => {
   const sdk = betterAuth(createAuthOptions(options));
@@ -33,19 +25,14 @@ export const createAuth = (options: CreateAuthOptions) => {
   return sdk;
 };
 
-type UserResult = {
-  user: AuthUser;
-  session: AuthSession | null;
-};
-
 export async function getUser(
   auth: Auth,
   db: DbSdk,
   { headers }: { headers: Request['headers'] },
-): Promise<UserResult | null> {
+): Promise<GetUserResult | null> {
   const authenticationHeader = headers.get('Authorization');
   if (!authenticationHeader) {
-    return auth.api.getSession({ headers }) as Promise<UserResult | null>;
+    return auth.api.getSession({ headers }) as Promise<GetUserResult | null>;
   }
 
   if (!authenticationHeader.startsWith('Bearer ')) {

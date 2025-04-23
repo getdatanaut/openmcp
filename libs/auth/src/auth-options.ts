@@ -3,6 +3,7 @@ import {
   InviteId,
   MemberId,
   OrganizationId,
+  type TOrganizationId,
   type TUserId,
   UserAccountId,
   UserId,
@@ -10,15 +11,21 @@ import {
 } from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
 import { type BetterAuthOptions, generateId } from 'better-auth';
+import { jwt } from 'better-auth/plugins/jwt';
 import { oidcProvider } from 'better-auth/plugins/oidc-provider';
 import { organization } from 'better-auth/plugins/organization';
 import type { SocialProviders } from 'better-auth/social-providers';
+
+import type { JwtPayload } from './types.ts';
 
 export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   db: DbSdk;
   basePath: string;
   socialProviders?: SocialProviders;
   loginPage?: string;
+  jwtOpts?: {
+    expirationTime: number | string | Date;
+  };
   generateOrgData(user: { id: TUserId; name: string; email: string }): Promise<{
     name: string;
     slug: string;
@@ -35,6 +42,7 @@ export const createAuthOptions = ({
   basePath,
   baseURL,
   loginPage = '/',
+  jwtOpts,
   generateOrgData,
 }: CreateAuthOptions) => {
   return {
@@ -48,6 +56,19 @@ export const createAuthOptions = ({
       ...socialProviders,
     },
     plugins: [
+      jwt({
+        jwt: {
+          definePayload(session) {
+            // Little bit of type unsafety here, but `activeOrganizationId` is relatively stable
+            const orgId = session.session['activeOrganizationId'] as (null | TOrganizationId) | undefined;
+
+            return {
+              orgId,
+            } satisfies JwtPayload;
+          },
+          ...jwtOpts,
+        },
+      }),
       organization({
         allowUserToCreateOrganization: false,
         // ac: accessControl,

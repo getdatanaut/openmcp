@@ -49,6 +49,13 @@ export const authVerifications = pgTable("auth_verifications", {
  updatedAt: timestamp('updated_at')
 				});
 
+export const jwks = pgTable("jwks", {
+					id: text('id').primaryKey(),
+					publicKey: text('public_key').notNull(),
+ privateKey: text('private_key').notNull(),
+ createdAt: timestamp('created_at').notNull()
+				});
+
 export const organizations = pgTable("organizations", {
 					id: text('id').primaryKey(),
 					name: text('name').notNull(),

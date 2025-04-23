@@ -5,9 +5,10 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    "./server": "./src/server.ts",
     "./cli": "./src/cli.ts",
-    "./react": "./src/react.ts"
+    "./react": "./src/react.ts",
+    "./server": "./src/server.ts",
+    "./types": "./src/types.ts"
   },
   "scripts": {
     "lint": "eslint .",
@@ -19,14 +20,14 @@
     "@libs/db-ids": "workspace:*",
     "@libs/utils-types": "workspace:*",
     "better-auth": "1.2.7",
-    "drizzle-orm": "0.41.0",
+    "drizzle-orm": "0.42.0",
     "jose": "5.10.0",
-    "zod": "3.24.2"
+    "zod": "3.24.3"
   },
   "devDependencies": {
     "@better-auth/cli": "1.2.7",
     "@libs/db-pg": "workspace:*",
-    "eslint": "9.24.0",
+    "eslint": "9.25.1",
     "prepend-file-cli": "1.0.6"
   }
 }

@@ -30,20 +30,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ai-sdk/ui-utils": "1.2.7",
-    "@modelcontextprotocol/sdk": "1.10.0",
+    "@ai-sdk/ui-utils": "1.2.8",
+    "@modelcontextprotocol/sdk": "1.10.2",
     "@openmcp/utils": "workspace:*",
-    "ai": "4.3.4",
-    "zod": "3.24.2"
+    "ai": "4.3.9",
+    "zod": "3.24.3"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
-    "eslint": "9.24.0",
+    "eslint": "9.25.1",
     "json-schema": "0.4.0",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
-    "vitest": "3.1.1"
+    "vitest": "3.1.2"
   },
   "publishConfig": {
     "access": "public"

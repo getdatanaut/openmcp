@@ -11,10 +11,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "eslint": "9.24.0",
-    "kysely": "0.28.0",
+    "eslint": "9.25.1",
+    "kysely": "0.28.1",
     "kysely-postgres-js": "2.0.0",
     "postgres": "3.4.5",
-    "remeda": "2.21.2"
+    "remeda": "2.21.3"
   }
 }

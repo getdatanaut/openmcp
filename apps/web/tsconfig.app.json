@@ -3,9 +3,11 @@
   "include": ["src"],
   "compilerOptions": {
     "rootDir": ".",
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "types": ["vite/client"],
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "~shared/*": ["./shared/*"]
     }
   }
 }

@@ -21,12 +21,12 @@
   "dependencies": {
     "@libs/db-pg": "workspace:*",
     "@libs/db-pg-migrations": "workspace:*",
-    "drizzle-kit": "0.30.6",
-    "kysely": "0.28.0"
+    "drizzle-kit": "0.31.0",
+    "kysely": "0.28.1"
   },
   "devDependencies": {
     "dotenv-cli": "^8.0.0",
-    "eslint": "9.24.0",
+    "eslint": "9.25.1",
     "tsx": "4.19.3"
   }
 }

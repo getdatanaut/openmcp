@@ -8,8 +8,9 @@ import {
   faCaretRight,
   faHome,
   faPlus,
+  faPowerOff,
 } from '@fortawesome/free-solid-svg-icons';
-import type { TAgentId } from '@libs/db-ids';
+import { AgentId, type TAgentId } from '@libs/db-ids';
 import {
   Button,
   ButtonGroup,
@@ -23,17 +24,21 @@ import {
   tn,
   twMerge,
 } from '@libs/ui-primitives';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
-import { useAtomState } from '@zedux/react';
-import { useCallback, useEffect } from 'react';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { useAtomInstance, useAtomState } from '@zedux/react';
+import { useEffect } from 'react';
 
+import { authAtom } from '~/atoms/auth.ts';
 import { layoutAtom } from '~/atoms/layout.ts';
 import { themeAtom } from '~/atoms/theme.ts';
-import { useElementSize } from '~/hooks/use-element-size.tsx';
-import { rpc } from '~/libs/rpc.ts';
+import { useCurrentUser } from '~/hooks/use-current-user.ts';
+import { useElementSize } from '~/hooks/use-element-size.ts';
+import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
+import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 export function MainSidebar({ className }: { className?: string }) {
+  const auth = useAtomInstance(authAtom);
+  const user = useCurrentUser();
   const [{ sidebarCollapsed }, { setSidebarCollapsed, setSidebarWidth }] = useAtomState(layoutAtom);
 
   const [ref, { width }] = useElementSize();
@@ -63,7 +68,8 @@ export function MainSidebar({ className }: { className?: string }) {
             />
             <Button icon={faHome} render={<Link to="/" />} />
             <SettingsMenu />
-            <Button icon={faBug} render={<Link to="/admin/upload-openapi" />} />
+            {user ? <Button icon={faBug} render={<Link to="/admin/upload-openapi" />} /> : null}
+            {user ? <Button icon={faPowerOff} onClick={() => auth.exports.signOut()} /> : null}
           </ButtonGroup>
         </div>
       </div>
@@ -193,40 +199,30 @@ function SettingsMenu() {
  */
 
 function AgentsSidebar() {
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const router = useRouter();
 
-  const { data: agents } = useQuery(rpc.agents.list.queryOptions());
+  const [agents] = useZeroQuery(z => z.query.agents.orderBy('name', 'asc'));
 
-  const sortedAgents = agents?.sort((a, b) => a.name.localeCompare(b.name));
+  const { mutate: addAgent } = useZeroMutation(
+    async z => {
+      const id = AgentId.generate();
 
-  const addAgent = useMutation(
-    rpc.agents.create.mutationOptions({
-      onSuccess() {
-        void queryClient.invalidateQueries({ queryKey: rpc.agents.list.key() });
-      },
-    }),
+      return {
+        op: z.mutate.agents.insert({ id }),
+        onClientSuccess: () => navigate({ to: '/agents/$agentId', params: { agentId: id } }),
+        onServerError: () => {
+          // @TODO: toast
+          router.history.back();
+        },
+      };
+    },
+    [navigate, router.history],
   );
 
-  const handleAddAgent = useCallback(() => {
-    addAgent.mutate(
-      {},
-      {
-        onError(error) {
-          console.error(error);
-        },
-        onSuccess(data) {
-          console.log(data);
-        },
-      },
-    );
-  }, [addAgent]);
-
   return (
-    <SidebarSection
-      name="Agents"
-      action={{ icon: faPlus, title: 'Add agent', isLoading: addAgent.isPending, onClick: handleAddAgent }}
-    >
-      {sortedAgents?.map(agent => <AgentListItem key={agent.id} id={agent.id} name={agent.name} />)}
+    <SidebarSection name="Agents" action={{ icon: faPlus, title: 'Add agent', onClick: addAgent }}>
+      {agents?.map(agent => <AgentListItem key={agent.id} id={agent.id} name={agent.name} />)}
     </SidebarSection>
   );
 }
