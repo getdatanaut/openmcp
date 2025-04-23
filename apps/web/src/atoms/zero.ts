@@ -103,7 +103,7 @@ export const zeroAtom = atom('zero', () => {
 
       return () => cleanup.forEach(fn => fn());
     },
-    [],
+    [jwt],
     { synchronous: true },
   );
 
