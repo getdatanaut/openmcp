@@ -1,8 +1,18 @@
-import { AuthVerificationId, type TUserId, UserAccountId, UserId, UserSessionId } from '@libs/db-ids';
+import {
+  AuthVerificationId,
+  InviteId,
+  MemberId,
+  OrganizationId,
+  type TUserId,
+  UserAccountId,
+  UserId,
+  UserSessionId,
+} from '@libs/db-ids';
 import type { DbSdk } from '@libs/db-pg';
 import { type BetterAuthOptions, generateId } from 'better-auth';
 import { jwt } from 'better-auth/plugins/jwt';
 import { oidcProvider } from 'better-auth/plugins/oidc-provider';
+import { organization } from 'better-auth/plugins/organization';
 import type { SocialProviders } from 'better-auth/social-providers';
 
 import type { JwtPayload } from './types.ts';
@@ -12,7 +22,6 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   basePath: string;
   socialProviders?: SocialProviders;
   loginPage?: string;
-  consentPage?: string;
   jwtOpts?: {
     expirationTime: number | string | Date;
   };
@@ -26,7 +35,6 @@ export const createAuthOptions = ({
   basePath,
   baseURL,
   loginPage = '/',
-  consentPage = '/auth/consent',
   jwtOpts,
 }: CreateAuthOptions) => {
   return {
@@ -48,13 +56,25 @@ export const createAuthOptions = ({
           ...jwtOpts,
         },
       }),
+      organization({
+        schema: {
+          organization: {
+            modelName: 'organizations',
+          },
+          member: {
+            modelName: 'members',
+          },
+          invitation: {
+            modelName: 'invitations',
+          },
+        },
+      }),
       oidcProvider({
         // the default for access token is 1 hour,
         // while the default for refresh token is 7 days
         loginPage,
         scopes: ['openid', 'profile', 'email', 'offline_access'],
         requirePKCE: true,
-        consentPage,
       }),
     ],
     database: {
@@ -101,9 +121,12 @@ export const createAuthOptions = ({
             case 'verification':
               return AuthVerificationId.generate();
             case 'invitation':
-            case 'jwks':
+              return InviteId.generate();
             case 'member':
+              return MemberId.generate();
             case 'organization':
+              return OrganizationId.generate();
+            case 'jwks':
             case 'passkey':
             case 'rate-limit':
             case 'two-factor':

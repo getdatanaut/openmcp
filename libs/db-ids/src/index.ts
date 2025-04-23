@@ -12,6 +12,18 @@ export const UserAccountId = Id.dbIdFactory('acc');
 export type UserAccountNamespace = (typeof UserAccountId)['namespace'];
 export type TUserAccountId = ReturnType<(typeof UserAccountId)['generate']>;
 
+export const OrganizationId = Id.dbIdFactory('org');
+export type OrganizationNamespace = (typeof OrganizationId)['namespace'];
+export type TOrganizationId = ReturnType<(typeof OrganizationId)['generate']>;
+
+export const MemberId = Id.dbIdFactory('mem');
+export type MemberNamespace = (typeof MemberId)['namespace'];
+export type TMemberId = ReturnType<(typeof MemberId)['generate']>;
+
+export const InviteId = Id.dbIdFactory('inv');
+export type InviteNamespace = (typeof InviteId)['namespace'];
+export type TInviteId = ReturnType<(typeof InviteId)['generate']>;
+
 export const AuthVerificationId = Id.dbIdFactory('ver');
 export type AuthVerificationNamespace = (typeof AuthVerificationId)['namespace'];
 export type TAuthVerificationId = ReturnType<(typeof AuthVerificationId)['generate']>;

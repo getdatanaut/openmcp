@@ -1,6 +1,7 @@
 {
   "extends": "@libs/tsconfig/tsconfig.isomorphic.json",
   "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["src/schema.gen.ts"],
   "compilerOptions": {
     "rootDir": "."
   }

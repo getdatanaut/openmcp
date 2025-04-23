@@ -27,6 +27,7 @@ export const userSessions = pgTable(
     token: text('token').notNull().unique(),
     ipAddress: text('ip_address'),
     userAgent: text('user_agent'),
+    activeOrganizationId: text('active_organization_id'),
     userId: text('user_id')
       .$type<TUserId>()
       .notNull()
