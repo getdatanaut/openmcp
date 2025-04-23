@@ -4,7 +4,7 @@ export default [
   ...reactConfig,
   {
     rules: {
-      'react-hooks/exhaustive-deps': ['warn', { additionalHooks: 'useMutation' }],
+      'react-hooks/exhaustive-deps': ['warn', { additionalHooks: 'useZeroMutation' }],
     },
   },
 ];
