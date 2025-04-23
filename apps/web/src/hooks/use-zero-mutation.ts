@@ -57,7 +57,7 @@ import { useZero } from './use-zero.ts';
  *   };
  * }, []);
  */
-export function useMutation<TArg = void>(
+export function useZeroMutation<TArg = void>(
   cb: MutationCallback<TArg>,
   deps: React.DependencyList,
 ): { mutate: MutateFunction<TArg>; isPending: boolean } {

@@ -15,8 +15,8 @@ import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { ServerRow, type ServerRowProps } from '~/components/ServerRow.tsx';
 import { ServerRowTools } from '~/components/ServerRowTools.tsx';
 import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
-import { useMutation } from '~/hooks/use-mutation.ts';
-import { useQuery } from '~/hooks/use-query.ts';
+import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
+import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 import type { AgentMcpServer, AgentMcpTool } from '~shared/zero-schema.ts';
 
 export const Route = createFileRoute('/agents/$agentId')({
@@ -48,7 +48,7 @@ function RouteComponent() {
 
 function ServersHeadingCard() {
   const { agentId } = Route.useParams();
-  const [agent, agentDetails] = useQuery(z => z.query.agents.where('id', agentId).one());
+  const [agent, agentDetails] = useZeroQuery(z => z.query.agents.where('id', agentId).one());
 
   if (!agent && agentDetails.type === 'complete') {
     // Not found or no access. Could do this better and redirect w query string back to current route after login if
@@ -122,7 +122,7 @@ function InstalledServersList() {
   const { agentId } = Route.useParams();
   const { serverId: activeServerId } = Route.useSearch();
 
-  const [mcpServers] = useQuery(z =>
+  const [mcpServers] = useZeroQuery(z =>
     z.query.mcpServers
       .related('agentMcpServers', q => q.where('agentId', '=', agentId))
       .whereExists('agentMcpServers', q => q.where('agentId', '=', agentId))
@@ -155,7 +155,7 @@ function AvailableServersList() {
   const { agentId } = Route.useParams();
   const { serverId: activeServerId } = Route.useSearch();
 
-  const [mcpServers] = useQuery(z =>
+  const [mcpServers] = useZeroQuery(z =>
     z.query.mcpServers
       .where(({ not, exists }) => not(exists('agentMcpServers', q => q.where('agentId', '=', agentId))))
       .orderBy('name', 'asc'),
@@ -197,7 +197,7 @@ function ServerToolsList({
   agentId: TAgentId;
   agentServerId?: TAgentMcpServerId;
 }) {
-  const [installedTools] = useQuery(
+  const [installedTools] = useZeroQuery(
     z =>
       z.query.mcpTools
         .related('agentMcpTools', q => q.where('agentId', '=', agentId))
@@ -212,7 +212,7 @@ function ServerToolsList({
     { enabled: !!agentServerId },
   );
 
-  const [uninstalledTools] = useQuery(z =>
+  const [uninstalledTools] = useZeroQuery(z =>
     z.query.mcpTools
       .where(({ and, cmp, exists, not }) =>
         and(
@@ -247,7 +247,7 @@ function ServerToolRowWrapper({ tool, agentTool }: { tool: ServerToolRowProps['t
   const toolId = tool.id;
   const agentToolId = agentTool?.id;
 
-  const { mutate: handleToggleTool } = useMutation(
+  const { mutate: handleToggleTool } = useZeroMutation(
     z => {
       if (agentToolId) {
         return z.mutate.agentMcpTools.delete({ id: agentToolId });

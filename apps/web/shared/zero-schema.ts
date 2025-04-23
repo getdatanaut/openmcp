@@ -29,7 +29,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
   const canReadMcpServer = (authData: AuthData, { or, eb }: ExpressionBuilder<Schema, 'mcpServers'>) =>
     or(allowIfVisibilityIsPublic(authData, eb), allowIfUserIdMatchesLoggedInUser(authData, eb));
 
-  const canReadAgent = (authData: AuthData, { or, eb }: ExpressionBuilder<Schema, 'agents'>) =>
+  const canReadAgent = (authData: AuthData, eb: ExpressionBuilder<Schema, 'agents'>) =>
     allowIfUserIdMatchesLoggedInUser(authData, eb);
 
   return {

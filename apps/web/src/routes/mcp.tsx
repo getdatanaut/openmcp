@@ -9,7 +9,7 @@ import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { ServerRow, type ServerRowProps } from '~/components/ServerRow.tsx';
 import { ServerRowTools } from '~/components/ServerRowTools.tsx';
 import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
-import { useQuery } from '~/hooks/use-query.ts';
+import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 export const Route = createFileRoute('/mcp')({
   component: RouteComponent,
@@ -49,7 +49,7 @@ function ServerFilters() {
 function ServersList() {
   const { serverId } = Route.useSearch();
 
-  const [servers] = useQuery(z => z.query.mcpServers.orderBy('name', 'asc'));
+  const [servers] = useZeroQuery(z => z.query.mcpServers.orderBy('name', 'asc'));
 
   let content;
   if (servers.length) {
@@ -64,7 +64,7 @@ function ServersList() {
 }
 
 function ServerRowWrapper({ server, isActive }: { server: ServerRowProps['server']; isActive: boolean }) {
-  const [tools] = useQuery(
+  const [tools] = useZeroQuery(
     z => z.query.mcpTools.orderBy('displayName', 'asc').orderBy('name', 'asc').where('mcpServerId', '=', server.id),
     {
       enabled: isActive,

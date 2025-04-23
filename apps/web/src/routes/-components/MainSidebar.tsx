@@ -33,8 +33,8 @@ import { layoutAtom } from '~/atoms/layout.ts';
 import { themeAtom } from '~/atoms/theme.ts';
 import { useCurrentUser } from '~/hooks/use-current-user.ts';
 import { useElementSize } from '~/hooks/use-element-size.ts';
-import { useMutation } from '~/hooks/use-mutation.ts';
-import { useQuery } from '~/hooks/use-query.ts';
+import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
+import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 export function MainSidebar({ className }: { className?: string }) {
   const auth = useAtomInstance(authAtom);
@@ -201,9 +201,10 @@ function SettingsMenu() {
 function AgentsSidebar() {
   const navigate = useNavigate();
   const router = useRouter();
-  const [agents] = useQuery(z => z.query.agents.orderBy('name', 'asc'));
 
-  const { mutate: addAgent } = useMutation(
+  const [agents] = useZeroQuery(z => z.query.agents.orderBy('name', 'asc'));
+
+  const { mutate: addAgent } = useZeroMutation(
     async z => {
       const id = AgentId.generate();
 
