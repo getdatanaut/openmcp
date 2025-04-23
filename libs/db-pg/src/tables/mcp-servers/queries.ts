@@ -1,4 +1,4 @@
-import { McpServerId, type TMcpServerId, type TOrganizationId, type TUserId } from '@libs/db-ids';
+import { McpServerId, type TMcpServerId, type TOrganizationId } from '@libs/db-ids';
 import type { Expression, SqlBool } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 

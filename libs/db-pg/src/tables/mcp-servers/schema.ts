@@ -10,8 +10,6 @@ import { timestampCol } from '../../column-types.ts';
 import type { DrizzleToKysely } from '../../types.ts';
 import { agentMcpServers } from '../agent-mcp-servers/schema.ts';
 import { mcpTools } from '../mcp-tools/schema.ts';
-import { organizations } from '../organizations/schema.ts';
-import { users } from '../users/schema.ts';
 import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 
 export const MCP_SERVERS_KEY = 'mcpServers' as const;

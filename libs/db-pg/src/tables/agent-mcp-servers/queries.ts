@@ -1,4 +1,4 @@
-import { AgentMcpServerId, type TAgentId, type TOrganizationId, type TUserId } from '@libs/db-ids';
+import { AgentMcpServerId, type TAgentId, type TOrganizationId } from '@libs/db-ids';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 import type { BuildQueriesOpts } from '../../types.ts';
