@@ -18,7 +18,7 @@ function createZero({
   refreshToken: () => Promise<string | undefined>;
 }) {
   return new Zero({
-    userID: userId ?? '',
+    userID: userId ?? 'anon',
     server: import.meta.env.VITE_PUBLIC_ZERO_SERVER,
     schema,
     mutators: createMutators(userId ? { sub: userId } : undefined),
