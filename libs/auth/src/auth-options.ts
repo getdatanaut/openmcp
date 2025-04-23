@@ -9,19 +9,11 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   basePath: string;
   socialProviders?: SocialProviders;
   loginPage?: string;
-  consentPage?: string;
 }
 
 export type AuthOptions = ReturnType<typeof createAuthOptions>;
 
-export const createAuthOptions = ({
-  db,
-  socialProviders,
-  basePath,
-  baseURL,
-  loginPage = '/',
-  consentPage = '/auth/consent',
-}: CreateAuthOptions) => {
+export const createAuthOptions = ({ db, socialProviders, basePath, baseURL, loginPage = '/' }: CreateAuthOptions) => {
   return {
     appName: 'Datanaut',
     baseURL,
@@ -39,7 +31,6 @@ export const createAuthOptions = ({
         loginPage,
         scopes: ['openid', 'profile', 'email', 'offline_access'],
         requirePKCE: true,
-        consentPage,
       }),
     ],
     database: {

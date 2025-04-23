@@ -13,7 +13,6 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as McpServersImport } from './routes/mcp-servers'
 import { Route as IndexImport } from './routes/index'
-import { Route as AuthConsentImport } from './routes/auth.consent'
 import { Route as AgentsAgentIdImport } from './routes/agents.$agentId'
 import { Route as AdminUploadOpenapiImport } from './routes/admin/upload-openapi'
 import { Route as ApiAuthOauth2AuthorizeImport } from './routes/api.auth.oauth2.authorize'
@@ -30,12 +29,6 @@ const McpServersRoute = McpServersImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthConsentRoute = AuthConsentImport.update({
-  id: '/auth/consent',
-  path: '/auth/consent',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -95,13 +88,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentsAgentIdImport
       parentRoute: typeof rootRoute
     }
-    '/auth/consent': {
-      id: '/auth/consent'
-      path: '/auth/consent'
-      fullPath: '/auth/consent'
-      preLoaderRoute: typeof AuthConsentImport
-      parentRoute: typeof rootRoute
-    }
     '/api/auth/callback/$provider': {
       id: '/api/auth/callback/$provider'
       path: '/api/auth/callback/$provider'
@@ -126,7 +112,6 @@ export interface FileRoutesByFullPath {
   '/mcp-servers': typeof McpServersRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
-  '/auth/consent': typeof AuthConsentRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
   '/api/auth/oauth2/authorize': typeof ApiAuthOauth2AuthorizeRoute
 }
@@ -136,7 +121,6 @@ export interface FileRoutesByTo {
   '/mcp-servers': typeof McpServersRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
-  '/auth/consent': typeof AuthConsentRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
   '/api/auth/oauth2/authorize': typeof ApiAuthOauth2AuthorizeRoute
 }
@@ -147,7 +131,6 @@ export interface FileRoutesById {
   '/mcp-servers': typeof McpServersRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/agents/$agentId': typeof AgentsAgentIdRoute
-  '/auth/consent': typeof AuthConsentRoute
   '/api/auth/callback/$provider': typeof ApiAuthCallbackProviderRoute
   '/api/auth/oauth2/authorize': typeof ApiAuthOauth2AuthorizeRoute
 }
@@ -159,7 +142,6 @@ export interface FileRouteTypes {
     | '/mcp-servers'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
-    | '/auth/consent'
     | '/api/auth/callback/$provider'
     | '/api/auth/oauth2/authorize'
   fileRoutesByTo: FileRoutesByTo
@@ -168,7 +150,6 @@ export interface FileRouteTypes {
     | '/mcp-servers'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
-    | '/auth/consent'
     | '/api/auth/callback/$provider'
     | '/api/auth/oauth2/authorize'
   id:
@@ -177,7 +158,6 @@ export interface FileRouteTypes {
     | '/mcp-servers'
     | '/admin/upload-openapi'
     | '/agents/$agentId'
-    | '/auth/consent'
     | '/api/auth/callback/$provider'
     | '/api/auth/oauth2/authorize'
   fileRoutesById: FileRoutesById
@@ -188,7 +168,6 @@ export interface RootRouteChildren {
   McpServersRoute: typeof McpServersRoute
   AdminUploadOpenapiRoute: typeof AdminUploadOpenapiRoute
   AgentsAgentIdRoute: typeof AgentsAgentIdRoute
-  AuthConsentRoute: typeof AuthConsentRoute
   ApiAuthCallbackProviderRoute: typeof ApiAuthCallbackProviderRoute
   ApiAuthOauth2AuthorizeRoute: typeof ApiAuthOauth2AuthorizeRoute
 }
@@ -198,7 +177,6 @@ const rootRouteChildren: RootRouteChildren = {
   McpServersRoute: McpServersRoute,
   AdminUploadOpenapiRoute: AdminUploadOpenapiRoute,
   AgentsAgentIdRoute: AgentsAgentIdRoute,
-  AuthConsentRoute: AuthConsentRoute,
   ApiAuthCallbackProviderRoute: ApiAuthCallbackProviderRoute,
   ApiAuthOauth2AuthorizeRoute: ApiAuthOauth2AuthorizeRoute,
 }
@@ -217,7 +195,6 @@ export const routeTree = rootRoute
         "/mcp-servers",
         "/admin/upload-openapi",
         "/agents/$agentId",
-        "/auth/consent",
         "/api/auth/callback/$provider",
         "/api/auth/oauth2/authorize"
       ]
@@ -233,9 +210,6 @@ export const routeTree = rootRoute
     },
     "/agents/$agentId": {
       "filePath": "agents.$agentId.tsx"
-    },
-    "/auth/consent": {
-      "filePath": "auth.consent.tsx"
     },
     "/api/auth/callback/$provider": {
       "filePath": "api.auth.callback.$provider.tsx"
