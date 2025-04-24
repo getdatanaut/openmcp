@@ -6,11 +6,13 @@
   "sideEffects": false,
   "exports": {
     ".": "./src/index.ts",
+    "./crypto": "./src/crypto/index.ts",
     "./schema": "./src/schema.ts"
   },
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "test": "vitest run"
   },
   "dependencies": {
     "@libs/db-ids": "workspace:*",
@@ -23,6 +25,7 @@
     "@libs/schemas": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "eslint": "9.25.1",
+    "vitest": "3.1.2",
     "zod": "3.24.3"
   }
 }

@@ -12,6 +12,7 @@ export interface RootContext {
   organizationId: TOrganizationId | null;
   session: AuthSession | null;
   r2OpenApiBucket: Env['OPENMCP_OPENAPI'];
+  readonly dbEncSecret: Env['DB_ENC_SECRET'];
 }
 
 const root = implement(routerContract).$context<RootContext>();

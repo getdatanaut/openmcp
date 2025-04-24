@@ -56,6 +56,7 @@ export async function handler({
     session: session ?? null,
     organizationId: session?.activeOrganizationId ?? null,
     r2OpenApiBucket: env.OPENMCP_OPENAPI,
+    dbEncSecret: env.DB_ENC_SECRET,
   } satisfies RootContext;
 
   const rpcRes = await rpcHandler.handle(req, {

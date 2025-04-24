@@ -1,5 +1,4 @@
 import { AgentId, type TAgentId, type TOrganizationId } from '@libs/db-ids';
-import type { Config as RemixDefinition } from '@openmcp/remix';
 
 import type { BuildQueriesOpts } from '../../types.ts';
 import { AGENT_MCP_SERVERS_KEY } from '../agent-mcp-servers/schema.ts';

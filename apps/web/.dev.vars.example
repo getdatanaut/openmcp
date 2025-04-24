@@ -12,3 +12,5 @@ ANTHROPIC_API_URL=https://api.anthropic.com/v1
 
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
+
+DB_ENC_SECRET=test # This is used to encrypt the DB MCP user server config, can be set to any value in dev mode

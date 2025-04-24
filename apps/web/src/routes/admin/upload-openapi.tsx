@@ -1,4 +1,3 @@
-import type { McpClientConfigSchema } from '@libs/schemas/mcp';
 import { Form, FormButton, FormField, FormInput, Heading, useFormStore } from '@libs/ui-primitives';
 import { isDefinedError } from '@orpc/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';

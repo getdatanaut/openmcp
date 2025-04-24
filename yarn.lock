@@ -2336,6 +2336,7 @@ __metadata:
     drizzle-orm: "npm:0.42.0"
     eslint: "npm:9.25.1"
     kysely: "npm:0.28.1"
+    vitest: "npm:3.1.2"
     zod: "npm:3.24.3"
   languageName: unknown
   linkType: soft
