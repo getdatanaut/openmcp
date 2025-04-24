@@ -1,3 +1,4 @@
+import type { McpClientConfigSchema } from '@libs/schemas/mcp';
 import { Form, FormButton, FormField, FormInput, Heading, useFormStore } from '@libs/ui-primitives';
 import { isDefinedError } from '@orpc/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -154,6 +155,8 @@ function UploadRawDefinitionsForm() {
             serverUrl: definition.transport.serverConfig.serverUrl || undefined,
             iconUrl: definition.icon || undefined,
             developer: definition.developer || undefined,
+            sourceUrl: definition.sourceUrl || undefined,
+            configSchema: definition.configSchema || undefined,
           },
           {
             onSettled() {},
@@ -239,17 +242,20 @@ const servers = [
         headers: { Authorization: 'Bearer {{apiKey}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        apiKey: {
-          type: 'string',
-          description: 'API key for your Cal.com account. https://cal.com/docs/api-reference/v2/introduction#1-api-key',
-          format: 'secret',
-          title: 'API Key',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            description:
+              'API key for your Cal.com account. https://cal.com/docs/api-reference/v2/introduction#1-api-key',
+            format: 'secret',
+            title: 'API Key',
+          },
         },
-      },
-      required: ['apiKey'],
+        required: ['apiKey'],
+      };
     },
   } as const,
   {
@@ -267,18 +273,20 @@ const servers = [
         headers: { Authorization: 'Bearer {{apiKey}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        apiKey: {
-          type: 'string',
-          description:
-            'API key for your Firecrawl account. https://docs.firecrawl.dev/api-reference/introduction#authentication',
-          format: 'secret',
-          title: 'API Key',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            description:
+              'API key for your Firecrawl account. https://docs.firecrawl.dev/api-reference/introduction#authentication',
+            format: 'secret',
+            title: 'API Key',
+          },
         },
-      },
-      required: ['apiKey'],
+        required: ['apiKey'],
+      };
     },
   } as const,
   {
@@ -296,23 +304,25 @@ const servers = [
         headers: { Authorization: 'Bearer {{token}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        token: {
-          type: 'string',
-          format: 'secret',
-          title: 'Access Token',
-          description: 'Access token for the Google API',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+            format: 'secret',
+            title: 'Access Token',
+            description: 'Access token for the Google API',
+          },
+          calendarId: {
+            type: 'string',
+            title: 'Calendar ID',
+            description:
+              'Open google calendar, and find your calendar on the left in the "My Calendars" section. Hover over, press the triple dot menu, and select "Settings and sharing". Scroll to the bottom and you will see the calendar ID, right under "Integrate calendar".',
+          },
         },
-        calendarId: {
-          type: 'string',
-          title: 'Calendar ID',
-          description:
-            'Open google calendar, and find your calendar on the left in the "My Calendars" section. Hover over, press the triple dot menu, and select "Settings and sharing". Scroll to the bottom and you will see the calendar ID, right under "Integrate calendar".',
-        },
-      },
-      required: ['token', 'calendarId'],
+        required: ['token', 'calendarId'],
+      };
     },
   } as const,
   {
@@ -331,17 +341,19 @@ const servers = [
         headers: { Authorization: 'Bearer {{apiKey}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        apiKey: {
-          type: 'string',
-          description: 'Google Cloud API Key. https://developers.google.com/workspace/guides/create-credentials',
-          format: 'secret',
-          title: 'Google Cloud API Key',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            description: 'Google Cloud API Key. https://developers.google.com/workspace/guides/create-credentials',
+            format: 'secret',
+            title: 'Google Cloud API Key',
+          },
         },
-      },
-      required: ['apiKey'],
+        required: ['apiKey'],
+      };
     },
   } as const,
   {
@@ -356,16 +368,19 @@ const servers = [
         serverUrl: 'https://petstore3.swagger.io/api/v3',
       },
     },
-    configSchema: {
-      properties: {
-        apiKey: {
-          type: 'string',
-          title: 'API Key',
-          description: 'The API key for the MCP Server',
-          format: 'secret',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            title: 'API Key',
+            description: 'The API key for the MCP Server',
+            format: 'secret',
+          },
         },
-      },
-      required: ['apiKey'],
+        required: ['apiKey'],
+      };
     },
   } as const,
   {
@@ -379,6 +394,9 @@ const servers = [
         openapi: 'https://raw.githubusercontent.com/PokeAPI/pokeapi/refs/heads/master/openapi.yml',
         serverUrl: 'https://pokeapi.co',
       },
+    },
+    get configSchema() {
+      return {};
     },
   } as const,
   {
@@ -396,19 +414,21 @@ const servers = [
         headers: { Authorization: 'Bearer {{apiKey}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        apiKey: {
-          type: 'string',
-          description:
-            'API key for the Resend API. https://resend.com/docs/dashboard/api-keys/introduction#add-api-key',
-          format: 'secret',
-          title: 'API Key',
-          example: 're_123456789',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            description:
+              'API key for the Resend API. https://resend.com/docs/dashboard/api-keys/introduction#add-api-key',
+            format: 'secret',
+            title: 'API Key',
+            example: 're_123456789',
+          },
         },
-      },
-      required: ['apiKey'],
+        required: ['apiKey'],
+      };
     },
   } as const,
   {
@@ -427,17 +447,19 @@ const servers = [
         query: { api_key: '{{apiKey}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        apiKey: {
-          type: 'string',
-          description: 'API key for your SerpAPI account. https://serpapi.com/dashboard',
-          format: 'secret',
-          title: 'API Key',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          apiKey: {
+            type: 'string',
+            description: 'API key for your SerpAPI account. https://serpapi.com/dashboard',
+            format: 'secret',
+            title: 'API Key',
+          },
         },
-      },
-      required: ['apiKey'],
+        required: ['apiKey'],
+      };
     },
   } as const,
   {
@@ -455,17 +477,19 @@ const servers = [
         headers: { Authorization: 'Bearer {{token}}' },
       },
     },
-    configSchema: {
-      type: 'object',
-      properties: {
-        token: {
-          type: 'string',
-          description: 'OAuth token for the Slack API',
-          format: 'secret',
-          title: 'OAuth Token',
+    get configSchema() {
+      return {
+        type: 'object',
+        properties: {
+          token: {
+            type: 'string',
+            description: 'OAuth token for the Slack API',
+            format: 'secret',
+            title: 'OAuth Token',
+          },
         },
-      },
-      required: ['token'],
+        required: ['token'],
+      };
     },
   } as const,
 ];

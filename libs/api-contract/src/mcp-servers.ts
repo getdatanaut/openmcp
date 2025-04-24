@@ -56,6 +56,7 @@ const uploadFromOpenApiContract = base
       developer: z.string().optional(),
       developerUrl: z.string().url().optional(),
       sourceUrl: z.string().url().optional(),
+      configSchema: McpClientConfigSchemaSchema.optional(),
     }),
   )
   .output(type<{ id: TMcpServerId }>());
