@@ -47,7 +47,7 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
       <MenuContext value={{ portalElement: rootRef }}>
         <div className={tn('ak-layer-canvas-down-0.5 min-h-dvh', themeClass, fontClass)} ref={setRootRef}>
           <div className="isolate flex h-dvh">
-            <MainSidebar className={tn('h-full', sidebarCollapsed ? 'w-2' : 'w-80')} />
+            <MainSidebar className={tn('h-full', sidebarCollapsed ? 'w-[var(--canvas-m)]' : 'w-80')} />
             {children}
           </div>
 

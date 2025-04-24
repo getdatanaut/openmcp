@@ -7,21 +7,24 @@ import type { McpServer } from '~shared/zero-schema.ts';
 export interface ServerRowProps {
   server: Pick<McpServer, 'id' | 'name' | 'summary' | 'iconUrl' | 'toolCount'>;
   isActive: boolean;
-  children?: React.ReactNode;
 }
 
-export function ServerRow({ server, isActive, children }: ServerRowProps) {
+export function ServerRow({ server, isActive }: ServerRowProps) {
   const iconElem = server.iconUrl ? (
     <img src={server.iconUrl} alt={server.name} className="ak-frame-xs h-full w-full" />
   ) : (
     <Avatar name={server.name} size="lg" />
   );
 
-  const serverElem = (
+  return (
     <Link
       to="."
       search={prev => ({ ...prev, serverId: prev.serverId === server.id ? undefined : server.id })}
-      className="flex items-center gap-5 px-4 py-5"
+      className={tn(
+        'relative flex items-center gap-5 border-b px-4 py-5 before:absolute before:inset-y-0 before:left-0 before:w-0.5',
+        !isActive && 'hover:ak-layer-hover-0.2',
+        isActive && 'before:bg-secondary',
+      )}
     >
       <div className="flex h-14 w-14 shrink-0 items-center justify-center">{iconElem}</div>
 
@@ -37,12 +40,5 @@ export function ServerRow({ server, isActive, children }: ServerRowProps) {
         </div>
       </div>
     </Link>
-  );
-
-  return (
-    <div className={tn(!isActive && 'hover:ak-layer-hover-0.2', isActive && 'ak-layer-hover-0.3')}>
-      {serverElem}
-      {children}
-    </div>
   );
 }

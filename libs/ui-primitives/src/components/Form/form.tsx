@@ -5,6 +5,7 @@ import { type ComponentProps, type ReactNode, useMemo } from 'react';
 import { useContextProps } from '../../utils/context.ts';
 import { Provider } from '../../utils/provider.tsx';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
+import { tn } from '../../utils/tw.ts';
 import { ButtonContext } from '../Button/button.context.ts';
 import { Button, type ButtonProps } from '../Button/button.tsx';
 import { InputContext } from '../Input/input.context.ts';
@@ -158,6 +159,7 @@ export function FormButton({ validProps, submittingProps, ...props }: FormButton
     <Button
       accessibleWhenDisabled={props.type === 'submit'}
       {...props}
+      className={tn('self-start', props.className)}
       disabled={isSubmitting}
       {...(isValid ? validProps : null)}
       {...(isSubmitting ? submittingProps : null)}

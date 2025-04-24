@@ -53,7 +53,7 @@ export function MainSidebar({ className }: { className?: string }) {
       className={twMerge('ease-spring flex flex-col transition-[width] duration-150 ease-in-out', className)}
     >
       {/* This header section stays visible even when collapsed */}
-      <div className="ak-layer-0 relative top-2 z-10">
+      <div className="ak-layer-0 relative top-[var(--canvas-m)] z-10">
         <div className="h-14" />
         <div
           className={twMerge(

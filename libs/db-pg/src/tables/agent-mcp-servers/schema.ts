@@ -21,7 +21,7 @@ export const agentMcpServers = pgTable(
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
     organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
     createdBy: text('created_by').$type<TUserId>().notNull(),
-    configJson: jsonb('config_json').$type<Record<string, unknown>>().notNull().default({}),
+    configJson: jsonb('config_json').$type<Record<string, string | number | boolean>>().notNull().default({}),
   },
   table => [
     uniqueIndex('agents_mcp_servers_agent_id_mcp_server_id_organization_id_idx').on(

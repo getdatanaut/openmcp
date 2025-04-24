@@ -1,40 +1,46 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { McpServerId, McpToolId } from '@libs/db-ids';
+import { McpServerId, type TMcpServerId } from '@libs/db-ids';
 import { Button, Input } from '@libs/ui-primitives';
-import { createFileRoute } from '@tanstack/react-router';
-import { Suspense } from 'react';
+import { createFileRoute, retainSearchParams } from '@tanstack/react-router';
+import { useCallback } from 'react';
 import { z } from 'zod';
 
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
-import { ServerRow, type ServerRowProps } from '~/components/ServerRow.tsx';
-import { ServerRowTools } from '~/components/ServerRowTools.tsx';
+import { ServerPanel } from '~/components/ServerPanel.tsx';
+import { ServerRow } from '~/components/ServerRow.tsx';
 import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 export const Route = createFileRoute('/mcp')({
   component: RouteComponent,
   validateSearch: z.object({
+    serverTab: z.enum(['tools', 'config']).optional(),
     serverId: McpServerId.validator.optional(),
-    toolId: McpToolId.validator.optional(),
   }),
+  search: {
+    middlewares: [retainSearchParams(['serverTab', 'serverId'])],
+  },
 });
 
 function RouteComponent() {
   return (
-    <CanvasLayout className="overflow-y-auto" contentClassName="divide-y">
+    <CanvasLayout className="overflow-y-auto">
       <ServersHeadingCard />
 
-      <ServerFilters />
+      <div className="flex h-[calc(100dvh-var(--canvas-m)*2)] overflow-hidden">
+        <div className="h-full flex-1 overflow-y-auto">
+          <ServerFilters />
+          <ServersList />
+        </div>
 
-      <Suspense fallback={<div>Loading...</div>}>
-        <ServersList />
-      </Suspense>
+        <ServerPanelWrapper />
+      </div>
     </CanvasLayout>
   );
 }
 
 function ServersHeadingCard() {
-  return <div className="flex h-48 shrink-0 items-center justify-center">TODO Splash</div>;
+  return <div className="flex h-48 shrink-0 items-center justify-center border-b">TODO Splash</div>;
 }
 
 function ServerFilters() {
@@ -53,39 +59,39 @@ function ServersList() {
 
   let content;
   if (servers.length) {
-    content = servers.map(server => (
-      <ServerRowWrapper key={server.id} server={server} isActive={server.id === serverId} />
-    ));
+    content = servers.map(server => <ServerRow key={server.id} server={server} isActive={server.id === serverId} />);
   } else {
     content = <div>No servers found</div>;
   }
 
-  return <div className="flex-1 divide-y pb-32">{content}</div>;
+  return <div className="flex-1 pb-16">{content}</div>;
 }
 
-function ServerRowWrapper({ server, isActive }: { server: ServerRowProps['server']; isActive: boolean }) {
-  const [tools] = useZeroQuery(
-    z => z.query.mcpTools.orderBy('displayName', 'asc').orderBy('name', 'asc').where('mcpServerId', '=', server.id),
-    {
-      enabled: isActive,
-    },
+function ServerPanelWrapper() {
+  const { serverId, serverTab } = Route.useSearch();
+
+  const renderToolsList = useCallback(() => {
+    if (!serverId) return null;
+
+    return <ServerToolsList serverId={serverId} />;
+  }, [serverId]);
+
+  if (!serverId) return null;
+
+  return <ServerPanel serverId={serverId} activeTab={serverTab} renderToolsList={renderToolsList} />;
+}
+
+function ServerToolsList({ serverId }: { serverId: TMcpServerId }) {
+  const [tools] = useZeroQuery(z =>
+    z.query.mcpTools.where('mcpServerId', serverId).orderBy('displayName', 'asc').orderBy('name', 'asc'),
   );
 
-  let toolsListElem: React.ReactNode;
-  if (tools.length) {
-    toolsListElem = (
-      <ServerRowTools>
-        {tools.map(tool => (
-          <ServerToolRowWrapper key={tool.id} tool={tool} />
-        ))}
-      </ServerRowTools>
-    );
-  }
-
   return (
-    <ServerRow server={server} isActive={isActive}>
-      {toolsListElem}
-    </ServerRow>
+    <div className="flex flex-col gap-1">
+      {tools.map(tool => (
+        <ServerToolRowWrapper key={tool.id} tool={tool} />
+      ))}
+    </div>
   );
 }
 

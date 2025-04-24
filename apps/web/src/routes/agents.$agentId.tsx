@@ -1,23 +1,17 @@
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import {
-  AgentId,
-  McpServerId,
-  McpToolId,
-  type TAgentId,
-  type TAgentMcpServerId,
-  type TMcpServerId,
-} from '@libs/db-ids';
-import { Button, ButtonGroup, Input, Tab, TabList, TabPanel, TabPanels, Tabs, tn } from '@libs/ui-primitives';
-import { createFileRoute, Link, Navigate } from '@tanstack/react-router';
+import { AgentId, McpServerId, McpToolId, type TAgentId, type TMcpServerId } from '@libs/db-ids';
+import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs, tn } from '@libs/ui-primitives';
+import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
+import { useCallback } from 'react';
 import { z } from 'zod';
 
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
-import { ServerRow, type ServerRowProps } from '~/components/ServerRow.tsx';
-import { ServerRowTools } from '~/components/ServerRowTools.tsx';
+import { ServerPanel } from '~/components/ServerPanel.tsx';
+import { ServerRow } from '~/components/ServerRow.tsx';
 import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
 import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
-import type { AgentMcpServer, AgentMcpTool } from '~shared/zero-schema.ts';
+import type { AgentMcpTool } from '~shared/zero-schema.ts';
 
 export const Route = createFileRoute('/agents/$agentId')({
   component: RouteComponent,
@@ -30,9 +24,12 @@ export const Route = createFileRoute('/agents/$agentId')({
   },
   validateSearch: z.object({
     agentTab: z.enum(['tools']).optional(),
+    serverTab: z.enum(['tools', 'config']).optional(),
     serverId: McpServerId.validator.optional(),
-    toolId: McpToolId.validator.optional(),
   }),
+  search: {
+    middlewares: [retainSearchParams(['agentTab', 'serverTab', 'serverId'])],
+  },
 });
 
 function RouteComponent() {
@@ -65,53 +62,55 @@ function ServersHeadingCard() {
 
 function AgentTabs({ activeTab = 'root' }: { activeTab?: string }) {
   return (
-    <Tabs
-      classNames={{
-        tabInner: tn('flex gap-1.5 capitalize'),
-        list: tn('shrink-0 border-b px-4'),
-        panels: tn('h-full p-0'),
-        panel: tn('h-full'),
-      }}
-      selectedId={activeTab}
-      selectOnMove={false}
-    >
-      <TabList>
-        <Tab id="root" render={<Link to="." search={prev => ({ ...prev, tab: undefined })} />}>
-          Tools
-        </Tab>
-      </TabList>
+    <div className="h-[calc(100dvh-var(--canvas-m)*2)] overflow-hidden py-2">
+      <Tabs
+        classNames={{
+          tabInner: tn('flex gap-1.5 capitalize'),
+          list: tn('shrink-0 border-b px-4'),
+          panels: tn('h-full p-0'),
+          panel: tn('flex h-full'),
+        }}
+        selectedId={activeTab}
+        selectOnMove={false}
+      >
+        <TabList>
+          <Tab id="root" render={<Link to="." search={prev => ({ ...prev, tab: undefined })} />}>
+            MCP Servers
+          </Tab>
+        </TabList>
 
-      <TabPanels>
-        <TabPanel tabId="root" unmountOnHide>
-          <ServerFilters />
-          <ServersList />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
+        <TabPanels>
+          <TabPanel tabId="root" unmountOnHide>
+            <div className="h-full flex-1 overflow-y-auto">
+              <ServerFilters />
+              <ServersList />
+            </div>
+
+            <ServerPanelWrapper />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+    </div>
   );
 }
 
 function ServerFilters() {
   return (
-    <div className="flex h-16 shrink-0 items-center gap-3 border-b px-4">
-      <Input placeholder="Search" size="sm" />
-      <ButtonGroup isAttached size="sm" variant="outline">
-        <Button data-active={true}>All</Button>
-        <Button>Installed</Button>
-        <Button>Not installed</Button>
-      </ButtonGroup>
+    <div className="ak-layer-0 sticky inset-x-0 top-0 z-10 flex h-16 shrink-0 items-center gap-3 border-b px-4">
+      <Input placeholder="Search" size="sm" className="w-80" />
+      <div className="text-sm">TODO filters...</div>
     </div>
   );
 }
 
 function ServersList() {
   return (
-    <div className="flex-1 divide-y pb-32">
-      <div className="ak-layer-canvas-down-0.5 flex h-12 items-center px-5 font-bold">Installed</div>
+    <div className="flex-1 pb-16">
+      <div className="ak-layer-canvas-down-0.5 flex h-10 items-center border-b px-5 font-bold">Installed</div>
 
       <InstalledServersList />
 
-      <div className="ak-layer-canvas-down-0.5 flex h-12 items-center px-5 font-bold">Available</div>
+      <div className="ak-layer-canvas-down-0.5 flex h-10 items-center border-b px-5 font-bold">Available</div>
 
       <AvailableServersList />
     </div>
@@ -123,32 +122,20 @@ function InstalledServersList() {
   const { serverId: activeServerId } = Route.useSearch();
 
   const [mcpServers] = useZeroQuery(z =>
-    z.query.mcpServers
-      .related('agentMcpServers', q => q.where('agentId', '=', agentId))
-      .whereExists('agentMcpServers', q => q.where('agentId', '=', agentId))
-      .orderBy('name', 'asc'),
+    z.query.mcpServers.whereExists('agentMcpServers', q => q.where('agentId', '=', agentId)).orderBy('name', 'asc'),
   );
 
   if (!mcpServers.length) {
     return (
-      <div className="flex h-12 items-center px-5">
+      <div className="flex shrink-0 items-center p-5">
         <div className="ak-text/50 text-sm">This agent has no installed servers.. add some below</div>
       </div>
     );
   }
 
-  return (
-    <>
-      {mcpServers.map(({ agentMcpServers, ...server }) => (
-        <ServerRowWrapper
-          key={server.id}
-          server={server}
-          agentServer={agentMcpServers[0]}
-          isActive={activeServerId === server.id}
-        />
-      ))}
-    </>
-  );
+  return mcpServers.map(server => (
+    <ServerRow key={server.id} server={server} isActive={activeServerId === server.id} />
+  ));
 }
 
 function AvailableServersList() {
@@ -161,85 +148,60 @@ function AvailableServersList() {
       .orderBy('name', 'asc'),
   );
 
-  return (
-    <>
-      {mcpServers.map(server => (
-        <ServerRowWrapper key={server.id} server={server} isActive={activeServerId === server.id} />
-      ))}
-    </>
-  );
+  return mcpServers.map(server => (
+    <ServerRow key={server.id} server={server} isActive={activeServerId === server.id} />
+  ));
 }
 
-function ServerRowWrapper({
-  server,
-  agentServer,
-  isActive,
-}: {
-  server: ServerRowProps['server'];
-  agentServer?: AgentMcpServer;
-  isActive: boolean;
-}) {
+function ServerPanelWrapper() {
+  const { serverId, serverTab } = Route.useSearch();
   const { agentId } = Route.useParams();
 
-  return (
-    <ServerRow server={server} isActive={isActive}>
-      {isActive ? <ServerToolsList serverId={server.id} agentId={agentId} agentServerId={agentServer?.id} /> : null}
-    </ServerRow>
-  );
+  const renderToolsList = useCallback(() => {
+    if (!serverId) return null;
+
+    return <ServerToolsList serverId={serverId} agentId={agentId} />;
+  }, [serverId, agentId]);
+
+  if (!serverId) return null;
+
+  return <ServerPanel serverId={serverId} agentId={agentId} activeTab={serverTab} renderToolsList={renderToolsList} />;
 }
 
-function ServerToolsList({
-  serverId,
-  agentId,
-  agentServerId,
-}: {
-  serverId: TMcpServerId;
-  agentId: TAgentId;
-  agentServerId?: TAgentMcpServerId;
-}) {
-  const [installedTools] = useZeroQuery(
-    z =>
-      z.query.mcpTools
-        .related('agentMcpTools', q => q.where('agentId', '=', agentId))
-        .where(({ and, cmp, exists }) =>
-          and(
-            cmp('mcpServerId', '=', serverId),
-            exists('agentMcpTools', q => q.where('agentId', '=', agentId)),
-          ),
-        )
-        .orderBy('displayName', 'asc')
-        .orderBy('name', 'asc'),
-    { enabled: !!agentServerId },
-  );
-
-  const [uninstalledTools] = useZeroQuery(z =>
+function ServerToolsList({ serverId, agentId }: { serverId: TMcpServerId; agentId: TAgentId }) {
+  const [installedTools] = useZeroQuery(z =>
     z.query.mcpTools
-      .where(({ and, cmp, exists, not }) =>
+      .related('agentMcpTools', q => q.where('agentId', '=', agentId))
+      .where(({ and, cmp, exists }) =>
         and(
           cmp('mcpServerId', '=', serverId),
-          agentServerId ? not(exists('agentMcpTools', q => q.where('agentId', '=', agentId))) : undefined,
+          exists('agentMcpTools', q => q.where('agentId', '=', agentId)),
         ),
       )
       .orderBy('displayName', 'asc')
       .orderBy('name', 'asc'),
   );
 
-  let toolsListElem: React.ReactNode;
-  if (installedTools.length || uninstalledTools.length) {
-    toolsListElem = (
-      <ServerRowTools>
-        {installedTools.map(tool => (
-          <ServerToolRowWrapper key={tool.id} tool={tool} agentTool={tool.agentMcpTools[0]} />
-        ))}
+  const [uninstalledTools] = useZeroQuery(z =>
+    z.query.mcpTools
+      .where(({ and, cmp, exists, not }) =>
+        and(cmp('mcpServerId', '=', serverId), not(exists('agentMcpTools', q => q.where('agentId', '=', agentId)))),
+      )
+      .orderBy('displayName', 'asc')
+      .orderBy('name', 'asc'),
+  );
 
-        {uninstalledTools.map(tool => (
-          <ServerToolRowWrapper key={tool.id} tool={tool} />
-        ))}
-      </ServerRowTools>
-    );
-  }
+  return (
+    <div className="flex flex-col gap-1">
+      {installedTools.map(tool => (
+        <ServerToolRowWrapper key={tool.id} tool={tool} agentTool={tool.agentMcpTools[0]} />
+      ))}
 
-  return toolsListElem;
+      {uninstalledTools.map(tool => (
+        <ServerToolRowWrapper key={tool.id} tool={tool} />
+      ))}
+    </div>
+  );
 }
 
 function ServerToolRowWrapper({ tool, agentTool }: { tool: ServerToolRowProps['tool']; agentTool?: AgentMcpTool }) {

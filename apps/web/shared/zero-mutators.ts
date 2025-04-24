@@ -1,4 +1,4 @@
-import { AgentId, AgentMcpServerId, AgentMcpToolId, McpToolId } from '@libs/db-ids';
+import { AgentId, AgentMcpServerId, AgentMcpToolId, McpServerId, McpToolId } from '@libs/db-ids';
 import type { CustomMutatorDefs } from '@rocicorp/zero';
 import { z } from 'zod';
 
@@ -18,6 +18,23 @@ const CreateAgentMcpToolSchema = z.object({
 
 const RemoveAgentMcpToolSchema = z.object({
   id: AgentMcpToolId.validator,
+});
+
+const ClientConfigSchema = z
+  .record(z.string(), z.union([z.string(), z.number(), z.boolean()]))
+  .optional()
+  .nullable();
+
+const UpdateAgentMcpServerSchema = z.object({
+  id: AgentMcpServerId.validator,
+  configJson: ClientConfigSchema,
+});
+
+const CreateAgentMcpServerSchema = z.object({
+  id: AgentMcpServerId.validator.optional(),
+  agentId: AgentId.validator,
+  mcpServerId: McpServerId.validator,
+  configJson: ClientConfigSchema,
 });
 
 // @TODO proper error types + consolidate thrown error objects w what the orpc api throws
@@ -86,16 +103,45 @@ export function createMutators(authData: AuthData | undefined) {
       async delete(tx, props: z.infer<typeof RemoveAgentMcpToolSchema>) {
         assertIsLoggedInWithOrg(authData);
 
-        const existing = await tx.query.agentMcpTools.where('id', props.id).one().run();
+        const data = RemoveAgentMcpToolSchema.parse(props);
+
+        const existing = await tx.query.agentMcpTools.where('id', data.id).one().run();
         assertFound(existing, 'Agent MCP tool not found');
 
         const agent = await tx.query.agents.where('id', existing.agentId).one().run();
         assertFound(agent, 'Agent not found');
         assertIsRecordOwner(authData, agent);
 
-        const data = RemoveAgentMcpToolSchema.parse(props);
-
         await tx.mutate.agentMcpTools.delete({ id: data.id });
+      },
+    },
+
+    agentMcpServers: {
+      async insert(tx, props: z.infer<typeof CreateAgentMcpServerSchema>) {
+        assertIsLoggedInWithOrg(authData);
+
+        const data = CreateAgentMcpServerSchema.parse(props);
+
+        await tx.mutate.agentMcpServers.insert({
+          id: data.id ?? AgentMcpServerId.generate(),
+          agentId: data.agentId,
+          mcpServerId: data.mcpServerId,
+          organizationId: authData.orgId,
+          createdBy: authData.sub,
+        });
+      },
+
+      async update(tx, props: z.infer<typeof UpdateAgentMcpServerSchema>) {
+        assertIsLoggedInWithOrg(authData);
+
+        const data = UpdateAgentMcpServerSchema.parse(props);
+
+        const existing = await tx.query.agentMcpServers.where('id', data.id).one().run();
+        assertFound(existing, 'Agent MCP server not found');
+
+        assertIsRecordOwner(authData, existing);
+
+        await tx.mutate.agentMcpServers.update({ id: data.id, configJson: data.configJson });
       },
     },
   } as const satisfies CustomMutatorDefs<Schema>;
