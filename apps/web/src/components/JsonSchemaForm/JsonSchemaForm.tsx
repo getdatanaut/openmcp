@@ -15,7 +15,7 @@ export interface JsonSchemaFormProps {
 export const JsonSchemaForm = ({ schema, form, className, children }: JsonSchemaFormProps) => {
   return (
     <JsonSchemaFormInternalContext.Provider value={{ form, schema }}>
-      <Form store={form} className={className}>
+      <Form store={form} resetOnSubmit={false} className={className}>
         {children}
       </Form>
     </JsonSchemaFormInternalContext.Provider>

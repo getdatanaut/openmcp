@@ -122,6 +122,8 @@ function ServerTabs({
 
         <TabPanel tabId="config" unmountOnHide>
           <ServerConfigForm
+            // This is important! Causes the form to re-mount on server change, which resets the form state
+            key={`${agentId}-${serverId}-${agentMcpServer?.id}`}
             agentId={agentId}
             serverId={serverId}
             agentMcpServerId={agentMcpServer?.id}
@@ -148,7 +150,6 @@ function ServerConfigForm({
   config?: Record<string, string | number | boolean>;
 }) {
   const { form } = useJsonSchemaForm({
-    id: `${agentId}-${serverId}-${agentMcpServerId}`,
     schema: configSchema,
     defaultValues: config,
     values: config,
@@ -175,8 +176,10 @@ function ServerConfigForm({
   form.useSubmit(async ({ values }) => {
     if (agentMcpServerId) {
       await updateAgentMcpServer({ id: agentMcpServerId, configJson: values });
+      alert('Server config updated');
     } else if (agentId) {
       await createAgentMcpServer({ agentId, mcpServerId: serverId, configJson: values });
+      alert('Server installed');
     } else {
       alert('TODO');
     }

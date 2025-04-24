@@ -12,13 +12,10 @@ export const [JsonSchemaFormInternalContext, useJsonSchemaFormInternalContext] =
 });
 
 export const useJsonSchemaForm = ({
-  id,
   schema,
-  defaultValues: initialValues,
-  values,
+  defaultValues: passedDefaultValues,
+  values: passedValues,
 }: {
-  // This is used as a unique identifier for the form, and it's state
-  id: string;
   schema: McpServer['configSchemaJson'];
   defaultValues?: Record<string, string | number | boolean>;
   values?: Record<string, string | number | boolean>;
@@ -32,22 +29,28 @@ export const useJsonSchemaForm = ({
     if (schema.properties) {
       Object.entries(schema.properties).forEach(([key, prop]) => {
         if (prop.default !== undefined) {
-          values[key] = initialValues?.[key] ?? prop.default;
+          values[key] = passedDefaultValues?.[key] ?? prop.default;
         } else {
-          values[key] = initialValues?.[key] ?? (prop.type === 'string' ? '' : prop.type === 'number' ? 0 : false);
+          values[key] =
+            passedDefaultValues?.[key] ?? (prop.type === 'string' ? '' : prop.type === 'number' ? 0 : false);
         }
       });
     }
 
     return values;
-  }, [schema, initialValues]);
+  }, [schema, passedDefaultValues]);
 
-  const form = useFormStore<Record<string, string | number | boolean>>({ defaultValues, values });
+  const values = useMemo(() => {
+    return Object.assign({}, defaultValues, passedValues);
+  }, [defaultValues, passedValues]);
+
+  const form = useFormStore<Record<string, string | number | boolean>>({ defaultValues: values });
 
   useEffect(() => {
-    form.reset();
-    form.setValues(values ?? {});
-  }, [form, id, values]);
+    // If values change externally, update the form state. Not the best approach because non-committed edits
+    // will be overwritten, but OK for now.
+    form.setValues(values);
+  }, [form, values]);
 
   return { form };
 };
