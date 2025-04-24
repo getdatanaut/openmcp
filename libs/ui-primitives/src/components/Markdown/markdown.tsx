@@ -53,7 +53,7 @@ const MarkdownCode: Components['code'] = ({ node, ...props }) => {
   const isInCodeFence = props.style?.display === 'grid';
   if (isInCodeFence) return <code {...props} />;
 
-  return <code className="ak-layer-down ak-frame-xs px-1 py-px" {...props} />;
+  return <code className="ak-layer-down rounded-xs px-1 py-px" {...props} />;
 };
 
 const MarkdownFigure: Components['figure'] = ({ className, node, children, ...props }) => {

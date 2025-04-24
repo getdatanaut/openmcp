@@ -3,7 +3,7 @@ import { tv } from 'tailwind-variants';
 
 // import { focusStyles, inputFocusStyles } from '../../utils/focus.ts';
 import { makeStaticClass } from '../../utils/make-static-class.ts';
-import { focusStyles, formSizes } from '../../utils/styles.ts';
+import { focusStyles, formSizes, inputFocusStyles } from '../../utils/styles.ts';
 import { tn, twMergeConfig } from '../../utils/tw.ts';
 import type { SlotProp, VariantSlots } from '../../utils/types.ts';
 
@@ -17,8 +17,7 @@ export const buttonStyle = tv(
   {
     slots: {
       base: tn(
-        `group placeholder-shown:text-muted relative inline-flex max-w-full cursor-pointer appearance-none items-center justify-center whitespace-nowrap select-none motion-safe:transition`,
-        focusStyles,
+        `group placeholder-shown:text-muted relative inline-flex max-w-full cursor-pointer appearance-none items-center justify-center rounded-xs whitespace-nowrap select-none motion-safe:transition`,
       ),
 
       icon: tn('[display:inherit]'),
@@ -31,6 +30,7 @@ export const buttonStyle = tv(
       size: 'md',
       variant: 'solid',
       intent: 'neutral',
+      input: false,
       fullWidth: false,
       disabled: false,
       isLoading: false,
@@ -42,6 +42,7 @@ export const buttonStyle = tv(
         soft: {},
         outline: {},
         ghost: {},
+        unstyled: {},
       },
       intent: {
         neutral: {},
@@ -50,15 +51,15 @@ export const buttonStyle = tv(
       },
       size: {
         xs: {
-          base: tn('font-normal', formSizes.xs),
+          base: tn('gap-1'),
           icon: tn('text-[0.8em]'),
         },
         sm: {
-          base: tn('font-normal', formSizes.sm),
+          base: tn('gap-1'),
           icon: tn('text-[0.9em]'),
         },
-        md: tn('font-medium', formSizes.md),
-        lg: tn('font-medium', formSizes.lg),
+        md: tn('gap-1.5'),
+        lg: tn('gap-2'),
       },
       fullWidth: {
         true: tn('w-full'),
@@ -67,10 +68,8 @@ export const buttonStyle = tv(
         true: tn('pointer-events-none opacity-50 select-none'),
       },
       input: {
-        // true: tn('font-normal', inputFocusStyles),
-        // false: tn(focusStyles),
-        true: tn('font-normal', ''),
-        false: tn(''),
+        true: tn(inputFocusStyles),
+        false: tn(focusStyles),
       },
       isLoading: {
         true: tn('pointer-events-none opacity-80 select-none'),
@@ -81,6 +80,35 @@ export const buttonStyle = tv(
       },
     },
     compoundVariants: [
+      // sizes
+      {
+        variant: ['solid', 'soft', 'outline', 'ghost'],
+        size: 'xs',
+        class: tn('font-normal', formSizes.xs),
+      },
+      {
+        variant: ['solid', 'soft', 'outline', 'ghost'],
+        size: 'sm',
+        class: tn('font-normal', formSizes.sm),
+      },
+      {
+        variant: ['solid', 'soft', 'outline', 'ghost'],
+        size: 'md',
+        class: tn('font-medium', formSizes.md),
+      },
+      {
+        variant: ['solid', 'soft', 'outline', 'ghost'],
+        size: 'lg',
+        class: tn('font-medium', formSizes.lg),
+      },
+
+      // input style
+      {
+        variant: ['solid', 'soft', 'outline', 'ghost'],
+        input: true,
+        class: tn('font-normal'),
+      },
+
       // solid / intent
       {
         variant: 'solid',

@@ -1,5 +1,6 @@
-import { type ReactNode, type Ref, useMemo } from 'react';
+import { type ReactNode, type Ref, useMemo, useRef } from 'react';
 
+import { useElementSize } from '../../hooks/use-element-size.ts';
 import { useContextProps } from '../../utils/context.ts';
 import { splitPropsVariants } from '../../utils/split-props-variants.ts';
 import type { HTMLProps } from '../../utils/types.ts';
@@ -20,12 +21,6 @@ export interface InputOptions extends InputStyleProps, InputSlotProps {
   /** The element to show after the input value, in place of the `endIcon`. */
   endSection?: ReactNode;
 
-  /** Width of start section (in pixel). */
-  startSectionWidth?: number;
-
-  /** Width of end section (in pixel). */
-  endSectionWidth?: number;
-
   ref?: Ref<HTMLInputElement>;
 }
 
@@ -34,27 +29,17 @@ export interface InputProps extends HTMLProps<'input'>, InputOptions {}
 export function Input({ ref, ...originalProps }: InputProps) {
   [originalProps, ref] = useContextProps(originalProps, InputContext, ref);
 
-  const [
-    {
-      className,
-      classNames,
-      disabled,
-      startIcon,
-      endIcon,
-      startSection,
-      endSection,
-      startSectionWidth,
-      endSectionWidth,
-      ...props
-    },
-    variantProps,
-  ] = splitPropsVariants(originalProps, inputStyle.variantKeys);
+  const [{ className, classNames, disabled, startIcon, endIcon, startSection, endSection, ...props }, variantProps] =
+    splitPropsVariants(originalProps, inputStyle.variantKeys);
 
   const hasStartIcon = !!startIcon;
   const hasEndIcon = !!endIcon;
   const hasStartSection = !!startSection;
   const hasEndSection = !!endSection;
   const hasSection = hasStartSection || hasEndSection;
+
+  const [startSectionRef, { width: startSectionWidth }] = useElementSize();
+  const [endSectionRef, { width: endSectionWidth }] = useElementSize();
 
   const slots = useMemo(
     () => inputStyle({ ...variantProps, isDisabled: disabled, hasStartIcon, hasEndIcon, hasSection }),
@@ -74,7 +59,11 @@ export function Input({ ref, ...originalProps }: InputProps) {
     );
   } else if (hasStartSection) {
     const startSectionTw = slots.startSection({ class: [inputStaticClass('startSection'), classNames?.startSection] });
-    startElem = <div className={startSectionTw}>{startSection}</div>;
+    startElem = (
+      <div className={startSectionTw} ref={startSectionRef}>
+        {startSection}
+      </div>
+    );
   }
 
   let endElem;
@@ -87,7 +76,11 @@ export function Input({ ref, ...originalProps }: InputProps) {
     );
   } else if (hasEndSection) {
     const endSectionTw = slots.endSection({ class: [inputStaticClass('endSection'), classNames?.endSection] });
-    endElem = <div className={endSectionTw}>{endSection}</div>;
+    endElem = (
+      <div className={endSectionTw} ref={endSectionRef}>
+        {endSection}
+      </div>
+    );
   }
 
   return (

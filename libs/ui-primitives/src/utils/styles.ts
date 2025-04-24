@@ -19,8 +19,8 @@ export const formSpacing = {
 };
 
 export const formSizes = {
-  xs: tn('h-block-xs ak-frame-xs text-sm', formSpacing.xs),
-  sm: tn('h-block-sm ak-frame-xs text-sm', formSpacing.sm),
-  md: tn('h-block-md ak-frame-xs text-base', formSpacing.md),
-  lg: tn('h-block-lg ak-frame-xs text-base', formSpacing.lg),
+  xs: tn('h-block-xs rounded-xs text-sm', formSpacing.xs),
+  sm: tn('h-block-sm rounded-xs text-sm', formSpacing.sm),
+  md: tn('h-block-md rounded-xs text-base', formSpacing.md),
+  lg: tn('h-block-lg rounded-xs text-base', formSpacing.lg),
 };

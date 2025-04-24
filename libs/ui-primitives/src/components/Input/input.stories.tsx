@@ -83,9 +83,8 @@ export const WithSection: Story = {
           {...args}
           value={subscribeValue}
           onChange={e => setSubscribeValue(e.target.value)}
-          endSectionWidth={85}
           endSection={
-            <Button variant="solid" intent={subscribeValue ? 'primary' : 'neutral'} size="xs" input className="mr-2">
+            <Button variant="solid" intent={subscribeValue ? 'primary' : 'neutral'} size="xs" input className="mx-2">
               Subscribe
             </Button>
           }
@@ -94,9 +93,8 @@ export const WithSection: Story = {
         <Input
           size="md"
           {...args}
-          endSectionWidth={55}
           endSection={
-            <Button variant="soft" size="xs" input className="mr-2">
+            <Button variant="soft" size="xs" input className="mx-2">
               ESC
             </Button>
           }

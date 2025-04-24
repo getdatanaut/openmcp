@@ -15,6 +15,8 @@ export type { ButtonProps } from './components/Button/button.tsx';
 export { Button } from './components/Button/button.tsx';
 export type { ButtonGroupProps } from './components/Button/button-group.tsx';
 export { ButtonGroup } from './components/Button/button-group.tsx';
+export type { CopyButtonProps } from './components/Button/copy-button.tsx';
+export { CopyButton } from './components/Button/copy-button.tsx';
 
 // /**
 //  * Card
@@ -135,15 +137,16 @@ export { MenuSeparator } from './components/Menu/menu-separator.tsx';
 // export type { PopoverProps } from './components/Popover/popover.tsx';
 // export { Popover, PopoverContext, usePopoverContext } from './components/Popover/popover.tsx';
 
-// /**
-//  * Select
-//  */
-// export type { SelectProps } from './components/Select/select.tsx';
-// export { Select, SelectContext, useSelectContext } from './components/Select/select.tsx';
-// export type { SelectGroupProps } from './components/Select/select-group.tsx';
-// export { SelectGroup } from './components/Select/select-group.tsx';
-// export type { SelectItemProps } from './components/Select/select-item.tsx';
-// export { SelectItem } from './components/Select/select-item.tsx';
+/**
+ * Select
+ */
+export { SelectContext, useSelectContext } from './components/Select/select.context.tsx';
+export type { SelectProps } from './components/Select/select.tsx';
+export { Select } from './components/Select/select.tsx';
+export type { SelectGroupProps } from './components/Select/select-group.tsx';
+export { SelectGroup } from './components/Select/select-group.tsx';
+export type { SelectItemProps } from './components/Select/select-item.tsx';
+export { SelectItem } from './components/Select/select-item.tsx';
 
 /**
  * Tabs
@@ -179,6 +182,7 @@ export { Tabs } from './components/Tabs/tabs.tsx';
  */
 
 export { useClipboard } from './hooks/use-clipboard.ts';
+export { useElementSize } from './hooks/use-element-size.ts';
 export { usePrevious } from './hooks/use-previous.ts';
 
 /**
