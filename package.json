@@ -10,7 +10,8 @@
     "packages": [
       "apps/*",
       "libs/*",
-      "packages/*"
+      "packages/*",
+      "scripts/openapi-enhancer"
     ]
   },
   "scripts": {
