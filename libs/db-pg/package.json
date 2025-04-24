@@ -12,7 +12,8 @@
   "scripts": {
     "lint": "eslint .",
     "typecheck": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test.watch": "vitest"
   },
   "dependencies": {
     "@libs/db-ids": "workspace:*",

@@ -23,7 +23,7 @@ function createZero({
     userID: userId ?? 'anon',
     server: import.meta.env.VITE_PUBLIC_ZERO_SERVER,
     schema,
-    mutators: createMutators(userId ? { sub: userId, orgId } : undefined),
+    mutators: createMutators(userId ? { sub: userId, orgId } : undefined, undefined),
     kvStore: import.meta.env.DEV ? 'mem' : 'idb',
     auth: (error?: 'invalid-token') => {
       if (error === 'invalid-token') {
@@ -33,8 +33,11 @@ function createZero({
 
       return jwt ?? undefined;
     },
+    onUpdateNeeded(reason) {
+      // @TODO
+    },
     onError: error => {
-      // @TODO handle errors
+      // @TODO could do something w global errors
       console.warn('ZERO ERROR', error);
     },
   });

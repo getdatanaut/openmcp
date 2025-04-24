@@ -1,5 +1,5 @@
 import type { TAgentId, TAgentMcpServerId, TMcpServerId, TOrganizationId, TUserId } from '@libs/db-ids';
-import type { SetOptional } from '@libs/utils-types';
+import type { SetOptional, Tagged } from '@libs/utils-types';
 import { relations } from 'drizzle-orm';
 import { index, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
@@ -13,6 +13,10 @@ import type { DetailedSelectCols, SummarySelectCols } from './queries.ts';
 export const AGENT_MCP_SERVERS_KEY = 'agentMcpServers' as const;
 export const AGENT_MCP_SERVERS_TABLE = 'agent_mcp_servers' as const;
 
+export type AgentMcpServerConfig = Record<string, string | number | boolean>;
+
+export type EncryptedAgentMcpServerConfig = Tagged<AgentMcpServerConfig, 'encrypted'>;
+
 export const agentMcpServers = pgTable(
   AGENT_MCP_SERVERS_TABLE,
   {
@@ -21,7 +25,10 @@ export const agentMcpServers = pgTable(
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
     organizationId: text('organization_id').$type<TOrganizationId>().notNull(),
     createdBy: text('created_by').$type<TUserId>().notNull(),
-    configJson: jsonb('config_json').$type<Record<string, string | number | boolean>>().notNull().default({}),
+    configJson: jsonb('config_json')
+      .$type<EncryptedAgentMcpServerConfig>()
+      .notNull()
+      .default({} as EncryptedAgentMcpServerConfig),
   },
   table => [
     uniqueIndex('agents_mcp_servers_agent_id_mcp_server_id_organization_id_idx').on(

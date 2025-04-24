@@ -14,11 +14,13 @@ export async function handler({
   getJwks,
   sql,
   publicUrl,
+  dbEncSecret,
 }: {
   req: Request;
   getJwks: () => Promise<{ keys: any[] }>;
   sql: postgres.Sql;
   publicUrl: string;
+  dbEncSecret: string;
 }) {
   const url = new URL(req.url);
   const processor = new PushProcessor(schema, connectionProvider(sql));
@@ -43,6 +45,7 @@ export async function handler({
     authData: payload,
     params: Object.fromEntries(url.searchParams),
     body,
+    dbEncSecret,
   });
 
   return Response.json(result);
@@ -87,14 +90,16 @@ async function handlePush({
   authData,
   params,
   body,
+  dbEncSecret,
 }: {
   processor: PushProcessor<typeof schema, any, any>;
   authData: AuthData | undefined;
   params: Record<string, string>;
   body: ReadonlyJSONValue;
+  dbEncSecret: string;
 }) {
   const postCommitTasks: PostCommitTask[] = [];
-  const mutators = createServerMutators(authData, postCommitTasks);
+  const mutators = createServerMutators(authData, { dbEncSecret, postCommitTasks });
 
   const response = await processor.process(mutators, params, body);
 

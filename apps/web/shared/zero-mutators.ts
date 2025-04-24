@@ -1,9 +1,18 @@
 import { AgentId, AgentMcpServerId, AgentMcpToolId, McpServerId, McpToolId } from '@libs/db-ids';
+import type { EncryptedAgentMcpServerConfig } from '@libs/db-pg';
+import { encryptConfig } from '@libs/db-pg/crypto';
 import type { CustomMutatorDefs } from '@rocicorp/zero';
 import { z } from 'zod';
 
-import { assertFound, assertIsLoggedInWithOrg, assertIsRecordOwner, type AuthData } from './auth.ts';
+import { assert, assertFound, assertIsLoggedInWithOrg, assertIsRecordOwner, type AuthData } from './auth.ts';
 import type { Schema } from './zero-schema.ts';
+
+export type PostCommitTask = () => Promise<void>;
+
+export interface ServerMutatorsOpts {
+  dbEncSecret: string;
+  postCommitTasks: PostCommitTask[];
+}
 
 const CreateAgentSchema = z.object({
   id: AgentId.validator.optional(),
@@ -37,9 +46,13 @@ const CreateAgentMcpServerSchema = z.object({
   configJson: ClientConfigSchema,
 });
 
+function assertServerOpts(serverOpts: ServerMutatorsOpts | undefined): asserts serverOpts {
+  assert(serverOpts, 'serverOpts must be passed in on the server.');
+}
+
 // @TODO proper error types + consolidate thrown error objects w what the orpc api throws
 
-export function createMutators(authData: AuthData | undefined) {
+export function createMutators(authData: AuthData | undefined, serverOpts: ServerMutatorsOpts | undefined) {
   return {
     agents: {
       async insert(tx, props: z.infer<typeof CreateAgentSchema> = {}) {
@@ -122,10 +135,26 @@ export function createMutators(authData: AuthData | undefined) {
 
         const data = CreateAgentMcpServerSchema.parse(props);
 
+        const mcpServer = await tx.query.mcpServers.where('id', data.mcpServerId).one().run();
+        assertFound(mcpServer, 'MCP server not found');
+
+        let configJson = data.configJson as EncryptedAgentMcpServerConfig;
+        if (import.meta.env.SSR) {
+          assertServerOpts(serverOpts);
+          if (configJson) {
+            configJson = await encryptConfig({
+              config: configJson,
+              schema: mcpServer.configSchemaJson,
+              secret: serverOpts.dbEncSecret,
+            });
+          }
+        }
+
         await tx.mutate.agentMcpServers.insert({
           id: data.id ?? AgentMcpServerId.generate(),
           agentId: data.agentId,
           mcpServerId: data.mcpServerId,
+          configJson,
           organizationId: authData.orgId,
           createdBy: authData.sub,
         });
@@ -138,10 +167,24 @@ export function createMutators(authData: AuthData | undefined) {
 
         const existing = await tx.query.agentMcpServers.where('id', data.id).one().run();
         assertFound(existing, 'Agent MCP server not found');
-
         assertIsRecordOwner(authData, existing);
 
-        await tx.mutate.agentMcpServers.update({ id: data.id, configJson: data.configJson });
+        const mcpServer = await tx.query.mcpServers.where('id', existing.mcpServerId).one().run();
+        assertFound(mcpServer, 'MCP server not found');
+
+        let configJson = data.configJson as EncryptedAgentMcpServerConfig;
+        if (import.meta.env.SSR) {
+          assertServerOpts(serverOpts);
+          if (configJson) {
+            configJson = await encryptConfig({
+              config: configJson,
+              schema: mcpServer.configSchemaJson,
+              secret: serverOpts.dbEncSecret,
+            });
+          }
+        }
+
+        await tx.mutate.agentMcpServers.update({ id: data.id, configJson });
       },
     },
   } as const satisfies CustomMutatorDefs<Schema>;

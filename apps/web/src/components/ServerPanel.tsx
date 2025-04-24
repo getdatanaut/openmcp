@@ -156,8 +156,15 @@ function ServerConfigForm({
   });
 
   const { mutate: updateAgentMcpServer } = useZeroMutation(
-    (z, { id, configJson }: { id: TAgentMcpServerId; configJson: Record<string, string | number | boolean> }) =>
-      z.mutate.agentMcpServers.update({ id, configJson }),
+    (z, { id, configJson }: { id: TAgentMcpServerId; configJson: Record<string, string | number | boolean> }) => ({
+      op: z.mutate.agentMcpServers.update({ id, configJson }),
+      onSuccess: () => {
+        alert('Server config updated');
+      },
+      onServerError(error) {
+        alert(`Error updating server config: ${error}`);
+      },
+    }),
     [],
   );
 
@@ -169,17 +176,23 @@ function ServerConfigForm({
         mcpServerId,
         configJson,
       }: { agentId: TAgentId; mcpServerId: TMcpServerId; configJson: Record<string, string | number | boolean> },
-    ) => z.mutate.agentMcpServers.insert({ id: AgentMcpServerId.generate(), agentId, mcpServerId, configJson }),
+    ) => ({
+      op: z.mutate.agentMcpServers.insert({ id: AgentMcpServerId.generate(), agentId, mcpServerId, configJson }),
+      onSuccess: () => {
+        alert('Server installed');
+      },
+      onServerError(error) {
+        alert(`Error installing server: ${error}`);
+      },
+    }),
     [],
   );
 
   form.useSubmit(async ({ values }) => {
     if (agentMcpServerId) {
       await updateAgentMcpServer({ id: agentMcpServerId, configJson: values });
-      alert('Server config updated');
     } else if (agentId) {
       await createAgentMcpServer({ agentId, mcpServerId: serverId, configJson: values });
-      alert('Server installed');
     } else {
       alert('TODO');
     }

@@ -3,8 +3,10 @@ export type { DbSdk } from './sdk.ts';
 export { createDbSdk } from './sdk.ts';
 export type {
   AgentMcpServer,
+  AgentMcpServerConfig,
   AgentMcpServerDetailedSelect,
   AgentMcpServerSummarySelect,
+  EncryptedAgentMcpServerConfig,
   NewAgentMcpServer,
 } from './tables/agent-mcp-servers/index.ts';
 export type {

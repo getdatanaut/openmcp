@@ -55,6 +55,7 @@ export default {
           sql,
           publicUrl: env.PUBLIC_URL,
           getJwks: () => auth.api.getJwks(),
+          dbEncSecret: env.DB_ENC_SECRET,
         });
       }
 

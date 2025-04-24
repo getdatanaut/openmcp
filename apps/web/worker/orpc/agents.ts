@@ -1,4 +1,4 @@
-import { decrypt, isEncryptedPayload } from '@libs/db-pg/crypto';
+import { decryptConfig } from '@libs/db-pg/crypto';
 import type { Config as RemixDefinition } from '@openmcp/remix';
 
 import { base, requireAuth } from './middleware.ts';
@@ -28,14 +28,7 @@ const getRemix = base.agents.getRemix
         throw new Error(`Duplicate server name: ${serverName} with different configs`);
       }
       if (config !== null) {
-        const decryptedConfig = (server.configs[serverName] ??= {});
-        for (const [key, value] of Object.entries(config)) {
-          if (isEncryptedPayload(value)) {
-            decryptedConfig[key] = await decrypt(value, dbEncSecret);
-          } else {
-            decryptedConfig[key] = value;
-          }
-        }
+        server.configs[serverName] = await decryptConfig({ config, secret: dbEncSecret });
       }
 
       let actualTransport = transport;

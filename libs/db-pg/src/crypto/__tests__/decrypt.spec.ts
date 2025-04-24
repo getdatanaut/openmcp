@@ -1,15 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { decrypt, encrypt } from '../index.ts';
+import { decrypt } from '../decrypt.ts';
+import { encrypt } from '../encrypt.ts';
 import { HEADER } from '../types.ts';
-
-describe('encrypt', () => {
-  it.concurrent('should encrypt a value and return a valid encrypted payload', async () => {
-    const secret = 'password';
-    const value = 'sensitive-data';
-    await expect(encrypt(value, secret)).resolves.toMatch(new RegExp(`^${HEADER}.+:.+$`));
-  });
-});
 
 describe('decrypt', () => {
   const secret = 'some-password';

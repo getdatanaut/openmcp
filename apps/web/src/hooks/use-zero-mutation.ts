@@ -117,11 +117,17 @@ export function useZeroMutation<TArg = void>(
         hooks?.onClientSuccess?.();
 
         // --- Server-side operation execution ---
-        const [serverResult, serverError] = await tryCatch(op.server);
+        const [serverResult, unknownServerError] = await tryCatch(op.server);
 
-        if (serverError) {
-          console.error('Server mutation error:', serverError);
-          hooks?.onServerError?.(serverError as ServerMutationError | ZodError | Error);
+        if (unknownServerError) {
+          console.error('Unknown server mutation error:', unknownServerError);
+          hooks?.onServerError?.(unknownServerError as Error);
+          return;
+        }
+
+        if (isMutationError(serverResult)) {
+          console.error('Server mutation error:', serverResult);
+          hooks?.onServerError?.(serverResult);
           return;
         }
 

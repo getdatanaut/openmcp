@@ -6,7 +6,7 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*", ".dev.vars"],
       "outputs": ["dist/**"],
-      "env": ["VITE_*"]
+      "env": ["VITE_*", "SSR"]
     }
   }
 }

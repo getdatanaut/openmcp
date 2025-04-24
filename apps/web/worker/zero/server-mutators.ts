@@ -6,8 +6,11 @@ import type { schema } from '~shared/zero-schema.ts';
 
 export type PostCommitTask = () => Promise<void>;
 
-export function createServerMutators(authData: AuthData | undefined, postCommitTasks: PostCommitTask[]) {
-  const mutators = createMutators(authData);
+export function createServerMutators(
+  authData: AuthData | undefined,
+  serverOpts: { dbEncSecret: string; postCommitTasks: PostCommitTask[] },
+) {
+  const mutators = createMutators(authData, serverOpts);
 
   return {
     ...mutators,

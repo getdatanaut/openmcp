@@ -18,4 +18,7 @@ export type {
   SetRequired,
   Simplify,
   SnakeCasedProperties,
+  Tagged,
+  TaggedUnion,
+  UnwrapTagged,
 } from 'type-fest';
