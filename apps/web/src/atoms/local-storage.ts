@@ -1,5 +1,7 @@
 import { injectEffect, injectSignal } from '@zedux/react';
 
+const PREFIX = 'dn';
+
 export const injectLocalStorage = <T extends Record<string, unknown>>({
   key,
   persistKeys = [],
@@ -9,7 +11,8 @@ export const injectLocalStorage = <T extends Record<string, unknown>>({
   persistKeys?: (keyof T)[];
   defaultVal: T;
 }) => {
-  const val = typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null;
+  const fullKey = `${PREFIX}:${key}`;
+  const val = typeof localStorage !== 'undefined' ? localStorage.getItem(fullKey) : null;
 
   // we're using the function overload of `injectSignal` to prevent JSON.parse
   // from running unnecesarily on reevaluations:
@@ -33,7 +36,7 @@ export const injectLocalStorage = <T extends Record<string, unknown>>({
           stateToPersist = event.newState;
         }
 
-        localStorage.setItem(key, JSON.stringify(stateToPersist));
+        localStorage.setItem(fullKey, JSON.stringify(stateToPersist));
       }
     }),
   );

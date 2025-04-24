@@ -1,10 +1,27 @@
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCopy, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AgentId, McpServerId, McpToolId, type TAgentId, type TMcpServerId } from '@libs/db-ids';
-import { Button, Input, Tab, TabList, TabPanel, TabPanels, Tabs, tn } from '@libs/ui-primitives';
+import {
+  Button,
+  ButtonGroup,
+  CopyButton,
+  Heading,
+  Input,
+  Select,
+  SelectItem,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  tn,
+  twMerge,
+} from '@libs/ui-primitives';
 import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
+import { atom, useAtomState } from '@zedux/react';
 import { useCallback } from 'react';
 import { z } from 'zod';
 
+import { injectLocalStorage } from '~/atoms/local-storage.ts';
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { ServerPanel } from '~/components/ServerPanel.tsx';
 import { ServerRow } from '~/components/ServerRow.tsx';
@@ -54,8 +71,78 @@ function ServersHeadingCard() {
   }
 
   return (
-    <div className="flex h-48 shrink-0 items-center justify-center">
-      <div className="font-bold">{agent?.name}.. TODO Splash</div>
+    <div className="flex shrink-0 px-8 py-8">
+      <div className="flex shrink-0 flex-col gap-6 pr-20">
+        <Heading>{agent?.name}</Heading>
+      </div>
+
+      <div className="ml-auto">
+        <InstallationCard agentId={agentId} className="max-w-[40rem]" />
+      </div>
+    </div>
+  );
+}
+
+const INSTALL_CLIENTS = {
+  claude: {
+    name: 'Claude Desktop',
+  },
+  cursor: {
+    name: 'Cursor',
+  },
+} as const;
+
+const serverInstallAtom = atom('serverInstall', () => {
+  const signal = injectLocalStorage({
+    key: 'serverInstall',
+    defaultVal: {
+      client: 'claude',
+    },
+  });
+
+  return signal;
+});
+
+function InstallationCard({ agentId, className }: { agentId: TAgentId; className?: string }) {
+  const [{ client }, setServerInstall] = useAtomState(serverInstallAtom);
+
+  const updateClient = useCallback(
+    (client: string) => {
+      setServerInstall({ client });
+    },
+    [setServerInstall],
+  );
+
+  const commandText = `npx @openmcp/cli@latest install ${agentId} --client ${client}`;
+
+  const selectElem = (
+    <Select
+      value={client}
+      displayValue={`${INSTALL_CLIENTS[client]?.name}`}
+      onChange={updateClient}
+      variant="unstyled"
+      renderInline
+    >
+      {Object.entries(INSTALL_CLIENTS).map(([id, { name }]) => (
+        <SelectItem value={id} key={id}>
+          {name}
+        </SelectItem>
+      ))}
+    </Select>
+  );
+
+  return (
+    <div className={twMerge('ak-layer-pop-0.5 flex flex-col gap-3 rounded-xs p-3', className)}>
+      <div className="pr-5">
+        Install to <b>{selectElem}</b> by running the following command:
+      </div>
+
+      <Input
+        value={commandText}
+        size="sm"
+        readOnly
+        endSection={<CopyButton size="xs" variant="soft" copyText={commandText} input className="mr-1 ml-2" />}
+      />
     </div>
   );
 }
