@@ -22,8 +22,10 @@ export const allowIfUserIdMatchesLoggedInUser = (
   { and, cmp, eb }: ExpressionBuilder<Schema, 'agents'>,
 ) => and(userIsLoggedIn(authData, eb), cmp('createdBy', '=', authData.sub));
 
-export const allowIfOrgIdMatchesLoggedInUser = (authData: AuthData, { cmp }: ExpressionBuilder<Schema, 'agents'>) =>
-  cmp('organizationId', authData.orgId ?? 'org_xxx');
+export const allowIfOrgIdMatchesLoggedInUser = (
+  authData: AuthData,
+  { cmp }: ExpressionBuilder<Schema, 'agents' | 'mcpServers'>,
+) => cmp('organizationId', authData.orgId ?? 'org_xxx');
 
 export const allowIfVisibilityIsPublic = (_authData: AuthData, { cmp }: ExpressionBuilder<Schema, 'mcpServers'>) =>
   cmp('visibility', 'public');
@@ -40,7 +42,7 @@ export const canReadAgent = (authData: AuthData, eb: ExpressionBuilder<Schema, '
 export const canReadAgentMcpServer = (authData: AuthData, { exists }: ExpressionBuilder<Schema, 'agentMcpServers'>) =>
   exists('agent', q => q.where(eb => canReadAgent(authData, eb)));
 
-export const canReadAgentMcpTool = (authData: AuthData, { exists }: ExpressionBuilder<Schema, 'agentMcpServers'>) =>
+export const canReadAgentMcpTool = (authData: AuthData, { exists }: ExpressionBuilder<Schema, 'agentMcpTools'>) =>
   exists('agent', q => q.where(eb => canReadAgent(authData, eb)));
 
 export const canReadUser = (authData: AuthData, { and, cmp, eb }: ExpressionBuilder<Schema, 'users'>) =>
