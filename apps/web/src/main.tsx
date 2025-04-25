@@ -25,6 +25,7 @@ export function createRouter() {
       routeTree,
       defaultPreload: 'intent',
       context: { queryClient },
+      defaultViewTransition: true,
       defaultErrorComponent: ({ error }) => {
         // console.error(error);
         let content;
