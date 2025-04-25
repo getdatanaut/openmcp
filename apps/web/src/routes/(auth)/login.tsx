@@ -51,7 +51,7 @@ function LoginForm() {
       {error ? <div className="ak-text-danger">{error}</div> : null}
 
       <FormField name={$.email} label="Email">
-        <FormInput name={$.email} required type="email" placeholder="me@example.com" autoComplete="email" />
+        <FormInput name={$.email} required type="email" placeholder="me@example.com" autoComplete="email" autoFocus />
       </FormField>
 
       <FormField name={$.password} label="Password">

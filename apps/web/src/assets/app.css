@@ -3,6 +3,14 @@
 @source "../../../../libs/ui-primitives/src";
 
 @font-face {
+  font-family: 'Geist Sans';
+  src: url(./fonts/geist/sans.woff2) format('woff2-variations');
+  font-weight: 1 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   src: url(./fonts/ml/0-normal.woff2) format('woff2');
   font-family: ml;
   font-weight: 100 900;
@@ -20,6 +28,10 @@
 
 @theme {
   --font-mono: ml, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  --font-sans:
+    'Geist Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
 }
 
 :root {
@@ -70,12 +82,22 @@
     /* prevent text orphans (single words on last line) */
     text-wrap: pretty;
   }
+}
 
-  .using-mouse * {
-    outline: none !important;
-  }
+.using-mouse * {
+  outline: none !important;
+}
 
-  #app {
-    @apply contents;
-  }
+#app {
+  @apply contents;
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+  letter-spacing: 0.03em;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  letter-spacing: -0.02em;
 }
