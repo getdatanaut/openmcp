@@ -5,7 +5,14 @@ import type { CustomMutatorDefs } from '@rocicorp/zero';
 import { z } from 'zod';
 
 import { assert, assertFound, assertIsLoggedInWithOrg, assertIsRecordOwner, type AuthData } from './auth.ts';
-import type { Schema } from './zero-schema.ts';
+import {
+  canReadAgent,
+  canReadAgentMcpServer,
+  canReadAgentMcpTool,
+  canReadMcpServer,
+  canReadMcpTool,
+  type Schema,
+} from './zero-schema.ts';
 
 export type PostCommitTask = () => Promise<void>;
 
@@ -52,6 +59,12 @@ function assertServerOpts(serverOpts: ServerMutatorsOpts | undefined): asserts s
 
 // @TODO proper error types + consolidate thrown error objects w what the orpc api throws
 
+/**
+ * NOTE: db reads in custom mutators do NOT have permissions automatically applied. More info here:
+ *
+ * - https://discord.com/channels/830183651022471199/1365112008407519353
+ */
+
 export function createMutators(authData: AuthData | undefined, serverOpts: ServerMutatorsOpts | undefined) {
   return {
     agents: {
@@ -62,8 +75,8 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
 
         let name = data.name;
         if (!name) {
-          const agents = await tx.query.agents.run();
-          name = `Agent ${agents.length + 1}`;
+          const agents = await tx.query.agents.where(eb => canReadAgent(authData, eb)).run();
+          name = `Remix ${agents.length + 1}`;
         }
 
         await tx.mutate.agents.insert({
@@ -81,15 +94,24 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
 
         const data = CreateAgentMcpToolSchema.parse(props);
 
-        const agent = await tx.query.agents.where('id', data.agentId).one().run();
+        const agent = await tx.query.agents
+          .where('id', data.agentId)
+          .where(eb => canReadAgent(authData, eb))
+          .one()
+          .run();
         assertFound(agent, 'Agent not found');
 
-        const tool = await tx.query.mcpTools.where('id', data.mcpToolId).one().run();
+        const tool = await tx.query.mcpTools
+          .where('id', data.mcpToolId)
+          .where(eb => canReadMcpTool(authData, eb))
+          .one()
+          .run();
         assertFound(tool, 'Tool not found');
 
         const agentServer = await tx.query.agentMcpServers
           .where('agentId', agent.id)
           .where('mcpServerId', tool.mcpServerId)
+          .where(eb => canReadAgentMcpServer(authData, eb))
           .one()
           .run();
 
@@ -118,10 +140,18 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
 
         const data = RemoveAgentMcpToolSchema.parse(props);
 
-        const existing = await tx.query.agentMcpTools.where('id', data.id).one().run();
+        const existing = await tx.query.agentMcpTools
+          .where('id', data.id)
+          .where(eb => canReadAgentMcpTool(authData, eb))
+          .one()
+          .run();
         assertFound(existing, 'Agent MCP tool not found');
 
-        const agent = await tx.query.agents.where('id', existing.agentId).one().run();
+        const agent = await tx.query.agents
+          .where('id', existing.agentId)
+          .where(eb => canReadAgent(authData, eb))
+          .one()
+          .run();
         assertFound(agent, 'Agent not found');
         assertIsRecordOwner(authData, agent);
 
@@ -135,7 +165,11 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
 
         const data = CreateAgentMcpServerSchema.parse(props);
 
-        const mcpServer = await tx.query.mcpServers.where('id', data.mcpServerId).one().run();
+        const mcpServer = await tx.query.mcpServers
+          .where('id', data.mcpServerId)
+          .where(eb => canReadMcpServer(authData, eb))
+          .one()
+          .run();
         assertFound(mcpServer, 'MCP server not found');
 
         let configJson = data.configJson as EncryptedAgentMcpServerConfig;
@@ -165,11 +199,19 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
 
         const data = UpdateAgentMcpServerSchema.parse(props);
 
-        const existing = await tx.query.agentMcpServers.where('id', data.id).one().run();
+        const existing = await tx.query.agentMcpServers
+          .where('id', data.id)
+          .where(eb => canReadAgentMcpServer(authData, eb))
+          .one()
+          .run();
         assertFound(existing, 'Agent MCP server not found');
         assertIsRecordOwner(authData, existing);
 
-        const mcpServer = await tx.query.mcpServers.where('id', existing.mcpServerId).one().run();
+        const mcpServer = await tx.query.mcpServers
+          .where('id', existing.mcpServerId)
+          .where(eb => canReadMcpServer(authData, eb))
+          .one()
+          .run();
         assertFound(mcpServer, 'MCP server not found');
 
         let configJson = data.configJson as EncryptedAgentMcpServerConfig;
