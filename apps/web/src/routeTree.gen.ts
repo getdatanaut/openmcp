@@ -16,6 +16,8 @@ import { Route as IndexImport } from './routes/index'
 import { Route as McpIndexImport } from './routes/mcp/index'
 import { Route as McpAgentIdImport } from './routes/mcp/$agentId'
 import { Route as AdminUploadOpenapiImport } from './routes/admin/upload-openapi'
+import { Route as authSignupImport } from './routes/(auth)/signup'
+import { Route as authLoginImport } from './routes/(auth)/login'
 import { Route as ApiAuthOauth2AuthorizeImport } from './routes/api.auth.oauth2.authorize'
 import { Route as ApiAuthCallbackProviderImport } from './routes/api.auth.callback.$provider'
 
@@ -51,6 +53,18 @@ const AdminUploadOpenapiRoute = AdminUploadOpenapiImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const authSignupRoute = authSignupImport.update({
+  id: '/(auth)/signup',
+  path: '/signup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authLoginRoute = authLoginImport.update({
+  id: '/(auth)/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ApiAuthOauth2AuthorizeRoute = ApiAuthOauth2AuthorizeImport.update({
   id: '/api/auth/oauth2/authorize',
   path: '/api/auth/oauth2/authorize',
@@ -79,6 +93,20 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpLayoutImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/login': {
+      id: '/(auth)/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof authLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/(auth)/signup': {
+      id: '/(auth)/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof authSignupImport
       parentRoute: typeof rootRoute
     }
     '/admin/upload-openapi': {
@@ -138,6 +166,8 @@ const McpLayoutRouteWithChildren = McpLayoutRoute._addFileChildren(
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/mcp': typeof McpLayoutRouteWithChildren
+  '/login': typeof authLoginRoute
+  '/signup': typeof authSignupRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/mcp/$agentId': typeof McpAgentIdRoute
   '/mcp/': typeof McpIndexRoute
@@ -147,6 +177,8 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/login': typeof authLoginRoute
+  '/signup': typeof authSignupRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/mcp/$agentId': typeof McpAgentIdRoute
   '/mcp': typeof McpIndexRoute
@@ -158,6 +190,8 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/mcp': typeof McpLayoutRouteWithChildren
+  '/(auth)/login': typeof authLoginRoute
+  '/(auth)/signup': typeof authSignupRoute
   '/admin/upload-openapi': typeof AdminUploadOpenapiRoute
   '/mcp/$agentId': typeof McpAgentIdRoute
   '/mcp/': typeof McpIndexRoute
@@ -170,6 +204,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/mcp'
+    | '/login'
+    | '/signup'
     | '/admin/upload-openapi'
     | '/mcp/$agentId'
     | '/mcp/'
@@ -178,6 +214,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/login'
+    | '/signup'
     | '/admin/upload-openapi'
     | '/mcp/$agentId'
     | '/mcp'
@@ -187,6 +225,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/mcp'
+    | '/(auth)/login'
+    | '/(auth)/signup'
     | '/admin/upload-openapi'
     | '/mcp/$agentId'
     | '/mcp/'
@@ -198,6 +238,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   McpLayoutRoute: typeof McpLayoutRouteWithChildren
+  authLoginRoute: typeof authLoginRoute
+  authSignupRoute: typeof authSignupRoute
   AdminUploadOpenapiRoute: typeof AdminUploadOpenapiRoute
   ApiAuthCallbackProviderRoute: typeof ApiAuthCallbackProviderRoute
   ApiAuthOauth2AuthorizeRoute: typeof ApiAuthOauth2AuthorizeRoute
@@ -206,6 +248,8 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   McpLayoutRoute: McpLayoutRouteWithChildren,
+  authLoginRoute: authLoginRoute,
+  authSignupRoute: authSignupRoute,
   AdminUploadOpenapiRoute: AdminUploadOpenapiRoute,
   ApiAuthCallbackProviderRoute: ApiAuthCallbackProviderRoute,
   ApiAuthOauth2AuthorizeRoute: ApiAuthOauth2AuthorizeRoute,
@@ -223,6 +267,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/mcp",
+        "/(auth)/login",
+        "/(auth)/signup",
         "/admin/upload-openapi",
         "/api/auth/callback/$provider",
         "/api/auth/oauth2/authorize"
@@ -237,6 +283,12 @@ export const routeTree = rootRoute
         "/mcp/$agentId",
         "/mcp/"
       ]
+    },
+    "/(auth)/login": {
+      "filePath": "(auth)/login.tsx"
+    },
+    "/(auth)/signup": {
+      "filePath": "(auth)/signup.tsx"
     },
     "/admin/upload-openapi": {
       "filePath": "admin/upload-openapi.tsx"

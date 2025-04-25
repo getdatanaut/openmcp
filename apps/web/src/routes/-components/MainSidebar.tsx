@@ -65,8 +65,9 @@ export function MainSidebar({ className }: { className?: string }) {
               icon={sidebarCollapsed ? faCaretRight : faCaretLeft}
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             />
-            <Button icon={faHome} render={<Link to="/mcp" />} />
             <SettingsMenu />
+            {!user ? <Button render={<Link to="/signup" />}>Sign Up</Button> : null}
+            {!user ? <Button render={<Link to="/login" />}>Log In</Button> : null}
             {user ? <Button icon={faBug} render={<Link to="/admin/upload-openapi" />} /> : null}
             {user ? <Button icon={faPowerOff} onClick={() => auth.exports.signOut()} /> : null}
           </ButtonGroup>

@@ -59,7 +59,10 @@ export const buttonStyle = tv(
           icon: tn('text-[0.9em]'),
         },
         md: tn('gap-1.5'),
-        lg: tn('gap-2'),
+        lg: {
+          base: tn('gap-2'),
+          icon: tn('text-[1.1em]'),
+        },
       },
       fullWidth: {
         true: tn('w-full'),
@@ -107,6 +110,14 @@ export const buttonStyle = tv(
         variant: ['solid', 'soft', 'outline', 'ghost'],
         input: true,
         class: tn('font-normal'),
+      },
+
+      // fullWidth
+      {
+        fullWidth: true,
+        class: {
+          base: tn('gap-4'),
+        },
       },
 
       // solid / intent

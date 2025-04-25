@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 
 export function CanvasCrumbs({ items }: { items: React.ReactNode[] }) {
   return (
-    <div className="mx-auto flex items-center gap-3 text-sm font-light">
+    <div className="mx-auto flex items-center gap-3 text-sm">
       {items.map((item, index) => (
         <Fragment key={index}>
           <div className={tn(index < items.length - 1 && 'ak-text/60')}>{item}</div>
