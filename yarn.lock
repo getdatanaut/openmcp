@@ -4384,43 +4384,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stoplight/types@npm:14.1.0":
-  version: 14.1.0
-  resolution: "@stoplight/types@npm:14.1.0"
-  dependencies:
-    "@types/json-schema": "npm:^7.0.4"
-    utility-types: "npm:^3.10.0"
-  checksum: 10c0/6b822270d7d59e5d73eb8edf185dd69ffeb681ac4a8af5b15c646b70a440df6c52c9af051fcf8244468d219928f0c62c5dbb77f4ce05ed5b22c99495b7275715
-  languageName: node
-  linkType: hard
-
-"@stoplight/types@npm:14.1.x, @stoplight/types@npm:^14.1.1":
+"@stoplight/types@npm:14.1.x":
   version: 14.1.1
   resolution: "@stoplight/types@npm:14.1.1"
   dependencies:
     "@types/json-schema": "npm:^7.0.4"
     utility-types: "npm:^3.10.0"
   checksum: 10c0/1573d842fee99a7f1eea1f2b17c28dcbfb1be51b72f2ef794e07d265b2fb8900654b5848f608952cd1e3dedf6c7ec157c82c65d4d95728d6309f4b1722a11450
-  languageName: node
-  linkType: hard
-
-"@stoplight/types@npm:^12.3.0 || ^13.0.0, @stoplight/types@npm:^13.0.0, @stoplight/types@npm:^13.15.0, @stoplight/types@npm:^13.6.0":
-  version: 13.20.0
-  resolution: "@stoplight/types@npm:13.20.0"
-  dependencies:
-    "@types/json-schema": "npm:^7.0.4"
-    utility-types: "npm:^3.10.0"
-  checksum: 10c0/11d741bd71c6a286cef946b10e003b9b13b031f512d576ed1274c194540f0ee928332108d2b4d1bc87a8e5ba9703d1266951e6a53b8eb0a8db4dc68b1a798cab
-  languageName: node
-  linkType: hard
-
-"@stoplight/types@npm:~13.6.0":
-  version: 13.6.0
-  resolution: "@stoplight/types@npm:13.6.0"
-  dependencies:
-    "@types/json-schema": "npm:^7.0.4"
-    utility-types: "npm:^3.10.0"
-  checksum: 10c0/64de299a1d1fbe819b601d72192e44f63c665f13e7a39a9c80930a2bdd54a6361ce9e7d60992ccc42ac8e4ac3b9c9d88a026deea59fe3f6e96a791c169c7a458
   languageName: node
   linkType: hard
 
