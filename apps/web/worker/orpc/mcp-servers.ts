@@ -13,13 +13,14 @@ import { base, requireAuth } from './middleware.ts';
 const uploadMcpServer = base.mcpServers.upload
   .use(requireAuth)
   .handler(async ({ context: { db, user, organizationId }, input }) => {
-    const { tools, transport, configSchema, ...serverProps } = input;
+    const { tools, transport, configSchema, visibility, ...serverProps } = input;
 
     const server = await upsertMcpServer({
       db,
       userId: user.id,
       organizationId,
       externalId: input.externalId,
+      visibility,
       server: {
         ...serverProps,
         transportJson: transport,
@@ -42,7 +43,7 @@ const uploadMcpServer = base.mcpServers.upload
 const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
   .use(requireAuth)
   .handler(async ({ context: { db, user, organizationId, r2OpenApiBucket }, input, errors }) => {
-    const { openapi, sourceUrl, iconUrl, developer, developerUrl, configSchema } = input;
+    const { openapi, sourceUrl, iconUrl, developer, developerUrl, configSchema, visibility } = input;
 
     const { service, options } = await openApiToMcpServerOptions({ openapi, serverUrl: input.serverUrl });
 
@@ -58,6 +59,7 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
       userId: user.id,
       organizationId,
       externalId: serverUrl,
+      visibility,
       server: {
         name: input.name || service.name,
         externalId: serverUrl,
@@ -159,6 +161,7 @@ async function upsertMcpServer({
   userId,
   organizationId,
   externalId,
+  visibility,
   server,
   tools,
 }: {
@@ -166,6 +169,7 @@ async function upsertMcpServer({
   userId: TUserId;
   organizationId: TOrganizationId;
   externalId: string;
+  visibility?: 'public' | 'private';
   server: Omit<NewMcpServer, 'createdBy' | 'organizationId'>;
   tools: Omit<NewMcpTool, 'mcpServerId' | 'organizationId'>[];
 }) {
@@ -186,6 +190,7 @@ async function upsertMcpServer({
       organizationId,
       createdBy: userId,
       toolCount: tools.length,
+      visibility,
     });
 
     await tx.trxQueries.mcpTools.bulkUpsert(tools.map(t => ({ ...t, organizationId, mcpServerId: dbServer.id })));

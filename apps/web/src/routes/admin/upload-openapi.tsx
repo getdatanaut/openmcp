@@ -156,6 +156,7 @@ function UploadRawDefinitionsForm() {
             developer: definition.developer || undefined,
             sourceUrl: definition.sourceUrl || undefined,
             configSchema: definition.configSchema || undefined,
+            visibility: 'public',
           },
           {
             onSettled() {},

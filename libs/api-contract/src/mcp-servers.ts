@@ -25,6 +25,7 @@ const uploadContract = base
       sourceUrl: z.string().url().optional(),
       configSchema: McpClientConfigSchemaSchema.optional(),
       transport: TransportSchema,
+      visibility: z.enum(['public', 'private']).optional(),
       tools: z
         .array(
           z.object({
@@ -57,6 +58,7 @@ const uploadFromOpenApiContract = base
       developerUrl: z.string().url().optional(),
       sourceUrl: z.string().url().optional(),
       configSchema: McpClientConfigSchemaSchema.optional(),
+      visibility: z.enum(['public', 'private']).optional(),
     }),
   )
   .output(type<{ id: TMcpServerId }>());
