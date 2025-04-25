@@ -53,6 +53,10 @@ const CreateAgentMcpServerSchema = z.object({
   configJson: ClientConfigSchema,
 });
 
+const RemoveAgentMcpServerSchema = z.object({
+  id: AgentMcpServerId.validator,
+});
+
 function assertServerOpts(serverOpts: ServerMutatorsOpts | undefined): asserts serverOpts {
   assert(serverOpts, 'serverOpts must be passed in on the server.');
 }
@@ -234,6 +238,39 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
         }
 
         await tx.mutate.agentMcpServers.update({ id: data.id, configJson });
+      },
+
+      async delete(tx, props: z.infer<typeof RemoveAgentMcpServerSchema>) {
+        try {
+          assertIsLoggedInWithOrg(authData);
+
+          const data = RemoveAgentMcpServerSchema.parse(props);
+
+          const existing = await tx.query.agentMcpServers
+            .where('id', data.id)
+            .where(eb => canReadAgentMcpServer(authData, eb))
+            .one()
+            .run();
+
+          assertFound(existing, 'Agent MCP server not found');
+          assertIsRecordOwner(authData, existing);
+
+          // todo: raw sql to batch delete?
+          const tools = await tx.query.agentMcpTools
+            .where('agentId', existing.agentId)
+            .where('mcpServerId', existing.mcpServerId)
+            .where(eb => canReadAgentMcpTool(authData, eb))
+            .run();
+
+          for (const tool of tools) {
+            await tx.mutate.agentMcpTools.delete({ id: tool.id });
+          }
+
+          await tx.mutate.agentMcpServers.delete({ id: data.id });
+        } catch (error) {
+          console.error('Error deleting agent MCP server', error);
+          throw error;
+        }
       },
     },
   } as const satisfies CustomMutatorDefs<Schema>;

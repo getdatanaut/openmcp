@@ -14,7 +14,8 @@ import {
   Tabs,
   tn,
 } from '@libs/ui-primitives';
-import { Link } from '@tanstack/react-router';
+import { Link, useMatches, useNavigate } from '@tanstack/react-router';
+import { useCallback } from 'react';
 
 import { useJsonSchemaForm } from '~/components/JsonSchemaForm/context.ts';
 import { JsonSchemaForm } from '~/components/JsonSchemaForm/JsonSchemaForm.tsx';
@@ -112,6 +113,8 @@ function ServerTabs({
         >
           Config
         </Tab>
+
+        <RemoveServerButton serverId={serverId} agentId={agentId} />
       </TabList>
 
       <TabPanels className="px-6 pt-4 pb-6">
@@ -205,5 +208,55 @@ function ServerConfigForm({
         {agentMcpServerId ? 'Save' : 'Install'}
       </FormButton>
     </JsonSchemaForm>
+  );
+}
+
+function RemoveServerButton({ serverId, agentId = 'ag_x' }: { serverId: TMcpServerId; agentId: TAgentId | undefined }) {
+  const navigate = useNavigate();
+  const matchedRoutes = useMatches({
+    select: routes => {
+      console.log(routes);
+      return routes.filter(route => route.routeId === '/mcp/$agentId');
+    },
+  });
+  const matchedRoute = matchedRoutes.length === 0 ? null : matchedRoutes[0]!;
+
+  const [server] = useZeroQuery(z =>
+    z.query.mcpServers
+      .where('id', serverId)
+      .related('agentMcpServers', q => q.where('agentId', agentId).one())
+      .one(),
+  );
+  const agentMcpServerId = server?.agentMcpServers?.id;
+
+  const { mutate: deleteAgentMcpServer } = useZeroMutation(
+    (z, { id }: { id: TAgentMcpServerId }) => ({
+      op: z.mutate.agentMcpServers.delete({ id }),
+      onSuccess: () => {
+        if (matchedRoute) {
+          void navigate({ to: matchedRoute.pathname.replace('$agentId', agentId), replace: true });
+        }
+      },
+      onServerError(error) {
+        alert(`Error deleting server: ${error}`);
+      },
+    }),
+    [navigate, matchedRoute],
+  );
+
+  const handleClick = useCallback(async () => {
+    if (agentMcpServerId) {
+      await deleteAgentMcpServer({ id: agentMcpServerId });
+    }
+  }, [agentMcpServerId, deleteAgentMcpServer]);
+
+  if (!agentMcpServerId || !matchedRoute) {
+    return null;
+  }
+
+  return (
+    <Button variant="ghost" className="ml-auto" onClick={handleClick}>
+      Uninstall
+    </Button>
   );
 }
