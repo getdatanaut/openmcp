@@ -16,13 +16,12 @@ import {
 } from '@libs/ui-primitives';
 import { Link } from '@tanstack/react-router';
 
+import { useJsonSchemaForm } from '~/components/JsonSchemaForm/context.ts';
+import { JsonSchemaForm } from '~/components/JsonSchemaForm/JsonSchemaForm.tsx';
+import { JsonSchemaFormFields } from '~/components/JsonSchemaForm/JsonSchemaFormFields.tsx';
 import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 import type { AgentMcpServer, McpServer } from '~shared/zero-schema.ts';
-
-import { useJsonSchemaForm } from './JsonSchemaForm/context.ts';
-import { JsonSchemaForm } from './JsonSchemaForm/JsonSchemaForm.tsx';
-import { JsonSchemaFormFields } from './JsonSchemaForm/JsonSchemaFormFields.tsx';
 
 export function ServerPanel({
   serverId,
@@ -49,7 +48,7 @@ export function ServerPanel({
   const isInstalled = !!server.agentMcpServers;
 
   return (
-    <div className="ak-layer-0.5 h-full w-2/3 overflow-y-auto border-l">
+    <>
       <div className="px-6 py-5">
         <Heading size={5}>{server.name}</Heading>
 
@@ -71,7 +70,7 @@ export function ServerPanel({
         agentMcpServer={server?.agentMcpServers}
         renderToolsList={renderToolsList}
       />
-    </div>
+    </>
   );
 }
 

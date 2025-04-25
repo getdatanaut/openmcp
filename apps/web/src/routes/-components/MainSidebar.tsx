@@ -10,7 +10,7 @@ import {
   faPlus,
   faPowerOff,
 } from '@fortawesome/free-solid-svg-icons';
-import { AgentId, type TAgentId } from '@libs/db-ids';
+import { type TAgentId } from '@libs/db-ids';
 import {
   Button,
   ButtonGroup,
@@ -25,7 +25,7 @@ import {
   twMerge,
   useElementSize,
 } from '@libs/ui-primitives';
-import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { useAtomInstance, useAtomState } from '@zedux/react';
 import { useEffect } from 'react';
 
@@ -33,7 +33,7 @@ import { authAtom } from '~/atoms/auth.ts';
 import { layoutAtom } from '~/atoms/layout.ts';
 import { themeAtom } from '~/atoms/theme.ts';
 import { useCurrentUser } from '~/hooks/use-current-user.ts';
-import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
+import { useInsertAgent } from '~/hooks/use-insert-agent.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 export function MainSidebar({ className }: { className?: string }) {
@@ -53,12 +53,11 @@ export function MainSidebar({ className }: { className?: string }) {
       className={twMerge('ease-spring flex flex-col transition-[width] duration-150 ease-in-out', className)}
     >
       {/* This header section stays visible even when collapsed */}
-      <div className="ak-layer-0 relative top-[var(--canvas-m)] z-10">
+      <div className="ak-layer-0 relative z-10">
         <div className="h-14" />
         <div
           className={twMerge(
-            'absolute top-0 left-3 flex h-10 items-center transition-[left,top] duration-200 ease-in-out',
-            sidebarCollapsed && 'top-2 left-5',
+            'absolute top-0 left-3 flex h-14 items-center transition-[left,top] duration-200 ease-in-out',
           )}
         >
           <ButtonGroup size="sm" variant="outline">
@@ -199,34 +198,17 @@ function SettingsMenu() {
  */
 
 function AgentsSidebar() {
-  const navigate = useNavigate();
-  const router = useRouter();
-
   const [agents] = useZeroQuery(z => z.query.agents.orderBy('name', 'asc'));
 
-  const { mutate: addAgent } = useZeroMutation(
-    async z => {
-      const id = AgentId.generate();
-
-      return {
-        op: z.mutate.agents.insert({ id }),
-        onClientSuccess: () => navigate({ to: '/agents/$agentId', params: { agentId: id } }),
-        onServerError: () => {
-          // @TODO: toast
-          router.history.back();
-        },
-      };
-    },
-    [navigate, router.history],
-  );
+  const { mutate: insertAgent } = useInsertAgent();
 
   return (
-    <SidebarSection name="Agents" action={{ icon: faPlus, title: 'Add agent', onClick: addAgent }}>
+    <SidebarSection name="Agents" action={{ icon: faPlus, title: 'Add agent', onClick: insertAgent }}>
       {agents?.map(agent => <AgentListItem key={agent.id} id={agent.id} name={agent.name} />)}
     </SidebarSection>
   );
 }
 
 function AgentListItem({ id, name }: { id: TAgentId; name: string }) {
-  return <SidebarListItem name={name} render={<Link to="/agents/$agentId" params={{ agentId: id }} />} />;
+  return <SidebarListItem name={name} render={<Link to="/mcp/$agentId" params={{ agentId: id }} />} />;
 }

@@ -1,34 +1,29 @@
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { McpServerId, type TMcpServerId } from '@libs/db-ids';
+import { faCaretDown, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { type TMcpServerId } from '@libs/db-ids';
 import { Button, Input } from '@libs/ui-primitives';
-import { createFileRoute, retainSearchParams } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useCallback } from 'react';
-import { z } from 'zod';
 
+import { CanvasCrumbs } from '~/components/CanvasCrumbs.tsx';
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
-import { ServerPanel } from '~/components/ServerPanel.tsx';
-import { ServerRow } from '~/components/ServerRow.tsx';
-import { ServerToolRow, type ServerToolRowProps } from '~/components/ServerToolRow.tsx';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
-export const Route = createFileRoute('/mcp')({
+import { AgentsMenu } from './-components/AgentsMenu.tsx';
+import { ServerPanel } from './-components/ServerPanel.tsx';
+import { ServerRow } from './-components/ServerRow.tsx';
+import { ServerToolRow, type ServerToolRowProps } from './-components/ServerToolRow.tsx';
+
+export const Route = createFileRoute('/mcp/')({
   component: RouteComponent,
-  validateSearch: z.object({
-    serverTab: z.enum(['tools', 'config']).optional(),
-    serverId: McpServerId.validator.optional(),
-  }),
-  search: {
-    middlewares: [retainSearchParams(['serverTab', 'serverId'])],
-  },
 });
 
 function RouteComponent() {
   return (
-    <CanvasLayout className="overflow-y-auto">
+    <CanvasLayout header={<CanvasHeader />} className="overflow-y-auto">
       <ServersHeadingCard />
 
-      <div className="flex h-[calc(100dvh-var(--canvas-m)*2)] overflow-hidden">
-        <div className="h-full flex-1 overflow-y-auto">
+      <div className="flex">
+        <div className="flex-1">
           <ServerFilters />
           <ServersList />
         </div>
@@ -39,15 +34,31 @@ function RouteComponent() {
   );
 }
 
+function CanvasHeader() {
+  const navigate = Route.useNavigate();
+
+  const agentsMenu = (
+    <AgentsMenu
+      trigger={
+        <Button variant="unstyled" endIcon={faCaretDown}>
+          Select a Remix
+        </Button>
+      }
+      onSelect={agentId => navigate({ to: '/mcp/$agentId', params: { agentId } })}
+    />
+  );
+
+  return <CanvasCrumbs items={[<Link to="/mcp">MCP</Link>, agentsMenu]} />;
+}
+
 function ServersHeadingCard() {
   return <div className="flex h-48 shrink-0 items-center justify-center border-b">TODO Splash</div>;
 }
 
 function ServerFilters() {
   return (
-    <div className="flex h-16 shrink-0 items-center gap-3 border-b px-4">
-      <Input placeholder="Search" size="sm" />
-      <div className="text-sm">TODO filters...</div>
+    <div className="ak-layer-0 sticky inset-x-0 top-0 z-10 flex h-16 shrink-0 items-center gap-3 border-b px-2">
+      <Input placeholder="Search" className="w-80" startIcon={faSearch} variant="unstyled" />
     </div>
   );
 }
@@ -78,7 +89,11 @@ function ServerPanelWrapper() {
 
   if (!serverId) return null;
 
-  return <ServerPanel serverId={serverId} activeTab={serverTab} renderToolsList={renderToolsList} />;
+  return (
+    <div className="ak-layer-0.4 sticky inset-y-0 right-0 h-[calc(100dvh-var(--canvas-m)-var(--canvas-header-h)-1px)] w-3/5 overflow-y-auto border-l">
+      <ServerPanel serverId={serverId} activeTab={serverTab} renderToolsList={renderToolsList} />
+    </div>
+  );
 }
 
 function ServerToolsList({ serverId }: { serverId: TMcpServerId }) {

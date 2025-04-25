@@ -57,18 +57,18 @@ export const inputStyle = tv(
       size: {
         sm: {
           input: formSizes.sm,
-          startIcon: tn('w-8 text-xs'),
-          endIcon: tn('w-8 text-sm'),
+          startIcon: tn('w-9 text-xs'),
+          endIcon: tn('w-9 text-sm'),
         },
         md: {
           input: formSizes.md,
-          startIcon: tn('w-9 text-base'),
-          endIcon: tn('w-9 text-base'),
+          startIcon: tn('w-10 text-base'),
+          endIcon: tn('w-10 text-base'),
         },
         lg: {
           input: formSizes.lg,
-          startIcon: tn('w-11 text-base'),
-          endIcon: tn('w-11 text-base'),
+          startIcon: tn('w-12 text-base'),
+          endIcon: tn('w-12 text-base'),
         },
       },
 
@@ -92,42 +92,42 @@ export const inputStyle = tv(
         hasStartIcon: true,
         size: 'sm',
         class: {
-          input: tn('pl-7'),
+          input: tn('pl-8'),
         },
       },
       {
         hasStartIcon: true,
         size: 'md',
         class: {
-          input: tn('pl-8'),
+          input: tn('pl-10'),
         },
       },
       {
         hasStartIcon: true,
         size: 'lg',
         class: {
-          input: tn('pl-10'),
+          input: tn('pl-12'),
         },
       },
       {
         hasEndIcon: true,
         size: 'sm',
         class: {
-          input: tn('pr-7'),
+          input: tn('pr-8'),
         },
       },
       {
         hasEndIcon: true,
         size: 'md',
         class: {
-          input: tn('pr-8'),
+          input: tn('pr-10'),
         },
       },
       {
         hasEndIcon: true,
         size: 'lg',
         class: {
-          input: tn('pr-10'),
+          input: tn('pr-12'),
         },
       },
     ],

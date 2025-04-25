@@ -1,4 +1,4 @@
-import { faEnvelope, faUserAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faSearch } from '@fortawesome/free-solid-svg-icons';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useState } from 'react';
 
@@ -56,7 +56,7 @@ export const Variants: Story = {
 export const WithIcon: Story = {
   args: {
     placeholder: 'example@acme.com',
-    startIcon: faUserAlt,
+    startIcon: faSearch,
     endIcon: faEnvelope,
   },
   render: args => (
