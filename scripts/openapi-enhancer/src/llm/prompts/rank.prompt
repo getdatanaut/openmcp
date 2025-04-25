@@ -1,0 +1,11 @@
+Among listed purposes, rank **ALL** purposes based on their potential usage frequency in the API.
+
+Use the following criteria to guide your scoring:
+
+- Assign a score from 1-10 to each purpose (10 being most important)
+- Consider the typical user journey and which operations would be most frequently used
+- Prioritize purposes that provide core business functionality
+
+# List
+
+{{purposes}}

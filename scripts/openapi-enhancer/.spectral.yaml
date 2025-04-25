@@ -1,0 +1,45 @@
+aliases:
+  Operation:
+    - "$.paths[*][get, post, put, delete, options, head, trace, patch]"
+rules:
+  valid-summary:
+    message: "Operation must have a valid summary"
+    severity: error
+    given: "#Operation"
+    then:
+      field: summary
+      function: pattern
+      functionOptions:
+        match: "^[a-zA-Z0-9 ]{5,}"
+  valid-description:
+    message: "Operation must have a valid description"
+    severity: error
+    given: "#Operation"
+    then:
+      field: description
+      function: pattern
+      functionOptions:
+        match: "^[a-zA-Z0-9 ]{20,}"
+  valid-tool-name:
+    message: "Operation must have a valid tool name"
+    severity: error
+    given: "#Operation"
+    then:
+      field: 'x-openmcp-tool-name'
+      function: pattern
+      functionOptions:
+        match: "^[a-zA-Z0-9_-]{1,64}$"
+  valid-tool-use-cases:
+    message: "Operation must have a valid tool use cases."
+    severity: error
+    given: "#Operation"
+    then:
+      field: 'x-openmcp-tool-use-cases'
+      function: schema
+      functionOptions:
+        schema:
+          type: array
+          items:
+            type: string
+          minItems: 2
+          maxItems: 5

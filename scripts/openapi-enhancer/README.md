@@ -32,12 +32,12 @@ OpenAPI Enhancer is a command-line utility that processes OpenAPI specification 
 ## Usage
 
 ```bash
-enhance-openapi [..path-to-openapi-spec] [-o output-directory]
+enhance-openapi [..path-or-glob-pattern-to-openapi-spec] [-o output-directory]
 ```
 
 ### Arguments
 
-- `path-to-openapi-spec`: Path to one or more OpenAPI specification files to enhance
+- `path-to-openapi-spec`: Path to one or more OpenAPI specification files or glob patterns to enhance
 - `-o, --output`: (Optional) Directory where enhanced files will be saved
 
 ### Examples
