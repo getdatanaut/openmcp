@@ -1,4 +1,5 @@
 import { Id } from '@libs/utils-ids';
+import _slugify from '@sindresorhus/slugify';
 
 export const UserId = Id.dbIdFactory('u');
 export type UserNamespace = (typeof UserId)['namespace'];
@@ -55,3 +56,9 @@ export type TOauthConsentId = ReturnType<(typeof OauthConsentId)['generate']>;
 export const OauthApplicationId = Id.dbIdFactory('oauthapp');
 export type OauthApplicationNamespace = (typeof OauthApplicationId)['namespace'];
 export type TOauthApplicationId = ReturnType<(typeof OauthApplicationId)['generate']>;
+
+export type TSlug = string & { __slug: true };
+
+export function slugify(slug: string): TSlug {
+  return _slugify(slug) as TSlug;
+}

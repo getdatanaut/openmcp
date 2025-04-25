@@ -1,4 +1,5 @@
 import { createAuth, getUser } from '@libs/auth/server';
+import { slugify } from '@libs/db-ids';
 import { createDbSdk } from '@libs/db-pg';
 import postgres from 'postgres';
 
@@ -27,11 +28,11 @@ export default {
         },
       },
       async generateOrgData(user) {
-        const username = user.email.split('@')[0]!;
+        const username = user.email.split('@')[0]?.split('+')[0];
         const randomStr = Math.random().toString(16).slice(4, 10);
         return {
           name: `${username}'s Organization`,
-          slug: `${username}_${randomStr}`,
+          slug: slugify(`${username}_${randomStr}`),
         };
       },
     });

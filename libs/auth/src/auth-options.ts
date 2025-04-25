@@ -4,6 +4,7 @@ import {
   MemberId,
   OrganizationId,
   type TOrganizationId,
+  type TSlug,
   type TUserId,
   UserAccountId,
   UserId,
@@ -28,7 +29,7 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
   };
   generateOrgData(user: { id: TUserId; name: string; email: string }): Promise<{
     name: string;
-    slug: string;
+    slug: TSlug;
     logo?: string;
     metadata?: string;
   }>;

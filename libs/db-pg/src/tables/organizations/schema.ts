@@ -1,4 +1,4 @@
-import type { TOrganizationId } from '@libs/db-ids';
+import type { TOrganizationId, TSlug } from '@libs/db-ids';
 import { pgTable, text } from 'drizzle-orm/pg-core';
 
 import { timestampCol } from '../../column-types.ts';
@@ -21,7 +21,7 @@ export const ORGANIZATIONS_TABLE = 'organizations' as const;
 export const organizations = pgTable(ORGANIZATIONS_TABLE, {
   id: text('id').$type<TOrganizationId>().primaryKey(),
   name: text('name').notNull(),
-  slug: text('slug').unique(),
+  slug: text('slug').$type<TSlug>().unique(),
   logo: text('logo'),
   createdAt: timestampCol('created_at').defaultNow().notNull(),
   metadata: text('metadata'),

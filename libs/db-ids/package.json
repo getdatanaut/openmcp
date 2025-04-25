@@ -12,6 +12,9 @@
   },
   "dependencies": {
     "@libs/utils-ids": "workspace:*",
+    "@sindresorhus/slugify": "^2.2.1"
+  },
+  "devDependencies": {
     "eslint": "9.25.1"
   }
 }
