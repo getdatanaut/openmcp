@@ -90,7 +90,7 @@ function ServerPanelWrapper() {
   if (!serverId) return null;
 
   return (
-    <div className="ak-layer-0.4 sticky inset-y-0 right-0 h-[calc(100dvh-var(--canvas-m)-var(--canvas-header-h)-1px)] w-3/5 overflow-y-auto border-l">
+    <div className="ak-layer-0.4 sticky inset-y-0 right-0 h-[var(--canvas-h)] w-3/5 overflow-y-auto border-l">
       <ServerPanel serverId={serverId} activeTab={serverTab} renderToolsList={renderToolsList} />
     </div>
   );
