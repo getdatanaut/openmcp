@@ -9,6 +9,7 @@ export const layoutAtom = atom('layout', () => {
     defaultVal: {
       sidebarCollapsed: true,
       sidebarWidth: 0,
+      canvasHasHeader: false,
     },
   });
 
@@ -16,5 +17,7 @@ export const layoutAtom = atom('layout', () => {
     setSidebarWidth: (value: number) => signal.mutate({ sidebarWidth: value }),
 
     setSidebarCollapsed: (value: boolean) => signal.mutate({ sidebarCollapsed: value }),
+
+    setCanvasHasHeader: (value: boolean) => signal.mutate({ canvasHasHeader: value }),
   });
 });

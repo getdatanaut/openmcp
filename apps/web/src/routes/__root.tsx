@@ -6,10 +6,9 @@ import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useAtomInstance, useAtomValue } from '@zedux/react';
 import { useEffect, useState } from 'react';
 
-import { layoutAtom } from '~/atoms/layout.ts';
 import { themeAtom } from '~/atoms/theme.ts';
+import { GlobalActions } from '~/components/GlobalActions.tsx';
 
-import { MainSidebar } from './-components/MainSidebar.tsx';
 import { Providers } from './-components/Providers.tsx';
 
 export const Route = createRootRouteWithContext<{
@@ -38,7 +37,7 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
   const theme = useAtomInstance(themeAtom);
   const themeClass = useAtomValue(theme.exports.themeClass);
   const fontClass = useAtomValue(theme.exports.fontClass);
-  const { sidebarCollapsed } = useAtomValue(layoutAtom);
+  // const { sidebarCollapsed } = useAtomValue(layoutAtom);
 
   const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
 
@@ -47,7 +46,8 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
       <MenuContext value={{ portalElement: rootRef }}>
         <div className={tn('ak-layer-canvas-down-0.5 min-h-dvh', themeClass, fontClass)} ref={setRootRef}>
           <div className="isolate flex h-dvh">
-            <MainSidebar className={tn('h-full', sidebarCollapsed ? 'w-[var(--canvas-m)]' : 'w-80')} />
+            <GlobalActions />
+            {/* <MainSidebar className={tn('h-full', sidebarCollapsed ? 'w-[var(--canvas-m)]' : 'w-80')} /> */}
             {children}
           </div>
 

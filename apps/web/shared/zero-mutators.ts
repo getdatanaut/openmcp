@@ -66,6 +66,13 @@ function assertServerOpts(serverOpts: ServerMutatorsOpts | undefined): asserts s
  */
 
 export function createMutators(authData: AuthData | undefined, serverOpts: ServerMutatorsOpts | undefined) {
+  // Based the idea in https://discord.com/channels/830183651022471199/1365112008407519353/1365385406291509308
+  // but definePermissions returns a promise and passing fns in as we do below isn't too bad so just sticking w that for now
+  // function applyPermissions(table: AnyTableName) {
+  //   return (eb: ExpressionBuilder<Schema, AnyTableName>) =>
+  //     eb.or(permissions[table].row?.select.map(r => () => r(authData, eb)) ?? []);
+  // }
+
   return {
     agents: {
       async insert(tx, props: z.infer<typeof CreateAgentSchema> = {}) {

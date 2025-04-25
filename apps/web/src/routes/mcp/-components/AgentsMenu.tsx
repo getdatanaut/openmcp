@@ -40,7 +40,7 @@ export function AgentsMenu({ activeAgentId, onSelect, trigger }: AgentsMenuProps
           }}
         >
           {agents.map(a => (
-            <MenuOptionItem hideOnClick value={a.id}>
+            <MenuOptionItem key={a.id} hideOnClick value={a.id}>
               {a.name}
             </MenuOptionItem>
           ))}

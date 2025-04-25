@@ -5,7 +5,7 @@ import { type Schema, schema } from './zero-schema.gen.ts';
 
 export { type Schema, schema };
 
-type AnyTableName = keyof Schema['tables'];
+export type AnyTableName = keyof Schema['tables'];
 
 export type Agent = Row<typeof schema.tables.agents>;
 export type AgentMcpServer = Row<typeof schema.tables.agentMcpServers>;

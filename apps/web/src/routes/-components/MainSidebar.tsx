@@ -1,45 +1,18 @@
 import { createElement } from '@ariakit/react-core/utils/system';
 import type { Options } from '@ariakit/react-core/utils/types';
-import {
-  faBars,
-  faBug,
-  faCaretDown,
-  faCaretLeft,
-  faCaretRight,
-  faHome,
-  faPlus,
-  faPowerOff,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCaretDown, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { type TAgentId } from '@libs/db-ids';
-import {
-  Button,
-  ButtonGroup,
-  type ButtonProps,
-  Icon,
-  type IconProps,
-  Menu,
-  MenuOptionGroup,
-  MenuOptionItem,
-  PREBUILT_THEMES,
-  tn,
-  twMerge,
-  useElementSize,
-} from '@libs/ui-primitives';
+import { Button, type ButtonProps, Icon, type IconProps, tn, twMerge, useElementSize } from '@libs/ui-primitives';
 import { Link } from '@tanstack/react-router';
-import { useAtomInstance, useAtomState } from '@zedux/react';
+import { useAtomState } from '@zedux/react';
 import { useEffect } from 'react';
 
-import { authAtom } from '~/atoms/auth.ts';
 import { layoutAtom } from '~/atoms/layout.ts';
-import { themeAtom } from '~/atoms/theme.ts';
-import { useCurrentUser } from '~/hooks/use-current-user.ts';
 import { useInsertAgent } from '~/hooks/use-insert-agent.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 export function MainSidebar({ className }: { className?: string }) {
-  const auth = useAtomInstance(authAtom);
-  const user = useCurrentUser();
-  const [{ sidebarCollapsed }, { setSidebarCollapsed, setSidebarWidth }] = useAtomState(layoutAtom);
+  const [{ sidebarCollapsed }, { setSidebarWidth }] = useAtomState(layoutAtom);
 
   const [ref, { width }] = useElementSize();
 
@@ -52,27 +25,8 @@ export function MainSidebar({ className }: { className?: string }) {
       ref={ref}
       className={twMerge('ease-spring flex flex-col transition-[width] duration-150 ease-in-out', className)}
     >
-      {/* This header section stays visible even when collapsed */}
-      <div className="ak-layer-0 relative z-10">
-        <div className="h-14" />
-        <div
-          className={twMerge(
-            'absolute top-0 left-3 flex h-14 items-center transition-[left,top] duration-200 ease-in-out',
-          )}
-        >
-          <ButtonGroup size="sm" variant="outline">
-            <Button
-              icon={sidebarCollapsed ? faCaretRight : faCaretLeft}
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            />
-            <SettingsMenu />
-            {!user ? <Button render={<Link to="/signup" />}>Sign Up</Button> : null}
-            {!user ? <Button render={<Link to="/login" />}>Log In</Button> : null}
-            {user ? <Button icon={faBug} render={<Link to="/admin/upload-openapi" />} /> : null}
-            {user ? <Button icon={faPowerOff} onClick={() => auth.exports.signOut()} /> : null}
-          </ButtonGroup>
-        </div>
-      </div>
+      {/* Spacer for absolutely positioned <GlobalActions /> */}
+      <div className="h-[var(--canvas-header-h)]" />
 
       {/* Everything below the header fades in/out */}
       {/* <div
@@ -166,32 +120,6 @@ function SidebarListItem({
   );
 
   return createElement('div', { ...rest, className, children, 'data-active': isActive || undefined });
-}
-
-/**
- * Settings
- */
-
-function SettingsMenu() {
-  const [{ themeId, fontId }, { setFontId, setThemeId }] = useAtomState(themeAtom);
-
-  return (
-    <Menu trigger={<Button icon={faBars} />}>
-      <Menu label="Theme">
-        <MenuOptionGroup label="Colors" value={themeId} onChange={setThemeId}>
-          {PREBUILT_THEMES.map(theme => (
-            <MenuOptionItem key={theme.id} value={theme.id}>
-              {theme.name}
-            </MenuOptionItem>
-          ))}
-        </MenuOptionGroup>
-        <MenuOptionGroup label="Font" value={fontId} onChange={setFontId}>
-          <MenuOptionItem value="mono">Mono</MenuOptionItem>
-          <MenuOptionItem value="sans">Sans</MenuOptionItem>
-        </MenuOptionGroup>
-      </Menu>
-    </Menu>
-  );
 }
 
 /**
