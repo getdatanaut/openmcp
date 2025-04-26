@@ -114,7 +114,7 @@ function ServerTabs({
           Config
         </Tab>
 
-        <RemoveServerButton serverId={serverId} agentId={agentId} />
+        {agentMcpServer ? <RemoveServerButton agentMcpServerId={agentMcpServer.id} /> : null}
       </TabList>
 
       <TabPanels className="px-6 pt-4 pb-6">
@@ -211,37 +211,20 @@ function ServerConfigForm({
   );
 }
 
-function RemoveServerButton({ serverId, agentId = 'ag_x' }: { serverId: TMcpServerId; agentId: TAgentId | undefined }) {
+function RemoveServerButton({ agentMcpServerId }: { agentMcpServerId: TAgentMcpServerId }) {
   const navigate = useNavigate();
-  const matchedRoutes = useMatches({
-    select: routes => {
-      console.log(routes);
-      return routes.filter(route => route.routeId === '/mcp/$agentId');
-    },
-  });
-  const matchedRoute = matchedRoutes.length === 0 ? null : matchedRoutes[0]!;
-
-  const [server] = useZeroQuery(z =>
-    z.query.mcpServers
-      .where('id', serverId)
-      .related('agentMcpServers', q => q.where('agentId', agentId).one())
-      .one(),
-  );
-  const agentMcpServerId = server?.agentMcpServers?.id;
 
   const { mutate: deleteAgentMcpServer } = useZeroMutation(
     (z, { id }: { id: TAgentMcpServerId }) => ({
       op: z.mutate.agentMcpServers.delete({ id }),
-      onSuccess: () => {
-        if (matchedRoute) {
-          void navigate({ to: matchedRoute.pathname.replace('$agentId', agentId), replace: true });
-        }
+      onClientSuccess() {
+        void navigate({ to: '.', search: prev => ({ ...prev, serverId: undefined }), replace: true });
       },
       onServerError(error) {
         alert(`Error deleting server: ${error}`);
       },
     }),
-    [navigate, matchedRoute],
+    [navigate],
   );
 
   const handleClick = useCallback(async () => {
@@ -249,10 +232,6 @@ function RemoveServerButton({ serverId, agentId = 'ag_x' }: { serverId: TMcpServ
       await deleteAgentMcpServer({ id: agentMcpServerId });
     }
   }, [agentMcpServerId, deleteAgentMcpServer]);
-
-  if (!agentMcpServerId || !matchedRoute) {
-    return null;
-  }
 
   return (
     <Button variant="ghost" className="ml-auto" onClick={handleClick}>

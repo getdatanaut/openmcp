@@ -25,7 +25,8 @@ export const allowIfUserIdMatchesLoggedInUser = (
 export const allowIfOrgIdMatchesLoggedInUser = (
   authData: AuthData,
   { cmp }: ExpressionBuilder<Schema, 'agents' | 'mcpServers'>,
-) => cmp('organizationId', authData.orgId ?? 'org_xxx');
+  // @ts-expect-error can remove once zero has pushed typing fix that allows IS comparison to be null OR undefined (not just null)
+) => cmp('organizationId', 'IS', authData.orgId);
 
 export const allowIfVisibilityIsPublic = (_authData: AuthData, { cmp }: ExpressionBuilder<Schema, 'mcpServers'>) =>
   cmp('visibility', 'public');
