@@ -17,7 +17,7 @@ export async function createSilentConsole() {
   consola.restoreStd();
   let logFileWStream;
   try {
-    const logFile = path.join(env.DN_HOME_DIR, 'openmcp-cli-server.log');
+    const logFile = path.join(env.DN_CONFIGDIR, 'openmcp-cli-server.log');
     await fs.promises.mkdir(path.dirname(logFile), { recursive: true });
     logFileWStream = fs.createWriteStream(logFile, {
       flags: 'a',

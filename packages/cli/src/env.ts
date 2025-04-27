@@ -1,6 +1,6 @@
-import * as os from 'node:os';
 import path from 'node:path';
 
+import { constants } from '@libs/host-utils';
 import envalid from 'envalid';
 
 export default envalid.cleanEnv(process.env, {
@@ -12,7 +12,7 @@ export default envalid.cleanEnv(process.env, {
   DN_CLIENT_ID: envalid.str({
     default: 'openmcp-cli',
   }),
-  DN_HOME_DIR: envalid.str({
-    default: path.join(os.homedir(), '.config/datanaut'),
+  DN_CONFIGDIR: envalid.str({
+    default: path.join(constants.CONFIGDIR, 'datanaut'),
   }),
 });

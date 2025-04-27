@@ -1,5 +1,5 @@
 import consola from '../../consola/index.ts';
-import { rpcClient } from '../../libs/client.ts';
+import { rpcClient } from '../../libs/sdk.ts';
 import createConnectedClient from './mcp-utils/create-client.ts';
 import listMcpTools from './mcp-utils/get-tools.ts';
 import createTransportDefinition from './transport-definitions/index.ts';

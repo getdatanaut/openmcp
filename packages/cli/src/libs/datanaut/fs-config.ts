@@ -1,7 +1,7 @@
 import { mkdir, readFile as fsReadFile, writeFile as fsWriteFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-import env from '../env.ts';
+import env from '../../env.ts';
 
 /**
  * Gets the path to a file in the configuration directory
@@ -9,7 +9,7 @@ import env from '../env.ts';
  * @returns The full path to the file
  */
 export function getFilePath(filename: string): string {
-  return join(env.DN_HOME_DIR, filename);
+  return join(env.DN_CONFIGDIR, filename);
 }
 
 /**
@@ -39,5 +39,5 @@ export async function writeFile(filename: string, data: string): Promise<void> {
  * Ensures that the configuration directory exists
  */
 async function ensureConfigDirExists(): Promise<void> {
-  await mkdir(env.DN_HOME_DIR, { recursive: true });
+  await mkdir(env.DN_CONFIGDIR, { recursive: true });
 }

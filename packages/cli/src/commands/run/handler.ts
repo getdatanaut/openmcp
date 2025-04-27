@@ -3,16 +3,16 @@ import * as fs from 'node:fs/promises';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { Config } from '@openmcp/remix';
 
-import { rpcClient } from '../../libs/client.ts';
+import { rpcClient } from '../../libs/sdk.ts';
 
 type Input =
   | {
-      readonly server: string;
-      readonly secret?: string;
-    }
+    readonly server: string;
+    readonly secret?: string;
+  }
   | {
-      readonly configFile: string;
-    };
+    readonly configFile: string;
+  };
 
 async function loadConfig(input: Input): Promise<Config> {
   if ('configFile' in input) {

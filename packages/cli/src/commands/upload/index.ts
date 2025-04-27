@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import type { Argv, CommandBuilder, CommandModule } from 'yargs';
 
+import { createHandler } from '../../cli-utils/index.ts';
 import handler from './handler.ts';
 import type { ServerDefinition } from './types.ts';
 
@@ -109,5 +110,5 @@ export default {
   builder,
   describe: 'Upload an mpc server',
   // describe: false, // Hides the command from the help output
-  handler,
+  handler: createHandler<ServerDefinition>(handler),
 } satisfies CommandModule<{}, ServerDefinition>;

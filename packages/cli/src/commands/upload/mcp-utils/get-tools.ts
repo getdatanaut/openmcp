@@ -1,5 +1,5 @@
 import consola from '../../../consola/index.ts';
-import type { rpcClient } from '../../../libs/client.ts';
+import type { rpcClient } from '../../../libs/sdk.ts';
 import { getSummary } from '../utils/string.ts';
 import type { ConnectedClient } from './create-client.ts';
 

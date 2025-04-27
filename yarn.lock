@@ -2394,7 +2394,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@libs/host-utils@workspace:libs/host-utils":
+"@libs/host-utils@workspace:*, @libs/host-utils@workspace:libs/host-utils":
   version: 0.0.0-use.local
   resolution: "@libs/host-utils@workspace:libs/host-utils"
   dependencies:
@@ -2724,6 +2724,7 @@ __metadata:
     "@libs/api-contract": "workspace:*"
     "@libs/auth": "workspace:*"
     "@libs/eslint-config": "workspace:*"
+    "@libs/host-utils": "workspace:*"
     "@libs/schemas": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.10.2"

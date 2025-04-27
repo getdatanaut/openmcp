@@ -10,11 +10,15 @@ const link = new RPCLink({
   url: new URL('__rpc', env.DN_API_URL),
   plugins: [new SimpleCsrfProtectionLinkPlugin()],
   async headers() {
-    const bearer = await client.generateAccessToken();
-    return {
-      Authorization: `Bearer ${bearer}`,
-      'X-Bearer-Format': 'opaque',
-    };
+    try {
+      const bearer = await client.generateAccessToken();
+      return {
+        Authorization: `Bearer ${bearer}`,
+        'X-Bearer-Format': 'opaque',
+      };
+    } catch {
+      return {}
+    }
   },
 });
 

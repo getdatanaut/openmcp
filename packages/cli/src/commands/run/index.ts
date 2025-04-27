@@ -1,12 +1,13 @@
-import type { Argv, CommandModule } from 'yargs';
+import { type Argv } from 'yargs';
 
+import { createHandler } from '../../cli-utils/index.ts';
 import { createSilentConsole } from '../../consola/index.ts';
 
 const builder = (yargs: Argv) =>
   yargs.strict().options({
     server: {
       type: 'string',
-      describe: 'The name of the server to start',
+      describe: 'The id of the server to start',
       conflicts: 'config',
     },
     secret: {
@@ -25,7 +26,7 @@ export default {
   describe: 'Start a new server',
   command: 'run',
   builder,
-  async handler(args) {
+  handler: createHandler(async args => {
     const console = await createSilentConsole();
     const { default: handler } = await import('./handler.ts');
 
@@ -44,5 +45,5 @@ export default {
     } finally {
       console.restoreConsole();
     }
-  },
-} satisfies CommandModule;
+  }),
+};

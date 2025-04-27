@@ -12,6 +12,19 @@ const listAgents = base.agents.listAgents.use(requireAuth).handler(({ context: {
 });
 
 // @todo: read access permissions check
+const getAgent = base.agents.getAgent.use(requireAuth).handler(async ({ context: { db }, input, errors }) => {
+  const object = await db.queries.agents.getById({
+    id: input.agentId,
+  });
+
+  if (!object) {
+    throw errors.NOT_FOUND({ message: 'Agent not found' });
+  }
+
+  return object;
+});
+
+// @todo: read access permissions check
 const getRemix = base.agents.getRemix
   .use(requireAuth)
   .handler(async ({ context: { db, dbEncSecret, publicUrl }, input }) => {
@@ -64,6 +77,7 @@ const getRemix = base.agents.getRemix
 export const agentsRouter = {
   agents: {
     listAgents,
+    getAgent,
     getRemix,
   },
 };

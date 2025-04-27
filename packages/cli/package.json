@@ -58,6 +58,7 @@
     "@libs/api-contract": "workspace:*",
     "@libs/auth": "workspace:*",
     "@libs/eslint-config": "workspace:*",
+    "@libs/host-utils": "workspace:*",
     "@libs/schemas": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "@types/yargs": "^17.0.33",

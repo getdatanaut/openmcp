@@ -7,6 +7,7 @@ export default [
     files: ['src/**/*.ts'],
     rules: {
       'no-console': 'error',
+      'turbo/no-undeclared-env-vars': 'warn',
     },
   },
 ];
