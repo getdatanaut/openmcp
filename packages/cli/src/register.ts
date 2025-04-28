@@ -7,6 +7,7 @@ import logoutCommand from './commands/logout/index.ts';
 import runCommand from './commands/run/index.ts';
 import uninstallCommand from './commands/uninstall/index.ts';
 import uploadCommand from './commands/upload/index.ts';
+import whoamiCommand from './commands/whoami/index.ts';
 import consola from './consola/index.ts';
 import { HandlerError } from './errors/index.ts';
 
@@ -18,10 +19,12 @@ export default async function register(argv: string[]) {
       .version()
       .help(true)
       .showHelpOnFail(false)
-      .fail((_msg, err, yargs) => {
+      .fail((msg, err, yargs) => {
         if (err instanceof HandlerError) {
           consola.error(err.message);
         } else {
+          consola.error(msg);
+          consola.restoreAll();
           yargs.showHelp();
           process.exit(1);
         }
@@ -30,6 +33,7 @@ export default async function register(argv: string[]) {
       .strictCommands()
       .command(loginCommand)
       .command(logoutCommand)
+      .command(whoamiCommand)
       .command(installCommand)
       .command(uninstallCommand)
       .command(runCommand)

@@ -17,6 +17,13 @@ interface Prompts {
   openPage(url: URL): Promise<boolean>;
 }
 
+export function whoami() {
+  const decoded = client.getDecodedIdToken();
+  return {
+    email: String(decoded['email']),
+  } as const;
+}
+
 export async function login(prompts: Prompts) {
   const LOGIN_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 
@@ -35,10 +42,7 @@ export async function login(prompts: Prompts) {
       }),
     ]);
 
-    const decoded = client.getDecodedIdToken();
-    return {
-      email: String(decoded['email']),
-    };
+    return whoami();
   } finally {
     clearTimeout(tId);
   }
