@@ -46,21 +46,48 @@ function tryIntoBoolean(value: unknown): Result<boolean, CastError> {
   return createErr(new CastError(`Cannot cast ${value} to boolean`));
 }
 
-export function tryInto<V extends string>(value: V, type: 'string'): Result<V, CastError>;
-export function tryInto(value: unknown, type: 'string'): Result<string, CastError>;
-export function tryInto<V extends number>(value: V, type: 'number'): Result<V, CastError>;
-export function tryInto(value: unknown, type: 'number'): Result<number, CastError>;
-export function tryInto<V extends boolean>(value: V, type: 'boolean'): Result<V, CastError>;
-export function tryInto(value: unknown, type: 'boolean'): Result<boolean, CastError>;
-export function tryInto<V extends null>(value: V, type: 'null'): Result<V, CastError>;
-export function tryInto(value: unknown, type: 'null'): Result<null, CastError>;
-export function tryInto<V extends unknown[]>(value: V, type: 'array'): Result<V, CastError>;
-export function tryInto(value: unknown, type: 'array'): Result<unknown[], CastError>;
-export function tryInto<V extends {}>(value: V, type: 'object'): Result<V, CastError>;
-export function tryInto(value: unknown, type: 'object'): Result<{}, CastError>;
-export function tryInto<V>(
+export function tryInto<V extends unknown>(
+  type: 'string',
   value: V,
+): Result<
+  V extends string ? V : V extends number ? `${V}` : V extends boolean ? `${V}` : V extends null ? 'null' : never,
+  CastError
+>;
+export function tryInto<V>(
+  type: 'number',
+  value: V,
+): Result<
+  V extends number ? V : V extends string ? number : V extends true ? 1 : V extends false ? 0 : never,
+  CastError
+>;
+export function tryInto<V extends boolean>(type: 'boolean', value: V): Result<V, CastError>;
+export function tryInto<V>(
+  type: 'boolean',
+  value: V,
+): Result<
+  V extends boolean
+    ? V
+    : V extends 1
+      ? true
+      : V extends 0
+        ? false
+        : V extends '1'
+          ? true
+          : V extends '0'
+            ? false
+            : V extends 'true'
+              ? true
+              : V extends 'false'
+                ? false
+                : never,
+  CastError
+>;
+export function tryInto<V>(type: 'null', value: V): Result<V extends null ? null : never, CastError>;
+export function tryInto<V>(type: 'array', value: V): Result<V extends unknown[] ? V : never, CastError>;
+export function tryInto<V>(type: 'object', value: V): Result<V extends {} ? V : never, CastError>;
+export function tryInto(
   type: 'string' | 'number' | 'boolean' | 'null' | 'array' | 'object',
+  value: unknown,
 ): Result<unknown, CastError> {
   switch (type) {
     case 'string':
@@ -93,14 +120,4 @@ export function tryInto<V>(
   }
 
   throw new CastError(`Cannot cast ${value} to ${type}`);
-}
-
-export function tryIntoString<T>(value: T) {
-  return tryInto(value, 'string');
-}
-
-export function tryIntoArray<T extends unknown[]>(value: T): Result<T, CastError>;
-export function tryIntoArray(value: unknown): Result<unknown, CastError>;
-export function tryIntoArray<T>(value: T) {
-  return tryInto(value, 'array');
 }

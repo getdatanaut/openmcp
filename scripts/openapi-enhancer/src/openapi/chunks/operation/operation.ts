@@ -4,7 +4,7 @@ import type { IBundledHttpService, IHttpOperation } from '@stoplight/types';
 import type { JSONSchema7 } from 'json-schema';
 import { isOk, unwrapOk, unwrapOrForResult } from 'option-t/plain_result';
 
-import { tryInto, tryIntoString } from '../../../utils/accessors.ts';
+import { tryInto } from '../../../utils/accessors.ts';
 import type { LoadedDocument } from '../../index.ts';
 import { Chunk, type OmitReadonly } from '../chunk.ts';
 import { createResolved } from './resolved.ts';
@@ -28,12 +28,12 @@ export class OperationChunk extends Chunk<'operation', OperationData> {
   constructor(document: LoadedDocument, data: OperationData) {
     super('operation', data);
     assert.ok(Object.hasOwn(document.paths, data.path), `Path ${data.path} not found in document`);
-    const operation = tryInto(findOperation(document.paths[data.path]!, data.method), 'object');
+    const operation = tryInto('object', findOperation(document.paths[data.path]!, data.method));
     assert.ok(isOk(operation), `Operation ${data.method} not found in path ${data.path}`);
     this.#operation = unwrapOk(operation);
 
     this.id = unwrapOrForResult(
-      tryIntoString(this.#operation['operationId']),
+      tryInto('string', this.#operation['operationId']),
       `${this.data.method.toUpperCase()} ${this.data.path}`,
     );
   }

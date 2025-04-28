@@ -40,7 +40,7 @@ export class ServiceChunk extends Chunk<'service', ServiceData> {
       case 'version':
       case 'contact':
       case 'license': {
-        const info = unwrapOrElseForResult(tryInto(this.#document['info'], 'object'), () => {
+        const info = unwrapOrElseForResult(tryInto('object', this.#document['info']), () => {
           const v: Record<string, unknown> = {};
           this.#document['info'] = v;
           return v;

@@ -47,10 +47,9 @@ try {
     patterns: positionals,
   });
 } catch (error) {
-  console.error(error);
   const { default: formatErrorMessage } = await import('./utils/format-error-message.ts');
   console.error(formatErrorMessage(error));
   process.exitCode ||= 1;
 } finally {
-  // process.exit();
+  process.exit(0);
 }

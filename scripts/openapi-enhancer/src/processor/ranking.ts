@@ -4,7 +4,11 @@ import { generateObject, loadPromptAndOutput } from '../llm/index.ts';
 import prettyStringify from '../utils/pretty-stringify.ts';
 import type { Context, Purpose } from './types.ts';
 
-export default async function generateRanking({ model }: Context, messages: CoreMessage[], purposes: Purpose[]) {
+export default async function generateRanking(
+  { model }: Context,
+  messages: readonly CoreMessage[],
+  purposes: Purpose[],
+) {
   const { prompt, output } = await loadPromptAndOutput('rank', {
     purposes: prettyStringify(purposes.map(purpose => purpose.value)),
   });

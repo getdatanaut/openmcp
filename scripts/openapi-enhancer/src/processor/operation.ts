@@ -2,14 +2,13 @@ import type { CoreMessage } from 'ai';
 
 import { generateObject, loadPromptAndOutput } from '../llm/index.ts';
 import type { OperationChunk } from '../openapi';
-import prettyStringify from '../utils/pretty-stringify.ts';
 import WritableLog from '../utils/writable-log.ts';
 import type { Context, Purpose } from './types.ts';
 
 export default function createObjectProcessor({ model, log }: Context, purposes: Purpose[]) {
   const logIndentation = WritableLog.getDefaultIndentation('info');
 
-  return async (messages: CoreMessage[], operation: OperationChunk) => {
+  return async (messages: readonly CoreMessage[], operation: OperationChunk) => {
     log.write('info', `Processing ${operation.id}`);
 
     operation.events.on('add', (key, value) => {
@@ -30,8 +29,7 @@ export default function createObjectProcessor({ model, log }: Context, purposes:
       object: operation.toString(),
     });
 
-    messages.push({ role: 'user', content });
-    const response = await generateObject(model, messages, output);
+    const response = await generateObject(model, [...messages, { role: 'user', content }], output);
     for (const key of Object.keys(response)) {
       switch (key) {
         case 'description':
@@ -52,7 +50,5 @@ export default function createObjectProcessor({ model, log }: Context, purposes:
           log.write('warn', `Encountered unknown key ${JSON.stringify(key)} in response`);
       }
     }
-
-    messages.push({ role: 'assistant', content: prettyStringify(response) });
   };
 }

@@ -3,16 +3,17 @@ import type { IHttpOperation, IHttpOperationRequestBody } from '@stoplight/types
 import type { JSONSchema7 } from 'json-schema';
 import { unwrapOrForResult } from 'option-t/plain_result';
 
-import { tryIntoArray } from '../../../utils/accessors.ts';
+import { tryInto } from '../../../utils/accessors.ts';
 
 export function getOperationInputSchema(operation: IHttpOperation<false>) {
   const request = operation.request;
+
   if (!request) return;
   const params = [
-    ...unwrapOrForResult(tryIntoArray(request.path), []),
-    ...unwrapOrForResult(tryIntoArray(request.query), []),
-    ...unwrapOrForResult(tryIntoArray(request.headers), []),
-    ...unwrapOrForResult(tryIntoArray(request.cookie), []),
+    ...unwrapOrForResult(tryInto('array', request.path), []),
+    ...unwrapOrForResult(tryInto('array', request.query), []),
+    ...unwrapOrForResult(tryInto('array', request.headers), []),
+    ...unwrapOrForResult(tryInto('array', request.cookie), []),
   ] as const;
 
   const schema = {
