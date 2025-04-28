@@ -20,7 +20,7 @@
     "@libs/db-pg-client": "workspace:*",
     "@libs/utils-types": "workspace:*",
     "drizzle-orm": "0.42.0",
-    "kysely": "0.28.1"
+    "kysely": "0.28.2"
   },
   "devDependencies": {
     "@libs/schemas": "workspace:*",

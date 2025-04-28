@@ -22,7 +22,7 @@
     "@libs/db-pg": "workspace:*",
     "@libs/db-pg-migrations": "workspace:*",
     "drizzle-kit": "0.31.0",
-    "kysely": "0.28.1"
+    "kysely": "0.28.2"
   },
   "devDependencies": {
     "dotenv-cli": "^8.0.0",

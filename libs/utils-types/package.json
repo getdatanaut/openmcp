@@ -11,7 +11,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "type-fest": "4.40.0"
+    "type-fest": "4.40.1"
   },
   "devDependencies": {
     "eslint": "9.25.1"

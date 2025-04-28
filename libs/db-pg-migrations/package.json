@@ -14,7 +14,7 @@
     "@libs/db-pg-client": "workspace:*",
     "drizzle-orm": "0.42.0",
     "eslint": "9.25.1",
-    "kysely": "0.28.1",
+    "kysely": "0.28.2",
     "postgres": "3.4.5"
   }
 }
