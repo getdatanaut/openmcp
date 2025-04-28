@@ -29,23 +29,27 @@ export function AgentsMenu({ activeAgentId, onSelect, trigger }: AgentsMenuProps
         New Remix
       </MenuItem>
 
-      {agents.length > 0 ? <MenuSeparator /> : null}
+      {agents.length > 0 ? (
+        <>
+          <MenuSeparator />
 
-      <MenuGroup label="Remixes">
-        <MenuOptionGroup
-          value={activeAgentId ?? ''}
-          name="agent"
-          onChange={v => {
-            onSelect(v as TAgentId);
-          }}
-        >
-          {agents.map(a => (
-            <MenuOptionItem key={a.id} hideOnClick value={a.id}>
-              {a.name}
-            </MenuOptionItem>
-          ))}
-        </MenuOptionGroup>
-      </MenuGroup>
+          <MenuGroup label="Remixes">
+            <MenuOptionGroup
+              value={activeAgentId ?? ''}
+              name="agent"
+              onChange={v => {
+                onSelect(v as TAgentId);
+              }}
+            >
+              {agents.map(a => (
+                <MenuOptionItem key={a.id} hideOnClick value={a.id}>
+                  {a.name}
+                </MenuOptionItem>
+              ))}
+            </MenuOptionGroup>
+          </MenuGroup>
+        </>
+      ) : null}
     </Menu>
   );
 }
