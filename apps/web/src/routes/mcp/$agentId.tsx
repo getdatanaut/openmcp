@@ -14,11 +14,13 @@ import {
   tn,
   twMerge,
 } from '@libs/ui-primitives';
+import { escapeLike } from '@rocicorp/zero';
 import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
-import { atom, useAtomState } from '@zedux/react';
+import { atom, useAtomState, useAtomValue } from '@zedux/react';
 import { useCallback } from 'react';
 import { z } from 'zod';
 
+import { debouncedSearchParamAtom } from '~/atoms/debounced-search-param.ts';
 import { injectLocalStorage } from '~/atoms/local-storage.ts';
 import { CanvasCrumbs } from '~/components/CanvasCrumbs.tsx';
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
@@ -194,9 +196,25 @@ function AgentTabs({ activeTab = 'root' }: { activeTab?: string }) {
 }
 
 function ServerFilters() {
+  const [qServers, setQServers] = useAtomState(debouncedSearchParamAtom, [{ searchParam: 'qServers' }]);
+
+  const handleSearchUpdate = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setQServers(event.target.value);
+    },
+    [setQServers],
+  );
+
   return (
     <div className="ak-layer-0 sticky inset-x-0 top-0 z-10 flex h-16 shrink-0 items-center gap-3 border-b px-2">
-      <Input placeholder="Search" className="w-80" startIcon={faSearch} variant="unstyled" />
+      <Input
+        placeholder="Search"
+        className="w-80"
+        startIcon={faSearch}
+        variant="unstyled"
+        value={qServers}
+        onChange={handleSearchUpdate}
+      />
     </div>
   );
 }
@@ -217,43 +235,101 @@ function ServersList() {
 
 function InstalledServersList() {
   const { agentId } = Route.useParams();
-  const { serverId: activeServerId } = Route.useSearch();
+  const { activeServerId } = Route.useSearch({ select: s => ({ activeServerId: s.serverId }) });
 
-  const [mcpServers] = useZeroQuery(z =>
-    z.query.mcpServers.whereExists('agentMcpServers', q => q.where('agentId', '=', agentId)).orderBy('name', 'asc'),
-  );
+  const qServers = useAtomValue(debouncedSearchParamAtom, [{ searchParam: 'qServers' }]);
+  const isSearching = qServers.trim().length > 2;
 
-  if (!mcpServers.length) {
-    return (
+  const [servers, serversDetails] = useZeroQuery(z => {
+    let q = z.query.mcpServers
+      .whereExists('agentMcpServers', agentMcpServers => agentMcpServers.where('agentId', '=', agentId))
+      .orderBy('name', 'asc');
+
+    if (isSearching) {
+      q = q.where(({ or, cmp }) =>
+        or(
+          cmp('name', 'ILIKE', `%${escapeLike(qServers)}%`),
+          cmp('summary', 'ILIKE', `%${escapeLike(qServers)}%`),
+          cmp('description', 'ILIKE', `%${escapeLike(qServers)}%`),
+        ),
+      );
+    }
+
+    return q;
+  });
+
+  let content;
+  if (servers.length) {
+    content = servers.map(server => (
+      <ServerRow key={server.id} server={server} isActive={server.id === activeServerId} />
+    ));
+  } else {
+    content = (
       <div className="flex shrink-0 items-center border-b p-5">
-        <div className="ak-text/50 text-sm">This remix has no installed servers.. add some below</div>
+        <div className="ak-text/50 text-sm">
+          {serversDetails.type === 'complete'
+            ? isSearching
+              ? `No servers found matching "${qServers}"`
+              : 'This remix has no installed servers.. add some below'
+            : 'Loading...'}
+        </div>
       </div>
     );
   }
 
-  return mcpServers.map(server => (
-    <ServerRow key={server.id} server={server} isActive={activeServerId === server.id} />
-  ));
+  return content;
 }
 
 function AvailableServersList() {
   const { agentId } = Route.useParams();
-  const { serverId: activeServerId } = Route.useSearch();
+  const { activeServerId } = Route.useSearch({ select: s => ({ activeServerId: s.serverId }) });
 
-  const [mcpServers] = useZeroQuery(z =>
-    z.query.mcpServers
+  const qServers = useAtomValue(debouncedSearchParamAtom, [{ searchParam: 'qServers' }]);
+  const isSearching = qServers.trim().length > 2;
+
+  const [servers, serversDetails] = useZeroQuery(z => {
+    let q = z.query.mcpServers
       .where(({ not, exists }) => not(exists('agentMcpServers', q => q.where('agentId', '=', agentId))))
       .orderBy('name', 'asc')
-      .limit(100),
-  );
+      .limit(100);
 
-  return mcpServers.map(server => (
-    <ServerRow key={server.id} server={server} isActive={activeServerId === server.id} />
-  ));
+    if (isSearching) {
+      q = q.where(({ or, cmp }) =>
+        or(
+          cmp('name', 'ILIKE', `%${escapeLike(qServers)}%`),
+          cmp('summary', 'ILIKE', `%${escapeLike(qServers)}%`),
+          cmp('description', 'ILIKE', `%${escapeLike(qServers)}%`),
+        ),
+      );
+    }
+
+    return q;
+  });
+
+  let content;
+  if (servers.length) {
+    content = servers.map(server => (
+      <ServerRow key={server.id} server={server} isActive={server.id === activeServerId} />
+    ));
+  } else {
+    content = (
+      <div className="flex shrink-0 items-center border-b p-5">
+        <div className="ak-text/50 text-sm">
+          {serversDetails.type === 'complete'
+            ? isSearching
+              ? `No servers found matching "${qServers}"`
+              : 'No servers found'
+            : 'Loading...'}
+        </div>
+      </div>
+    );
+  }
+
+  return content;
 }
 
 function ServerPanelWrapper() {
-  const { serverId, serverTab } = Route.useSearch();
+  const { serverId, serverTab } = Route.useSearch({ select: s => ({ serverId: s.serverId, serverTab: s.serverTab }) });
   const { agentId } = Route.useParams();
 
   const renderToolsList = useCallback(() => {

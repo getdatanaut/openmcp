@@ -1,6 +1,7 @@
 import { faWrench } from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Icon, tn } from '@libs/ui-primitives';
 import { Link } from '@tanstack/react-router';
+import { memo } from 'react';
 
 import type { McpServer } from '~shared/zero-schema.ts';
 
@@ -9,7 +10,7 @@ export interface ServerRowProps {
   isActive: boolean;
 }
 
-export function ServerRow({ server, isActive }: ServerRowProps) {
+export const ServerRow = memo(function ServerRow({ server, isActive }: ServerRowProps) {
   const iconElem = server.iconUrl ? (
     <img src={server.iconUrl} alt={server.name} className="ak-frame-xs h-full w-full" />
   ) : (
@@ -41,4 +42,4 @@ export function ServerRow({ server, isActive }: ServerRowProps) {
       </div>
     </Link>
   );
-}
+});

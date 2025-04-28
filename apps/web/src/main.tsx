@@ -26,6 +26,7 @@ export function createRouter() {
       defaultPreload: 'intent',
       context: { queryClient },
       defaultViewTransition: true,
+      defaultStructuralSharing: true,
       defaultErrorComponent: ({ error }) => {
         // console.error(error);
         let content;
