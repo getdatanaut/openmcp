@@ -19,7 +19,7 @@ import type { SocialProviders } from 'better-auth/social-providers';
 
 import type { JwtPayload } from './types.ts';
 
-export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL'> {
+export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL' | 'secret'> {
   db: DbSdk;
   basePath: string;
   socialProviders?: SocialProviders;
@@ -42,6 +42,7 @@ export const createAuthOptions = ({
   socialProviders,
   basePath,
   baseURL,
+  secret,
   loginPage = '/',
   jwtOpts,
   generateOrgData,
@@ -50,6 +51,7 @@ export const createAuthOptions = ({
     appName: 'Datanaut',
     baseURL,
     basePath,
+    secret,
     emailAndPassword: {
       enabled: true,
     },

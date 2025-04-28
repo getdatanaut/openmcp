@@ -18,6 +18,7 @@ export default {
       db,
       baseURL: env.PUBLIC_URL,
       basePath: AUTH_BASE_PATH,
+      secret: env.DB_ENC_SECRET,
       jwtOpts: {
         expirationTime: '1h', // can set to a low number for things like testing refresh process
       },
