@@ -43,7 +43,7 @@ const uploadMcpServer = base.mcpServers.upload
 const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
   .use(requireAuth)
   .handler(async ({ context: { db, user, organizationId, r2OpenApiBucket }, input, errors }) => {
-    const { openapi, sourceUrl, iconUrl, developer, developerUrl, configSchema, visibility } = input;
+    const { externalId, openapi, sourceUrl, iconUrl, developer, developerUrl, configSchema, visibility } = input;
 
     const { service, options } = await openApiToMcpServerOptions({ openapi, serverUrl: input.serverUrl });
 
@@ -62,7 +62,7 @@ const uploadFromOpenApi = base.mcpServers.uploadFromOpenApi
       visibility,
       server: {
         name: input.name || service.name,
-        externalId: serverUrl,
+        externalId: externalId || serverUrl,
         summary: getFirstSentence(service.description) || undefined,
         description: service.description,
         developer: developer || service.contact?.name,

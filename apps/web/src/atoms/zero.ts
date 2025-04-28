@@ -84,7 +84,7 @@ export const zeroAtom = atom('zero', () => {
           z.query.agents
             .related('agentMcpServers', agentMcpServers =>
               agentMcpServers
-                .related('agentMcpTools', agentMcpTools => agentMcpTools.related('mcpTool'))
+                .related('agentMcpTools', agentMcpTools => agentMcpTools.related('mcpTool').one())
                 .related('mcpServer', mcpServer =>
                   mcpServer.related('mcpTools', mcpTools =>
                     mcpTools.orderBy('displayName', 'asc').orderBy('name', 'asc').limit(20),

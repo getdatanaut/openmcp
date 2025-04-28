@@ -51,6 +51,7 @@ const uploadFromOpenApiContract = base
   .input(
     z.object({
       name: z.string().optional(),
+      externalId: z.string().min(2).max(255).optional(),
       openapi: z.string().url(),
       serverUrl: z.string().url().optional(),
       iconUrl: z.string().url().optional(),

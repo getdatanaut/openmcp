@@ -1,4 +1,6 @@
+import { useStoreState } from '@ariakit/react';
 import { Form, FormButton, FormField, FormInput, Heading, useFormStore } from '@libs/ui-primitives';
+import { tryCatchSync } from '@maxmorozoff/try-catch-tuple';
 import { isDefinedError } from '@orpc/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
@@ -134,65 +136,78 @@ function UploadRawDefinitionsForm() {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<string>('');
-  const form = useFormStore({ defaultValues: { definitions: JSON.stringify(servers, null, 2) } });
+  const form = useFormStore({ defaultValues: { count: 1, definitions: JSON.stringify(servers, null, 2) } });
   const $ = form.names;
 
   const uploadFromOpenApi = useMutation(rpc.mcpServers.uploadFromOpenApi.mutationOptions());
+
+  const totalCount = useStoreState(form, s => {
+    const [def] = tryCatchSync(() => JSON.parse(s.values.definitions));
+    return def ? s.values.count * def.length : 0;
+  });
 
   form.useSubmit(async state => {
     setError(null);
 
     const definitions = JSON.parse(state.values.definitions) as typeof servers;
-    for (const definition of definitions) {
-      setStatus(`Uploading ${definition.name}...`);
+    let counter = 0;
+    for (const defIndex in definitions) {
+      const definition = definitions[defIndex]!;
+      for (let i = 0; i < state.values.count; i++) {
+        counter++;
+        setStatus(`Uploading ${definition.name} (${counter}/${totalCount})...`);
 
-      await new Promise<void>((resolve, reject) => {
-        uploadFromOpenApi.mutate(
-          {
-            name: definition.name || undefined,
-            openapi: definition.transport.serverConfig.openapi,
-            serverUrl: definition.transport.serverConfig.serverUrl || undefined,
-            iconUrl: definition.icon || undefined,
-            developer: definition.developer || undefined,
-            sourceUrl: definition.sourceUrl || undefined,
-            configSchema: definition.configSchema || undefined,
-            visibility: 'public',
-          },
-          {
-            onSettled() {},
-            onSuccess() {
-              resolve();
+        const serverUrl = definition.transport.serverConfig.serverUrl || undefined;
+
+        await new Promise<void>((resolve, reject) => {
+          uploadFromOpenApi.mutate(
+            {
+              name: definition.name || undefined,
+              externalId: `${serverUrl}-${definition.name}-${i}`,
+              openapi: definition.transport.serverConfig.openapi,
+              serverUrl,
+              iconUrl: definition.icon || undefined,
+              developer: definition.developer || undefined,
+              sourceUrl: definition.sourceUrl || undefined,
+              configSchema: definition.configSchema || undefined,
+              visibility: 'public',
             },
-            onError(error) {
-              if (!isDefinedError(error)) {
-                setError(`An unknown error occurred while uploading ${definition.name}`);
+            {
+              onSettled() {},
+              onSuccess() {
+                resolve();
+              },
+              onError(error) {
+                if (!isDefinedError(error)) {
+                  setError(`An unknown error occurred while uploading ${definition.name}`);
+                  reject(error);
+                  return;
+                }
+
+                switch (error.code) {
+                  case 'UNAUTHORIZED':
+                    setError('You are not authorized to upload an OpenAPI specification');
+                    break;
+                  case 'BAD_REQUEST':
+                    setError(error.message);
+                    break;
+                  case 'INPUT_VALIDATION_FAILED':
+                    setError(error.data.formErrors[0] ?? error.message);
+                    for (const [key, values] of Object.entries(error.data.fieldErrors)) {
+                      form.setError(key, values.join('. '));
+                    }
+                    break;
+                }
+
                 reject(error);
-                return;
-              }
-
-              switch (error.code) {
-                case 'UNAUTHORIZED':
-                  setError('You are not authorized to upload an OpenAPI specification');
-                  break;
-                case 'BAD_REQUEST':
-                  setError(error.message);
-                  break;
-                case 'INPUT_VALIDATION_FAILED':
-                  setError(error.data.formErrors[0] ?? error.message);
-                  for (const [key, values] of Object.entries(error.data.fieldErrors)) {
-                    form.setError(key, values.join('. '));
-                  }
-                  break;
-              }
-
-              reject(error);
+              },
             },
-          },
-        );
-      });
-
-      void queryClient.invalidateQueries({ queryKey: rpc.mcpServers.key() });
+          );
+        });
+      }
     }
+
+    void queryClient.invalidateQueries({ queryKey: rpc.mcpServers.key() });
 
     setStatus('');
   });
@@ -214,11 +229,19 @@ function UploadRawDefinitionsForm() {
         />
       </FormField>
 
+      <FormField
+        name={$.count}
+        label="How many of each?"
+        hint="For perf testing, set to higher than 1 to add X duplicates of each server"
+      >
+        <FormInput name={$.count} type="number" />
+      </FormField>
+
       {error && <div className="ak-text-danger text-sm">{error}</div>}
 
       <div className="flex items-center gap-2">
         <FormButton validProps={{ intent: 'primary' }} type="submit">
-          Upload All
+          Upload All {totalCount}
         </FormButton>
         <div>{status}</div>
       </div>

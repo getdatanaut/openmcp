@@ -243,7 +243,8 @@ function AvailableServersList() {
   const [mcpServers] = useZeroQuery(z =>
     z.query.mcpServers
       .where(({ not, exists }) => not(exists('agentMcpServers', q => q.where('agentId', '=', agentId))))
-      .orderBy('name', 'asc'),
+      .orderBy('name', 'asc')
+      .limit(100),
   );
 
   return mcpServers.map(server => (

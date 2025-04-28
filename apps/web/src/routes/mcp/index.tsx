@@ -66,7 +66,7 @@ function ServerFilters() {
 function ServersList() {
   const { serverId } = Route.useSearch();
 
-  const [servers] = useZeroQuery(z => z.query.mcpServers.orderBy('name', 'asc'));
+  const [servers] = useZeroQuery(z => z.query.mcpServers.orderBy('name', 'asc').limit(100));
 
   let content;
   if (servers.length) {
