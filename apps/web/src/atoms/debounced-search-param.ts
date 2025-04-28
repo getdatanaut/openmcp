@@ -1,5 +1,5 @@
 import type { RegisteredRouter } from '@tanstack/react-router';
-import { api, atom, injectEcosystem, injectEffect, injectSignal } from '@zedux/react';
+import { atom, injectEcosystem, injectEffect, injectRef, injectSignal } from '@zedux/react';
 
 /**
  * Updates internal state immediately, but delays updating the query param in the URL.
@@ -13,17 +13,23 @@ export const debouncedSearchParamAtom = atom(
   ({ searchParam }: { searchParam: keyof RegisteredRouter['latestLocation']['search'] }) => {
     const { router } = injectEcosystem().context;
 
-    const signal = injectSignal<string>(router.latestLocation.search[searchParam] ?? '');
+    const firstRender = injectRef(true);
+    const signal = injectSignal<string>(() => router.latestLocation.search[searchParam] ?? '');
     const currentVal = signal.get();
 
     injectEffect(() => {
+      if (firstRender.current) {
+        firstRender.current = false;
+        return;
+      }
+
       const handle = setTimeout(() => {
-        void router.navigate({ to: '.', search: prev => ({ ...prev, [searchParam]: currentVal ?? undefined }) });
+        void router.navigate({ to: '.', search: prev => ({ ...prev, [searchParam]: currentVal || undefined }) });
       }, 500);
 
       return () => clearTimeout(handle);
     }, [currentVal]);
 
-    return api(signal);
+    return signal;
   },
 );
