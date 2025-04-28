@@ -2,7 +2,7 @@ import { type McpManager, Server, type ServerStorageData } from '@openmcp/manage
 import { openApiToMcpServerOptions, type ServerConfig as OpenAPIServerConfig } from '@openmcp/openapi';
 import { OpenMcpServer } from '@openmcp/server';
 
-import type { Config, RemixServer } from '../../config';
+import type { Config, RemixServer } from '../../config/index.ts';
 import { ServerRegistrationError } from '../../errors.ts';
 import interpolateOpenAPIClientConfig from './interpolate-openapi-client-config.ts';
 import toTransportConfig from './to-transport-config.ts';

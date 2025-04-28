@@ -1,7 +1,7 @@
 import { ToolListChangedNotificationSchema } from '@modelcontextprotocol/sdk/types.js';
 import { McpManager, type McpManagerOptions } from '@openmcp/manager';
 
-import type { Config } from '../config';
+import type { Config } from '../config/index.ts';
 import { registerClientServers } from './client-servers/index.ts';
 import type ScopedClientServer from './client-servers/scoped-client-server.ts';
 import { registerServers } from './servers/index.ts';

@@ -1,6 +1,6 @@
 import type { TransportConfig } from '@openmcp/manager';
 
-import type { RemixServer, SSEServer } from '../../config';
+import type { RemixServer, SSEServer } from '../../config/index.ts';
 import type { StreamableHTTPServer } from '../../config/schemas.ts';
 import strictReplaceVariables from '../../utils/strict-replace-variables.ts';
 

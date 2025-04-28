@@ -3,7 +3,7 @@
  */
 
 import { CamelCasePlugin, type CamelCasePluginOptions, type UnknownRow } from 'kysely';
-import isPlainObject from 'lodash/isPlainObject';
+import isPlainObject from 'lodash/isPlainObject.js';
 
 export class MyCamelCasePlugin extends CamelCasePlugin {
   private _excludedColumns: string[];

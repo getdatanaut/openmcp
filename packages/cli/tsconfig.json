@@ -2,7 +2,6 @@
   "extends": "@libs/tsconfig/tsconfig.node.json",
   "include": ["**/*.ts"],
   "compilerOptions": {
-    "lib": ["es2023", "es2024.promise"],
     "rootDir": "."
   }
 }

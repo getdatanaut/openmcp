@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2023"],
-    "module": "ESNext",
+    "lib": ["es2023", "es2024.promise"],
+    "module": "NodeNext",
+    "moduleResolution": "Node16",
     "target": "ES2023",
     "types": ["@types/node"]
   }
