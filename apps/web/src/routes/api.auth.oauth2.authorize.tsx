@@ -18,6 +18,7 @@ function ApiOauth2Handler() {
 
     betterFetch(currentUrl, {
       method: 'get',
+      redirect: 'follow',
       async onSuccess(context) {
         const responseUrl = new URL(context.response.url);
         const searchParams = new URLSearchParams(responseUrl.search);
@@ -30,10 +31,16 @@ function ApiOauth2Handler() {
         } else if (context.response.ok) {
           await navigate({ to: responseUrl.pathname, replace: true });
         } else {
-          setError('Authorization service responded with an error/');
+          setError('Authorization service responded with an error.');
         }
       },
-      onError(context) {
+      async onError(context) {
+        if (context.response.redirected && context.response.status === 404) {
+          const url = new URL(context.response.url);
+          await navigate({ to: url.pathname + url.search, replace: true });
+          return;
+        }
+
         context.response
           .text()
           .then(txt => {

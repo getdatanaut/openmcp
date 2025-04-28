@@ -23,7 +23,7 @@ export interface CreateAuthOptions extends Pick<BetterAuthOptions, 'baseURL' | '
   db: DbSdk;
   basePath: string;
   socialProviders?: SocialProviders;
-  loginPage?: string;
+  loginPage: string;
   jwtOpts?: {
     expirationTime: number | string | Date;
   };
@@ -43,7 +43,7 @@ export const createAuthOptions = ({
   basePath,
   baseURL,
   secret,
-  loginPage = '/',
+  loginPage,
   jwtOpts,
   generateOrgData,
 }: CreateAuthOptions) => {
@@ -74,8 +74,6 @@ export const createAuthOptions = ({
       }),
       organization({
         allowUserToCreateOrganization: false,
-        // ac: accessControl,
-        // organizationCreation:
         schema: {
           organization: {
             modelName: 'organizations',
