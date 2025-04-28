@@ -1,4 +1,4 @@
-import { connectionProvider, PushProcessor } from '@rocicorp/zero/pg';
+import { type DatabaseProvider, PushProcessor, ZQLDatabaseProvider, ZQLPostgresJSAdapter } from '@rocicorp/zero/pg';
 import type { ReadonlyJSONValue } from 'drizzle-zero';
 import { createLocalJWKSet, jwtVerify } from 'jose';
 import { JOSEError } from 'jose/errors';
@@ -23,7 +23,7 @@ export async function handler({
   dbEncSecret: string;
 }) {
   const url = new URL(req.url);
-  const processor = new PushProcessor(schema, connectionProvider(sql));
+  const processor = new PushProcessor(new ZQLDatabaseProvider(new ZQLPostgresJSAdapter(sql), schema));
 
   const body = await req.json<ReadonlyJSONValue>();
 
@@ -92,7 +92,7 @@ async function handlePush({
   body,
   dbEncSecret,
 }: {
-  processor: PushProcessor<typeof schema, any, any>;
+  processor: PushProcessor<DatabaseProvider<typeof schema>, any>;
   authData: AuthData | undefined;
   params: Record<string, string>;
   body: ReadonlyJSONValue;

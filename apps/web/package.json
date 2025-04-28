@@ -38,7 +38,7 @@
     "@orpc/openapi": "1.1.0",
     "@orpc/react-query": "1.1.0",
     "@orpc/server": "1.1.0",
-    "@rocicorp/zero": "0.19.2025042204",
+    "@rocicorp/zero": "0.19.2025042700",
     "@tanstack/react-query": "5.74.4",
     "@tanstack/react-router": "1.117.0",
     "@tanstack/react-router-devtools": "1.117.0",

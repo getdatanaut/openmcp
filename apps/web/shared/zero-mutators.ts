@@ -255,17 +255,13 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
           assertFound(existing, 'Agent MCP server not found');
           assertIsRecordOwner(authData, existing);
 
-          // todo: raw sql to batch delete?
           const tools = await tx.query.agentMcpTools
             .where('agentId', existing.agentId)
             .where('mcpServerId', existing.mcpServerId)
             .where(eb => canReadAgentMcpTool(authData, eb))
             .run();
 
-          for (const tool of tools) {
-            await tx.mutate.agentMcpTools.delete({ id: tool.id });
-          }
-
+          await Promise.all(tools.map(({ id }) => tx.mutate.agentMcpTools.delete({ id })));
           await tx.mutate.agentMcpServers.delete({ id: data.id });
         } catch (error) {
           console.error('Error deleting agent MCP server', error);
