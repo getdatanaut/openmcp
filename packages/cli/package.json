@@ -50,11 +50,11 @@
   },
   "dependencies": {
     "@better-fetch/fetch": "1.1.18",
-    "@libs/schemas": "workspace:*",
     "@modelcontextprotocol/sdk": "1.10.2",
     "@openmcp/host-utils": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/remix": "workspace:*",
+    "@openmcp/schemas": "workspace:*",
     "@orpc/client": "1.1.1",
     "@orpc/contract": "1.1.1",
     "better-auth": "1.2.7",

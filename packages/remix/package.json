@@ -33,6 +33,7 @@
     "@modelcontextprotocol/sdk": "1.10.2",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
+    "@openmcp/schemas": "workspace:*",
     "@openmcp/server": "workspace:*",
     "@openmcp/utils": "workspace:*",
     "zod": "3.24.3"

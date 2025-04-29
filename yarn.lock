@@ -2300,6 +2300,7 @@ __metadata:
     "@libs/db-pg": "workspace:*"
     "@libs/schemas": "workspace:*"
     "@openmcp/cli": "workspace:*"
+    "@openmcp/schemas": "workspace:*"
     "@orpc/contract": "npm:1.1.1"
     eslint: "npm:9.25.1"
     zod: "npm:3.24.3"
@@ -2399,8 +2400,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@libs/schemas@workspace:libs/schemas"
   dependencies:
-    "@libs/db-ids": "workspace:*"
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
     eslint: "npm:9.25.1"
+    typescript: "npm:5.8.3"
     zod: "npm:3.24.3"
   languageName: unknown
   linkType: soft
@@ -2711,12 +2714,12 @@ __metadata:
   dependencies:
     "@better-fetch/fetch": "npm:1.1.18"
     "@libs/eslint-config": "workspace:*"
-    "@libs/schemas": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/host-utils": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@openmcp/remix": "workspace:*"
+    "@openmcp/schemas": "workspace:*"
     "@orpc/client": "npm:1.1.1"
     "@orpc/contract": "npm:1.1.1"
     "@types/yargs": "npm:^17.0.33"
@@ -2832,6 +2835,7 @@ __metadata:
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
+    "@openmcp/schemas": "workspace:*"
     "@openmcp/server": "workspace:*"
     "@openmcp/utils": "workspace:*"
     eslint: "npm:9.25.1"
@@ -2839,6 +2843,18 @@ __metadata:
     tsup: "npm:8.4.0"
     typescript: "npm:5.8.3"
     vitest: "npm:3.1.2"
+    zod: "npm:3.24.3"
+  languageName: unknown
+  linkType: soft
+
+"@openmcp/schemas@workspace:*, @openmcp/schemas@workspace:packages/schemas":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/schemas@workspace:packages/schemas"
+  dependencies:
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    eslint: "npm:9.25.1"
+    typescript: "npm:5.8.3"
     zod: "npm:3.24.3"
   languageName: unknown
   linkType: soft
@@ -16152,7 +16168,6 @@ __metadata:
     "@libs/auth": "workspace:*"
     "@libs/db-pg": "workspace:*"
     "@libs/eslint-config": "workspace:*"
-    "@libs/schemas": "workspace:*"
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"
     "@maxmorozoff/try-catch-tuple": "npm:0.1.2"
@@ -16160,6 +16175,7 @@ __metadata:
     "@openmcp/host-utils": "workspace:*"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
+    "@openmcp/schemas": "workspace:*"
     "@orpc/client": "npm:1.1.1"
     "@orpc/openapi": "npm:1.1.1"
     "@orpc/react-query": "npm:1.1.1"

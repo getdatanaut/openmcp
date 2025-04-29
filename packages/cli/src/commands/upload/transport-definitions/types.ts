@@ -1,7 +1,7 @@
-import type { OpenAPITransport, SSETransport, StdIOTransport, StreamableHTTPTransport } from '@libs/schemas/mcp';
 import type { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import type { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import type { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import type { OpenAPITransport, SSETransport, StdIOTransport, StreamableHTTPTransport } from '@openmcp/schemas/mcp';
 
 import type { OpenAPIClientTransport } from './openapi.ts';
 

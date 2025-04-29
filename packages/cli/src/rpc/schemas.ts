@@ -18,8 +18,6 @@ export const McpClientConfigSchemaSchema = z.object({
   required: z.array(z.string()).optional(),
 });
 
-export type McpClientConfigSchema = z.infer<typeof McpClientConfigSchemaSchema>;
-
 export const ToolInputSchemaSchema = z
   .object({
     type: z.literal('object').optional(),

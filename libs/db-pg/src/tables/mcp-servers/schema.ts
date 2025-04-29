@@ -1,6 +1,7 @@
 import type { TMcpServerId, TOrganizationId, TUserId } from '@libs/db-ids';
-import type { McpClientConfigSchemaSchema, TransportSchema } from '@libs/schemas/mcp';
+import type { McpClientConfigSchemaSchema } from '@libs/schemas/mcp';
 import type { SetOptional } from '@libs/utils-types';
+import type { TransportSchema } from '@openmcp/schemas/mcp';
 import { relations } from 'drizzle-orm';
 import { boolean, index, integer, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
