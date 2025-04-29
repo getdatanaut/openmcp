@@ -1,10 +1,6 @@
 import { McpServerId, type TMcpServerId } from '@libs/db-ids';
-import {
-  McpClientConfigSchemaSchema,
-  ToolInputSchemaSchema,
-  ToolOutputSchemaSchema,
-  TransportSchema,
-} from '@libs/schemas/mcp';
+import { McpClientConfigSchemaSchema, ToolInputSchemaSchema, ToolOutputSchemaSchema } from '@libs/schemas/mcp';
+import { TransportSchema } from '@openmcp/schemas/mcp';
 import { type } from '@orpc/contract';
 import { z } from 'zod';
 

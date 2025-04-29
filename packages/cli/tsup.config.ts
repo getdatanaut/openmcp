@@ -5,4 +5,5 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   entry: ['src/index.ts', 'src/register.ts', 'src/rpc/index.ts'],
+  external: ['@openmcp/schemas/mcp', '@openmcp/host-utils/mcp'],
 });

@@ -4,7 +4,7 @@ import {
   StdIOTransportSchema,
   StreamableHTTPTransportSchema,
   ToolName,
-} from '@libs/schemas/mcp';
+} from '@openmcp/schemas/mcp';
 import { z } from 'zod';
 
 export const ToolSchema = z.object({

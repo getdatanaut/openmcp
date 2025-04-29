@@ -18,12 +18,12 @@
   "dependencies": {
     "@libs/db-ids": "workspace:*",
     "@libs/db-pg-client": "workspace:*",
+    "@libs/schemas": "workspace:*",
     "@libs/utils-types": "workspace:*",
     "drizzle-orm": "0.42.0",
     "kysely": "0.28.2"
   },
   "devDependencies": {
-    "@libs/schemas": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "eslint": "9.25.1",
     "vitest": "3.1.2",

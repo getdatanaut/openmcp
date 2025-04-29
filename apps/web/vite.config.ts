@@ -29,4 +29,10 @@ export default defineConfig({
     // https://bugs.rocicorp.dev/issue/3763
     'process.argv': [],
   },
+
+  build: {
+    rollupOptions: {
+      external: ['@openmcp/schemas/mcp', '@openmcp/host-utils/mcp'],
+    },
+  },
 });

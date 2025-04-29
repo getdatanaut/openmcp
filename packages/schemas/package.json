@@ -1,13 +1,18 @@
 {
-  "name": "@libs/schemas",
+  "name": "@openmcp/schemas",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "sideEffects": false,
   "exports": {
-    "./mcp": "./src/mcp.ts"
+    "./mcp": {
+      "types": "./src/mcp.ts",
+      "development": "./src/mcp.ts",
+      "default": "./dist/mcp.js"
+    }
   },
   "scripts": {
+    "build": "tsup",
     "lint": "eslint .",
     "typecheck": "tsc"
   },
@@ -18,6 +23,7 @@
     "@libs/eslint-config": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "eslint": "9.25.1",
+    "tsup": "8.4.0",
     "typescript": "5.8.3"
   }
 }
