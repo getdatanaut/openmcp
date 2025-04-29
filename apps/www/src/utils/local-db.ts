@@ -1,11 +1,12 @@
 import type {
   ClientServerStorageData,
-  McpConductorSettings,
   ServerStorageData,
   ThreadMessageStorageData,
   ThreadStorageData,
 } from '@openmcp/manager';
 import { Dexie, type EntityTable } from 'dexie';
+
+import type { McpConductorSettings } from './conductor/index.ts';
 
 // indexdb does not deal with booleans well
 export type LocalClientServer = Omit<ClientServerStorageData, 'enabled'> & { enabled: number };

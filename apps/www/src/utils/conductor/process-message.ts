@@ -1,4 +1,5 @@
 import type { LanguageModelV1FinishReason } from '@ai-sdk/provider';
+import type { ClientId, ClientServer, ClientServerManager, Server, ServerId, Tool } from '@openmcp/manager';
 import { autoTrimToolResult, type AutoTrimToolResultError, errors } from '@openmcp/utils';
 import {
   type CoreSystemMessage,
@@ -18,9 +19,6 @@ import type { Result } from 'neverthrow';
 import { err, ok } from 'neverthrow';
 import { z } from 'zod';
 
-import type { ClientServer, ClientServerManager, Tool } from '../client-servers.ts';
-import type { Server } from '../servers.ts';
-import type { ClientId, ServerId } from '../types.ts';
 import type {
   McpConductorReasoningFinishAnnotation,
   McpConductorReasoningStartAnnotation,

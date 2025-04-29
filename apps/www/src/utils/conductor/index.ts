@@ -1,9 +1,8 @@
+import type { ClientId, ClientServerManager } from '@openmcp/manager';
 import type { UIMessage } from 'ai';
 import { createDataStreamResponse, formatDataStreamPart, generateObject } from 'ai';
 import { z } from 'zod';
 
-import type { ClientServerManager } from '../client-servers.ts';
-import type { ClientId } from '../types.ts';
 import { processMessage } from './process-message.ts';
 import { createProvider, type McpConductorProvider, type McpConductorProviderSettings } from './provider.ts';
 

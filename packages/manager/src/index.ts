@@ -9,15 +9,7 @@ declare global {
 }
 
 export type { ClientServerId, ClientServerOptions, ClientServerStorageData, Tool } from './client-servers.ts';
-export { ClientServer } from './client-servers.ts';
-export type {
-  McpConductorAnnotation,
-  McpConductorReasoningFinishAnnotation,
-  McpConductorReasoningStartAnnotation,
-} from './conductor/annotations.ts';
-export { isReasoningAnnotation, isUsageAnnotation } from './conductor/annotations.ts';
-export type { McpConductor, McpConductorSettings } from './conductor/conductor.ts';
-export { createMcpConductor } from './conductor/conductor.ts';
+export { ClientServer, ClientServerManager } from './client-servers.ts';
 export type { McpManagerOptions, McpManagerStorage } from './manager.ts';
 export { createMcpManager, McpManager } from './manager.ts';
 export type { ServerOptions, ServerStorageData } from './servers.ts';

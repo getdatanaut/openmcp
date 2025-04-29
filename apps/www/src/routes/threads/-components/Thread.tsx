@@ -9,12 +9,6 @@ import {
   faStop,
 } from '@fortawesome/free-solid-svg-icons';
 import { Avatar, Button, createContext, Icon, tn, type TW_STR, twMerge } from '@libs/ui-primitives';
-import {
-  isReasoningAnnotation,
-  isUsageAnnotation,
-  type McpConductorReasoningFinishAnnotation,
-  type McpConductorReasoningStartAnnotation,
-} from '@openmcp/manager';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { ReactNode } from '@tanstack/react-router';
 import { type LanguageModelUsage, type Message, type ToolInvocation, type UIMessage } from 'ai';
@@ -36,6 +30,12 @@ import { Markdown } from '~/components/Markdown.tsx';
 import { useCurrentManager } from '~/hooks/use-current-manager.ts';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { useScrollToBottom } from '~/hooks/use-scroll-to-bottom.tsx';
+import {
+  isReasoningAnnotation,
+  isUsageAnnotation,
+  type McpConductorReasoningFinishAnnotation,
+  type McpConductorReasoningStartAnnotation,
+} from '~/utils/conductor/annotations.ts';
 import { dayjs } from '~/utils/dayjs.ts';
 import { ThreadId, type TThreadId } from '~/utils/ids.ts';
 import { queryOptions } from '~/utils/query-options.ts';

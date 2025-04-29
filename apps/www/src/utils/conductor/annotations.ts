@@ -1,6 +1,5 @@
+import type { ServerId } from '@openmcp/manager';
 import { type LanguageModelUsage } from 'ai';
-
-import type { ServerId } from '../types.ts';
 
 export type McpConductorUsageAnnotation = {
   type: 'planning-usage' | 'assistant-usage' | 'tool-usage';

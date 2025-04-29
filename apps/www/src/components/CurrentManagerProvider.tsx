@@ -1,10 +1,11 @@
-import { createMcpConductor, createMcpManager, type McpManagerStorage } from '@openmcp/manager';
+import { createMcpManager, type McpManagerStorage } from '@openmcp/manager';
 import type { QueryClient } from '@tanstack/react-query';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { type ReactNode, useEffect, useRef } from 'react';
 
 import { CurrentManagerContext } from '~/hooks/use-current-manager.ts';
 import { useRootStore } from '~/hooks/use-root-store.tsx';
+import { createMcpConductor } from '~/utils/conductor/index.ts';
 import type { LocalClientServer, LocalDb } from '~/utils/local-db.ts';
 import { queryOptions } from '~/utils/query-options.ts';
 
