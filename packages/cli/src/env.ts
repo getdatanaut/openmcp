@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import { constants } from '@libs/host-utils';
+import { constants } from '@openmcp/host-utils';
 import envalid from 'envalid';
 
 export default envalid.cleanEnv(process.env, {

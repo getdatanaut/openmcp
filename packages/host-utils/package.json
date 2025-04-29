@@ -1,5 +1,5 @@
 {
-  "name": "@libs/host-utils",
+  "name": "@openmcp/host-utils",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -23,6 +23,8 @@
     "zod": "3.24.3"
   },
   "devDependencies": {
+    "@libs/eslint-config": "workspace:*",
+    "@libs/tsconfig": "workspace:*",
     "eslint": "9.25.1",
     "memfs": "^4.17.0",
     "typescript": "5.8.3",

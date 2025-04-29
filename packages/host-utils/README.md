@@ -10,24 +10,12 @@ This library provides utilities for:
 2. Installing and uninstalling "remixes" across different host environments
 3. Integration with various code editors and tools (VSCode, Cursor, etc.)
 
-## Installation
-
-This is an internal package within the OpenMCP monorepo. It can be used by other packages in the repository by adding it as a dependency:
-
-```json
-{
-  "dependencies": {
-    "@libs/host-utils": "workspace:*"
-  }
-}
-```
-
 ## Usage
 
 ### Constants
 
 ```typescript
-import * as constants from '@libs/host-utils';
+import * as constants from '@openmcp/host-utils';
 
 // Access platform-specific paths
 const { homedir, configdir } = constants;
@@ -36,7 +24,7 @@ const { homedir, configdir } = constants;
 ### MCP Integrations
 
 ```typescript
-import { install, uninstall, integrations } from '@libs/host-utils/mcp';
+import { install, uninstall, integrations } from '@openmcp/host-utils/mcp';
 
 // Install a remix for VSCode
 await install(logger, 'vscode', { id: 'remix-id', name: 'My Remix' });
