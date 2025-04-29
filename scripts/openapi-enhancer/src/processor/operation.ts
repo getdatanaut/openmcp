@@ -26,7 +26,7 @@ export default function createObjectProcessor({ model, log }: Context, purposes:
     });
 
     const { prompt: content, output } = await loadPromptAndOutput('object', {
-      object: operation.toString(),
+      object: operation.data,
     });
 
     const response = await generateObject(model, [...messages, { role: 'user', content }], output);

@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises';
+
 import { type CoreMessage, generateObject as _generateObject, type LanguageModel } from 'ai';
 import type { z } from 'zod';
 
@@ -16,6 +18,11 @@ export async function generateObject<O>(
     output: 'object',
     schema,
   });
+
+  const now = Date.now();
+  await fs.writeFile(`${now}-in-first.yaml`, String(messages[0]!.content!));
+  await fs.writeFile(`${now}-in.yaml`, String(messages[1]!.content!));
+  await fs.writeFile(`${now}-out.json`, JSON.stringify(res.object, null, 2));
 
   return res.object;
 }

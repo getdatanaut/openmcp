@@ -1,23 +1,23 @@
 import type { IBundledHttpService } from '@stoplight/types';
-import { unwrapOrElseForResult } from 'option-t/plain_result';
+import { unwrapOrElseForResult, unwrapOrForResult } from 'option-t/plain_result';
 
 import { tryInto } from '../../utils/accessors.ts';
 import { Chunk, type OmitReadonly } from './chunk.ts';
 
 type ServiceData = {
   title: string;
-  description: string;
+  description?: string;
   summary?: string;
   version: string;
   contact?: {
     name?: string;
     url?: string;
     email?: string;
-  } | null;
-  license: {
+  };
+  license?: {
     name?: string;
     url?: string;
-  } | null;
+  };
   readonly tags?: string[];
   readonly servers?: string[];
   readonly externalDocs?: string;
@@ -62,8 +62,8 @@ export class ServiceChunk extends Chunk<'service', ServiceData> {
 export function createServiceChunk(document: Record<string, unknown>, service: IBundledHttpService) {
   const data = {
     title: service.name,
-    summary: service.summary ?? '',
-    description: service.description ?? '',
+    summary: service.summary,
+    description: service.description,
     version: service.version,
     contact: service.contact
       ? {
@@ -71,13 +71,13 @@ export function createServiceChunk(document: Record<string, unknown>, service: I
           email: service.contact.email,
           url: service.contact.url,
         }
-      : null,
+      : undefined,
     license: service.license
       ? {
           name: service.license.name,
           url: service.license.url,
         }
-      : null,
+      : undefined,
     servers: service.servers?.map(server => server.url),
     tags: service.tags?.map(tag => tag.name),
     externalDocs: service.externalDocs?.url,

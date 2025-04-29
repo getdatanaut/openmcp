@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export default z.object({
+export const output = z.object({
   list: z.array(
     z.object({
       purpose: z.string(),
@@ -8,4 +8,8 @@ export default z.object({
       reasoning: z.string(),
     }),
   ),
+});
+
+export const input = z.object({
+  purposes: z.array(z.string()),
 });

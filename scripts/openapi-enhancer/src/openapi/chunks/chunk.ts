@@ -13,17 +13,13 @@ type ChunkEventMap = {
 
 export abstract class Chunk<K, D extends {}> implements Disposable {
   readonly kind: K;
-  protected readonly data: D;
+  public readonly data: D;
   readonly events: EventEmitter<ChunkEventMap>;
 
   protected constructor(kind: K, data: D) {
     this.kind = kind;
     this.data = data;
     this.events = new EventEmitter<ChunkEventMap>();
-  }
-
-  toString() {
-    return prettyStringify(this.data);
   }
 
   set<N extends keyof OmitReadonly<D> & string>(name: N, value: NonNullable<D[N]>) {

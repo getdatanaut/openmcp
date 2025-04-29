@@ -7,7 +7,7 @@ export default async function processService(messages: CoreMessage[], object: Se
   messages.push({
     role: 'system',
     content: await loadPrompt('role', {
-      document: object.toString(),
+      document: object.data,
     }),
   });
 }

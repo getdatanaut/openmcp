@@ -50,7 +50,7 @@ export function tryInto<V extends unknown>(
   type: 'string',
   value: V,
 ): Result<
-  V extends string ? V : V extends number ? `${V}` : V extends boolean ? `${V}` : V extends null ? 'null' : never,
+  V extends string ? V : V extends number ? `${V}` : V extends boolean ? `${V}` : V extends null ? 'null' : string,
   CastError
 >;
 export function tryInto<V>(
@@ -119,5 +119,5 @@ export function tryInto(
       break;
   }
 
-  throw new CastError(`Cannot cast ${value} to ${type}`);
+  return createErr(new CastError(`Cannot cast ${value} to ${type}`));
 }

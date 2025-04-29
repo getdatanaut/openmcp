@@ -10,7 +10,7 @@ export default async function generateRanking(
   purposes: Purpose[],
 ) {
   const { prompt, output } = await loadPromptAndOutput('rank', {
-    purposes: prettyStringify(purposes.map(purpose => purpose.value)),
+    purposes: purposes.map(purpose => purpose.value),
   });
 
   const purposeToId: Record<string, string> = {};

@@ -1,8 +1,6 @@
 import { hasRef, isPlainObject, resolveInlineRefWithLocation } from '@stoplight/json';
 import type { IBundledHttpService, IHttpOperation } from '@stoplight/types';
 
-import type { LoadedDocument } from '../../types.ts';
-
 /**
  * This isn't too optimized, so shouldn't be used anywhere else than this enhancer
  * where LLM is the actual limitation
@@ -35,8 +33,13 @@ function _createResolvedObject(document: IBundledHttpService, data: {}, stack: s
     }
 
     const resolved = resolveInlineRefWithLocation(document as unknown as Record<string, unknown>, data.$ref);
-    stack.push(data.$ref);
-    resolved.location;
+    if (Array.isArray(resolved)) {
+      return createResolvedArray(document, resolved, [...stack, data.$ref]);
+    } else if (isPlainObject(resolved)) {
+      return _createResolvedObject(document, resolved, [...stack, data.$ref]);
+    } else {
+      return resolved;
+    }
   }
 
   const newObj = { ...data };
@@ -46,7 +49,7 @@ function _createResolvedObject(document: IBundledHttpService, data: {}, stack: s
       newObj[key] = createResolvedArray(document, value, stack.slice());
     } else if (isPlainObject(value)) {
       newObj[key] = _createResolvedObject(document, value, stack.slice());
-    } else if (typeof value === 'string' && value.startsWith('#/')) {
+    } else {
       newObj[key] = value;
     }
   }

@@ -1,27 +1,37 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-import ObjectSchema from './object.schema.ts';
-import RankSchema from './rank.schema.ts';
+import type { z } from 'zod';
 
-const PROMPT_TO_OUTPUT = {
-  role: null,
+import prettyStringify from '../../utils/pretty-stringify.ts';
+import * as ObjectSchema from './object.schema.ts';
+import * as RankSchema from './rank.schema.ts';
+import * as RoleSchema from './role.schema.ts';
+
+const PROMPT_TO_SCHEMA = {
+  role: RoleSchema,
   rank: RankSchema,
   object: ObjectSchema,
 };
 
 type Prompts = {
-  [key in keyof typeof PROMPT_TO_OUTPUT]: (typeof PROMPT_TO_OUTPUT)[key];
+  [key in keyof typeof PROMPT_TO_SCHEMA]: (typeof PROMPT_TO_SCHEMA)[key];
 };
 
 type PromptName = keyof Prompts;
 
+type PromptInput<N extends PromptName> = z.infer<Prompts[N]['input']>;
+type PromptOutput<N extends PromptName> = Prompts[N]['output'];
+
 const promptCache: Partial<Record<keyof Prompts, string>> = {};
 
-export async function loadPromptAndOutput<N extends keyof Prompts>(name: N, values: Record<string, string>) {
+export async function loadPromptAndOutput<N extends PromptName>(
+  name: N,
+  values: PromptInput<N>,
+): Promise<{ readonly prompt: string; readonly output: PromptOutput<N> }> {
   const prompt = await loadPrompt(name, values);
-  const output = PROMPT_TO_OUTPUT[name];
-  return { prompt, output } as const;
+  const output = PROMPT_TO_SCHEMA[name].output;
+  return { prompt, output };
 }
 
 /**
@@ -30,7 +40,7 @@ export async function loadPromptAndOutput<N extends keyof Prompts>(name: N, valu
  * @param values The values to replace in the prompt
  * @returns The prompt text
  */
-export async function loadPrompt(name: PromptName, values: Record<string, string>): Promise<string> {
+export async function loadPrompt<N extends PromptName>(name: N, values: PromptInput<N>): Promise<string> {
   const existingValue = promptCache[name];
   if (existingValue !== undefined) {
     return replacePlaceholders(existingValue, values);
@@ -45,6 +55,13 @@ export async function loadPrompt(name: PromptName, values: Record<string, string
   }
 }
 
-function replacePlaceholders(text: string, values: Record<string, string>): string {
-  return text.replace(/\{\{(.*?)}}/g, (_, key) => values[key] ?? '');
+function replacePlaceholders(text: string, values: Record<string, unknown>): string {
+  return text.replace(/\{\{(.*?)}}/g, (str, key) => {
+    if (!Object.hasOwn(values, key)) {
+      return str;
+    }
+
+    const value = values[key];
+    return prettyStringify(value);
+  });
 }
