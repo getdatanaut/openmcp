@@ -16,18 +16,18 @@ import {
   twMerge,
 } from '@libs/ui-primitives';
 import { escapeLike } from '@rocicorp/zero';
-import { createFileRoute, Link, Navigate, redirect, retainSearchParams } from '@tanstack/react-router';
+import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
 import { atom, useAtomState, useAtomValue } from '@zedux/react';
 import { memo, useCallback, useMemo } from 'react';
 import { z } from 'zod';
 
-import { authAtom } from '~/atoms/auth.ts';
 import { debouncedSearchParamAtom } from '~/atoms/debounced-search-param.ts';
 import { injectLocalStorage } from '~/atoms/local-storage.ts';
 import { CanvasCrumbs } from '~/components/CanvasCrumbs.tsx';
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
+import { redirectIfLoggedOut } from '~/libs/routing.ts';
 import type { Agent, AgentMcpTool, McpTool } from '~shared/zero-schema.ts';
 
 import { AgentsMenu } from './-components/AgentsMenu.tsx';
@@ -50,12 +50,7 @@ export const Route = createFileRoute('/mcp/$agentId')({
   search: {
     middlewares: [retainSearchParams(['agentTab', 'agentServerId'])],
   },
-  beforeLoad: async ({ context, location }) => {
-    const auth = await context.ecosystem.getNodeOnce(authAtom).promise;
-    if (!auth.data) {
-      throw redirect({ to: '/login', search: { r: location.href } });
-    }
-  },
+  beforeLoad: redirectIfLoggedOut,
 });
 
 function RouteComponent() {

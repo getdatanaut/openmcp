@@ -19,6 +19,8 @@ function createZero({
   orgId?: TOrganizationId | null;
   refreshToken: () => Promise<string | undefined>;
 }) {
+  console.info(`z: creating instance for ${userId ?? 'anon'}`);
+
   return new Zero({
     userID: userId ?? 'anon',
     server: import.meta.env.VITE_PUBLIC_ZERO_SERVER,
@@ -27,7 +29,7 @@ function createZero({
     kvStore: import.meta.env.DEV ? 'mem' : 'idb',
     auth: (error?: 'invalid-token') => {
       if (error === 'invalid-token') {
-        console.info('Refreshing JWT');
+        console.info('z: refreshing jwt');
         return refreshToken();
       }
 
@@ -35,10 +37,11 @@ function createZero({
     },
     onUpdateNeeded(reason) {
       // @TODO
+      console.info('z: updated needed', reason);
     },
     onError: error => {
       // @TODO could do something w global errors
-      console.warn('ZERO ERROR', error);
+      console.warn('z: error', error);
     },
   });
 }
@@ -65,7 +68,7 @@ export const zeroAtom = atom('zero', () => {
 
       return () => z.close();
     },
-    [jwt, userId],
+    [jwt, userId, orgId],
     { synchronous: true },
   );
 

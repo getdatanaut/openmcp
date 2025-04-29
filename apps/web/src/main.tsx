@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom/client';
 
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 
+import { CanvasLayoutCentered } from './components/CanvasLayoutCentered.tsx';
 import type { Ecosystem } from './hooks/inject-ecosystem.ts';
 import { Providers } from './routes/-components/Providers.tsx';
 import { routeTree } from './routeTree.gen.ts';
@@ -20,6 +21,14 @@ export function createRouter() {
     },
     defaultViewTransition: true,
     defaultStructuralSharing: true,
+    defaultPreloadDelay: 100,
+    defaultPendingComponent: () => {
+      return (
+        <CanvasLayoutCentered>
+          <div className="px-5 py-4">Loading...</div>
+        </CanvasLayoutCentered>
+      );
+    },
     defaultErrorComponent: ({ error }) => {
       // console.error(error);
       let content;

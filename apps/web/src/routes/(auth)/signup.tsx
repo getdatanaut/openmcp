@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 import { authAtom } from '~/atoms/auth.ts';
+import { redirectIfLoggedIn } from '~/libs/routing.ts';
 
 import { Canvas } from './-components/Canvas.tsx';
 
@@ -17,6 +18,7 @@ export const Route = createFileRoute('/(auth)/signup')({
   search: {
     middlewares: [retainSearchParams(['r'])],
   },
+  beforeLoad: redirectIfLoggedIn,
 });
 
 function RouteComponent() {

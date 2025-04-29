@@ -1,19 +1,15 @@
 import '../assets/app.css';
 
 import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
-import { type QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
-import { type Ecosystem, useAtomInstance, useAtomValue } from '@zedux/react';
+import { useAtomInstance, useAtomValue } from '@zedux/react';
 import { useEffect, useState } from 'react';
 
 import { themeAtom } from '~/atoms/theme.ts';
 import { GlobalActions } from '~/components/GlobalActions.tsx';
-import type { EcosystemContext } from '~/hooks/inject-ecosystem.ts';
+import type { RouterContext } from '~/libs/routing.ts';
 
-export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient;
-  ecosystem: Ecosystem<EcosystemContext>;
-}>()({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
 });
 
