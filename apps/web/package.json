@@ -61,6 +61,7 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.0.12",
     "@libs/eslint-config": "workspace:*",
+    "@libs/host-utils": "workspace:*",
     "@tailwindcss/vite": "4.1.4",
     "@tanstack/router-plugin": "1.117.2",
     "@types/react": "19.1.2",

@@ -16148,6 +16148,7 @@ __metadata:
     "@libs/auth": "workspace:*"
     "@libs/db-pg": "workspace:*"
     "@libs/eslint-config": "workspace:*"
+    "@libs/host-utils": "workspace:*"
     "@libs/schemas": "workspace:*"
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"

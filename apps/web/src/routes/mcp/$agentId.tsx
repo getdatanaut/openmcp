@@ -1,5 +1,6 @@
 import { faCaretDown, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AgentId, AgentMcpServerId, type TAgentId, type TAgentMcpServerId, type TMcpServerId } from '@libs/db-ids';
+import { getInstallHints, type IntegrationName } from '@libs/host-utils/mcp';
 import {
   Button,
   CopyButton,
@@ -17,7 +18,7 @@ import {
 import { escapeLike } from '@rocicorp/zero';
 import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
 import { atom, useAtomState, useAtomValue } from '@zedux/react';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { z } from 'zod';
 
 import { debouncedSearchParamAtom } from '~/atoms/debounced-search-param.ts';
@@ -96,19 +97,22 @@ function ServersHeadingCard({ agentId, agent }: { agentId: TAgentId; agent?: Pic
 }
 
 const INSTALL_CLIENTS = {
-  claude: {
-    name: 'Claude Desktop',
-  },
-  cursor: {
-    name: 'Cursor',
-  },
-} as const;
+  boltai: { name: 'BoltAI' },
+  claude: { name: 'Claude Desktop' },
+  cline: { name: 'Cline' },
+  cursor: { name: 'Cursor' },
+  roocode: { name: 'Roo Code' },
+  vscode: { name: 'Visual Studio Code' },
+  'vscode-insiders': { name: 'Visual Studio Code Insiders' },
+  windsurf: { name: 'Windsurf' },
+  witsy: { name: 'Witsy' },
+} as const satisfies Record<IntegrationName, unknown>;
 
 const serverInstallAtom = atom('serverInstall', () => {
   const signal = injectLocalStorage({
     key: 'serverInstall',
     defaultVal: {
-      client: 'claude',
+      client: 'claude' as IntegrationName,
     },
   });
 
@@ -127,13 +131,23 @@ function InstallationCard({
   const [{ client }, setServerInstall] = useAtomState(serverInstallAtom);
 
   const updateClient = useCallback(
-    (client: string) => {
+    (client: IntegrationName) => {
       setServerInstall({ client });
     },
     [setServerInstall],
   );
 
-  const commandText = `npx @openmcp/cli@latest install ${agentId} --client ${client}`;
+  const remix = useMemo(
+    () =>
+      ({
+        id: agentId,
+        name: agentName ?? 'Datanaut Agent',
+      }) as const,
+    [agentId, agentName],
+  );
+  const installHints = useMemo(() => getInstallHints(remix, client), [remix, client]);
+  const commandText = installHints[0].value;
+  const installLink = installHints.length === 2 ? installHints[1].value : undefined;
 
   const selectElem = (
     <Select
@@ -163,6 +177,18 @@ function InstallationCard({
         readOnly
         endSection={<CopyButton size="xs" variant="soft" copyText={commandText} input className="mr-1 ml-2" />}
       />
+
+      {installLink ? (
+        <Button
+          size="sm"
+          intent="primary"
+          variant="soft"
+          className="ml-auto"
+          render={<a href={installLink} rel="noopener noreferrer" target="_blank" />}
+        >
+          Install
+        </Button>
+      ) : null}
     </div>
   );
 }

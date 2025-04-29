@@ -9,7 +9,8 @@
       "node": "./src/index.ts"
     },
     "./mcp": {
-      "node": "./src/mcp/index.ts"
+      "node": "./src/mcp/index.ts",
+      "default": "./src/mcp/index.browser.ts"
     }
   },
   "scripts": {
