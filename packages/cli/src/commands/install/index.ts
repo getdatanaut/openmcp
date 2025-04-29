@@ -1,4 +1,3 @@
-import { AgentId, type TAgentId } from '@libs/db-ids';
 import { install, type IntegrationName, integrations } from '@libs/host-utils/mcp';
 import type { Argv, CommandModule } from 'yargs';
 
@@ -20,12 +19,6 @@ export const builder = (yargs: Argv) =>
         describe: 'The name of the client to install agent for',
         demandOption: true,
       },
-    })
-    .check(({ agentId }) => {
-      if (!AgentId.isValid(agentId)) {
-        throw new Error(`Invalid agent ID: ${agentId}`);
-      }
-      return true;
     });
 
 export default {
@@ -34,7 +27,7 @@ export default {
   builder,
   handler: createHandler(async args => {
     const { agentId, client } = args as Awaited<ReturnType<typeof builder>['argv']>;
-    const remix = await getAgentById(agentId as TAgentId);
+    const remix = await getAgentById(agentId);
     await install(consola, client, remix);
   }),
 } satisfies CommandModule;

@@ -1,17 +1,18 @@
 import type { AuthSession, AuthUser } from '@libs/auth/types';
 import type { DbSdk } from '@libs/db-pg';
+import { routerContract as cliRouterContract } from '@openmcp/cli/rpc';
 import { onError } from '@orpc/client';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { RPCHandler } from '@orpc/server/fetch';
 import { SimpleCsrfProtectionHandlerPlugin } from '@orpc/server/plugins';
 
-import { agentsRouter } from './agents.ts';
-import { mpcServersRouter } from './mcp-servers.ts';
+import { cliRouter } from './cli/index.ts';
+import { mcpServersRouter } from './mcp-servers.ts';
 import { base, type RootContext } from './middleware.ts';
 
 const router = base.router({
-  mcpServers: mpcServersRouter.mcpServers,
-  agents: agentsRouter.agents,
+  cli: cliRouter,
+  mcpServers: mcpServersRouter.mcpServers,
 });
 
 const openApiHandler = new OpenAPIHandler(router, {
@@ -63,6 +64,7 @@ export async function handler({
     prefix: rpcBasePath,
     context: orpcContext,
   });
+  console.log(rpcRes, 'rpcrest');
 
   if (rpcRes.matched) {
     return rpcRes.response;

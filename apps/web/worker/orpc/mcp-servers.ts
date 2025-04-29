@@ -148,7 +148,7 @@ const getOpenApiDocument = base.mcpServers.getOpenApiDocument.handler(
   },
 );
 
-export const mpcServersRouter = {
+export const mcpServersRouter = {
   mcpServers: {
     upload: uploadMcpServer,
     uploadFromOpenApi: uploadFromOpenApi,
@@ -156,7 +156,7 @@ export const mpcServersRouter = {
   },
 };
 
-async function upsertMcpServer({
+export async function upsertMcpServer({
   db,
   userId,
   organizationId,

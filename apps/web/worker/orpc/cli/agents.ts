@@ -1,10 +1,11 @@
+import { AgentId } from '@libs/db-ids';
 import { decryptConfig } from '@libs/db-pg/crypto';
 import type { Config as RemixDefinition } from '@openmcp/remix';
 
-import { base, requireAuth } from './middleware.ts';
+import { base, requireAuth } from '../middleware.ts';
 
 // @todo: read access permissions check
-const listAgents = base.agents.listAgents.use(requireAuth).handler(({ context: { db, organizationId }, input }) => {
+const listAgents = base.cli.agents.listAgents.use(requireAuth).handler(({ context: { db, organizationId }, input }) => {
   return db.queries.agents.list({
     organizationId,
     name: input.name,
@@ -12,7 +13,11 @@ const listAgents = base.agents.listAgents.use(requireAuth).handler(({ context: {
 });
 
 // @todo: read access permissions check
-const getAgent = base.agents.getAgent.use(requireAuth).handler(async ({ context: { db }, input, errors }) => {
+const getAgent = base.cli.agents.getAgent.use(requireAuth).handler(async ({ context: { db }, input, errors }) => {
+  if (!AgentId.isValid(input.agentId)) {
+    throw errors.BAD_REQUEST({ message: 'Invalid agent id' });
+  }
+
   const object = await db.queries.agents.getById({
     id: input.agentId,
   });
@@ -25,9 +30,13 @@ const getAgent = base.agents.getAgent.use(requireAuth).handler(async ({ context:
 });
 
 // @todo: read access permissions check
-const getRemix = base.agents.getRemix
+const getRemix = base.cli.agents.getRemix
   .use(requireAuth)
-  .handler(async ({ context: { db, dbEncSecret, publicUrl }, input }) => {
+  .handler(async ({ context: { db, dbEncSecret, publicUrl }, input, errors }) => {
+    if (!AgentId.isValid(input.agentId)) {
+      throw errors.BAD_REQUEST({ message: 'Invalid agent id' });
+    }
+
     const list = await db.queries.agents.orderedListWithDependencies({ agentId: input.agentId });
 
     const server: RemixDefinition = {

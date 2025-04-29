@@ -2299,6 +2299,7 @@ __metadata:
     "@libs/db-ids": "workspace:*"
     "@libs/db-pg": "workspace:*"
     "@libs/schemas": "workspace:*"
+    "@openmcp/cli": "workspace:*"
     "@orpc/contract": "npm:1.1.1"
     eslint: "npm:9.25.1"
     zod: "npm:3.24.3"
@@ -2717,12 +2718,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openmcp/cli@workspace:packages/cli":
+"@openmcp/cli@workspace:*, @openmcp/cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@openmcp/cli@workspace:packages/cli"
   dependencies:
     "@better-fetch/fetch": "npm:1.1.18"
-    "@libs/api-contract": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/host-utils": "workspace:*"
     "@libs/schemas": "workspace:*"
@@ -2731,6 +2731,7 @@ __metadata:
     "@openmcp/openapi": "workspace:*"
     "@openmcp/remix": "workspace:*"
     "@orpc/client": "npm:1.1.1"
+    "@orpc/contract": "npm:1.1.1"
     "@types/yargs": "npm:^17.0.33"
     "@types/yargs-parser": "npm:^21.0.3"
     better-auth: "npm:1.2.7"
@@ -2745,6 +2746,7 @@ __metadata:
     vitest: "npm:3.1.2"
     yargs: "npm:~17.7.2"
     yargs-parser: "npm:~21.1.1"
+    zod: "npm:3.24.3"
   bin:
     openmcp: ./bin/index.js
   languageName: unknown
@@ -16154,6 +16156,7 @@ __metadata:
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"
     "@maxmorozoff/try-catch-tuple": "npm:0.1.2"
+    "@openmcp/cli": "workspace:*"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@orpc/client": "npm:1.1.1"

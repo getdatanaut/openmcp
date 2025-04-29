@@ -1,9 +1,9 @@
-import type { ContractRouterClient } from '@libs/api-contract';
 import { createORPCClient } from '@orpc/client';
 import { RPCLink } from '@orpc/client/fetch';
 import { SimpleCsrfProtectionLinkPlugin } from '@orpc/client/plugins';
 
 import env from '../env.ts';
+import type { ContractRouterClient } from '../rpc/index.ts';
 import { client } from './auth/index.ts';
 
 const link = new RPCLink({
@@ -17,7 +17,7 @@ const link = new RPCLink({
         'X-Bearer-Format': 'opaque',
       };
     } catch {
-      return {}
+      return {};
     }
   },
 });

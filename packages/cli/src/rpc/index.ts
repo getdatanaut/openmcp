@@ -1,15 +1,17 @@
-import { routerContract as cliRouterContract } from '@openmcp/cli/rpc';
 import type {
   ContractRouterClient as BaseContractRouterClient,
   InferContractRouterInputs,
   InferContractRouterOutputs,
 } from '@orpc/contract';
 
-import { mpcServersRouterContract } from './mcp-servers.ts';
+import { agentsRouterContract } from './agents.ts';
+import { mcpServersRouterContract } from './mcp-servers.ts';
 
 export const routerContract = {
-  ...mpcServersRouterContract,
-  ...cliRouterContract,
+  cli: {
+    ...agentsRouterContract,
+    ...mcpServersRouterContract,
+  },
 };
 
 export type RouterInputs = InferContractRouterInputs<typeof routerContract>;

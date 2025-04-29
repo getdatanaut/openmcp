@@ -34,6 +34,6 @@ export default async function handler(definition: ServerDefinition): Promise<voi
   };
 
   consola.start(`Uploading server "${mcpServer.name}"...`);
-  await rpcClient.mcpServers.upload(mcpServer);
+  await rpcClient.cli.mcpServers.upload(mcpServer);
   consola.success(`Server "${mcpServer.name}" successfully uploaded`);
 }

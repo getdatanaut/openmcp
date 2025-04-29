@@ -7,12 +7,12 @@ import { rpcClient } from '../../libs/sdk.ts';
 
 type Input =
   | {
-    readonly server: string;
-    readonly secret?: string;
-  }
+      readonly server: string;
+      readonly secret?: string;
+    }
   | {
-    readonly configFile: string;
-  };
+      readonly configFile: string;
+    };
 
 async function loadConfig(input: Input): Promise<Config> {
   if ('configFile' in input) {
@@ -20,7 +20,7 @@ async function loadConfig(input: Input): Promise<Config> {
     return parseConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')));
   }
 
-  const list = await rpcClient.agents.listAgents({
+  const list = await rpcClient.cli.agents.listAgents({
     name: input.server,
   });
 
@@ -30,7 +30,7 @@ async function loadConfig(input: Input): Promise<Config> {
     throw new Error(`Multiple servers found with name ${input.server}\n`);
   }
 
-  return rpcClient.agents.getRemix({ agentId: list[0]!.id });
+  return rpcClient.cli.agents.getRemix({ agentId: list[0]!.id });
 }
 
 export default async function handler(input: Input): Promise<void> {

@@ -3,7 +3,7 @@ import type { rpcClient } from '../../../libs/sdk.ts';
 import { getSummary } from '../utils/string.ts';
 import type { ConnectedClient } from './create-client.ts';
 
-type Tool = NonNullable<Parameters<typeof rpcClient.mcpServers.upload>[0]['tools']>[number];
+type Tool = NonNullable<Parameters<typeof rpcClient.cli.mcpServers.upload>[0]['tools']>[number];
 
 function unwrapBooleanOrUndefined(value: unknown) {
   return typeof value === 'boolean' ? value : undefined;

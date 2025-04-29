@@ -1,8 +1,7 @@
-import type { TAgentId } from '@libs/db-ids';
-import type { AgentDetailedSelect } from '@libs/db-pg';
 import { isDefinedError, ORPCError } from '@orpc/client';
 
 import consola from '../../consola/index.ts';
+import type { Agent } from '../../rpc/agents.ts';
 import { login } from '../datanaut/auth.ts';
 import { rpcClient } from '../sdk.ts';
 
@@ -13,13 +12,10 @@ type Opts = {
   login?: boolean;
 };
 
-export async function getAgentById(
-  id: TAgentId,
-  { login: shouldLogin = true }: Opts = {},
-): Promise<AgentDetailedSelect> {
-  let agent: AgentDetailedSelect;
+export async function getAgentById(id: string, { login: shouldLogin = true }: Opts = {}): Promise<Agent> {
+  let agent: Agent;
   try {
-    agent = await rpcClient.agents.getAgent({ agentId: id });
+    agent = await rpcClient.cli.agents.getAgent({ agentId: id });
   } catch (error) {
     if (!(error instanceof ORPCError) || !isDefinedError(error)) {
       throw error;

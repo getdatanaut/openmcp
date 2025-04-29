@@ -1,4 +1,3 @@
-import type { TAgentId } from '@libs/db-ids';
 import { uninstall } from '@libs/host-utils/mcp';
 import type { CommandModule } from 'yargs';
 
@@ -13,7 +12,7 @@ export default {
   builder,
   handler: createHandler(async args => {
     const { agentId, client } = args as Awaited<ReturnType<typeof builder>['argv']>;
-    const agent = await getAgentById(agentId as TAgentId);
+    const agent = await getAgentById(agentId);
     await uninstall(consola, client, agent);
   }),
 } satisfies CommandModule;
