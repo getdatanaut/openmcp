@@ -1,15 +1,26 @@
 import { ZeroProvider as BaseZeroProvider } from '@rocicorp/zero/react';
-import { useQueryClient } from '@tanstack/react-query';
-import { useRouter } from '@tanstack/react-router';
-import { createEcosystem, EcosystemProvider, useAtomInstance, useAtomValue } from '@zedux/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { type RegisteredRouter, RouterProvider } from '@tanstack/react-router';
+import { createEcosystem, EcosystemProvider, useAtomValue } from '@zedux/react';
 import { useMemo } from 'react';
 
-import { authAtom } from '~/atoms/auth.ts';
 import { zeroAtom } from '~/atoms/zero.ts';
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+export function Providers({ router }: { router: RegisteredRouter }) {
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: false,
+            refetchOnReconnect: true,
+            refetchOnWindowFocus: true,
+            staleTime: 1000 * 30,
+          },
+        },
+      }),
+    [],
+  );
 
   const ecosystem = useMemo(() => {
     const ecosystem = // for debugging: make the ecosystem globally accessible
@@ -22,26 +33,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
       }));
 
     return ecosystem;
-  }, [router, queryClient]);
+  }, [queryClient, router]);
 
   return (
-    <EcosystemProvider ecosystem={ecosystem}>
-      <AuthProvider>
-        <ZeroProvider>{children}</ZeroProvider>
-      </AuthProvider>
-    </EcosystemProvider>
+    <QueryClientProvider client={queryClient}>
+      <EcosystemProvider ecosystem={ecosystem}>
+        <RouterProvider
+          router={router}
+          context={{ queryClient, ecosystem }}
+          Wrap={({ children }) => <ZeroProvider>{children}</ZeroProvider>}
+        />
+      </EcosystemProvider>
+    </QueryClientProvider>
   );
-}
-
-function AuthProvider({ children }: { children: React.ReactNode }) {
-  const auth = useAtomInstance(authAtom);
-  const hasBootstrapped = useAtomValue(auth.exports.hasBootstrapped);
-
-  if (!hasBootstrapped) {
-    return <div>Loading...</div>;
-  }
-
-  return children;
 }
 
 function ZeroProvider({ children }: { children: React.ReactNode }) {

@@ -16,11 +16,12 @@ import {
   twMerge,
 } from '@libs/ui-primitives';
 import { escapeLike } from '@rocicorp/zero';
-import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
+import { createFileRoute, Link, Navigate, redirect, retainSearchParams } from '@tanstack/react-router';
 import { atom, useAtomState, useAtomValue } from '@zedux/react';
 import { memo, useCallback, useMemo } from 'react';
 import { z } from 'zod';
 
+import { authAtom } from '~/atoms/auth.ts';
 import { debouncedSearchParamAtom } from '~/atoms/debounced-search-param.ts';
 import { injectLocalStorage } from '~/atoms/local-storage.ts';
 import { CanvasCrumbs } from '~/components/CanvasCrumbs.tsx';
@@ -49,6 +50,12 @@ export const Route = createFileRoute('/mcp/$agentId')({
   search: {
     middlewares: [retainSearchParams(['agentTab', 'agentServerId'])],
   },
+  beforeLoad: async ({ context, location }) => {
+    const auth = await context.ecosystem.getNodeOnce(authAtom).promise;
+    if (!auth.data) {
+      throw redirect({ to: '/login', search: { r: location.href } });
+    }
+  },
 });
 
 function RouteComponent() {
@@ -57,8 +64,8 @@ function RouteComponent() {
   const [agent, agentDetails] = useZeroQuery(z => z.query.agents.where('id', agentId).one());
 
   if (!agent && agentDetails.type === 'complete') {
-    // Not found or no access. Could do this better and redirect w query string back to current route after login if
-    // this block is hit and user is not currently authenticated
+    // @TODO show a toast
+    // Not found or no access
     return <Navigate to="/mcp" replace />;
   }
 

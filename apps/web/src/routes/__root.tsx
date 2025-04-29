@@ -3,16 +3,16 @@ import '../assets/app.css';
 import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
 import { type QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
-import { useAtomInstance, useAtomValue } from '@zedux/react';
+import { type Ecosystem, useAtomInstance, useAtomValue } from '@zedux/react';
 import { useEffect, useState } from 'react';
 
 import { themeAtom } from '~/atoms/theme.ts';
 import { GlobalActions } from '~/components/GlobalActions.tsx';
-
-import { Providers } from './-components/Providers.tsx';
+import type { EcosystemContext } from '~/hooks/inject-ecosystem.ts';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  ecosystem: Ecosystem<EcosystemContext>;
 }>()({
   component: RootComponent,
 });
@@ -25,11 +25,9 @@ function RootComponent() {
   }
 
   return (
-    <Providers>
-      <SidebarLayout>
-        <Outlet />
-      </SidebarLayout>
-    </Providers>
+    <SidebarLayout>
+      <Outlet />
+    </SidebarLayout>
   );
 }
 

@@ -1,5 +1,5 @@
 import { type AuthSession, type AuthUser, createAuthClient } from '@libs/auth/react';
-import { api, atom, injectCallback, injectEffect, injectMemo, injectSignal } from '@zedux/react';
+import { api, atom, injectCallback, injectMemo, injectSignal } from '@zedux/react';
 
 import { AUTH_BASE_PATH } from '~shared/consts.ts';
 
@@ -36,13 +36,7 @@ export const authAtom = atom('auth', () => {
     });
   }, []);
 
-  injectEffect(
-    () => {
-      void getSession();
-    },
-    [],
-    { synchronous: true },
-  );
+  const onLoadSessionCheck = injectMemo(() => getSession(), []);
 
   const refreshToken = injectCallback(async () => {
     if (!signal.get().jwt) return;
@@ -65,21 +59,23 @@ export const authAtom = atom('auth', () => {
     signal.mutate({ jwt: null, user: null, session: null });
   }, []);
 
-  return api(signal).setExports(
-    {
-      signIn: client.signIn,
-      signUp: client.signUp,
-      oauth2: client.oauth2,
-      refreshToken,
-      signOut,
-      getSession,
+  return api(signal)
+    .setPromise(onLoadSessionCheck)
+    .setExports(
+      {
+        signIn: client.signIn,
+        signUp: client.signUp,
+        oauth2: client.oauth2,
+        refreshToken,
+        signOut,
+        getSession,
 
-      hasBootstrapped: () => signal.get().hasBootstrapped,
-      jwt: () => signal.get().jwt,
-      userId: () => signal.get().user?.id,
-      orgId: () => signal.get().session?.activeOrganizationId,
-      user: () => signal.get().user,
-    },
-    { wrap: false },
-  );
+        hasBootstrapped: () => signal.get().hasBootstrapped,
+        jwt: () => signal.get().jwt,
+        userId: () => signal.get().user?.id,
+        orgId: () => signal.get().session?.activeOrganizationId,
+        user: () => signal.get().user,
+      },
+      { wrap: false },
+    );
 });

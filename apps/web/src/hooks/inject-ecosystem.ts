@@ -1,11 +1,13 @@
 import type { QueryClient } from '@tanstack/react-query';
 import type { RegisteredRouter } from '@tanstack/react-router';
-import { type Ecosystem, injectEcosystem as baseInjectEcosystem } from '@zedux/react';
+import { type Ecosystem as BaseEcosystem, injectEcosystem as baseInjectEcosystem } from '@zedux/react';
 
 export interface EcosystemContext {
   router: RegisteredRouter;
   queryClient: QueryClient;
 }
+
+export type Ecosystem = BaseEcosystem<EcosystemContext>;
 
 export const injectEcosystem = () => {
   const ecosystem = baseInjectEcosystem();
@@ -14,9 +16,9 @@ export const injectEcosystem = () => {
     throw new Error('Invalid ecosystem. Expected Ecosystem<EcosystemContext>.');
   }
 
-  return ecosystem as Ecosystem<EcosystemContext>;
+  return ecosystem as Ecosystem;
 };
 
-function isValidEcosystem(ecosystem: Ecosystem<any>): ecosystem is Ecosystem<EcosystemContext> {
+function isValidEcosystem(ecosystem: BaseEcosystem<any>): ecosystem is Ecosystem {
   return 'router' in ecosystem.context && 'queryClient' in ecosystem.context;
 }

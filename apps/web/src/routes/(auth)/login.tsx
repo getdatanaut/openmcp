@@ -1,5 +1,5 @@
 import { Form, FormButton, FormField, FormInput, useFormStore } from '@libs/ui-primitives';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, retainSearchParams } from '@tanstack/react-router';
 import { useAtomInstance } from '@zedux/react';
 import { useState } from 'react';
 import { z } from 'zod';
@@ -12,7 +12,11 @@ export const Route = createFileRoute('/(auth)/login')({
   component: RouteComponent,
   validateSearch: z.object({
     provider: z.enum(['email']).optional(),
+    r: z.string().optional(),
   }),
+  search: {
+    middlewares: [retainSearchParams(['r'])],
+  },
 });
 
 function RouteComponent() {
