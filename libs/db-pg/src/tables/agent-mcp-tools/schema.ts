@@ -1,4 +1,12 @@
-import type { TAgentId, TAgentMcpToolId, TMcpServerId, TMcpToolId, TOrganizationId, TUserId } from '@libs/db-ids';
+import type {
+  TAgentId,
+  TAgentMcpServerId,
+  TAgentMcpToolId,
+  TMcpServerId,
+  TMcpToolId,
+  TOrganizationId,
+  TUserId,
+} from '@libs/db-ids';
 import type { SetOptional } from '@libs/utils-types';
 import { relations } from 'drizzle-orm';
 import { pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
@@ -22,13 +30,10 @@ export const agentMcpTools = pgTable(
     createdBy: text('created_by').$type<TUserId>().notNull(),
     mcpServerId: text('mcp_server_id').$type<TMcpServerId>().notNull(),
     mcpToolId: text('mcp_tool_id').$type<TMcpToolId>().notNull(),
+    agentMcpServerId: text('agent_mcp_server_id').$type<TAgentMcpServerId>().notNull(),
   },
   table => [
-    uniqueIndex('agent_mcp_tools_agent_id_mcp_server_id_mcp_tool_id_idx').on(
-      table.agentId,
-      table.mcpServerId,
-      table.mcpToolId,
-    ),
+    uniqueIndex('agent_mcp_tools_agent_mcp_server_id_mcp_tool_id_idx').on(table.agentMcpServerId, table.mcpToolId),
   ],
 );
 
@@ -38,8 +43,8 @@ export const agentMcpToolsRelations = relations(agentMcpTools, ({ one }) => ({
     references: [agents.id],
   }),
   agentMcpServer: one(agentMcpServers, {
-    fields: [agentMcpTools.agentId, agentMcpTools.mcpServerId],
-    references: [agentMcpServers.agentId, agentMcpServers.mcpServerId],
+    fields: [agentMcpTools.agentMcpServerId],
+    references: [agentMcpServers.id],
   }),
   mcpTool: one(mcpTools, {
     fields: [agentMcpTools.mcpToolId],
@@ -51,7 +56,7 @@ export type AgentMcpToolsTableCols = DrizzleToKysely<typeof agentMcpTools>;
 export type NewAgentMcpTool = SetOptional<typeof agentMcpTools.$inferInsert, 'id'>;
 export type UpdateableAgentMcpTool = Omit<
   Updateable<AgentMcpToolsTableCols>,
-  'id' | 'agentId' | 'mcpServerId' | 'mcpToolId' | 'organizationId'
+  'id' | 'agentId' | 'mcpServerId' | 'mcpToolId' | 'organizationId' | 'agentMcpServerId'
 >;
 export type AgentMcpTool = typeof agentMcpTools.$inferSelect;
 export type AgentMcpToolColNames = NonNullable<keyof AgentMcpTool>;

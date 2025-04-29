@@ -1,7 +1,7 @@
-import type { McpTool } from '@libs/db-pg';
+import type { McpTool } from '~shared/zero-schema.ts';
 
 export interface ServerToolRowProps {
-  tool: Pick<McpTool, 'id' | 'name' | 'displayName' | 'summary'>;
+  tool: Pick<McpTool, 'id' | 'name' | 'displayName' | 'summary' | 'mcpServerId'>;
   actionElem: React.ReactNode;
 }
 

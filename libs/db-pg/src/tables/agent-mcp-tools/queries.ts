@@ -30,7 +30,13 @@ export const agentMcpToolQueries = ({ db }: BuildQueriesOpts) => {
 /**
  * The values that are returned by default for queries that return a list of records.
  */
-export const summarySelect = ['id', 'agentId', 'mcpServerId', 'mcpToolId'] satisfies AgentMcpToolColNames[];
+export const summarySelect = [
+  'id',
+  'agentId',
+  'mcpServerId',
+  'mcpToolId',
+  'agentMcpServerId',
+] satisfies AgentMcpToolColNames[];
 
 export type SummarySelectCols = (typeof summarySelect)[number];
 

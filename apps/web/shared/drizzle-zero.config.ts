@@ -45,6 +45,7 @@ export default drizzleZeroConfig(
         mcpToolId: true,
         organizationId: true,
         createdBy: true,
+        agentMcpServerId: true,
       },
       agents: {
         id: true,

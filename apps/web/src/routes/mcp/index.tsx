@@ -12,7 +12,7 @@ import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 
 import { AgentsMenu } from './-components/AgentsMenu.tsx';
-import { ServerPanel } from './-components/ServerPanel.tsx';
+import { ServerPanel, type ServerPanelProps } from './-components/ServerPanel.tsx';
 import { ServerRow } from './-components/ServerRow.tsx';
 import { ServerToolRow, type ServerToolRowProps } from './-components/ServerToolRow.tsx';
 
@@ -88,7 +88,7 @@ function ServersList() {
   const isSearching = qServers.trim().length > 2;
 
   const [servers, serversDetails] = useZeroQuery(z => {
-    let q = z.query.mcpServers.orderBy('name', 'asc').limit(100);
+    let q = z.query.mcpServers.orderBy('name', 'asc').limit(25);
 
     if (isSearching) {
       q = q.where(({ or, cmp }) =>
@@ -126,11 +126,9 @@ function ServersList() {
 function ServerPanelWrapper() {
   const { serverId, serverTab } = Route.useSearch({ select: s => ({ serverId: s.serverId, serverTab: s.serverTab }) });
 
-  const renderToolsList = useCallback(() => {
-    if (!serverId) return null;
-
-    return <ServerToolsList serverId={serverId} />;
-  }, [serverId]);
+  const renderToolsList = useCallback<ServerPanelProps['renderToolsList']>(cbProps => {
+    return <ServerToolsList serverId={cbProps.serverId} />;
+  }, []);
 
   if (!serverId) return null;
 

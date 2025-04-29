@@ -14,7 +14,8 @@ import {
   Tabs,
   tn,
 } from '@libs/ui-primitives';
-import { Link, useMatches, useNavigate } from '@tanstack/react-router';
+import type { SetRequired } from '@libs/utils-types';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useCallback } from 'react';
 
 import { useJsonSchemaForm } from '~/components/JsonSchemaForm/context.ts';
@@ -24,29 +25,68 @@ import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
 import type { AgentMcpServer, McpServer } from '~shared/zero-schema.ts';
 
-export function ServerPanel({
-  serverId,
+export interface ServerPanelProps {
+  serverId?: TMcpServerId;
+  agentId?: TAgentId;
+  agentServerId?: TAgentMcpServerId;
+  activeTab?: string;
+  renderToolsList: ({
+    serverId,
+    agentId,
+    agentServerId,
+  }: {
+    serverId: TMcpServerId;
+    agentId?: TAgentId;
+    agentServerId?: TAgentMcpServerId;
+  }) => React.ReactNode;
+}
+
+export function ServerPanel({ serverId, agentServerId, ...props }: ServerPanelProps) {
+  if (agentServerId) {
+    return <AgentMcpServerPanel agentServerId={agentServerId} {...props} />;
+  }
+
+  if (serverId) {
+    return <McpServerPanel serverId={serverId} {...props} />;
+  }
+
+  return null;
+}
+
+type McpServerPanelProps = SetRequired<ServerPanelProps, 'serverId'>;
+
+function McpServerPanel({ serverId, ...props }: McpServerPanelProps) {
+  const [server] = useZeroQuery(z => z.query.mcpServers.where('id', serverId).one());
+
+  return <ServerPanelContent server={server} {...props} />;
+}
+
+type AgentMcpServerPanelProps = SetRequired<ServerPanelProps, 'agentServerId'>;
+
+function AgentMcpServerPanel({ agentServerId, ...props }: AgentMcpServerPanelProps) {
+  const [server] = useZeroQuery(z => z.query.agentMcpServers.related('mcpServer').where('id', agentServerId).one());
+
+  return <ServerPanelContent server={server?.mcpServer} agentMcpServer={server} {...props} />;
+}
+
+function ServerPanelContent({
+  server,
+  agentMcpServer,
   agentId,
   activeTab,
   renderToolsList,
 }: {
-  serverId: TMcpServerId;
+  server?: McpServer;
+  agentMcpServer?: AgentMcpServer;
   agentId?: TAgentId;
   activeTab?: string;
-  renderToolsList: () => React.ReactNode;
+  renderToolsList: ServerPanelProps['renderToolsList'];
 }) {
-  const [server] = useZeroQuery(z =>
-    z.query.mcpServers
-      .where('id', serverId)
-      .related('agentMcpServers', q => q.where('agentId', agentId ?? 'ag_xxx').one())
-      .one(),
-  );
-
   if (!server) {
     return null;
   }
 
-  const isInstalled = !!server.agentMcpServers;
+  const isInstalled = !!agentMcpServer;
 
   return (
     <>
@@ -65,19 +105,21 @@ export function ServerPanel({
 
       <ServerTabs
         activeTab={activeTab}
-        serverId={serverId}
+        serverId={server.id}
         agentId={agentId}
         server={server}
-        agentMcpServer={server?.agentMcpServers}
+        agentMcpServer={agentMcpServer}
         renderToolsList={renderToolsList}
       />
     </>
   );
 }
 
-const TabButton = (props: TabProps) => (
-  <Button variant={props['aria-selected'] ? 'solid' : 'ghost'} isInteractive={!props['aria-selected']} {...props} />
-);
+function TabButton(props: TabProps) {
+  return (
+    <Button variant={props['aria-selected'] ? 'solid' : 'ghost'} isInteractive={!props['aria-selected']} {...props} />
+  );
+}
 
 function ServerTabs({
   activeTab = 'root',
@@ -92,7 +134,7 @@ function ServerTabs({
   agentId?: TAgentId;
   server: McpServer;
   agentMcpServer?: AgentMcpServer;
-  renderToolsList: () => React.ReactNode;
+  renderToolsList: ServerPanelProps['renderToolsList'];
 }) {
   return (
     <Tabs variant="unstyled" selectedId={activeTab} selectOnMove={false}>
@@ -119,7 +161,7 @@ function ServerTabs({
 
       <TabPanels className="px-6 pt-4 pb-6">
         <TabPanel tabId="root" unmountOnHide>
-          {renderToolsList()}
+          {renderToolsList({ serverId, agentId, agentServerId: agentMcpServer?.id })}
         </TabPanel>
 
         <TabPanel tabId="config" unmountOnHide>
@@ -151,6 +193,8 @@ function ServerConfigForm({
   configSchema: McpServer['configSchemaJson'];
   config?: Record<string, string | number | boolean>;
 }) {
+  const navigate = useNavigate();
+
   const { form } = useJsonSchemaForm({
     schema: configSchema,
     defaultValues: config,
@@ -160,7 +204,7 @@ function ServerConfigForm({
   const { mutate: updateAgentMcpServer } = useZeroMutation(
     (z, { id, configJson }: { id: TAgentMcpServerId; configJson: Record<string, string | number | boolean> }) => ({
       op: z.mutate.agentMcpServers.update({ id, configJson }),
-      onSuccess: () => {
+      onClientSuccess: () => {
         alert('Server config updated');
       },
       onServerError(error) {
@@ -178,16 +222,21 @@ function ServerConfigForm({
         mcpServerId,
         configJson,
       }: { agentId: TAgentId; mcpServerId: TMcpServerId; configJson: Record<string, string | number | boolean> },
-    ) => ({
-      op: z.mutate.agentMcpServers.insert({ id: AgentMcpServerId.generate(), agentId, mcpServerId, configJson }),
-      onSuccess: () => {
-        alert('Server installed');
-      },
-      onServerError(error) {
-        alert(`Error installing server: ${error}`);
-      },
-    }),
-    [],
+    ) => {
+      const id = AgentMcpServerId.generate();
+
+      return {
+        op: z.mutate.agentMcpServers.insert({ id, agentId, mcpServerId, configJson }),
+        onClientSuccess: () => {
+          alert('Server installed');
+          void navigate({ to: '.', search: prev => ({ ...prev, serverId: mcpServerId, agentServerId: id }) });
+        },
+        onServerError(error) {
+          alert(`Error installing server: ${error}`);
+        },
+      };
+    },
+    [navigate],
   );
 
   form.useSubmit(async ({ values }) => {
@@ -218,7 +267,7 @@ function RemoveServerButton({ agentMcpServerId }: { agentMcpServerId: TAgentMcpS
     (z, { id }: { id: TAgentMcpServerId }) => ({
       op: z.mutate.agentMcpServers.delete({ id }),
       onClientSuccess() {
-        void navigate({ to: '.', search: prev => ({ ...prev, serverId: undefined }), replace: true });
+        void navigate({ to: '.', search: prev => ({ ...prev, agentServerId: undefined }), replace: true });
       },
       onServerError(error) {
         alert(`Error deleting server: ${error}`);

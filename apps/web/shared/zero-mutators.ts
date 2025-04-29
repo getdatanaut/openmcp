@@ -28,8 +28,8 @@ const CreateAgentSchema = z.object({
 
 const CreateAgentMcpToolSchema = z.object({
   id: AgentMcpToolId.validator.optional(),
-  agentId: AgentId.validator,
   mcpToolId: McpToolId.validator,
+  agentMcpServerId: AgentMcpServerId.validator,
 });
 
 const RemoveAgentMcpToolSchema = z.object({
@@ -105,13 +105,6 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
 
         const data = CreateAgentMcpToolSchema.parse(props);
 
-        const agent = await tx.query.agents
-          .where('id', data.agentId)
-          .where(eb => canReadAgent(authData, eb))
-          .one()
-          .run();
-        assertFound(agent, 'Agent not found');
-
         const tool = await tx.query.mcpTools
           .where('id', data.mcpToolId)
           .where(eb => canReadMcpTool(authData, eb))
@@ -120,29 +113,20 @@ export function createMutators(authData: AuthData | undefined, serverOpts: Serve
         assertFound(tool, 'Tool not found');
 
         const agentServer = await tx.query.agentMcpServers
-          .where('agentId', agent.id)
-          .where('mcpServerId', tool.mcpServerId)
+          .where('id', data.agentMcpServerId)
           .where(eb => canReadAgentMcpServer(authData, eb))
           .one()
           .run();
-
-        if (!agentServer) {
-          await tx.mutate.agentMcpServers.insert({
-            id: AgentMcpServerId.generate(),
-            agentId: agent.id,
-            mcpServerId: tool.mcpServerId,
-            organizationId: authData.orgId,
-            createdBy: authData.sub,
-          });
-        }
+        assertFound(agentServer, 'Agent mcp server not found');
 
         await tx.mutate.agentMcpTools.insert({
           id: data.id ?? AgentMcpToolId.generate(),
-          agentId: agent.id,
+          agentId: agentServer.agentId,
           mcpServerId: tool.mcpServerId,
           mcpToolId: tool.id,
           organizationId: authData.orgId,
           createdBy: authData.sub,
+          agentMcpServerId: data.agentMcpServerId,
         });
       },
 

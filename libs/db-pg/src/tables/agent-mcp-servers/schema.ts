@@ -1,7 +1,7 @@
 import type { TAgentId, TAgentMcpServerId, TMcpServerId, TOrganizationId, TUserId } from '@libs/db-ids';
 import type { SetOptional, Tagged } from '@libs/utils-types';
 import { relations } from 'drizzle-orm';
-import { index, jsonb, pgTable, text, uniqueIndex } from 'drizzle-orm/pg-core';
+import { index, jsonb, pgTable, text } from 'drizzle-orm/pg-core';
 import type { Updateable } from 'kysely';
 
 import type { DrizzleToKysely } from '../../types.ts';
@@ -31,11 +31,8 @@ export const agentMcpServers = pgTable(
       .default({} as EncryptedAgentMcpServerConfig),
   },
   table => [
-    uniqueIndex('agents_mcp_servers_agent_id_mcp_server_id_organization_id_idx').on(
-      table.agentId,
-      table.mcpServerId,
-      table.organizationId,
-    ),
+    index('agents_mcp_servers_agent_id_idx').on(table.agentId),
+    index('agents_mcp_servers_mcp_server_id_idx').on(table.mcpServerId),
     index('agents_mcp_servers_organization_id_idx').on(table.organizationId),
   ],
 );

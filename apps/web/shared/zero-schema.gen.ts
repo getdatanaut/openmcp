@@ -116,6 +116,13 @@ export const schema = {
             null as (typeof DrizzleConfigSchema)["tables"]["agentMcpTools"]["columns"]["mcpToolId"]["customType"],
           serverName: "mcp_tool_id",
         },
+        agentMcpServerId: {
+          type: "string",
+          optional: false,
+          customType:
+            null as (typeof DrizzleConfigSchema)["tables"]["agentMcpTools"]["columns"]["agentMcpServerId"]["customType"],
+          serverName: "agent_mcp_server_id",
+        },
       },
       primaryKey: ["id"],
       serverName: "agent_mcp_tools",
@@ -527,8 +534,8 @@ export const schema = {
       ],
       agentMcpTools: [
         {
-          sourceField: ["agentId", "mcpServerId"],
-          destField: ["agentId", "mcpServerId"],
+          sourceField: ["id"],
+          destField: ["agentMcpServerId"],
           destSchema: "agentMcpTools",
           cardinality: "many",
         },
@@ -553,8 +560,8 @@ export const schema = {
       ],
       agentMcpServer: [
         {
-          sourceField: ["agentId", "mcpServerId"],
-          destField: ["agentId", "mcpServerId"],
+          sourceField: ["agentMcpServerId"],
+          destField: ["id"],
           destSchema: "agentMcpServers",
           cardinality: "one",
         },

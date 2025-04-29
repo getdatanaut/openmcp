@@ -1,5 +1,5 @@
 import { faCaretDown, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { AgentId, type TAgentId, type TMcpServerId } from '@libs/db-ids';
+import { AgentId, AgentMcpServerId, type TAgentId, type TAgentMcpServerId, type TMcpServerId } from '@libs/db-ids';
 import {
   Button,
   CopyButton,
@@ -17,7 +17,7 @@ import {
 import { escapeLike } from '@rocicorp/zero';
 import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
 import { atom, useAtomState, useAtomValue } from '@zedux/react';
-import { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { z } from 'zod';
 
 import { debouncedSearchParamAtom } from '~/atoms/debounced-search-param.ts';
@@ -26,9 +26,10 @@ import { CanvasCrumbs } from '~/components/CanvasCrumbs.tsx';
 import { CanvasLayout } from '~/components/CanvasLayout.tsx';
 import { useZeroMutation } from '~/hooks/use-zero-mutation.ts';
 import { useZeroQuery } from '~/hooks/use-zero-query.ts';
-import type { Agent, AgentMcpTool } from '~shared/zero-schema.ts';
+import type { Agent, AgentMcpTool, McpTool } from '~shared/zero-schema.ts';
 
 import { AgentsMenu } from './-components/AgentsMenu.tsx';
+import type { ServerPanelProps } from './-components/ServerPanel.tsx';
 import { ServerPanel } from './-components/ServerPanel.tsx';
 import { ServerRow } from './-components/ServerRow.tsx';
 import { ServerToolRow, type ServerToolRowProps } from './-components/ServerToolRow.tsx';
@@ -42,9 +43,10 @@ export const Route = createFileRoute('/mcp/$agentId')({
   },
   validateSearch: z.object({
     agentTab: z.enum(['tools']).optional(),
+    agentServerId: AgentMcpServerId.validator.optional(),
   }),
   search: {
-    middlewares: [retainSearchParams(['agentTab'])],
+    middlewares: [retainSearchParams(['agentTab', 'agentServerId'])],
   },
 });
 
@@ -234,23 +236,22 @@ function ServersList() {
 }
 
 function InstalledServersList() {
-  const { agentId } = Route.useParams();
-  const { activeServerId } = Route.useSearch({ select: s => ({ activeServerId: s.serverId }) });
+  const { activeServerId } = Route.useSearch({ select: s => ({ activeServerId: s.agentServerId }) });
 
   const qServers = useAtomValue(debouncedSearchParamAtom, [{ searchParam: 'qServers' }]);
   const isSearching = qServers.trim().length > 2;
 
   const [servers, serversDetails] = useZeroQuery(z => {
-    let q = z.query.mcpServers
-      .whereExists('agentMcpServers', agentMcpServers => agentMcpServers.where('agentId', '=', agentId))
-      .orderBy('name', 'asc');
+    let q = z.query.agentMcpServers.related('mcpServer');
 
     if (isSearching) {
-      q = q.where(({ or, cmp }) =>
-        or(
-          cmp('name', 'ILIKE', `%${escapeLike(qServers)}%`),
-          cmp('summary', 'ILIKE', `%${escapeLike(qServers)}%`),
-          cmp('description', 'ILIKE', `%${escapeLike(qServers)}%`),
+      q = q.whereExists('mcpServer', mcpServer =>
+        mcpServer.where(({ or, cmp }) =>
+          or(
+            cmp('name', 'ILIKE', `%${escapeLike(qServers)}%`),
+            cmp('summary', 'ILIKE', `%${escapeLike(qServers)}%`),
+            cmp('description', 'ILIKE', `%${escapeLike(qServers)}%`),
+          ),
         ),
       );
     }
@@ -260,8 +261,14 @@ function InstalledServersList() {
 
   let content;
   if (servers.length) {
-    content = servers.map(server => (
-      <ServerRow key={server.id} server={server} isActive={server.id === activeServerId} />
+    const sortedServers = servers.sort((a, b) => a.mcpServer!.name.localeCompare(b.mcpServer!.name));
+    content = sortedServers.map(server => (
+      <ServerRow
+        key={server.id}
+        server={server.mcpServer!}
+        agentServerId={server.id}
+        isActive={server.id === activeServerId}
+      />
     ));
   } else {
     content = (
@@ -281,17 +288,15 @@ function InstalledServersList() {
 }
 
 function AvailableServersList() {
-  const { agentId } = Route.useParams();
-  const { activeServerId } = Route.useSearch({ select: s => ({ activeServerId: s.serverId }) });
+  const { activeServerId, agentServerId } = Route.useSearch({
+    select: s => ({ activeServerId: s.serverId, agentServerId: s.agentServerId }),
+  });
 
   const qServers = useAtomValue(debouncedSearchParamAtom, [{ searchParam: 'qServers' }]);
   const isSearching = qServers.trim().length > 2;
 
   const [servers, serversDetails] = useZeroQuery(z => {
-    let q = z.query.mcpServers
-      .where(({ not, exists }) => not(exists('agentMcpServers', q => q.where('agentId', '=', agentId))))
-      .orderBy('name', 'asc')
-      .limit(100);
+    let q = z.query.mcpServers.orderBy('name', 'asc').limit(25);
 
     if (isSearching) {
       q = q.where(({ or, cmp }) =>
@@ -309,7 +314,7 @@ function AvailableServersList() {
   let content;
   if (servers.length) {
     content = servers.map(server => (
-      <ServerRow key={server.id} server={server} isActive={server.id === activeServerId} />
+      <ServerRow key={server.id} server={server} isActive={server.id === activeServerId && !agentServerId} />
     ));
   } else {
     content = (
@@ -329,74 +334,111 @@ function AvailableServersList() {
 }
 
 function ServerPanelWrapper() {
-  const { serverId, serverTab } = Route.useSearch({ select: s => ({ serverId: s.serverId, serverTab: s.serverTab }) });
   const { agentId } = Route.useParams();
+  const { serverId, serverTab, agentServerId } = Route.useSearch({
+    select: s => ({ serverId: s.serverId, serverTab: s.serverTab, agentServerId: s.agentServerId }),
+  });
 
-  const renderToolsList = useCallback(() => {
-    if (!serverId) return null;
+  const renderToolsList = useCallback<ServerPanelProps['renderToolsList']>(cbProps => {
+    return <ServerToolsList serverId={cbProps.serverId} agentServerId={cbProps.agentServerId} />;
+  }, []);
 
-    return <ServerToolsList serverId={serverId} agentId={agentId} />;
-  }, [serverId, agentId]);
-
-  if (!serverId) return null;
+  if (!serverId && !agentServerId) return null;
 
   return (
     <div className="ak-layer-0.4 sticky inset-y-0 right-0 h-[var(--canvas-h)] w-3/5 overflow-y-auto border-l">
-      <ServerPanel serverId={serverId} agentId={agentId} activeTab={serverTab} renderToolsList={renderToolsList} />
+      <ServerPanel
+        serverId={serverId}
+        agentId={agentId}
+        agentServerId={agentServerId}
+        activeTab={serverTab}
+        renderToolsList={renderToolsList}
+      />
     </div>
   );
 }
 
-function ServerToolsList({ serverId, agentId }: { serverId: TMcpServerId; agentId: TAgentId }) {
-  const [installedTools] = useZeroQuery(z =>
-    z.query.mcpTools
-      .related('agentMcpTools', q => q.where('agentId', '=', agentId))
-      .where(({ and, cmp, exists }) =>
-        and(
-          cmp('mcpServerId', '=', serverId),
-          exists('agentMcpTools', q => q.where('agentId', '=', agentId)),
-        ),
-      )
-      .orderBy('displayName', 'asc')
-      .orderBy('name', 'asc'),
+function ServerToolsList({ serverId, agentServerId }: { serverId: TMcpServerId; agentServerId?: TAgentMcpServerId }) {
+  const [agentTools] = useZeroQuery(
+    z =>
+      z.query.agentMcpTools.where(
+        'agentMcpServerId',
+        'IS',
+        // @ts-expect-error type issue that will be fixed by zero soon
+        agentServerId,
+      ),
+    { enabled: !!agentServerId },
   );
 
-  const [uninstalledTools] = useZeroQuery(z =>
-    z.query.mcpTools
-      .where(({ and, cmp, exists, not }) =>
-        and(cmp('mcpServerId', '=', serverId), not(exists('agentMcpTools', q => q.where('agentId', '=', agentId)))),
-      )
-      .orderBy('displayName', 'asc')
-      .orderBy('name', 'asc'),
+  const [allTools] = useZeroQuery(z =>
+    z.query.mcpTools.where('mcpServerId', '=', serverId).orderBy('displayName', 'asc').orderBy('name', 'asc'),
   );
+
+  const agentToolsMap = new Map(agentTools.map(tool => [tool.mcpToolId, tool]));
+
+  const installedTools: { tool: McpTool; agentMcpTool: AgentMcpTool }[] = [];
+  const availableTools: { tool: McpTool; agentMcpTool?: AgentMcpTool }[] = [];
+
+  for (const tool of allTools) {
+    if (agentToolsMap.has(tool.id)) {
+      installedTools.push({ tool, agentMcpTool: agentToolsMap.get(tool.id)! });
+    } else {
+      availableTools.push({ tool });
+    }
+  }
 
   return (
     <div className="flex flex-col gap-1">
-      {installedTools.map(tool => (
-        <ServerToolRowWrapper key={tool.id} tool={tool} agentTool={tool.agentMcpTools[0]} />
+      {installedTools.map(({ tool, agentMcpTool }) => (
+        <ServerToolRowWrapper key={tool.id} tool={tool} agentTool={agentMcpTool} />
       ))}
 
-      {uninstalledTools.map(tool => (
+      {availableTools.map(({ tool }) => (
         <ServerToolRowWrapper key={tool.id} tool={tool} />
       ))}
     </div>
   );
 }
 
-function ServerToolRowWrapper({ tool, agentTool }: { tool: ServerToolRowProps['tool']; agentTool?: AgentMcpTool }) {
+const ServerToolRowWrapper = memo(function ServerToolRowWrapper({
+  tool,
+  agentTool,
+}: {
+  tool: ServerToolRowProps['tool'];
+  agentTool?: AgentMcpTool;
+}) {
   const { agentId } = Route.useParams();
+  const { agentServerId } = Route.useSearch({ select: s => ({ agentServerId: s.agentServerId }) });
+  const navigate = Route.useNavigate();
+
   const toolId = tool.id;
+  const serverId = tool.mcpServerId;
   const agentToolId = agentTool?.id;
 
   const { mutate: handleToggleTool } = useZeroMutation(
-    z => {
+    async z => {
       if (agentToolId) {
-        return z.mutate.agentMcpTools.delete({ id: agentToolId });
+        return {
+          op: z.mutate.agentMcpTools.delete({ id: agentToolId }),
+        };
       }
 
-      return z.mutate.agentMcpTools.insert({ agentId, mcpToolId: toolId });
+      let finalAgentServerId = agentServerId;
+      if (!finalAgentServerId) {
+        finalAgentServerId = AgentMcpServerId.generate();
+        await z.mutate.agentMcpServers.insert({ id: finalAgentServerId, agentId, mcpServerId: serverId });
+      }
+
+      return {
+        op: z.mutate.agentMcpTools.insert({ mcpToolId: toolId, agentMcpServerId: finalAgentServerId }),
+        onClientSuccess() {
+          if (!agentServerId) {
+            void navigate({ to: '.', search: prev => ({ ...prev, serverId, agentServerId: finalAgentServerId }) });
+          }
+        },
+      };
     },
-    [toolId, agentId, agentToolId],
+    [toolId, agentId, navigate, serverId, agentServerId, agentToolId],
   );
 
   const actionElem = (
@@ -411,4 +453,4 @@ function ServerToolRowWrapper({ tool, agentTool }: { tool: ServerToolRowProps['t
   );
 
   return <ServerToolRow tool={tool} actionElem={actionElem} />;
-}
+});
