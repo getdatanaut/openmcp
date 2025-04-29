@@ -50,7 +50,9 @@
   },
   "dependencies": {
     "@better-fetch/fetch": "1.1.18",
+    "@libs/schemas": "workspace:*",
     "@modelcontextprotocol/sdk": "1.10.2",
+    "@openmcp/host-utils": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "@orpc/client": "1.1.1",
@@ -65,8 +67,6 @@
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",
-    "@libs/host-utils": "workspace:*",
-    "@libs/schemas": "workspace:*",
     "@libs/tsconfig": "workspace:*",
     "@types/yargs": "^17.0.33",
     "@types/yargs-parser": "^21.0.3",

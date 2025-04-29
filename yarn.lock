@@ -2395,19 +2395,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@libs/host-utils@workspace:*, @libs/host-utils@workspace:libs/host-utils":
-  version: 0.0.0-use.local
-  resolution: "@libs/host-utils@workspace:libs/host-utils"
-  dependencies:
-    "@sindresorhus/slugify": "npm:^2.2.1"
-    eslint: "npm:9.25.1"
-    memfs: "npm:^4.17.0"
-    typescript: "npm:5.8.3"
-    vitest: "npm:3.1.2"
-    zod: "npm:3.24.3"
-  languageName: unknown
-  linkType: soft
-
 "@libs/schemas@workspace:*, @libs/schemas@workspace:libs/schemas":
   version: 0.0.0-use.local
   resolution: "@libs/schemas@workspace:libs/schemas"
@@ -2724,10 +2711,10 @@ __metadata:
   dependencies:
     "@better-fetch/fetch": "npm:1.1.18"
     "@libs/eslint-config": "workspace:*"
-    "@libs/host-utils": "workspace:*"
     "@libs/schemas": "workspace:*"
     "@libs/tsconfig": "workspace:*"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
+    "@openmcp/host-utils": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@openmcp/remix": "workspace:*"
     "@orpc/client": "npm:1.1.1"
@@ -2780,6 +2767,22 @@ __metadata:
     "@types/node": "npm:22.15.3"
     eslint: "npm:9.25.1"
     typescript: "npm:5.8.3"
+  languageName: unknown
+  linkType: soft
+
+"@openmcp/host-utils@workspace:*, @openmcp/host-utils@workspace:packages/host-utils":
+  version: 0.0.0-use.local
+  resolution: "@openmcp/host-utils@workspace:packages/host-utils"
+  dependencies:
+    "@libs/eslint-config": "workspace:*"
+    "@libs/tsconfig": "workspace:*"
+    "@sindresorhus/slugify": "npm:^2.2.1"
+    eslint: "npm:9.25.1"
+    memfs: "npm:^4.17.0"
+    tsup: "npm:8.4.0"
+    typescript: "npm:5.8.3"
+    vitest: "npm:3.1.2"
+    zod: "npm:3.24.3"
   languageName: unknown
   linkType: soft
 
@@ -16150,11 +16153,12 @@ __metadata:
     "@libs/auth": "workspace:*"
     "@libs/db-pg": "workspace:*"
     "@libs/eslint-config": "workspace:*"
-    "@libs/host-utils": "workspace:*"
     "@libs/schemas": "workspace:*"
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"
     "@maxmorozoff/try-catch-tuple": "npm:0.1.2"
+    "@openmcp/cli": "workspace:*"
+    "@openmcp/host-utils": "workspace:*"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@orpc/client": "npm:1.1.1"

@@ -1,4 +1,4 @@
-import { uninstall } from '@libs/host-utils/mcp';
+import { uninstall } from '@openmcp/host-utils/mcp';
 import type { CommandModule } from 'yargs';
 
 import { createHandler } from '../../cli-utils/index.ts';

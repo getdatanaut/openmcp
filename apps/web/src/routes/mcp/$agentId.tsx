@@ -1,6 +1,5 @@
 import { faCaretDown, faPlus, faSearch, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { AgentId, AgentMcpServerId, type TAgentId, type TAgentMcpServerId, type TMcpServerId } from '@libs/db-ids';
-import { getInstallHints, type IntegrationName } from '@libs/host-utils/mcp';
 import {
   Button,
   CopyButton,
@@ -15,6 +14,7 @@ import {
   tn,
   twMerge,
 } from '@libs/ui-primitives';
+import { getInstallHints, type IntegrationName } from '@openmcp/host-utils/mcp';
 import { escapeLike } from '@rocicorp/zero';
 import { createFileRoute, Link, Navigate, retainSearchParams } from '@tanstack/react-router';
 import { atom, useAtomState, useAtomValue } from '@zedux/react';

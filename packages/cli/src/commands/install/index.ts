@@ -1,4 +1,4 @@
-import { install, type IntegrationName, integrations } from '@libs/host-utils/mcp';
+import { install, type IntegrationName, integrations } from '@openmcp/host-utils/mcp';
 import type { Argv, CommandModule } from 'yargs';
 
 import { createHandler } from '../../cli-utils/index.ts';

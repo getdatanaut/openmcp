@@ -32,6 +32,8 @@
     "@libs/ui-primitives": "workspace:*",
     "@libs/utils-ids": "workspace:*",
     "@maxmorozoff/try-catch-tuple": "0.1.2",
+    "@openmcp/cli": "workspace:*",
+    "@openmcp/host-utils": "workspace:*",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "@orpc/client": "1.1.1",
@@ -62,7 +64,6 @@
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.0.12",
     "@libs/eslint-config": "workspace:*",
-    "@libs/host-utils": "workspace:*",
     "@tailwindcss/vite": "4.1.4",
     "@tanstack/eslint-plugin-router": "1.115.0",
     "@tanstack/router-plugin": "1.117.2",
