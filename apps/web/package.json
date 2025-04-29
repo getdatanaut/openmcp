@@ -32,7 +32,6 @@
     "@libs/ui-primitives": "workspace:*",
     "@libs/utils-ids": "workspace:*",
     "@maxmorozoff/try-catch-tuple": "0.1.2",
-    "@openmcp/cli": "workspace:*",
     "@openmcp/manager": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "@orpc/client": "1.1.1",

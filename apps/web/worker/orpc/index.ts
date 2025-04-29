@@ -1,6 +1,5 @@
 import type { AuthSession, AuthUser } from '@libs/auth/types';
 import type { DbSdk } from '@libs/db-pg';
-import { routerContract as cliRouterContract } from '@openmcp/cli/rpc';
 import { onError } from '@orpc/client';
 import { OpenAPIHandler } from '@orpc/openapi/fetch';
 import { RPCHandler } from '@orpc/server/fetch';

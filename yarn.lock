@@ -16155,7 +16155,6 @@ __metadata:
     "@libs/ui-primitives": "workspace:*"
     "@libs/utils-ids": "workspace:*"
     "@maxmorozoff/try-catch-tuple": "npm:0.1.2"
-    "@openmcp/cli": "workspace:*"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@orpc/client": "npm:1.1.1"
