@@ -44,10 +44,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@better-fetch/fetch": "1.1.18",
     "@modelcontextprotocol/sdk": "1.10.2",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "@orpc/client": "1.1.1",
+    "better-auth": "1.2.7",
     "consola": "~3.4.2",
     "envalid": "~8.0.0",
     "open": "~10.1.1",
@@ -56,7 +58,6 @@
   },
   "devDependencies": {
     "@libs/api-contract": "workspace:*",
-    "@libs/auth": "workspace:*",
     "@libs/eslint-config": "workspace:*",
     "@libs/host-utils": "workspace:*",
     "@libs/schemas": "workspace:*",

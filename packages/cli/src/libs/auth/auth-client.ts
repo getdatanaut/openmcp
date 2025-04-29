@@ -5,7 +5,11 @@ import { createAuthorizationURL, refreshAccessToken } from 'better-auth/oauth2';
 import { decodeJwt } from 'jose';
 import { z } from 'zod';
 
-import Routes from './routes.ts';
+const ROUTES = {
+  authorize: '/oauth2/authorize',
+  token: '/oauth2/token',
+  exchangeToken: '/oauth2/exchange-token',
+} as const;
 
 export const createAuthClient = async ({
   hostURL,
@@ -138,7 +142,7 @@ export class AuthClient {
 
     const { codeVerifier, redirectUri } = this.#authInitState;
 
-    const { data, error } = await betterFetch(this.#resolveRoute(Routes.exchangeToken).toString(), {
+    const { data, error } = await betterFetch(this.#resolveRoute(ROUTES.exchangeToken).toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -188,7 +192,7 @@ export class AuthClient {
     try {
       tokens = await refreshAccessToken({
         grantType: 'refresh_token',
-        tokenEndpoint: this.#resolveRoute(Routes.token).href,
+        tokenEndpoint: this.#resolveRoute(ROUTES.token).href,
         refreshToken,
         options: {
           clientId: this.#clientId,
@@ -200,7 +204,6 @@ export class AuthClient {
         throw new Error('No access token returned');
       }
     } catch (error) {
-      console.error(error);
       throw new Error(`Failed to generate access token. You may need to log in again. ${String(error)}`);
     }
 
@@ -242,7 +245,7 @@ export class AuthClient {
 
     return createAuthorizationURL({
       id: generateRandomString(16),
-      authorizationEndpoint: this.#resolveRoute(Routes.authorize).toString(),
+      authorizationEndpoint: this.#resolveRoute(ROUTES.authorize).toString(),
       redirectURI: redirectUri.toString(),
       responseType: 'code',
       scopes: ['openid', 'profile', 'email', 'offline_access'],

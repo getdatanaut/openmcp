@@ -2721,8 +2721,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/cli@workspace:packages/cli"
   dependencies:
+    "@better-fetch/fetch": "npm:1.1.18"
     "@libs/api-contract": "workspace:*"
-    "@libs/auth": "workspace:*"
     "@libs/eslint-config": "workspace:*"
     "@libs/host-utils": "workspace:*"
     "@libs/schemas": "workspace:*"
@@ -2733,6 +2733,7 @@ __metadata:
     "@orpc/client": "npm:1.1.1"
     "@types/yargs": "npm:^17.0.33"
     "@types/yargs-parser": "npm:^21.0.3"
+    better-auth: "npm:1.2.7"
     consola: "npm:~3.4.2"
     envalid: "npm:~8.0.0"
     eslint: "npm:9.25.1"
