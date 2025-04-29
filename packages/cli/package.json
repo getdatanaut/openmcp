@@ -20,6 +20,11 @@
   ],
   "bin": "./bin/index.js",
   "imports": {
+    "#libs/openapi": {
+      "types": "./src/libs/openapi/index.ts",
+      "development": "./src/libs/openapi/index.ts",
+      "default": "./dist/libs/openapi/index.js"
+    },
     "#register": {
       "types": "./src/register.ts",
       "development": "./src/register.ts",
@@ -60,6 +65,8 @@
     "@openmcp/schemas": "workspace:*",
     "@orpc/client": "1.1.1",
     "@orpc/contract": "1.1.1",
+    "@stoplight/http-spec": "7.1.0",
+    "@stoplight/types": "14.1.1",
     "better-auth": "1.2.7",
     "consola": "~3.4.2",
     "envalid": "~8.0.0",

@@ -1762,6 +1762,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stoplight/types@npm:14.1.1":
+  version: 14.1.1
+  resolution: "@stoplight/types@npm:14.1.1"
+  dependencies:
+    "@types/json-schema": "npm:^7.0.4"
+    utility-types: "npm:^3.10.0"
+  checksum: 10c0/1573d842fee99a7f1eea1f2b17c28dcbfb1be51b72f2ef794e07d265b2fb8900654b5848f608952cd1e3dedf6c7ec157c82c65d4d95728d6309f4b1722a11450
+  languageName: node
+  linkType: hard
+
 "@stoplight/types@npm:^13.6.0":
   version: 13.20.0
   resolution: "@stoplight/types@npm:13.20.0"
@@ -6220,6 +6230,8 @@ __metadata:
     "@openmcp/schemas": "workspace:*"
     "@orpc/client": "npm:1.1.1"
     "@orpc/contract": "npm:1.1.1"
+    "@stoplight/http-spec": "npm:7.1.0"
+    "@stoplight/types": "npm:14.1.1"
     "@types/node": "npm:22.15.3"
     "@types/yargs": "npm:^17.0.33"
     "@types/yargs-parser": "npm:^21.0.3"
