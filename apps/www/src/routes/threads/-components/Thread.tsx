@@ -96,7 +96,7 @@ const reasoningFinish = (message: Message, stepIndex: number) => {
 export const Thread = observer(
   ({ threadId: providedThreadId, children, onCreated, initialMessages, scrollContainerRef }: ThreadProps) => {
     const { app, queryClient } = useRootStore();
-    const { manager, conductor } = useCurrentManager();
+    const { conductor, threadManager } = useCurrentManager();
 
     const isNewThread = !providedThreadId;
     const threadId = useMemo(() => providedThreadId ?? ThreadId.generate(), [providedThreadId]);
@@ -111,7 +111,7 @@ export const Thread = observer(
       try {
         const title = await conductor.generateTitle({ messages });
         if (title) {
-          await manager.threads.update({ id: threadId }, { name: title });
+          await threadManager.update({ id: threadId }, { name: title });
           void queryClient.invalidateQueries({ queryKey: queryOptions.threads().queryKey });
         }
       } catch (error) {
@@ -133,7 +133,7 @@ export const Thread = observer(
       onFinish: async (message, opts) => {
         console.log('Thread.chat.onFinish', { message, opts });
 
-        const thread = await manager.threads.get({ id: threadId });
+        const thread = await threadManager.get({ id: threadId });
         if (!thread) {
           console.warn('Thread not found in chat.onFinish', { clientId: app.currentUserId, threadId });
           return;
@@ -157,7 +157,7 @@ export const Thread = observer(
 
         console.log('Thread.chat.fetch', { message, history });
 
-        const thread = await manager.threads.get({ id: threadId });
+        const thread = await threadManager.get({ id: threadId });
         if (!thread) {
           console.warn('Thread not found in chat.fetch', { clientId: app.currentUserId, threadId });
           return new Response('Thread not found', { status: 404 });
@@ -175,7 +175,7 @@ export const Thread = observer(
     });
 
     const { mutateAsync: createThread } = useMutation({
-      mutationFn: manager.threads.create,
+      mutationFn: threadManager.create,
       onSuccess: () => {
         void queryClient.invalidateQueries({ queryKey: queryOptions.threads().queryKey });
       },

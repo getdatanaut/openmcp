@@ -1,3 +1,4 @@
+import type { ClientId, McpManager, Storage } from '@openmcp/manager';
 import {
   appendResponseMessages,
   type CoreAssistantMessage,
@@ -6,8 +7,9 @@ import {
   type UIMessage,
 } from 'ai';
 
-import type { McpManager } from './manager.ts';
-import type { ClientId, ThreadId, ThreadMessageId } from './types.ts';
+export type ThreadId = string;
+
+export type ThreadMessageId = string;
 
 /**
  * Manager
@@ -16,8 +18,8 @@ import type { ClientId, ThreadId, ThreadMessageId } from './types.ts';
 export interface ThreadManagerOptions {
   manager: {
     storage: {
-      threads: McpManager['storage']['threads'];
-      threadMessages: McpManager['storage']['threadMessages'];
+      threads: Storage<ThreadStorageData>;
+      threadMessages: Storage<ThreadMessageStorageData>;
     };
   };
 }
@@ -94,8 +96,8 @@ export interface ThreadTokenUsage {
 export interface ThreadOptions {
   manager: {
     storage: {
-      threads: McpManager['storage']['threads'];
-      threadMessages: McpManager['storage']['threadMessages'];
+      threads: Storage<ThreadStorageData>;
+      threadMessages: Storage<ThreadMessageStorageData>;
     };
   };
 }

@@ -38,8 +38,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.10.2",
-    "ai": "4.3.10"
+    "@modelcontextprotocol/sdk": "1.10.2"
   },
   "devDependencies": {
     "@libs/eslint-config": "workspace:*",

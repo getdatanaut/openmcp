@@ -41,11 +41,11 @@ const ThreadRouteComponent = () => {
 
 const ThreadHeader = observer(() => {
   const { threadId } = Route.useParams();
-  const { manager } = useCurrentManager();
+  const { threadManager } = useCurrentManager();
 
   const { data: thread } = useQuery({
     ...queryOptions.thread({ threadId }),
-    queryFn: () => manager.threads.get({ id: threadId }),
+    queryFn: () => threadManager.get({ id: threadId }),
   });
 
   return (
@@ -67,13 +67,13 @@ const ThreadHeader = observer(() => {
 
 const ThreadWrapper = observer(({ scrollContainerRef }: { scrollContainerRef: RefObject<HTMLDivElement | null> }) => {
   const { threadId } = Route.useParams();
-  const { manager } = useCurrentManager();
+  const { threadManager } = useCurrentManager();
   const { app } = useRootStore();
 
   const { data: messages, isPending } = useQuery({
     ...queryOptions.threadMessages({ threadId }),
     queryFn: async () => {
-      const msgs = await manager.threads.listMessages({ id: threadId });
+      const msgs = await threadManager.listMessages({ id: threadId });
       return msgs.sort((a, b) => new Date(a.createdAt || 0).getTime() - new Date(b.createdAt || 0).getTime());
     },
   });

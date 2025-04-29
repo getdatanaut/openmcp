@@ -1,4 +1,4 @@
-import { createMcpManager, type McpManagerStorage } from '@openmcp/manager';
+import { createMcpManager, type McpManagerStorage, type Storage } from '@openmcp/manager';
 import type { QueryClient } from '@tanstack/react-query';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { type ReactNode, useEffect, useRef } from 'react';
@@ -8,6 +8,7 @@ import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { createMcpConductor } from '~/utils/conductor/index.ts';
 import type { LocalClientServer, LocalDb } from '~/utils/local-db.ts';
 import { queryOptions } from '~/utils/query-options.ts';
+import { createThreadManager, type ThreadMessageStorageData, type ThreadStorageData } from '~/utils/threads.ts';
 
 export const CurrentManagerProvider = ({ children }: { children: ReactNode }) => {
   const { db, queryClient } = useRootStore();
@@ -17,8 +18,17 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
       storage: {
         servers: initServerStorage({ db, queryClient }),
         clientServers: initLocalClientServerStorage({ db }),
-        threads: initLocalThreadStorage({ db }),
-        threadMessages: initLocalThreadMessageStorage({ db }),
+      },
+    }),
+  );
+
+  const threadManager = useRef(
+    createThreadManager({
+      manager: {
+        storage: {
+          threads: initLocalThreadStorage({ db }),
+          threadMessages: initLocalThreadMessageStorage({ db }),
+        },
       },
     }),
   );
@@ -59,7 +69,9 @@ export const CurrentManagerProvider = ({ children }: { children: ReactNode }) =>
   }, [config, configLoaded, db.mcpManagers]);
 
   return (
-    <CurrentManagerContext.Provider value={{ manager: manager.current, conductor: conductor.current }}>
+    <CurrentManagerContext.Provider
+      value={{ manager: manager.current, conductor: conductor.current, threadManager: threadManager.current }}
+    >
       {children}
     </CurrentManagerContext.Provider>
   );
@@ -156,7 +168,7 @@ const initLocalThreadStorage = ({ db }: { db: LocalDb }) => {
       const res = await db.threads.get(id);
       return res;
     },
-  } satisfies McpManagerStorage['threads'];
+  } satisfies Storage<ThreadStorageData>;
 };
 
 const initLocalThreadMessageStorage = ({ db }: { db: LocalDb }) => {
@@ -186,5 +198,5 @@ const initLocalThreadMessageStorage = ({ db }: { db: LocalDb }) => {
       const res = await db.threadMessages.get(id);
       return res;
     },
-  } satisfies McpManagerStorage['threadMessages'];
+  } satisfies Storage<ThreadMessageStorageData>;
 };

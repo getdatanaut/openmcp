@@ -23,7 +23,7 @@ import {
   tn,
   twMerge,
 } from '@libs/ui-primitives';
-import type { Server, ThreadStorageData } from '@openmcp/manager';
+import type { Server } from '@openmcp/manager';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { observer } from 'mobx-react-lite';
@@ -35,6 +35,7 @@ import { useRootStore } from '~/hooks/use-root-store.tsx';
 import { dayjs } from '~/utils/dayjs.ts';
 import { type TClientServerId, type TMcpServerId, type TThreadId } from '~/utils/ids.ts';
 import { queryOptions } from '~/utils/query-options.ts';
+import type { ThreadStorageData } from '~/utils/threads.ts';
 
 export const MainSidebar = observer(({ className }: { className?: string }) => {
   const { sidebar } = useSearch({ strict: false });
@@ -174,7 +175,7 @@ const SidebarListItem = ({
  */
 
 const ThreadHistory = () => {
-  const { manager } = useCurrentManager();
+  const { threadManager } = useCurrentManager();
   const queryClient = useQueryClient();
 
   const { threadId: activeThreadId } = useParams({ strict: false });
@@ -182,11 +183,11 @@ const ThreadHistory = () => {
 
   const { data: threads } = useQuery({
     ...queryOptions.threads(),
-    queryFn: () => manager.threads.findMany(),
+    queryFn: () => threadManager.findMany(),
   });
 
   const { mutate: deleteThread } = useMutation({
-    mutationFn: manager.threads.delete,
+    mutationFn: threadManager.delete,
     onSuccess: (_, { id }) => {
       if (id === activeThreadId) {
         void navigate({ to: '/threads' });
