@@ -5,6 +5,7 @@
 @import '@fortawesome/fontawesome-svg-core/styles.css';
 
 @import './components/Markdown/styles.css';
+@import './components/Toast/styles.css';
 
 /**
  * New variants, some of which are helpers for ariakit selectors (https://ariakit.org/guide/styling)

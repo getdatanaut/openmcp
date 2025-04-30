@@ -163,6 +163,14 @@ export { TabPanels } from './components/Tabs/tab-panels.tsx';
 export type { TabsProps } from './components/Tabs/tabs.tsx';
 export { Tabs } from './components/Tabs/tabs.tsx';
 
+/**
+ * Toast
+ */
+
+export type { ToastProps } from './components/Toast/toast-fn.tsx';
+export { toast } from './components/Toast/toast-fn.tsx';
+export { Toaster } from './components/Toast/toaster.tsx';
+
 // /**
 //  * TimeAgo
 //  */

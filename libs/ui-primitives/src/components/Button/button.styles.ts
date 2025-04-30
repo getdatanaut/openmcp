@@ -1,7 +1,6 @@
 import type { VariantProps } from 'tailwind-variants';
 import { tv } from 'tailwind-variants';
 
-// import { focusStyles, inputFocusStyles } from '../../utils/focus.ts';
 import { makeStaticClass } from '../../utils/make-static-class.ts';
 import { focusStyles, formSizes, inputFocusStyles } from '../../utils/styles.ts';
 import { tn, twMergeConfig } from '../../utils/tw.ts';

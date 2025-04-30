@@ -13,6 +13,7 @@ import {
   type TabProps,
   Tabs,
   tn,
+  toast,
 } from '@libs/ui-primitives';
 import type { SetRequired } from '@libs/utils-types';
 import { Link, useNavigate } from '@tanstack/react-router';
@@ -270,7 +271,10 @@ function RemoveServerButton({ agentMcpServerId }: { agentMcpServerId: TAgentMcpS
         void navigate({ to: '.', search: prev => ({ ...prev, agentServerId: undefined }), replace: true });
       },
       onServerError(error) {
-        alert(`Error deleting server: ${error}`);
+        toast.error('Error uninstalling server', { description: String(error) });
+      },
+      onServerSuccess() {
+        toast.success('Server uninstalled');
       },
     }),
     [navigate],

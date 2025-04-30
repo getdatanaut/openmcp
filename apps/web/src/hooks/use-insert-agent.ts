@@ -1,4 +1,5 @@
 import { AgentId } from '@libs/db-ids';
+import { toast } from '@libs/ui-primitives';
 import { useNavigate, useRouter } from '@tanstack/react-router';
 
 import { useZeroMutation } from './use-zero-mutation.ts';
@@ -17,6 +18,9 @@ export function useInsertAgent() {
         onServerError: () => {
           // @TODO: toast
           router.history.back();
+        },
+        onServerSuccess() {
+          toast.success('Remix created successfully');
         },
       };
     },

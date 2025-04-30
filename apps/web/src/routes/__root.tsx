@@ -1,6 +1,6 @@
 import '../assets/app.css';
 
-import { DialogContext, MenuContext, tn } from '@libs/ui-primitives';
+import { DialogContext, MenuContext, tn, Toaster } from '@libs/ui-primitives';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useAtomInstance, useAtomValue } from '@zedux/react';
 import { useEffect, useState } from 'react';
@@ -46,6 +46,7 @@ function SidebarLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* <GlobalModals /> */}
+          <Toaster />
         </div>
       </MenuContext>
     </DialogContext>
