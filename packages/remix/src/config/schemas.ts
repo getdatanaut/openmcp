@@ -16,25 +16,25 @@ export type Tool = z.infer<typeof ToolSchema>;
 const tools = z.array(ToolSchema).nonempty('Tools must be provided and non-empty');
 
 export const OpenAPIServerSchema = OpenAPITransportSchema.extend({
-  tools,
+  tools: tools.optional(),
 });
 
 export type OpenAPIServer = z.infer<typeof OpenAPIServerSchema>;
 
 export const StreamableHTTPServerSchema = StreamableHTTPTransportSchema.extend({
-  tools,
+  tools: tools.optional(),
 });
 
 export type StreamableHTTPServer = z.infer<typeof StreamableHTTPServerSchema>;
 
 export const SSEServerSchema = SSETransportSchema.extend({
-  tools,
+  tools: tools.optional(),
 });
 
 export type SSEServer = z.infer<typeof SSEServerSchema>;
 
 export const StdIOServerSchema = StdIOTransportSchema.extend({
-  tools,
+  tools: tools.optional(),
 });
 
 export type StdIOServer = z.infer<typeof StdIOServerSchema>;

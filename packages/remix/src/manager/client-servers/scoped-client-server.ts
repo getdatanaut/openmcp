@@ -3,9 +3,9 @@ import { ClientServer, type ClientServerOptions, type ClientServerStorageData, t
 import { resolveToolName } from '../../utils/tools.ts';
 
 export default class ScopedClientServer extends ClientServer {
-  readonly #allowedTools: string[] = [];
+  readonly #allowedTools: string[] | null;
 
-  constructor(data: ClientServerStorageData, options: ClientServerOptions, allowedTools: string[]) {
+  constructor(data: ClientServerStorageData, options: ClientServerOptions, allowedTools: string[] | null) {
     super(data, options);
     this.#allowedTools = allowedTools;
   }
@@ -15,7 +15,7 @@ export default class ScopedClientServer extends ClientServer {
     const exposedToolNames = new Set<string>();
     const exposedTools: Tool[] = [];
     for (const tool of tools) {
-      if (!this.#allowedTools.includes(tool.name)) continue;
+      if (this.#allowedTools !== null && !this.#allowedTools.includes(tool.name)) continue;
 
       const resolvedToolName = resolveToolName(this.serverId, tool.name);
       if (exposedToolNames.has(tool.name)) {
