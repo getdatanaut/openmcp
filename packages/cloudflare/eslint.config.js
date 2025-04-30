@@ -1,5 +1,5 @@
 // @ts-check
-import { nodeConfig } from '@libs/eslint-config/node';
+import { nodeConfig } from '@datanaut/eslint-config/node';
 
 export default [
   ...nodeConfig,

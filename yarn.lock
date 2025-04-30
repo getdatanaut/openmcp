@@ -385,6 +385,39 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@datanaut/eslint-config@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@datanaut/eslint-config@npm:0.1.0"
+  dependencies:
+    "@eslint/js": "npm:9.25.1"
+    eslint: "npm:9.25.1"
+    eslint-config-prettier: "npm:10.1.2"
+    eslint-import-resolver-typescript: "npm:4.3.4"
+    eslint-plugin-import: "npm:2.31.0"
+    eslint-plugin-react: "npm:7.37.5"
+    eslint-plugin-react-hooks: "npm:5.2.0"
+    eslint-plugin-react-refresh: "npm:0.4.20"
+    eslint-plugin-simple-import-sort: "npm:12.1.1"
+    eslint-plugin-turbo: "npm:2.5.2"
+    eslint-plugin-vitest: "npm:0.5.4"
+    globals: "npm:16.0.0"
+    typescript-eslint: "npm:8.31.1"
+  checksum: 10c0/3d8b97ae2ea757a5abe89eb2910e91d2dda5b072df6bcbaa7b2f8e454f4de34ae485f8477d10d0730146ebd00759cd984bb99d5ccb2b47bef180dd73ba6595ff
+  languageName: node
+  linkType: hard
+
+"@datanaut/tsconfig@npm:0.1.3":
+  version: 0.1.3
+  resolution: "@datanaut/tsconfig@npm:0.1.3"
+  peerDependencies:
+    "@types/node": "*"
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+  checksum: 10c0/fad536111e605b324db1c8a04831ae32c2f64c5ef29eedfb44ec6bf620d6a3deb7e414781d228daa883e2fad37411732c5e91445f38c87c5bb6f5d86f4eb1a2e
+  languageName: node
+  linkType: hard
+
 "@emnapi/core@npm:^1.4.0":
   version: 1.4.0
   resolution: "@emnapi/core@npm:1.4.0"
@@ -902,32 +935,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@libs/eslint-config@workspace:*, @libs/eslint-config@workspace:libs/eslint-config":
-  version: 0.0.0-use.local
-  resolution: "@libs/eslint-config@workspace:libs/eslint-config"
-  dependencies:
-    "@eslint/js": "npm:9.25.1"
-    eslint: "npm:9.25.1"
-    eslint-config-prettier: "npm:10.1.2"
-    eslint-import-resolver-typescript: "npm:4.3.4"
-    eslint-plugin-import: "npm:2.31.0"
-    eslint-plugin-react: "npm:7.37.5"
-    eslint-plugin-react-hooks: "npm:5.2.0"
-    eslint-plugin-react-refresh: "npm:0.4.20"
-    eslint-plugin-simple-import-sort: "npm:12.1.1"
-    eslint-plugin-turbo: "npm:2.5.2"
-    eslint-plugin-vitest: "npm:0.5.4"
-    globals: "npm:16.0.0"
-    typescript-eslint: "npm:8.31.1"
-  languageName: unknown
-  linkType: soft
-
-"@libs/tsconfig@workspace:*, @libs/tsconfig@workspace:libs/tsconfig":
-  version: 0.0.0-use.local
-  resolution: "@libs/tsconfig@workspace:libs/tsconfig"
-  languageName: unknown
-  linkType: soft
-
 "@manypkg/find-root@npm:^1.1.0":
   version: 1.1.0
   resolution: "@manypkg/find-root@npm:1.1.0"
@@ -1089,8 +1096,8 @@ __metadata:
   resolution: "@openmcp/cli@workspace:packages/cli"
   dependencies:
     "@better-fetch/fetch": "npm:1.1.18"
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/host-utils": "workspace:*"
     "@openmcp/openapi": "workspace:*"
@@ -1098,6 +1105,7 @@ __metadata:
     "@openmcp/schemas": "workspace:*"
     "@orpc/client": "npm:1.1.1"
     "@orpc/contract": "npm:1.1.1"
+    "@types/node": "npm:22.15.3"
     "@types/yargs": "npm:^17.0.33"
     "@types/yargs-parser": "npm:^21.0.3"
     better-auth: "npm:1.2.7"
@@ -1124,8 +1132,8 @@ __metadata:
   dependencies:
     "@ai-sdk/openai": "npm:1.3.20"
     "@cloudflare/workers-types": "npm:4.20250428.0"
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/openapi": "workspace:*"
     "@openmcp/server": "workspace:*"
@@ -1140,9 +1148,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/host-utils@workspace:packages/host-utils"
   dependencies:
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@sindresorhus/slugify": "npm:^2.2.1"
+    "@types/node": "npm:22.15.3"
     eslint: "npm:9.25.1"
     memfs: "npm:^4.17.0"
     tsup: "npm:8.4.0"
@@ -1156,8 +1165,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/manager@workspace:packages/manager"
   dependencies:
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     eslint: "npm:9.25.1"
     tsup: "npm:8.4.0"
@@ -1172,8 +1181,8 @@ __metadata:
   resolution: "@openmcp/openapi@workspace:packages/openapi"
   dependencies:
     "@apidevtools/json-schema-ref-parser": "npm:11.9.3"
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/server": "workspace:*"
     "@stoplight/http-spec": "npm:7.1.0"
@@ -1194,14 +1203,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/remix@workspace:packages/remix"
   dependencies:
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/manager": "workspace:*"
     "@openmcp/openapi": "workspace:*"
     "@openmcp/schemas": "workspace:*"
     "@openmcp/server": "workspace:*"
     "@openmcp/utils": "workspace:*"
+    "@types/node": "npm:22.15.3"
     eslint: "npm:9.25.1"
     json-schema: "npm:0.4.0"
     tsup: "npm:8.4.0"
@@ -1215,8 +1225,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/schemas@workspace:packages/schemas"
   dependencies:
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     eslint: "npm:9.25.1"
     tsup: "npm:8.4.0"
     typescript: "npm:5.8.3"
@@ -1229,8 +1239,8 @@ __metadata:
   resolution: "@openmcp/server@workspace:packages/server"
   dependencies:
     "@ai-sdk/ui-utils": "npm:1.2.8"
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@modelcontextprotocol/sdk": "npm:1.10.2"
     "@openmcp/utils": "workspace:*"
     ai: "npm:4.3.10"
@@ -1247,8 +1257,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/utils@workspace:packages/utils"
   dependencies:
-    "@libs/eslint-config": "workspace:*"
-    "@libs/tsconfig": "workspace:*"
+    "@datanaut/eslint-config": "npm:0.1.0"
+    "@datanaut/tsconfig": "npm:0.1.3"
     "@stoplight/json": "npm:3.21.7"
     ai: "npm:4.3.10"
     dedent: "npm:1.5.3"
@@ -1758,6 +1768,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~6.21.0"
   checksum: 10c0/d49c4d00403b1c2348cf0701b505fd636d80aabe18102105998dc62fdd36dcaf911e73c7a868c48c21c1022b825c67b475b65b1222d84b704d8244d152bb7f86
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:22.15.3":
+  version: 22.15.3
+  resolution: "@types/node@npm:22.15.3"
+  dependencies:
+    undici-types: "npm:~6.21.0"
+  checksum: 10c0/2879f012d1aeba0bfdb5fed80d165f4f2cb3d1f2e1f98a24b18d4a211b4ace7d64bf2622784c78355982ffc1081ba79d0934efc2fb8353913e5871a63609661f
   languageName: node
   linkType: hard
 
