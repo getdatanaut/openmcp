@@ -18,10 +18,10 @@
         "development": "./src/mcp/index.ts",
         "default": "./dist/mcp/index.js"
       },
-      "browser": {
+      "default": {
         "types": "./src/mcp/index.browser.ts",
         "development": "./src/mcp/index.browser.ts",
-        "default": "./dist/mcp/index.browser.ts"
+        "default": "./dist/mcp/index.browser.js"
       }
     }
   },
