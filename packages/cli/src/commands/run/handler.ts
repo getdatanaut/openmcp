@@ -3,7 +3,7 @@ import * as fs from 'node:fs/promises';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { Config } from '@openmcp/remix';
 
-import { rpcClient } from '../../libs/sdk.ts';
+import { rpcClient } from '../../libs/datanaut/sdk/sdk.ts';
 
 type Input =
   | {

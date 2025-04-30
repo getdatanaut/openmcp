@@ -1,7 +1,7 @@
 // a set of wrappers around auth
 
 import consola from '../../consola/index.ts';
-import { login as _login } from '../auth/index.ts';
+import { login as _login, logout as _logout, whoami as _whoami } from './auth/index.ts';
 
 export async function login(): Promise<void> {
   consola.start('Logging in...');
@@ -24,4 +24,15 @@ export async function login(): Promise<void> {
     },
   });
   consola.success(`Logged in successfully as ${email}`);
+}
+
+export async function logout(): Promise<void> {
+  consola.start('Logging out...');
+  await _logout();
+  consola.success('Logged out successfully');
+}
+
+export async function whoami(): Promise<void> {
+  const { email } = _whoami();
+  consola.success(`You are logged in as ${email}`);
 }

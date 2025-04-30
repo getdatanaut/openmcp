@@ -1,8 +1,8 @@
 import { EventEmitter } from 'node:events';
 import * as http from 'node:http';
 
-import env from '../../env.ts';
-import type { AuthClient } from './auth-client.ts';
+import env from '../../../env.ts';
+import type { AuthClient } from './client.ts';
 
 class HandledError extends Error {
   public readonly code: number;

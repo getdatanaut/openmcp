@@ -1,9 +1,10 @@
 import { isDefinedError, ORPCError } from '@orpc/client';
 
+import { login } from '#libs/datanaut-auth-cli';
+
 import consola from '../../consola/index.ts';
 import type { Agent } from '../../rpc/agents.ts';
-import { login } from '../datanaut/auth.ts';
-import { rpcClient } from '../sdk.ts';
+import { rpcClient } from './sdk/sdk.ts';
 
 type Opts = {
   /**

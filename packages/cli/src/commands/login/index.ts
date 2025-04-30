@@ -1,7 +1,8 @@
 import type { CommandModule } from 'yargs';
 
+import { login } from '#libs/datanaut-auth-cli';
+
 import { createHandler } from '../../cli-utils/index.ts';
-import { login } from '../../libs/datanaut/auth.ts';
 
 export default {
   command: 'login',

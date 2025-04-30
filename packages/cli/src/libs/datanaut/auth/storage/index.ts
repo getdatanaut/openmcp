@@ -1,5 +1,5 @@
-import { readFile, writeFile } from '../../datanaut/fs-config.ts';
-import type { OAuth2Tokens, Storage } from '../auth-client.ts';
+import { readFile, writeFile } from '../../fs-config.ts';
+import type { OAuth2Tokens, Storage } from '../client.ts';
 import Mutex from './mutex.ts';
 
 export default class StorageImpl implements Storage {

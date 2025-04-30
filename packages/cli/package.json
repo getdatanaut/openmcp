@@ -20,6 +20,16 @@
   ],
   "bin": "./bin/index.js",
   "imports": {
+    "#libs/datanaut-auth": {
+      "types": "./src/libs/datanaut/auth/index.ts",
+      "development": "./src/libs/datanaut/auth/index.ts",
+      "default": "./dist/libs/datanaut/auth/index.js"
+    },
+    "#libs/datanaut-auth-cli": {
+      "types": "./src/libs/datanaut/auth-cli.ts",
+      "development": "./src/libs/datanaut/auth-cli.ts",
+      "default": "./dist/libs/datanaut/auth-cli.js"
+    },
     "#libs/openapi": {
       "types": "./src/libs/openapi/index.ts",
       "development": "./src/libs/openapi/index.ts",

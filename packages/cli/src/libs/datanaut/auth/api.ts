@@ -2,8 +2,8 @@ import { clearTimeout, setTimeout } from 'node:timers';
 
 import open from 'open';
 
-import env from '../../env.ts';
-import { createAuthClient } from './auth-client.ts';
+import env from '../../../env.ts';
+import { createAuthClient } from './client.ts';
 import { startServer, waitForAuthorizationCallback } from './server.ts';
 import Storage from './storage/index.ts';
 

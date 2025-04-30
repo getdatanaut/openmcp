@@ -2,9 +2,9 @@ import { createORPCClient } from '@orpc/client';
 import { RPCLink } from '@orpc/client/fetch';
 import { SimpleCsrfProtectionLinkPlugin } from '@orpc/client/plugins';
 
-import env from '../env.ts';
-import type { ContractRouterClient } from '../rpc/index.ts';
-import { client } from './auth/index.ts';
+import env from '../../../env.ts';
+import type { ContractRouterClient } from '../../../rpc/index.ts';
+import { client } from '../auth/index.ts';
 
 const link = new RPCLink({
   url: new URL('__rpc', env.DN_API_URL),
