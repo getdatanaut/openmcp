@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import type { Remix } from '../../types.ts';
+
 const TRANSPORT_SCHEMA = z
   .object({
     command: z.literal('npx'),
@@ -7,7 +9,7 @@ const TRANSPORT_SCHEMA = z
   })
   .passthrough();
 
-export default function findRemix(transport: unknown, remixId: string): boolean {
+export default function findRemix(transport: unknown, remix: Remix): boolean {
   const result = TRANSPORT_SCHEMA.safeParse(transport);
   if (!result.success) {
     return false;
@@ -18,15 +20,24 @@ export default function findRemix(transport: unknown, remixId: string): boolean 
   }
 
   let isOpenmcpCli = false;
-  let isServerArg = false;
+  let currentFlag: string = '';
   for (let i = 0; i < result.data.args.length; i++) {
     const arg = result.data.args[i]!;
-    if (!isOpenmcpCli && arg.startsWith('@openmcp/cli')) {
-      isOpenmcpCli = true;
-    } else if (isOpenmcpCli && !isServerArg && arg === '--server') {
-      isServerArg = true;
-    } else if (isServerArg && arg === remixId) {
-      return true;
+    if (!isOpenmcpCli) {
+      isOpenmcpCli ||= arg.startsWith('@openmcp/cli');
+      continue;
+    }
+
+    if (arg.startsWith('-')) {
+      currentFlag = arg;
+      continue;
+    }
+
+    switch (currentFlag) {
+      case '--server':
+        return arg === remix.id;
+      case '--config':
+        return arg === remix.filepath;
     }
   }
 

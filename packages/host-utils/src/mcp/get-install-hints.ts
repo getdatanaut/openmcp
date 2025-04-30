@@ -19,7 +19,7 @@ function generateVsCodeTransport(remix: Remix) {
   return serializeTransport({
     name: generateRemixName({}, remix),
     type: 'stdio',
-    ...generateTransport({ remixId: remix.id }),
+    ...generateTransport(remix),
   });
 }
 

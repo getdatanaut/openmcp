@@ -40,6 +40,7 @@ type InstallMethod = FsInstallMethod;
 export type Remix = {
   readonly id: string;
   readonly name: string;
+  readonly filepath?: string;
 };
 
 export type McpHostClient<M extends InstallMethod = InstallMethod> = {

@@ -36,7 +36,7 @@ export default function createVSCodeClient(
       return writeConfig(ctx, this.installMethod, async config => {
         addRemix(((config.mcp ??= {}).servers ??= {}), remix, {
           type: 'stdio',
-          ...generateTransport({ remixId: remix.id }),
+          ...generateTransport(remix),
         });
       });
     },

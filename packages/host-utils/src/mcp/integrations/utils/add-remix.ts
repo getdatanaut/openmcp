@@ -4,7 +4,7 @@ import findRemix from './find-remix.ts';
 import generateRemixName from './generate-remix-name.ts';
 
 export default function addRemix(target: Record<string, unknown>, remix: Remix, transport: unknown) {
-  if (Object.values(target).some(server => findRemix(server, remix.id))) {
+  if (Object.values(target).some(server => findRemix(server, remix))) {
     throw new RemixConflict(remix);
   }
 

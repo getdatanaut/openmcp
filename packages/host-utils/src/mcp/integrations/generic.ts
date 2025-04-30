@@ -26,7 +26,7 @@ export default function createGenericClient(name: string, filepath: ResolvableCo
     },
     install(ctx, remix) {
       return writeConfig(ctx, this.installMethod, async config => {
-        addRemix((config.mcpServers ??= {}), remix, generateTransport({ remixId: remix.id }));
+        addRemix((config.mcpServers ??= {}), remix, generateTransport(remix));
       });
     },
     uninstall(ctx, remix) {

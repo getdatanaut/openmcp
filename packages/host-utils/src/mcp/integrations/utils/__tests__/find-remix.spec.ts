@@ -1,33 +1,79 @@
 import { describe, expect, it } from 'vitest';
 
 import findRemix from '../find-remix.ts';
+import type { Remix } from '../../../types.ts';
 
 describe('findRemix', () => {
-  it('should return true when transport contains matching remixId', () => {
+  it('should return true when transport contains matching remix id with --server flag', () => {
     const transport = {
       command: 'npx',
       args: ['@openmcp/cli', 'run', '--server', 'test-remix-id'],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(true);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(true);
   });
 
-  it('should return false when transport contains different remixId', () => {
+  it('should return false when transport contains different remix id with --server flag', () => {
     const transport = {
       command: 'npx',
       args: ['@openmcp/cli', 'run', '--server', 'different-remix-id'],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
   });
 
-  it('should return false when transport does not contain --server argument', () => {
+  it('should return true when transport contains matching filepath with --config flag', () => {
+    const transport = {
+      command: 'npx',
+      args: ['@openmcp/cli', 'run', '--config', '/path/to/config.json'],
+    };
+
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+      filepath: '/path/to/config.json',
+    };
+
+    expect(findRemix(transport, remix)).toBe(true);
+  });
+
+  it('should return false when transport contains different filepath with --config flag', () => {
+    const transport = {
+      command: 'npx',
+      args: ['@openmcp/cli', 'run', '--config', '/different/path.json'],
+    };
+
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+      filepath: '/path/to/config.json',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
+  });
+
+  it('should return false when transport does not contain --server or --config argument', () => {
     const transport = {
       command: 'npx',
       args: ['@openmcp/cli', 'run', 'test-remix-id'],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
   });
 
   it('should return false when transport does not contain @openmcp/cli', () => {
@@ -36,7 +82,12 @@ describe('findRemix', () => {
       args: ['some-other-package', 'run', '--server', 'test-remix-id'],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
   });
 
   it('should return false when transport has less than 4 arguments', () => {
@@ -45,7 +96,12 @@ describe('findRemix', () => {
       args: ['@openmcp/cli', '--server'],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
   });
 
   it('should return false when transport is not valid', () => {
@@ -54,15 +110,30 @@ describe('findRemix', () => {
       args: ['@openmcp/cli', 'run', '--server', 'test-remix-id'],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
   });
 
   it('should return false when transport is null', () => {
-    expect(findRemix(null, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(null, remix)).toBe(false);
   });
 
   it('should return false when transport is undefined', () => {
-    expect(findRemix(undefined, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(undefined, remix)).toBe(false);
   });
 
   it('should return false when transport.args is not an array', () => {
@@ -71,10 +142,15 @@ describe('findRemix', () => {
       args: 'not-an-array',
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(false);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(false);
   });
 
-  it('should handle complex argument patterns correctly', () => {
+  it('should handle complex argument patterns correctly with --server flag', () => {
     const transport = {
       command: 'npx',
       args: [
@@ -87,6 +163,33 @@ describe('findRemix', () => {
       ],
     };
 
-    expect(findRemix(transport, 'test-remix-id')).toBe(true);
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+    };
+
+    expect(findRemix(transport, remix)).toBe(true);
+  });
+
+  it('should handle complex argument patterns correctly with --config flag', () => {
+    const transport = {
+      command: 'npx',
+      args: [
+        'some-arg',
+        '@openmcp/cli@1.0.0',
+        'another-arg',
+        '--config',
+        '/path/to/config.json',
+        '--extra-flag',
+      ],
+    };
+
+    const remix: Remix = {
+      id: 'test-remix-id',
+      name: 'Test Remix',
+      filepath: '/path/to/config.json',
+    };
+
+    expect(findRemix(transport, remix)).toBe(true);
   });
 });

@@ -8,7 +8,7 @@ export default function deleteRemix(servers: unknown, remix: Remix) {
   }
 
   const entries = Object.entries(servers) as [string, unknown][];
-  const entry = entries.find(([, server]) => findRemix(server, remix.id));
+  const entry = entries.find(([, server]) => findRemix(server, remix));
   if (!entry) {
     throw new RemixNotInstalled(remix);
   }
