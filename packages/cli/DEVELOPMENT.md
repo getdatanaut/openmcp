@@ -1,10 +1,10 @@
-# @openmcp/cli Development Guide
+# openmcp Development Guide
 
-This document provides guidelines and instructions for developing the `@openmcp/cli` package.
+This document provides guidelines and instructions for developing the `openmcp` package.
 
 ## Overview
 
-`@openmcp/cli` is a command-line interface tool for OpenMCP that provides various commands for interacting with the OpenMCP ecosystem. It uses [yargs](https://yargs.js.org/) for command-line argument parsing and [consola](https://github.com/unjs/consola) for logging.
+`openmcp` is a command-line interface tool for OpenMCP that provides various commands for interacting with the OpenMCP ecosystem. It uses [yargs](https://yargs.js.org/) for command-line argument parsing and [consola](https://github.com/unjs/consola) for logging.
 
 ## Project Structure
 
@@ -73,17 +73,17 @@ openmcp login
 #### Using "exec" npm script 
 
 ```bash
-yarn workspace @openmcp/cli run exec <command> [options]
-yarn workspace @openmcp/cli run exec --help # to get a list of all public commands
+yarn workspace openmcp run exec <command> [options]
+yarn workspace openmcp run exec --help # to get a list of all public commands
 ```
 
 For example:
 
 ```bash
-yarn workspace @openmcp/cli run exec login
-yarn workspace @openmcp/cli run exec logout
-yarn workspace @openmcp/cli run exec run
-yarn workspace @openmcp/cli run exec upload --type=stdio -- "px -y @modelcontextprotocol/server-filesystem /Users/jakub/Desktop"
+yarn workspace openmcp run exec login
+yarn workspace openmcp run exec logout
+yarn workspace openmcp run exec run
+yarn workspace openmcp run exec upload --type=stdio -- "px -y @modelcontextprotocol/server-filesystem /Users/jakub/Desktop"
 ```
 
 Note that the current working directory is set to `packages/cli` in this case.
@@ -135,13 +135,13 @@ import myCommand from './commands/mycommand/index.ts';
 The CLI uses [vitest](https://vitest.dev/) for testing. You can run tests with:
 
 ```bash
-yarn workspace @openmcp/cli test
+yarn workspace openmcp test
 ```
 
 Or watch for changes:
 
 ```bash
-yarn workspace @openmcp/cli test.watch
+yarn workspace openmcp test.watch
 ```
 
 When writing tests for commands, you can mock dependencies and test the command handlers directly.
@@ -151,8 +151,8 @@ When writing tests for commands, you can mock dependencies and test the command 
 The CLI uses ESLint for linting and TypeScript for type checking. You can run these checks with:
 
 ```bash
-yarn workspace @openmcp/cli lint
-yarn workspace @openmcp/cli typecheck
+yarn workspace openmcp lint
+yarn workspace openmcp typecheck
 ```
 
 ## Building for Production
@@ -160,7 +160,7 @@ yarn workspace @openmcp/cli typecheck
 To build the CLI for production:
 
 ```bash
-yarn workspace @openmcp/cli build
+yarn workspace openmcp build
 ```
 
 This will create a distribution in the `dist/` directory.
