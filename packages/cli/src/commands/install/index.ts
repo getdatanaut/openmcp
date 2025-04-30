@@ -1,8 +1,9 @@
 import { install, type IntegrationName, integrations } from '@openmcp/host-utils/mcp';
 import type { Argv, CommandModule } from 'yargs';
 
+import console from '#libs/console';
+
 import { createHandler } from '../../cli-utils/index.ts';
-import consola from '../../consola/index.ts';
 import { getAgentById } from '../../libs/datanaut/agent.ts';
 
 export const builder = (yargs: Argv) =>
@@ -28,6 +29,6 @@ export default {
   handler: createHandler(async args => {
     const { agentId, client } = args as Awaited<ReturnType<typeof builder>['argv']>;
     const remix = await getAgentById(agentId);
-    await install(consola, client, remix);
+    await install(console, client, remix);
   }),
 } satisfies CommandModule;

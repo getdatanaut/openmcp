@@ -20,6 +20,11 @@
   ],
   "bin": "./bin/index.js",
   "imports": {
+    "#libs/console": {
+      "types": "./src/libs/console/index.ts",
+      "development": "./src/libs/console/index.ts",
+      "default": "./dist/libs/console/index.js"
+    },
     "#libs/datanaut-auth": {
       "types": "./src/libs/datanaut/auth/index.ts",
       "development": "./src/libs/datanaut/auth/index.ts",

@@ -1,8 +1,8 @@
 import { isDefinedError, ORPCError } from '@orpc/client';
 
+import console from '#libs/console';
 import { login } from '#libs/datanaut-auth-cli';
 
-import consola from '../../consola/index.ts';
 import type { Agent } from '../../rpc/agents.ts';
 import { rpcClient } from './sdk/sdk.ts';
 
@@ -26,7 +26,7 @@ export async function getAgentById(id: string, { login: shouldLogin = true }: Op
       throw new Error(error.message, { cause: error });
     }
 
-    const res = await consola.prompt(`You do not seem to be logged in. Would you like to log in?`, {
+    const res = await console.prompt(`You do not seem to be logged in. Would you like to log in?`, {
       type: 'confirm',
     });
 

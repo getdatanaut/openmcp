@@ -3,7 +3,7 @@ import * as path from 'node:path';
 
 import { type ConsolaOptions, createConsola } from 'consola';
 
-import env from '../env.ts';
+import env from '../../env.ts';
 
 const opts: Partial<ConsolaOptions & { fancy: boolean }> = {
   fancy: true,

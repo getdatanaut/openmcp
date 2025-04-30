@@ -1,4 +1,5 @@
-import consola from '../../../consola/index.ts';
+import console from '#libs/console';
+
 import type { rpcClient } from '../../../libs/datanaut/sdk/sdk.ts';
 import { getSummary } from '../utils/string.ts';
 import type { ConnectedClient } from './create-client.ts';
@@ -12,7 +13,7 @@ function unwrapBooleanOrUndefined(value: unknown) {
 export default async function getTools(client: ConnectedClient): Promise<Tool[]> {
   const capabilities = client.getServerCapabilities();
   if (!capabilities?.tools) {
-    consola.warn(`No "tools" capability found`);
+    console.warn(`No "tools" capability found`);
     return [];
   }
 

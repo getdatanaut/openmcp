@@ -1,4 +1,5 @@
-import consola from '../../consola/index.ts';
+import console from '#libs/console';
+
 import { rpcClient } from '../../libs/datanaut/sdk/sdk.ts';
 import createConnectedClient from './mcp-utils/create-client.ts';
 import listMcpTools from './mcp-utils/get-tools.ts';
@@ -33,7 +34,7 @@ export default async function handler(definition: ServerDefinition): Promise<voi
     tools: await listMcpTools(client),
   };
 
-  consola.start(`Uploading server "${mcpServer.name}"...`);
+  console.start(`Uploading server "${mcpServer.name}"...`);
   await rpcClient.cli.mcpServers.upload(mcpServer);
-  consola.success(`Server "${mcpServer.name}" successfully uploaded`);
+  console.success(`Server "${mcpServer.name}" successfully uploaded`);
 }

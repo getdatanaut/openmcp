@@ -1,7 +1,8 @@
 import { type Argv } from 'yargs';
 
+import { createSilentConsole } from '#libs/console';
+
 import { createHandler } from '../../cli-utils/index.ts';
-import { createSilentConsole } from '../../consola/index.ts';
 
 const builder = (yargs: Argv) =>
   yargs.strict().options({
