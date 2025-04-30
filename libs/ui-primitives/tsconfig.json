@@ -1,7 +1,0 @@
-{
-  "extends": "@libs/tsconfig/tsconfig.react.json",
-  "include": ["**/*.ts", "**/*.tsx", ".storybook/**/*.ts", ".storybook/**/*.tsx"],
-  "compilerOptions": {
-    "rootDir": "."
-  }
-}
