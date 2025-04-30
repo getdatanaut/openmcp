@@ -1,5 +1,5 @@
+import { interpolable } from '../../../utils/string.ts';
 import type ConfigSchema from './config-schema.ts';
-import { toInterpolable } from './string.ts';
 
 /**
  * Masks authentication-related information in a given URL
@@ -16,7 +16,7 @@ export default function maskUrl(configSchema: ConfigSchema, url: URL): string {
   for (const field of ['username', 'password'] as const) {
     if (url[field]) {
       const registeredKey = configSchema.add(field, 'string');
-      joinedUrl += toInterpolable(registeredKey);
+      joinedUrl += interpolable(registeredKey);
       if (field === 'username') {
         // Add a separator between username and password or username and host
         joinedUrl += url.password ? ':' : '@';
@@ -45,7 +45,7 @@ export default function maskUrl(configSchema: ConfigSchema, url: URL): string {
 
       if (paramKeys.includes(key) && value.length > 0) {
         const registeredKey = configSchema.add(key, 'string');
-        joinedUrl += `${key}=${toInterpolable(registeredKey)}`;
+        joinedUrl += `${key}=${interpolable(registeredKey)}`;
       } else {
         joinedUrl += `${key}=${value}`;
       }

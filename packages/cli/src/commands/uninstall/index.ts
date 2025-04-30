@@ -1,11 +1,26 @@
-import { uninstall } from '@openmcp/host-utils/mcp';
-import type { CommandModule } from 'yargs';
+import { type IntegrationName, integrations, uninstall } from '@openmcp/host-utils/mcp';
+import type { Argv, CommandModule } from 'yargs';
 
 import console from '#libs/console';
 
 import { createHandler } from '../../cli-utils/index.ts';
 import { getAgentById } from '../../libs/datanaut/agent.ts';
-import { builder } from '../install/index.ts';
+
+export const builder = (yargs: Argv) =>
+  yargs
+    .strict()
+    .positional('agent-id', {
+      type: 'string',
+      describe: 'The ID of the agent to uninstall',
+      demandOption: true,
+    })
+    .options({
+      client: {
+        choices: Object.keys(integrations) as IntegrationName[],
+        describe: 'The name of the client to install agent for',
+        demandOption: true,
+      },
+    });
 
 export default {
   describe: 'Uninstall the agent',

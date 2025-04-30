@@ -1,5 +1,5 @@
+import { interpolable } from '../../../utils/string.ts';
 import type ConfigSchema from './config-schema.ts';
-import { toInterpolable } from './string.ts';
 
 /**
  * Mask common authentication information used in headers.
@@ -24,14 +24,14 @@ export default function maskHeaders(configSchema: ConfigSchema, headers: Headers
   const xApiKeyValue = headers.get('x-api-key');
   if (isNonEmpty(xApiKeyValue)) {
     const registeredKey = configSchema.add('apiKey', 'string');
-    maskedHeaders.set('x-api-key', toInterpolable(registeredKey));
+    maskedHeaders.set('x-api-key', interpolable(registeredKey));
   }
 
   // Check for "x-access-token"
   const xAccessToken = headers.get('x-access-token');
   if (isNonEmpty(xAccessToken)) {
     const registeredKey = configSchema.add('accessToken', 'string');
-    maskedHeaders.set('x-access-token', toInterpolable(registeredKey));
+    maskedHeaders.set('x-access-token', interpolable(registeredKey));
   }
 
   return Object.fromEntries(maskedHeaders);
@@ -42,16 +42,16 @@ function maskAuthorizationHeader(configSchema: ConfigSchema, header: string): st
   switch (true) {
     case lowerCased.startsWith('bearer '): {
       const registeredKey = configSchema.add('bearerToken', 'string');
-      return `Bearer ${toInterpolable(registeredKey)}`;
+      return `Bearer ${interpolable(registeredKey)}`;
     }
     case lowerCased.startsWith('basic '): {
       const registeredKey = configSchema.add('basicAuth', 'string');
-      return `Basic ${toInterpolable(registeredKey)}`;
+      return `Basic ${interpolable(registeredKey)}`;
     }
     case true:
     default: {
       const registeredKey = configSchema.add('authorization', 'string');
-      return toInterpolable(registeredKey);
+      return interpolable(registeredKey);
     }
   }
 }

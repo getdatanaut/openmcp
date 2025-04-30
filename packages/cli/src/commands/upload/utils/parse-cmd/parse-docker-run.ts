@@ -1,7 +1,7 @@
 import { default as yargsParser } from 'yargs-parser';
 
+import { interpolable, screamCase } from '../../../../utils/string.ts';
 import type ConfigSchema from '../config-schema.ts';
-import { toInterpolable, toScreamCase } from '../string.ts';
 import parseEnvVariables from './parse-env-variables.ts';
 import type { Result, ResultArg, ResultArgFlag } from './types.ts';
 
@@ -152,8 +152,8 @@ export default function parseDockerRun(
                   return [name, value].join('=');
                 }
 
-                const varName = configSchema.add(toScreamCase(name), type);
-                return [name, toInterpolable(varName)].join('=');
+                const varName = configSchema.add(screamCase(name), type);
+                return [name, interpolable(varName)].join('=');
               })
               .join(' '),
           });

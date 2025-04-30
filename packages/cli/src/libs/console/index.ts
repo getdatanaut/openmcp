@@ -12,7 +12,7 @@ const opts = {
 };
 
 const consola: PromptlessConsola = createConsola(opts);
-export { default as prompt } from './prompt.ts';
+export * as prompt from './prompt.ts';
 
 export default consola;
 

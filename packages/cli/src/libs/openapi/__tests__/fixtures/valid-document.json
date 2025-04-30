@@ -1,0 +1,20 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Test API",
+    "version": "1.0.0",
+    "description": "A test API for loadDocument"
+  },
+  "paths": {
+    "/test": {
+      "get": {
+        "summary": "Test endpoint",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}

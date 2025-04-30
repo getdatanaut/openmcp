@@ -1,4 +1,4 @@
-import type { HttpSecurityScheme, IHttpService } from '@stoplight/types';
+import type { IHttpService } from '@stoplight/types';
 
 // fragment with HTTP Basic security scheme
 export const httpBasicSecurityFragment: Pick<IHttpService, 'security' | 'securitySchemes'> = {

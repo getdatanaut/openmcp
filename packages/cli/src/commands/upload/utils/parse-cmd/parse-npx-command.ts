@@ -1,7 +1,7 @@
 import yargsParser from 'yargs-parser';
 
+import { interpolable, screamCase } from '../../../../utils/string.ts';
 import type ConfigSchema from '../config-schema.ts';
-import { toInterpolable, toScreamCase } from '../string.ts';
 import type { Result, ResultArg } from './types.ts';
 
 const KNOWN_BOOLEAN_FLAGS = ['y', 'yes', 'q', 'quiet'];
@@ -51,12 +51,12 @@ export default function parseNpx(
       };
     }
 
-    const varName = configSchema.add(toScreamCase(`ARG_${configSchema.size}`), configSchema.inferType(arg));
+    const varName = configSchema.add(screamCase(`ARG_${configSchema.size}`), configSchema.inferType(arg));
     return {
       type: 'positional',
       dataType: 'string',
       value: arg,
-      masked: toInterpolable(varName),
+      masked: interpolable(varName),
     };
   });
 

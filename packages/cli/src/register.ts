@@ -24,7 +24,9 @@ export default async function register(argv: string[]) {
         if (err instanceof HandlerError) {
           console.error(err.message);
         } else {
-          console.error(msg);
+          if (msg !== null) {
+            console.error(msg);
+          }
           console.restoreAll();
           yargs.showHelp();
           process.exit(1);
