@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "Manage connections between MCP Servers and Clients through a single interface.",
   "type": "module",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "sideEffects": false,
   "keywords": [
     "mcp",
