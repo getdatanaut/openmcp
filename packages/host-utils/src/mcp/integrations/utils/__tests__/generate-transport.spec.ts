@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import generateTransport from '../generate-transport.ts';
 import type { Remix } from '../../../types.ts';
+import generateTransport from '../generate-transport.ts';
 
 describe('generateTransport', () => {
   it('should generate transport with --server flag when no filepath is provided', () => {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import findRemix from '../find-remix.ts';
 import type { Remix } from '../../../types.ts';
+import findRemix from '../find-remix.ts';
 
 describe('findRemix', () => {
   it('should return true when transport contains matching remix id with --server flag', () => {
@@ -153,14 +153,7 @@ describe('findRemix', () => {
   it('should handle complex argument patterns correctly with --server flag', () => {
     const transport = {
       command: 'npx',
-      args: [
-        'some-arg',
-        '@openmcp/cli@1.0.0',
-        'another-arg',
-        '--server',
-        'test-remix-id',
-        '--extra-flag',
-      ],
+      args: ['some-arg', '@openmcp/cli@1.0.0', 'another-arg', '--server', 'test-remix-id', '--extra-flag'],
     };
 
     const remix: Remix = {
@@ -174,14 +167,7 @@ describe('findRemix', () => {
   it('should handle complex argument patterns correctly with --config flag', () => {
     const transport = {
       command: 'npx',
-      args: [
-        'some-arg',
-        '@openmcp/cli@1.0.0',
-        'another-arg',
-        '--config',
-        '/path/to/config.json',
-        '--extra-flag',
-      ],
+      args: ['some-arg', '@openmcp/cli@1.0.0', 'another-arg', '--config', '/path/to/config.json', '--extra-flag'],
     };
 
     const remix: Remix = {

@@ -1,0 +1,11 @@
+
+[34mCLI[39m Building entry: src/index.ts
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.4.0
+[34mCLI[39m Using tsup config: /Users/marc/dev/openmcp/packages/openapi/tsup.config.ts
+[34mCLI[39m Target: es2023
+[34mCLI[39m Cleaning output folder
+[34mESM[39m Build start
+[32mESM[39m [1mdist/index.js     [22m[32m7.21 KB[39m
+[32mESM[39m [1mdist/index.js.map [22m[32m15.53 KB[39m
+[32mESM[39m ⚡️ Build success in 8ms
