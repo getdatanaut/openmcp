@@ -1,4 +1,4 @@
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { type ExternalToast, toast as sonnerToast } from 'sonner';
 
 import { Icon } from '../Icon/icon.tsx';
@@ -18,7 +18,7 @@ function toastSuccess(title: string, props?: ToastProps) {
 }
 
 function toastError(title: string, props?: ToastProps) {
-  return toast(title, { icon: <Icon icon={faTimesCircle} className="ak-text-danger" />, ...props });
+  return toast(title, { icon: <Icon icon={faExclamationTriangle} className="ak-text-danger" />, ...props });
 }
 
 toast.success = toastSuccess;

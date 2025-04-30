@@ -2,6 +2,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { type Ref } from 'react';
 import { toast as sonnerToast } from 'sonner';
 
+import { tn } from '../../utils/tw.ts';
 import { Button } from '../Button/button.tsx';
 import { Icon, type IconProps } from '../Icon/icon.tsx';
 
@@ -26,14 +27,14 @@ export function Toast({ ref, id, title, description, icon, action, cancel, hideC
   return (
     <div
       ref={ref}
-      className="ui-toast group relative flex w-[var(--width)] items-center gap-3 px-4 py-3 md:max-w-[364px]"
+      className="ui-toast group relative flex w-[var(--width)] items-center gap-2 px-6 py-5 md:max-w-[364px]"
     >
-      {icon ? <Icon icon={icon} /> : null}
+      {icon ? <Icon icon={icon} className="mr-2.5" /> : null}
 
-      <div className="flex flex-1 flex-col justify-center pr-10">
+      <div className="flex flex-1 flex-col justify-center">
         <div className="w-full">
-          <div className="font-medium">{title}</div>
-          {description ? <div className="ak-text/60 text-sm">{description}</div> : null}
+          <div className={tn(description && 'font-medium')}>{title}</div>
+          {description ? <div className="ak-text/60">{description}</div> : null}
         </div>
       </div>
 
@@ -65,9 +66,13 @@ export function Toast({ ref, id, title, description, icon, action, cancel, hideC
       ) : null}
 
       {!hideCloseButton ? (
-        <div className="ak-layer-0 absolute -top-2.5 -right-3 rounded-sm border opacity-0 group-hover:opacity-100">
-          <Button icon={faTimes} size="xs" variant="ghost" onClick={() => sonnerToast.dismiss(id)} />
-        </div>
+        <Button
+          icon={faTimes}
+          size="xs"
+          variant="unstyled"
+          onClick={() => sonnerToast.dismiss(id)}
+          className="ak-layer-0 absolute top-0.5 right-0.5 flex h-5 w-5 translate-x-1/2 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border"
+        />
       ) : null}
     </div>
   );

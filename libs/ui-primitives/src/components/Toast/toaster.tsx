@@ -2,7 +2,7 @@ import { Toaster as BaseToaster, type ToasterProps as BaseToasterProps } from 's
 
 import { twMerge } from '../../utils/tw.ts';
 
-export interface ToasterProps extends Pick<BaseToasterProps, 'duration' | 'position' | 'className'> {}
+export interface ToasterProps extends Pick<BaseToasterProps, 'duration' | 'position' | 'className' | 'visibleToasts'> {}
 
 export function Toaster({ className, ...props }: ToasterProps) {
   return (
@@ -10,6 +10,7 @@ export function Toaster({ className, ...props }: ToasterProps) {
       duration={5000}
       position="bottom-center"
       className={twMerge('flex justify-center', className)}
+      visibleToasts={5}
       {...props}
     />
   );
