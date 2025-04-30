@@ -1,5 +1,5 @@
 {
-  "name": "@openmcp/cli",
+  "name": "openmcp",
   "version": "0.0.0",
   "type": "module",
   "license": "MIT",
@@ -18,9 +18,7 @@
     "LICENSE",
     "package.json"
   ],
-  "bin": {
-    "openmcp": "./bin/index.js"
-  },
+  "bin": "./bin/index.js",
   "imports": {
     "#register": {
       "types": "./src/register.ts",
