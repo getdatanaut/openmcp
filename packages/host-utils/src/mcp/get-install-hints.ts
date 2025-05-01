@@ -34,7 +34,7 @@ export default function getInstallHints(
   const hints: [ShellCommandHint, ...Hint[]] = [
     {
       type: 'command',
-      value: `npx @openmcp/cli@latest install ${remix.id} --client ${integrationName}`,
+      value: `npx openmcp@latest install ${remix.id} --client ${integrationName}`,
     },
   ];
 

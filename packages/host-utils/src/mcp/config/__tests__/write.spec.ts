@@ -33,7 +33,7 @@ describe('writeConfig', () => {
         server: {
           type: 'stdio',
           command: 'npx',
-          args: ['@openmcp/cli', '-y', 'run', '--server', 'server'],
+          args: ['openmcp', '-y', 'run', '--server', 'server'],
         },
       },
     };
@@ -67,7 +67,7 @@ describe('writeConfig', () => {
         server: {
           type: 'stdio',
           command: 'npx',
-          args: ['@openmcp/cli', '-y', 'run', '--server', 'server'],
+          args: ['openmcp', '-y', 'run', '--server', 'server'],
         },
         newServer: {
           type: 'http',
@@ -94,7 +94,7 @@ describe('writeConfig', () => {
         server: {
           type: 'stdio',
           command: 'npx',
-          args: ['@openmcp/cli@latest', '-y', 'run', '--server', 'server'],
+          args: ['openmcp@latest', '-y', 'run', '--server', 'server'],
         },
       };
     });
@@ -116,7 +116,7 @@ describe('writeConfig', () => {
         server: {
           type: 'stdio',
           command: 'npx',
-          args: ['@openmcp/cli@latest', '-y', 'run', '--server', 'server'],
+          args: ['openmcp@latest', '-y', 'run', '--server', 'server'],
         },
       },
     });

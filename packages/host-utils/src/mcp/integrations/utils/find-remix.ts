@@ -24,7 +24,7 @@ export default function findRemix(transport: unknown, remix: Remix): boolean {
   for (let i = 0; i < result.data.args.length; i++) {
     const arg = result.data.args[i]!;
     if (!isOpenmcpCli) {
-      isOpenmcpCli ||= arg.startsWith('@openmcp/cli');
+      isOpenmcpCli ||= arg.startsWith('openmcp');
       continue;
     }
 

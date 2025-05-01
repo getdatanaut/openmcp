@@ -7,7 +7,7 @@ describe('findRemix', () => {
   it('should return true when transport contains matching remix id with --server flag', () => {
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli', 'run', '--server', 'test-remix-id'],
+      args: ['openmcp', 'run', '--server', 'test-remix-id'],
     };
 
     const remix: Remix = {
@@ -21,7 +21,7 @@ describe('findRemix', () => {
   it('should return false when transport contains different remix id with --server flag', () => {
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli', 'run', '--server', 'different-remix-id'],
+      args: ['openmcp', 'run', '--server', 'different-remix-id'],
     };
 
     const remix: Remix = {
@@ -35,7 +35,7 @@ describe('findRemix', () => {
   it('should return true when transport contains matching filepath with --config flag', () => {
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli', 'run', '--config', '/path/to/config.json'],
+      args: ['openmcp', 'run', '--config', '/path/to/config.json'],
     };
 
     const remix: Remix = {
@@ -50,7 +50,7 @@ describe('findRemix', () => {
   it('should return false when transport contains different filepath with --config flag', () => {
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli', 'run', '--config', '/different/path.json'],
+      args: ['openmcp', 'run', '--config', '/different/path.json'],
     };
 
     const remix: Remix = {
@@ -65,7 +65,7 @@ describe('findRemix', () => {
   it('should return false when transport does not contain --server or --config argument', () => {
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli', 'run', 'test-remix-id'],
+      args: ['openmcp', 'run', 'test-remix-id'],
     };
 
     const remix: Remix = {
@@ -76,7 +76,7 @@ describe('findRemix', () => {
     expect(findRemix(transport, remix)).toBe(false);
   });
 
-  it('should return false when transport does not contain @openmcp/cli', () => {
+  it('should return false when transport does not contain openmcp', () => {
     const transport = {
       command: 'npx',
       args: ['some-other-package', 'run', '--server', 'test-remix-id'],
@@ -93,7 +93,7 @@ describe('findRemix', () => {
   it('should return false when transport has less than 4 arguments', () => {
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli', '--server'],
+      args: ['openmcp', '--server'],
     };
 
     const remix: Remix = {
@@ -107,7 +107,7 @@ describe('findRemix', () => {
   it('should return false when transport is not valid', () => {
     const transport = {
       command: 'not-npx',
-      args: ['@openmcp/cli', 'run', '--server', 'test-remix-id'],
+      args: ['openmcp', 'run', '--server', 'test-remix-id'],
     };
 
     const remix: Remix = {
@@ -153,7 +153,7 @@ describe('findRemix', () => {
   it('should handle complex argument patterns correctly with --server flag', () => {
     const transport = {
       command: 'npx',
-      args: ['some-arg', '@openmcp/cli@1.0.0', 'another-arg', '--server', 'test-remix-id', '--extra-flag'],
+      args: ['some-arg', 'openmcp@1.0.0', 'another-arg', '--server', 'test-remix-id', '--extra-flag'],
     };
 
     const remix: Remix = {
@@ -167,7 +167,7 @@ describe('findRemix', () => {
   it('should handle complex argument patterns correctly with --config flag', () => {
     const transport = {
       command: 'npx',
-      args: ['some-arg', '@openmcp/cli@1.0.0', 'another-arg', '--config', '/path/to/config.json', '--extra-flag'],
+      args: ['some-arg', 'openmcp@1.0.0', 'another-arg', '--config', '/path/to/config.json', '--extra-flag'],
     };
 
     const remix: Remix = {

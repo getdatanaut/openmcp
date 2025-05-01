@@ -32,7 +32,7 @@ describe('readConfig', () => {
           server: {
             type: 'stdio',
             command: 'npx',
-            args: ['@openmcp/cli', '-y', 'run', '--server', 'server'],
+            args: ['openmcp', '-y', 'run', '--server', 'server'],
           },
         },
       }),
@@ -51,7 +51,7 @@ describe('readConfig', () => {
         server: {
           type: 'stdio',
           command: 'npx',
-          args: ['@openmcp/cli', '-y', 'run', '--server', 'server'],
+          args: ['openmcp', '-y', 'run', '--server', 'server'],
         },
       },
     });

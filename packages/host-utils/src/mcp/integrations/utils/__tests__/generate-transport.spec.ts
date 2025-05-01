@@ -14,7 +14,7 @@ describe('generateTransport', () => {
 
     expect(transport).toEqual({
       command: 'npx',
-      args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+      args: ['-y', 'openmcp@latest', 'run', '--server', 'test-remix-id'],
     });
   });
 
@@ -29,7 +29,7 @@ describe('generateTransport', () => {
 
     expect(transport).toEqual({
       command: 'npx',
-      args: ['-y', '@openmcp/cli@latest', 'run', '--config', '/path/to/config.json'],
+      args: ['-y', 'openmcp@latest', 'run', '--config', '/path/to/config.json'],
     });
   });
 });

@@ -8,11 +8,11 @@ describe('deleteRemix', () => {
     const servers = {
       server1: {
         command: 'npx',
-        args: ['-y', '@openmcp/cli', 'run', '--server', 'test-remix-id'],
+        args: ['-y', 'openmcp', 'run', '--server', 'test-remix-id'],
       },
       server2: {
         command: 'npx',
-        args: ['-y', '@openmcp/cli', 'run', '--server', 'other-remix-id'],
+        args: ['-y', 'openmcp', 'run', '--server', 'other-remix-id'],
       },
     };
 
@@ -26,7 +26,7 @@ describe('deleteRemix', () => {
     expect(servers).toStrictEqual({
       server2: {
         command: 'npx',
-        args: ['-y', '@openmcp/cli', 'run', '--server', 'other-remix-id'],
+        args: ['-y', 'openmcp', 'run', '--server', 'other-remix-id'],
       },
     });
   });
@@ -35,7 +35,7 @@ describe('deleteRemix', () => {
     const servers = {
       server1: {
         command: 'npx',
-        args: ['@openmcp/cli', 'run', '--server', 'other-remix-id'],
+        args: ['openmcp', 'run', '--server', 'other-remix-id'],
       },
     };
 
