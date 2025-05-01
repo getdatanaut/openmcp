@@ -81,6 +81,7 @@
     "@openmcp/schemas": "workspace:*",
     "@orpc/client": "1.1.1",
     "@orpc/contract": "1.1.1",
+    "@sindresorhus/slugify": "^2.2.1",
     "@stoplight/http-spec": "7.1.0",
     "@stoplight/json": "3.21.7",
     "@stoplight/types": "14.1.1",

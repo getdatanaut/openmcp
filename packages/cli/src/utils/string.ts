@@ -1,5 +1,7 @@
 import snakeCase from 'lodash-es/snakeCase.js';
 
+export { default as slugify } from '@sindresorhus/slugify';
+
 export function interpolable(value: string): string {
   return `{{${value}}}`;
 }

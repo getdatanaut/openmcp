@@ -50,7 +50,7 @@ export type RemixServer = z.infer<typeof RemixServerSchema>;
 
 // slightly more restrictive than tool name to keep some buffer for the tool name
 // we also disallow underscore `_` since we use it as a delimiter in the tool name
-const RemixServerName = z.string().regex(/^[a-zA-Z0-9_]{1,24}$/, 'Server name must match ^[a-zA-Z0-9_]{1,24}$');
+const RemixServerName = z.string().regex(/^[a-zA-Z0-9_-]{1,24}$/, 'Server name must match ^[a-zA-Z0-9_-]{1,24}$');
 
 export const ConfigSchema = z
   .object({

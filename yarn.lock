@@ -6294,6 +6294,7 @@ __metadata:
     "@openmcp/schemas": "workspace:*"
     "@orpc/client": "npm:1.1.1"
     "@orpc/contract": "npm:1.1.1"
+    "@sindresorhus/slugify": "npm:^2.2.1"
     "@stoplight/http-spec": "npm:7.1.0"
     "@stoplight/json": "npm:3.21.7"
     "@stoplight/types": "npm:14.1.1"
