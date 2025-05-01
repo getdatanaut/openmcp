@@ -6,5 +6,5 @@ export type {
   StdIOServer,
   StreamableHTTPServer,
 } from './config/index.ts';
-export { parse as parseConfig } from './config/index.ts';
+export { load as loadConfig, parse as parseConfig } from './config/index.ts';
 export { default as createRemixServer } from './server.ts';

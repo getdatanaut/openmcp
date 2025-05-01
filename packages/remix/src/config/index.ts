@@ -1,3 +1,4 @@
+export { default as load } from './load.ts';
 export { default as parse } from './parse.ts';
 export type {
   Config,

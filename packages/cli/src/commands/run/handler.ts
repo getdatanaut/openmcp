@@ -1,4 +1,5 @@
 import * as fs from 'node:fs/promises';
+import process from 'node:process';
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { Config } from '@openmcp/remix';
@@ -14,10 +15,10 @@ type Input =
       readonly configFile: string;
     };
 
-async function loadConfig(input: Input): Promise<Config> {
+async function loadRemix(input: Input): Promise<Config> {
   if ('configFile' in input) {
-    const { parseConfig } = await import('@openmcp/remix');
-    return parseConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')));
+    const { loadConfig } = await import('@openmcp/remix');
+    return loadConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')), process.env);
   }
 
   const list = await rpcClient.cli.agents.listAgents({
@@ -36,14 +37,14 @@ async function loadConfig(input: Input): Promise<Config> {
 export default async function handler(input: Input): Promise<void> {
   try {
     const { createRemixServer } = await import('@openmcp/remix');
-    const config = await loadConfig(input);
+    const remix = await loadRemix(input);
     const remixServer = await createRemixServer(
       {
         // hardcoded for now
         name: '@openmcp/cli-remix-server',
         version: '0.0.0',
       },
-      config,
+      remix,
     );
     const transport = new StdioServerTransport();
     await remixServer.connect(transport);
