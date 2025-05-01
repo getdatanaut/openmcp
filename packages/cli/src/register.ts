@@ -24,7 +24,7 @@ export default async function register(argv: string[]) {
         } else {
           console.restoreAll();
           if (msg !== null) {
-            process.stderr.write(String(msg));
+            process.stderr.write(String(msg) + '\n');
           }
           yargs.showHelp();
           process.exit(1);
