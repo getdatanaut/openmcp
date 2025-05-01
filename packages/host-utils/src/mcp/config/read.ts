@@ -1,5 +1,6 @@
-import { parseWithPointers } from '@stoplight/json';
+import { parseWithPointers as parseJsonWithPointers } from '@stoplight/json';
 import { DiagnosticSeverity, type IDiagnostic } from '@stoplight/types';
+import { parseWithPointers as parseYamlWithPointers } from '@stoplight/yaml';
 import type { z } from 'zod';
 
 import type { Context, FsInstallMethod } from '../types.ts';
@@ -11,6 +12,21 @@ function isErrorDiagnostic(
   return diagnostic.severity === DiagnosticSeverity.Error;
 }
 
+function parseWithPointers(filepath: string, content: string) {
+  const ext = filepath.slice(filepath.lastIndexOf('.') + 1);
+  switch (ext) {
+    case 'json':
+      return parseJsonWithPointers(content, {
+        allowTrailingComma: true,
+      });
+    case 'yaml':
+    case 'yml':
+      return parseYamlWithPointers(content);
+    default:
+      throw new Error(`Unsupported file extension: ${ext}`);
+  }
+}
+
 export default async function readConfig<I extends FsInstallMethod>(
   { constants, fs, logger }: Context,
   installMethod: I,
@@ -18,10 +34,7 @@ export default async function readConfig<I extends FsInstallMethod>(
   const resolvedConfigPath = resolveConfigPath(constants, installMethod.filepath);
   logger.start(`Loading config from "${resolvedConfigPath}"`);
   const content = await fs.readFile(resolvedConfigPath, 'utf8');
-  const { data, diagnostics } = parseWithPointers(content, {
-    allowTrailingComma: true,
-  });
-
+  const { data, diagnostics } = parseWithPointers(installMethod.filepath, content);
   const errorDiagnostics = diagnostics.filter(isErrorDiagnostic);
 
   if (errorDiagnostics.length > 0) {

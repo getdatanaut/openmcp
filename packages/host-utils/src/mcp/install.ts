@@ -27,6 +27,7 @@ export default async function install(logger: Logger, integrationName: Integrati
     }
 
     logger.error(new Error(`Failed to install remix ${remixName}`, { cause: error }));
+    return;
   }
 
   logger.success(`Remix ${remixName} was successfully installed`);

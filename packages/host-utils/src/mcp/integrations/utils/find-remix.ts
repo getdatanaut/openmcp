@@ -2,12 +2,20 @@ import { z } from 'zod';
 
 import type { Remix } from '../../types.ts';
 
-const TRANSPORT_SCHEMA = z
-  .object({
-    command: z.literal('npx'),
-    args: z.array(z.string()),
-  })
-  .passthrough();
+const TRANSPORT_SCHEMA = z.union([
+  z
+    .object({
+      command: z.literal('npx'),
+      args: z.array(z.string()),
+    })
+    .passthrough(),
+  z
+    .object({
+      cmd: z.literal('node'),
+      args: z.array(z.string()),
+    })
+    .passthrough(),
+]);
 
 export default function findRemix(transport: unknown, remix: Remix): boolean {
   const result = TRANSPORT_SCHEMA.safeParse(transport);
