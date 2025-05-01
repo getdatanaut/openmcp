@@ -24,6 +24,11 @@ async function loadRemix(input: Input): Promise<Config> {
     return loadConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')), process.env);
   }
 
+  const server = rpcClient.cli.agents.getRemix({ agentId: input.server });
+  if (server) {
+    return server;
+  }
+
   const list = await rpcClient.cli.agents.listAgents({
     name: input.server,
   });

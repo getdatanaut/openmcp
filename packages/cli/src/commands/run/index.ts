@@ -6,7 +6,7 @@ const builder = (yargs: Argv) =>
   yargs.strict().options({
     server: {
       type: 'string',
-      describe: 'The id of the server to start',
+      describe: 'The name or id of the server to start',
       conflicts: 'config',
     },
     secret: {
