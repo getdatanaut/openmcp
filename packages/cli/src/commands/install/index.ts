@@ -8,41 +8,31 @@ import { getAgentById } from '../../libs/datanaut/agent.ts';
 import createOpenAPIRemix from './openapi/index.ts';
 
 export const builder = (yargs: Argv) =>
-  yargs
-    .strict()
-    .positional('agent-id', {
-      type: 'string',
-      describe: 'The ID of the agent to install',
-      demandOption: false,
-      conflicts: ['openapi'],
-    })
-    .options({
-      openapi: {
-        type: 'string',
-        describe: 'OpenAPI spec to install',
-        conflicts: ['agent-id'],
-      },
-      client: {
-        choices: Object.keys(integrations) as IntegrationName[],
-        describe: 'The name of the client to install agent for',
-        demandOption: true,
-      },
-    })
-    .check(args => {
-      if (args['agent-id'] === undefined && args.openapi === undefined) {
-        throw new Error('Either agent-id or openapi is required');
-      }
-
-      return true;
-    });
+  yargs.strict().options({
+    type: {
+      choices: ['agent-id', 'openapi'] as const,
+      describe:
+        'To force the type of the input. By default, values starting with `ag_` are considered agent-id, otherwise it is considered OpenAPI spec.',
+    },
+    client: {
+      choices: Object.keys(integrations) as IntegrationName[],
+      describe: 'The name of the client to install agent for',
+      demandOption: true,
+    },
+  });
 
 export default {
   describe: 'Install the agent',
-  command: 'install',
+  command: 'install <agent-id-or-openapi-spec>',
   builder,
   handler: createHandler(async args => {
-    const { agentId, openapi, client } = args as Awaited<ReturnType<typeof builder>['argv']>;
-    const remix = agentId ? await getAgentById(agentId) : await createOpenAPIRemix(openapi!);
+    const { agentIdOrOpenapiSpec, client, type } = args as Awaited<ReturnType<typeof builder>['argv']> & {
+      agentIdOrOpenapiSpec: string;
+    };
+    const remix =
+      (agentIdOrOpenapiSpec.startsWith('ag_') && type !== 'openapi') || type === 'agent-id'
+        ? await getAgentById(agentIdOrOpenapiSpec)
+        : await createOpenAPIRemix(agentIdOrOpenapiSpec);
     await install(console, client, remix);
   }),
 } satisfies CommandModule;
