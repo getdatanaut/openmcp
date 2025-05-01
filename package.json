@@ -2,7 +2,7 @@
   "name": "openmcp-mono",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "yarn@4.8.1",
+  "packageManager": "yarn@4.9.1",
   "engines": {
     "node": ">= 20"
   },
