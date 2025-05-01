@@ -1,7 +1,7 @@
 import type { Remix } from '../../types.ts';
 
 export default function generateTransport(remix: Remix) {
-  const args = ['@openmcp/cli@latest', 'run'];
+  const args = ['-y', '@openmcp/cli@latest', 'run'];
   if (remix.filepath) {
     args.push('--config', remix.filepath);
   } else {

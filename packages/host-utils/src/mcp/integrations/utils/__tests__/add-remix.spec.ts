@@ -12,7 +12,7 @@ describe('addRemix', () => {
     };
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+      args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
     };
 
     addRemix(target, remix, transport);
@@ -25,7 +25,7 @@ describe('addRemix', () => {
     const target = {
       'test-remix': {
         command: 'npx',
-        args: ['@openmcp/cli@latest', 'run', '--server', 'another-remix-id'],
+        args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'another-remix-id'],
       },
     };
     const remix = {
@@ -34,7 +34,7 @@ describe('addRemix', () => {
     };
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+      args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
     };
 
     addRemix(target, remix, transport);
@@ -42,11 +42,11 @@ describe('addRemix', () => {
     expect(target).toStrictEqual({
       'test-remix': {
         command: 'npx',
-        args: ['@openmcp/cli@latest', 'run', '--server', 'another-remix-id'],
+        args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'another-remix-id'],
       },
       'test-remix-2': {
         command: 'npx',
-        args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+        args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
       },
     });
   });
@@ -55,7 +55,7 @@ describe('addRemix', () => {
     const target = {
       'existing-remix': {
         command: 'npx',
-        args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+        args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
       },
     };
     const remix = {
@@ -64,14 +64,14 @@ describe('addRemix', () => {
     };
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+      args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
     };
 
     expect(() => addRemix(target, remix, transport)).toThrow(new RemixConflict(remix));
     expect(target).toStrictEqual({
       'existing-remix': {
         command: 'npx',
-        args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+        args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
       },
     });
   });
@@ -84,7 +84,7 @@ describe('addRemix', () => {
     };
     const transport = {
       command: 'npx',
-      args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+      args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
     };
 
     addRemix(target, remix, transport);
@@ -92,7 +92,7 @@ describe('addRemix', () => {
     // Check that the transport was assigned to this key
     expect(target).toStrictEqual({
       mishka: {
-        args: ['@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
+        args: ['-y', '@openmcp/cli@latest', 'run', '--server', 'test-remix-id'],
         command: 'npx',
       },
     });
