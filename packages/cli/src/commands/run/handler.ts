@@ -3,6 +3,9 @@ import process from 'node:process';
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import type { Config } from '@openmcp/remix';
+import { onExit } from 'signal-exit';
+
+import console, { pipeToLogFile } from '#libs/console';
 
 import { rpcClient } from '../../libs/datanaut/sdk/sdk.ts';
 
@@ -35,10 +38,15 @@ async function loadRemix(input: Input): Promise<Config> {
 }
 
 export default async function handler(input: Input): Promise<void> {
+  using _ = await pipeToLogFile();
+  const { createRemixServer } = await import('@openmcp/remix');
+  let remixServer;
   try {
-    const { createRemixServer } = await import('@openmcp/remix');
+    console.log('Loading remix...');
     const remix = await loadRemix(input);
-    const remixServer = await createRemixServer(
+    console.log('Successfully loaded remix');
+    console.log('Starting server...');
+    remixServer = await createRemixServer(
       {
         // hardcoded for now
         name: '@openmcp/cli-remix-server',
@@ -46,11 +54,10 @@ export default async function handler(input: Input): Promise<void> {
       },
       remix,
     );
+    console.log('Successfully started server');
     const transport = new StdioServerTransport();
     await remixServer.connect(transport);
-    process.once('beforeExit', async () => {
-      await remixServer.close();
-    });
+    console.log('Established connection to server');
   } catch (error) {
     if (error instanceof Error) {
       process.stderr.write(`${error.message}\n`);
@@ -60,4 +67,11 @@ export default async function handler(input: Input): Promise<void> {
 
     process.exit(1);
   }
+
+  await new Promise(resolve => {
+    onExit(() => {
+      console.log('Shutting down...');
+      remixServer.close().finally(resolve);
+    });
+  });
 }

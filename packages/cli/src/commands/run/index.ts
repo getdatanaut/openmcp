@@ -1,7 +1,5 @@
 import { type Argv } from 'yargs';
 
-import { createSilentConsole } from '#libs/console';
-
 import { createHandler } from '../../cli-utils/index.ts';
 
 const builder = (yargs: Argv) =>
@@ -28,23 +26,17 @@ export default {
   command: 'run',
   builder,
   handler: createHandler(async args => {
-    const console = await createSilentConsole();
     const { default: handler } = await import('./handler.ts');
-
     const { server, secret, config } = args as Awaited<ReturnType<typeof builder>['argv']>;
-    try {
-      if (typeof config === 'string') {
-        await handler({
-          configFile: config,
-        });
-      } else {
-        await handler({
-          server: String(server),
-          secret,
-        });
-      }
-    } finally {
-      console.restoreConsole();
+    if (typeof config === 'string') {
+      await handler({
+        configFile: config,
+      });
+    } else {
+      await handler({
+        server: String(server),
+        secret,
+      });
     }
   }),
 };

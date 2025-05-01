@@ -6311,6 +6311,8 @@ __metadata:
     msw: "npm:2.7.5"
     open: "npm:~10.1.1"
     picocolors: "npm:^1.1.1"
+    rotating-file-stream: "npm:^3.2.6"
+    signal-exit: "npm:^4.1.0"
     ts-node: "npm:^10.9.2"
     tsup: "npm:8.4.0"
     typescript: "npm:5.8.3"
@@ -7181,6 +7183,13 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 10c0/931a6d3bf34fa13adec44a8660319bb7b2f61fbabbf2030f4d29df991fb37b6a685cd7dc203fde8d4ab8b4fe783f1fe8814e448a97f651dc4727511faf958cb4
+  languageName: node
+  linkType: hard
+
+"rotating-file-stream@npm:^3.2.6":
+  version: 3.2.6
+  resolution: "rotating-file-stream@npm:3.2.6"
+  checksum: 10c0/56da3af82af852a25f3f7a53e370abaa1b4802c1f7629127adae0e9084c95f6476b6d96f86dd023572f2b644cca70808b9450ad0600a4f6613bc36fe59e152af
   languageName: node
   linkType: hard
 
