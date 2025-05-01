@@ -6,6 +6,6 @@ import { createHandler } from '../../cli-utils/index.ts';
 
 export default {
   command: 'whoami',
-  describe: 'Display Datanaut email',
+  describe: process.env['NODE_ENV'] === 'development' ? 'Display Datanaut email' : false,
   handler: createHandler(whoami),
 } satisfies CommandModule;

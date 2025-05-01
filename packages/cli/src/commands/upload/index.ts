@@ -108,7 +108,6 @@ const builder: CommandBuilder<{}, ServerDefinition> = yargs =>
 export default {
   command: 'upload',
   builder,
-  describe: 'Upload an mpc server',
-  // describe: false, // Hides the command from the help output
+  describe: process.env['NODE_ENV'] === 'development' ? 'Upload an mcp server' : false,
   handler: createHandler<ServerDefinition>(handler),
 } satisfies CommandModule<{}, ServerDefinition>;

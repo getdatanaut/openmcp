@@ -16,7 +16,7 @@ export const builder = (yargs: Argv) =>
   });
 
 export default {
-  describe: 'Uninstall the agent',
+  describe: process.env['NODE_ENV'] === 'development' ? 'Uninstall the agent' : false,
   command: 'uninstall <agent-id>',
   builder,
   handler: createHandler(async args => {
