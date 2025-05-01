@@ -1,4 +1,4 @@
-#!/usr/bin/env node --no-warnings --experimental-strip-types
+#!/usr/bin/env node --no-warnings
 import process from 'node:process';
 
 import register from '#register';

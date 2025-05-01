@@ -6276,6 +6276,8 @@ __metadata:
     prettier-plugin-classnames: "npm:0.7.8"
     prettier-plugin-tailwindcss: "npm:0.6.11"
     typescript: "npm:5.8.3"
+  bin:
+    openmcp-dev: scripts/openmcp-dev.sh
   languageName: unknown
   linkType: soft
 

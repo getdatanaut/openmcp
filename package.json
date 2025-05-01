@@ -13,6 +13,9 @@
       "packages/*"
     ]
   },
+  "bin": {
+    "openmcp-dev": "scripts/openmcp-dev.sh"
+  },
   "scripts": {
     "--deps--": "",
     "doctor": "yarn dlx @yarnpkg/doctor",

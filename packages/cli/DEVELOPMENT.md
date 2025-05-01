@@ -51,42 +51,21 @@ The CLI currently supports the following commands:
 
 ### Running the CLI during development
 
-There are two convenient ways to the CLI during development.
-`NODE_ENV` can be either set to `development` if you want CLI to use the local server, or kept undefined if you wish to use the production server.
+To run the development version of `openmcp` use `openmcp-dev` command.
+It's an alias to `openmcp` with a few environment variables adjusted:
 
-#### Using openmcp bin
+- `NODE_ENV` is set to `development`,
+- `NODE_OPTIONS` is set to `--conditions=development --loader=ts-node/esm`,
+- `TS_NODE_PROJECT` is set to `"$(pwd)/packages/cli/tsconfig.json"`,
+- `TS_NODE_TRANSPILE_ONLY` is set to `1`.
 
-```bash
-NODE_ENV=development TS_NODE_PROJECT=$(pwd)/packages/cli/tsconfig.json NODE_OPTIONS="--conditions=development --loader ts-node/esm" openmcp login
-```
-
-or, if you do not intend to use any other Node.js process in a given session, you can export env variables like so:
-
-```bash
-export NODE_OPTIONS="--conditions=development --loader ts-node/esm" TS_NODE_PROJECT=$(pwd)/packages/cli/tsconfig.json NODE_ENV=development
-
-# run any command
-openmcp --help
-openmcp login
-```
-
-#### Using "exec" npm script 
+If you need to change any of the values, you will need to run `openmcp` with reconfigured env vars.
 
 ```bash
-yarn workspace openmcp run exec <command> [options]
-yarn workspace openmcp run exec --help # to get a list of all public commands
+openmcp-dev --help
+openmcp-dev login
+openmcp-dev whoami
 ```
-
-For example:
-
-```bash
-yarn workspace openmcp run exec login
-yarn workspace openmcp run exec logout
-yarn workspace openmcp run exec run
-yarn workspace openmcp run exec upload --type=stdio -- "px -y @modelcontextprotocol/server-filesystem /Users/jakub/Desktop"
-```
-
-Note that the current working directory is set to `packages/cli` in this case.
 
 ### Adding a New Command
 
