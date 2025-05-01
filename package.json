@@ -14,7 +14,7 @@
     ]
   },
   "bin": {
-    "openmcp-dev": "scripts/openmcp-dev.sh"
+    "openmcp-dev": "./scripts/openmcp-dev.sh"
   },
   "scripts": {
     "--deps--": "",
