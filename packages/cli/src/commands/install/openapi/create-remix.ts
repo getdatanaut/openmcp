@@ -11,8 +11,8 @@ export default async function negotiatedCreateRemix(cwd: string, remix: RemixCon
       cwd,
       await prompt.text({
         message: 'Please insert location for your remix definition:',
-        placeholder: path.join(cwd, 'remix.json'),
-        defaultValue: path.join(cwd, 'remix.json'),
+        placeholder: path.join(cwd, 'openmcp.json'),
+        defaultValue: path.join(cwd, 'openmcp.json'),
       }),
     );
 
