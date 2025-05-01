@@ -13,21 +13,19 @@ import whoamiCommand from './commands/whoami/index.ts';
 import { HandlerError } from './errors/index.ts';
 
 export default async function register(argv: string[]) {
-  console.wrapConsole();
   try {
     await yargs(hideBin(process.argv))
       .scriptName('openmcp')
       .version()
       .help(true)
-      .showHelpOnFail(false)
       .fail((msg, err, yargs) => {
         if (err instanceof HandlerError) {
           console.error(err.message);
         } else {
-          if (msg !== null) {
-            console.error(msg);
-          }
           console.restoreAll();
+          if (msg !== null) {
+            process.stderr.write(String(msg));
+          }
           yargs.showHelp();
           process.exit(1);
         }
@@ -44,7 +42,6 @@ export default async function register(argv: string[]) {
       .demandCommand(1, '')
       .parse(argv);
   } catch {
-    console.restoreConsole();
     process.exit(1);
   }
 }
