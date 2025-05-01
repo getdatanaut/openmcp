@@ -13,7 +13,7 @@ import whoamiCommand from './commands/whoami/index.ts';
 import { HandlerError } from './errors/index.ts';
 
 export default async function register(argv: string[]) {
-  console.wrapAll();
+  console.wrapConsole();
   try {
     await yargs(hideBin(process.argv))
       .scriptName('openmcp')
@@ -42,7 +42,7 @@ export default async function register(argv: string[]) {
       .demandCommand(1, '')
       .parse(argv);
   } catch {
-    console.restoreAll();
+    console.restoreConsole();
     process.exit(1);
   }
 }

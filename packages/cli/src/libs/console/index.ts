@@ -1,15 +1,18 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-import { type ConsolaOptions, createConsola } from 'consola';
+import { createConsola } from 'consola';
 
 import env from '../../env.ts';
+import fancyReporter from './reporters/fancy.ts';
+import type { PromptlessConsola } from './types.ts';
 
-const opts: Partial<ConsolaOptions & { fancy: boolean }> = {
-  fancy: true,
+const opts = {
+  reporters: [fancyReporter],
 };
 
-const consola = createConsola(opts);
+const consola: PromptlessConsola = createConsola(opts);
+export { default as prompt } from './prompt.ts';
 
 export default consola;
 
