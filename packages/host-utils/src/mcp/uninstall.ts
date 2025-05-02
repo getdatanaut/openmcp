@@ -9,7 +9,7 @@ import type { Logger, Remix } from './types.ts';
 export default async function uninstall(logger: Logger, integrationName: IntegrationName, remix: Remix): Promise<void> {
   const integration = integrations[integrationName];
   const remixName = JSON.stringify(remix.name);
-  logger.start(`Uninstalling remix ${remixName}`);
+  logger.start(`Uninstalling ${remixName}`);
   try {
     await integration.uninstall(
       {
@@ -22,12 +22,12 @@ export default async function uninstall(logger: Logger, integrationName: Integra
     );
   } catch (error) {
     if (error instanceof RemixNotInstalled) {
-      logger.info(`Remix ${remixName} is not installed. Skipping uninstall`);
+      logger.info(`${remixName} is not installed. Skipping uninstall`);
       return;
     }
 
-    logger.error(new Error(`Failed to uninstall remix ${remixName}`, { cause: error }));
+    logger.error(new Error(`Failed to uninstall ${remixName}`, { cause: error }));
   }
 
-  logger.success(`Remix ${remixName} was successfully uninstalled`);
+  logger.success(`${remixName} was successfully uninstalled`);
 }

@@ -47,9 +47,9 @@ export default async function handler(input: Input): Promise<void> {
   const { createRemixServer } = await import('@openmcp/remix');
   let remixServer;
   try {
-    console.log('Loading remix...');
+    console.log('Loading openmcp definition...');
     const remix = await loadRemix(input);
-    console.log('Successfully loaded remix');
+    console.log('Successfully loaded openmcp definition');
     console.log('Starting server...');
     remixServer = await createRemixServer(
       {

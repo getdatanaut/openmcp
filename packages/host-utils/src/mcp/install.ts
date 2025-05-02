@@ -9,7 +9,7 @@ import type { Logger, Remix } from './types.ts';
 export default async function install(logger: Logger, integrationName: IntegrationName, remix: Remix): Promise<void> {
   const integration = integrations[integrationName];
   const remixName = JSON.stringify(remix.name);
-  logger.start(`Installing remix ${remixName}`);
+  logger.start(`Installing ${remixName}`);
   try {
     await integration.install(
       {
@@ -22,13 +22,15 @@ export default async function install(logger: Logger, integrationName: Integrati
     );
   } catch (error) {
     if (error instanceof RemixConflict) {
-      logger.info(`Remix ${remixName} is already installed. Skipping install`);
+      logger.info(
+        `${remixName} is already installed. You may need to restart your target client for changes to take affect.`,
+      );
       return;
     }
 
-    logger.error(new Error(`Failed to install remix ${remixName}`, { cause: error }));
+    logger.error(new Error(`Failed to install ${remixName}`, { cause: error }));
     return;
   }
 
-  logger.success(`Remix ${remixName} was successfully installed`);
+  logger.success(`${remixName} was successfully installed`);
 }
