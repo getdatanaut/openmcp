@@ -16,7 +16,7 @@ async function registerClientServer(manager: McpManager, name: string, server: R
       enabled: true,
     },
     { manager },
-    server.tools?.map(tool => tool.name) ?? null,
+    server.tools?.map(tool => (typeof tool === 'string' ? tool : tool.name)) ?? null,
   );
   try {
     await clientServer.connect();

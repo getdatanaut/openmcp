@@ -7,13 +7,16 @@ import {
 } from '@openmcp/schemas/mcp';
 import { z } from 'zod';
 
-export const ToolSchema = z.object({
-  name: ToolName,
-});
+export const ToolSchema = z.union([
+  ToolName,
+  z.object({
+    name: ToolName,
+  }),
+]);
 
 export type Tool = z.infer<typeof ToolSchema>;
 
-const tools = z.array(ToolSchema).nonempty('Tools must be provided and non-empty');
+const tools = z.array(ToolSchema).nonempty('Tools must be non-empty');
 
 export const OpenAPIServerSchema = OpenAPITransportSchema.extend({
   tools: tools.optional(),

@@ -14,7 +14,7 @@ describe('ConfigSchema', () => {
           type: 'sse',
           url: 'https://example.com',
           headers: { 'x-openmcp': 'token' },
-          tools: [{ name: 'tool1' }],
+          tools: ['tool1'],
         },
         valid_server_2: {
           type: 'openapi',
@@ -22,7 +22,7 @@ describe('ConfigSchema', () => {
             openapi: 'https://example.com/openapi.json',
             serverUrl: 'https://example.com',
           },
-          tools: [{ name: 'tool2' }],
+          tools: [{ name: 'tool2' }, 'tool4'],
         },
       },
     };
