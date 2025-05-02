@@ -12,8 +12,7 @@ type SecurityConfig = {
 };
 
 type Context = {
-  generateConfigKey(key: string): string;
-  generateConfigValue(key: string): string;
+  generateConfigKey(key: string, value: string): string;
 };
 
 export default async function negotiateSecurityConfig(ctx: Context, service: IHttpService): Promise<SecurityConfig> {
@@ -82,8 +81,8 @@ async function negotiateValuesForApiKeyScheme(
   resolvedSecurityScheme: ResolvedSecurityScheme & { type: 'apiKey' },
 ): Promise<void> {
   const value = await tokenPrompt('API Key', resolvedSecurityScheme.securityScheme.description);
-  const key = ctx.generateConfigKey('api key');
-  userConfig[key] = value.trim().length === 0 ? ctx.generateConfigValue('api key') : value;
+  const key = ctx.generateConfigKey('api key', value);
+  userConfig[key] = value.trim();
 
   const paramName = resolvedSecurityScheme.securityScheme.name;
   switch (resolvedSecurityScheme.securityScheme.in) {
@@ -124,7 +123,7 @@ async function negotiateBasicAuth(ctx: Context, { userConfig, serverClientConfig
   const username = await prompt.username();
   const password = await prompt.password();
   const value = btoa(`${username}:${password}`);
-  const key = ctx.generateConfigKey('basic auth');
+  const key = ctx.generateConfigKey('basic auth', value);
   userConfig[key] = value;
   (serverClientConfig.headers ??= {})['Authorization'] = `Basic ${interpolable(key)}`;
 }
@@ -135,8 +134,8 @@ async function negotiateBearerToken(
   { type, securityScheme }: ResolvedSecurityScheme,
 ): Promise<void> {
   const value = await tokenPrompt(type === 'oauth2' ? 'OAuth2' : 'Bearer Token', securityScheme.description);
-  const key = ctx.generateConfigKey('bearer token');
-  userConfig[key] = value.trim().length === 0 ? ctx.generateConfigValue('bearer token') : value;
+  const key = ctx.generateConfigKey('bearer token', value);
+  userConfig[key] = value;
   (serverClientConfig.headers ??= {})['Authorization'] = `Bearer ${interpolable(key)}`;
 }
 
@@ -154,9 +153,11 @@ function allSupported(schemes: ResolvedSecurityScheme[]) {
   return schemes.every(s => s.supported);
 }
 
-function tokenPrompt(strategy: string, description: string | undefined) {
-  return prompt.maskedText({
-    message: `This API uses ${strategy} authentication, please insert a secret or leave empty to use an environment variable. The secret will be stored on your computer.`,
-    help: description?.replace(/\n+/g, ' '),
-  });
+async function tokenPrompt(strategy: string, description: string | undefined) {
+  return (
+    await prompt.maskedText({
+      message: `This API uses ${strategy} authentication, please insert a secret or leave empty to use an environment variable. The secret will be stored on your computer.`,
+      help: description?.replace(/\n+/g, ' '),
+    })
+  ).trim();
 }

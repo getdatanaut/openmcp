@@ -5,7 +5,7 @@ import type { Config as RemixDefinition, OpenAPIServer } from '@openmcp/remix';
 import console, { prompt } from '#libs/console';
 import { loadDocumentAsService, negotiateSecurityStrategy, negotiateServerUrl } from '#libs/openapi';
 
-import { camelCase, screamCase, slugify } from '../../../utils/string.ts';
+import { screamCase, slugify } from '../../../utils/string.ts';
 
 export default async function generateRemix(
   cwd: string,
@@ -32,8 +32,13 @@ export default async function generateRemix(
   try {
     const { serverClientConfig: _serverClientConfig, userConfig: _config } = await negotiateSecurityStrategy(
       {
-        generateConfigKey: camelCase,
-        generateConfigValue: key => '$' + screamCase([name, key].filter(Boolean).join(' ')),
+        generateConfigKey(key, value) {
+          if (value.length === 0) {
+            return screamCase([name, key].filter(Boolean).join(' '));
+          }
+
+          return key;
+        },
       },
       service,
     );

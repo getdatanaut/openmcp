@@ -5,7 +5,7 @@ import parseConfig from './parse.ts';
 import type { Config, RemixServer } from './schemas.ts';
 
 function isEnvVar(value: unknown): value is string {
-  return typeof value === 'string' && /^\$[A-Z_]+$/.test(value);
+  return typeof value === 'string' && value.length === 0;
 }
 
 function resolveClientConfig(clientConfig: Record<string, unknown>, env: Record<string, unknown>): void {
@@ -14,12 +14,11 @@ function resolveClientConfig(clientConfig: Record<string, unknown>, env: Record<
       continue;
     }
 
-    const envVarName = value.slice(1);
-    if (!Object.hasOwn(env, envVarName)) {
+    if (!Object.hasOwn(env, key)) {
       throw new Error(`Environment variable ${value} is not defined. Please define it before running the command.`);
     }
 
-    clientConfig[key] = env[envVarName];
+    clientConfig[key] = env[key];
   }
 }
 
