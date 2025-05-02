@@ -25,13 +25,32 @@ export async function pipeToLogFile() {
   try {
     const logFile = path.join(env.DN_CONFIGDIR, 'openmcp-cli-server.log');
     await fs.promises.mkdir(path.dirname(logFile), { recursive: true });
-    logFileWStream = createStream(logFile, {
-      size: '5M',
-      interval: '7d',
-      initialRotation: true,
-      intervalBoundary: true,
-      compress: 'gzip',
-    });
+    logFileWStream = createStream(
+      (time, index) => {
+        if (!time) return logFile;
+
+        const date = new Date(time);
+        const filename = [
+          'openmcp-cli-server',
+          [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, '0'),
+            String(date.getDate()).padStart(2, '0'),
+          ].join(''),
+          index,
+          'log',
+        ].join('.');
+        return path.join(env.DN_CONFIGDIR, filename);
+      },
+      {
+        size: '5M',
+        interval: '7d',
+        maxFiles: 5,
+        initialRotation: true,
+        intervalBoundary: true,
+        compress: 'gzip',
+      },
+    );
   } catch {
     // this may happen for a number of reasons, such as
     // - no permissions to create the directory
