@@ -1,0 +1,14 @@
+{
+  "title": "Test Document",
+  "version": "1.0.0",
+  "description": "A test document for document utils",
+  // comment
+  "properties": {
+    "name": {
+      "type": "string",
+    },
+    "age": {
+      "type": "number",
+    },
+  },
+}
