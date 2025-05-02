@@ -1,6 +1,6 @@
 import type { Remix } from '@openmcp/host-utils/mcp';
 
-import console from '#libs/console';
+import console, { prompt } from '#libs/console';
 
 import negotiatedCreateRemix from './create-remix.ts';
 import generateRemixDefinition from './generate-remix.ts';
@@ -18,6 +18,12 @@ export default async function createOpenAPIRemix(location: string): Promise<Remi
       filepath: remixFilepath,
     };
   } catch (error) {
-    throw new Error(`Failed to generate OpenAPI openmcp definition: ${error instanceof Error ? error.message : error}`);
+    if (prompt.isOperationCancelled(error)) {
+      throw error;
+    } else {
+      throw new Error(
+        `Failed to generate OpenAPI openmcp definition: ${error instanceof Error ? error.message : error}`,
+      );
+    }
   }
 }

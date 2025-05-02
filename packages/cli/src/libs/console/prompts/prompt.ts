@@ -1,26 +1,10 @@
-import {
-  confirm as _confirm,
-  isCancel,
-  type Option,
-  password as _password,
-  select as _select,
-  text as _text,
-} from '@clack/prompts';
+import { confirm as _confirm, type Option, select as _select, text as _text } from '@clack/prompts';
 
-function assertFulfilled<V>(res: V): asserts res is V extends symbol ? never : V {
-  if (isCancel(res)) {
-    throw new Error('Operation cancelled');
-  }
-}
+import { assertFulfilled } from './guards.ts';
+import { password as maskedText } from './password.ts';
 
 export const confirm = async (...args: Parameters<typeof _confirm>): Promise<boolean> => {
   const res = await _confirm(...args);
-  assertFulfilled(res);
-  return res;
-};
-
-export const maskedText = async (...args: Parameters<typeof _password>): Promise<string> => {
-  const res = await _password(...args);
   assertFulfilled(res);
   return res;
 };

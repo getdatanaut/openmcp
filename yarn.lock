@@ -5153,6 +5153,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-unicode-supported@npm:~2.1.0":
+  version: 2.1.0
+  resolution: "is-unicode-supported@npm:2.1.0"
+  checksum: 10c0/a0f53e9a7c1fdbcf2d2ef6e40d4736fdffff1c9f8944c75e15425118ff3610172c87bf7bc6c34d3903b04be59790bb2212ddbe21ee65b5a97030fc50370545a5
+  languageName: node
+  linkType: hard
+
 "is-weakmap@npm:^2.0.2":
   version: 2.0.2
   resolution: "is-weakmap@npm:2.0.2"
@@ -6286,6 +6293,7 @@ __metadata:
   resolution: "openmcp@workspace:packages/cli"
   dependencies:
     "@better-fetch/fetch": "npm:1.1.18"
+    "@clack/core": "npm:0.4.2"
     "@clack/prompts": "npm:0.10.1"
     "@datanaut/eslint-config": "npm:0.1.1"
     "@datanaut/tsconfig": "npm:0.1.3"
@@ -6309,11 +6317,12 @@ __metadata:
     consola: "npm:~3.4.2"
     envalid: "npm:~8.0.0"
     eslint: "npm:9.25.1"
+    is-unicode-supported: "npm:~2.1.0"
     lodash-es: "npm:^4.17.21"
     msw: "npm:2.7.5"
     open: "npm:~10.1.1"
     picocolors: "npm:^1.1.1"
-    rotating-file-stream: "npm:^3.2.6"
+    rotating-file-stream: "npm:3.2.6"
     signal-exit: "npm:^4.1.0"
     ts-node: "npm:^10.9.2"
     tsup: "npm:8.4.0"
@@ -7188,7 +7197,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rotating-file-stream@npm:^3.2.6":
+"rotating-file-stream@npm:3.2.6":
   version: 3.2.6
   resolution: "rotating-file-stream@npm:3.2.6"
   checksum: 10c0/56da3af82af852a25f3f7a53e370abaa1b4802c1f7629127adae0e9084c95f6476b6d96f86dd023572f2b644cca70808b9450ad0600a4f6613bc36fe59e152af
