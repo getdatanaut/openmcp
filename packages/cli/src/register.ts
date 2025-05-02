@@ -3,6 +3,7 @@ import { hideBin } from 'yargs/helpers';
 
 import console from '#libs/console';
 
+import pkgJson from '../package.json' with { type: 'json' };
 import installCommand from './commands/install/index.ts';
 import loginCommand from './commands/login/index.ts';
 import logoutCommand from './commands/logout/index.ts';
@@ -16,7 +17,7 @@ export default async function register(argv: string[]) {
   try {
     await yargs(hideBin(process.argv))
       .scriptName('openmcp')
-      .version()
+      .version(pkgJson.version)
       .help(true)
       .fail((msg, err, yargs) => {
         if (err instanceof HandlerError) {
