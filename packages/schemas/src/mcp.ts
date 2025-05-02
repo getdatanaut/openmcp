@@ -12,7 +12,7 @@ export const OpenAPITransportSchema = z.object({
         }
 
         // If not a URL, check if it looks like a file path
-        return value.startsWith('/') || /^[a-zA-Z]:\\/.test(value);
+        return /^.{0,2}\//.test(value) || /^[a-zA-Z]:\\/.test(value);
       },
       {
         message: 'openapi must be a valid URL or file path',

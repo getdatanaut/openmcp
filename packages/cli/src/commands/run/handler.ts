@@ -21,7 +21,17 @@ type Input =
 async function loadRemix(input: Input): Promise<Config> {
   if ('configFile' in input) {
     const { loadConfig } = await import('@openmcp/remix');
-    return loadConfig(JSON.parse(await fs.readFile(input.configFile, 'utf8')), process.env);
+    return loadConfig(
+      {
+        cwd: process.cwd(),
+        io: {
+          fetch,
+          fs,
+        },
+        env: process.env,
+      },
+      input.configFile,
+    );
   }
 
   const server = rpcClient.cli.agents.getRemix({ agentId: input.server });

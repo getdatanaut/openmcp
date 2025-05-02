@@ -1,0 +1,13 @@
+{
+  "configs": {},
+  "servers": {
+    "test_server": {
+      "type": "openapi",
+      "serverConfig": {
+        "openapi": "/placeholder/absolute/path/to/openapi.json",
+        "serverUrl": "https://example.com"
+      },
+      "tools": ["tool1"]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "configs": {
+    "test_server": { "key": "value" }
+  },
+  "servers": {
+    "test_server": {
+      "type": "sse",
+      "url": "https://example.com",
+      "tools": ["tool1"]
+    }
+  }
+}
