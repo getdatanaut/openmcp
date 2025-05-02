@@ -1,9 +1,22 @@
 {
   "name": "@openmcp/schemas",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
+  "license": "MIT",
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getdatanaut/openmcp",
+    "directory": "packages/schemas"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json"
+  ],
   "exports": {
     "./mcp": {
       "types": "./src/mcp.ts",
@@ -25,5 +38,8 @@
     "eslint": "9.25.1",
     "tsup": "8.4.0",
     "typescript": "5.8.3"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

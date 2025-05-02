@@ -1,9 +1,22 @@
 {
   "name": "@openmcp/host-utils",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
+  "license": "MIT",
   "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/getdatanaut/openmcp",
+    "directory": "packages/host-utils"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "package.json"
+  ],
   "exports": {
     ".": {
       "node": {
@@ -45,5 +58,8 @@
     "tsup": "8.4.0",
     "typescript": "5.8.3",
     "vitest": "3.1.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
