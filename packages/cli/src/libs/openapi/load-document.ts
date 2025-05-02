@@ -1,9 +1,8 @@
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-
 import { isPlainObject, parseWithPointers as parseJsonWithPointers } from '@stoplight/json';
 import { DiagnosticSeverity, type IDiagnostic } from '@stoplight/types';
 import { parseWithPointers as parseYamlWithPointers } from '@stoplight/yaml';
+
+import { readDocument } from './index.ts';
 
 function assertValidDocument(result: {
   data: unknown;
@@ -20,21 +19,21 @@ function assertValidDocument(result: {
   }
 }
 
-export default async function loadDocument(filepath: string): Promise<Record<string, unknown>> {
-  const content = await fs.readFile(filepath, 'utf8');
-  switch (path.extname(filepath)) {
-    case '.json': {
+export default async function loadDocument(location: string): Promise<Record<string, unknown>> {
+  const { content, type } = await readDocument(location);
+  switch (type) {
+    case 'json': {
       const result = parseJsonWithPointers(content);
       assertValidDocument(result);
       return result.data;
     }
-    case '.yaml':
-    case '.yml': {
+    case 'yaml':
+    case 'yml': {
       const result = parseYamlWithPointers(content);
       assertValidDocument(result);
       return result.data;
     }
     default:
-      throw new Error(`Unsupported file type: ${filepath}`);
+      throw new Error(`Unsupported file type: ${location}`);
   }
 }

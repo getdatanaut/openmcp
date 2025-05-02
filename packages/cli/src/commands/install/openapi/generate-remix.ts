@@ -1,3 +1,5 @@
+import * as path from 'node:path';
+
 import type { Config as RemixDefinition, OpenAPIServer } from '@openmcp/remix';
 
 import console, { prompt } from '#libs/console';
@@ -6,9 +8,10 @@ import { loadDocumentAsService, negotiateSecurityStrategy, negotiateServerUrl } 
 import { camelCase, screamCase, slugify } from '../../../utils/string.ts';
 
 export default async function generateRemix(
-  filepath: string,
+  cwd: string,
+  location: string,
 ): Promise<{ id: string; name: string; definition: RemixDefinition }> {
-  const service = await loadDocumentAsService(filepath);
+  const service = await loadDocumentAsService(location);
   const name = slugify(
     await prompt.text({
       message: 'Please insert a name for your server:',
@@ -43,14 +46,14 @@ export default async function generateRemix(
   const server: OpenAPIServer = {
     type: 'openapi',
     serverConfig: {
-      openapi: filepath,
+      openapi: location,
       serverUrl,
     },
     clientConfig: serverClientConfig,
   };
 
   return {
-    id: filepath,
+    id: URL.canParse(location) ? location : `file://${path.resolve(cwd, location)}`,
     name,
     definition: {
       configs: {
