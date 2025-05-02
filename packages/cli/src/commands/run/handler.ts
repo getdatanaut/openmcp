@@ -7,6 +7,7 @@ import { onExit } from 'signal-exit';
 
 import console, { pipeToLogFile } from '#libs/console';
 
+import { PrintableError } from '../../errors/index.ts';
 import { rpcClient } from '../../libs/datanaut/sdk/sdk.ts';
 
 type Input =
@@ -34,32 +35,22 @@ async function loadRemix(input: Input): Promise<Config> {
     );
   }
 
-  const server = rpcClient.cli.agents.getRemix({ agentId: input.server });
-  if (server) {
-    return server;
-  }
-
-  const list = await rpcClient.cli.agents.listAgents({
-    name: input.server,
-  });
-
-  if (list.length === 0) {
-    throw new Error(`No server found with name ${input.server}\n`);
-  } else if (list.length > 1) {
-    throw new Error(`Multiple servers found with name ${input.server}\n`);
-  }
-
-  return rpcClient.cli.agents.getRemix({ agentId: list[0]!.id });
+  return rpcClient.cli.agents.getRemix({ agentId: input.server });
 }
 
-export default async function handler(input: Input): Promise<void> {
-  using _ = await pipeToLogFile();
+async function handler(input: Input): Promise<void> {
   const { createRemixServer } = await import('@openmcp/remix');
-  let remixServer;
+  let remix;
   try {
     console.log('Loading openmcp definition...');
-    const remix = await loadRemix(input);
+    remix = await loadRemix(input);
     console.log('Successfully loaded openmcp definition');
+  } catch (error) {
+    throw new PrintableError('Failed to load openmcp definition', error);
+  }
+
+  let remixServer;
+  try {
     console.log('Starting server...');
     remixServer = await createRemixServer(
       {
@@ -70,17 +61,17 @@ export default async function handler(input: Input): Promise<void> {
       remix,
     );
     console.log('Successfully started server');
+  } catch (error) {
+    throw new PrintableError('Failed to start server', { cause: error });
+  }
+
+  try {
     const transport = new StdioServerTransport();
     await remixServer.connect(transport);
     console.log('Established connection to server');
   } catch (error) {
-    if (error instanceof Error) {
-      process.stderr.write(`${error.message}\n`);
-    } else {
-      process.stderr.write(`Unknown error: ${error}\n`);
-    }
-
-    process.exit(1);
+    remixServer.close();
+    throw new PrintableError('Failed to connect to server', { cause: error });
   }
 
   await new Promise(resolve => {
@@ -89,4 +80,17 @@ export default async function handler(input: Input): Promise<void> {
       remixServer.close().finally(resolve);
     });
   });
+}
+
+export default async function (input: Input): Promise<void> {
+  using _ = await pipeToLogFile();
+  try {
+    await handler(input);
+  } catch (error) {
+    // we write to stderr so that the mcp client can show the error to the client
+    process.stderr.write(`${String(error)}\n`);
+    // and to the log as well in case the error is not displayed by the client
+    console.error(String(error));
+    process.exitCode = 1;
+  }
 }

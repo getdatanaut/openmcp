@@ -19,6 +19,7 @@ export default consola;
 export async function pipeToLogFile() {
   consola.restoreStd();
   const { createStream } = await import('rotating-file-stream');
+  const reporters = consola.options.reporters.slice();
 
   let logFileWStream;
   try {
@@ -51,6 +52,7 @@ export async function pipeToLogFile() {
       consola.options.stdout = stdout;
       consola.options.stderr = stderr;
       logFileWStream.end();
+      consola.setReporters(reporters);
     },
   };
 }
