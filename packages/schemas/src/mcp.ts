@@ -4,31 +4,24 @@ export const ToolName = z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Tool name mus
 
 export const OpenAPITransportSchema = z.object({
   type: z.literal('openapi'),
-  serverConfig: z.object({
-    openapi: z.string().refine(
-      value => {
-        if (URL.canParse(value)) {
-          return true;
-        }
+  openapi: z.string().refine(
+    value => {
+      if (URL.canParse(value)) {
+        return true;
+      }
 
-        // If not a URL, check if it looks like a file path
-        return /^.{0,2}\//.test(value) || /^[a-zA-Z]:\\/.test(value);
-      },
-      {
-        message: 'openapi must be a valid URL or file path',
-      },
-    ),
-
-    serverUrl: z.string().url(),
-  }),
-  clientConfig: z
-    .object({
-      path: z.record(z.unknown()).optional(),
-      query: z.record(z.unknown()).optional(),
-      headers: z.record(z.unknown()).optional(),
-      body: z.record(z.unknown()).optional(),
-    })
-    .optional(),
+      // If not a URL, check if it looks like a file path
+      return /^.{0,2}\//.test(value) || /^[a-zA-Z]:\\/.test(value);
+    },
+    {
+      message: 'openapi must be a valid URL or file path',
+    },
+  ),
+  serverUrl: z.string().url().optional(),
+  path: z.record(z.unknown()).optional(),
+  query: z.record(z.unknown()).optional(),
+  headers: z.record(z.unknown()).optional(),
+  body: z.record(z.unknown()).optional(),
 });
 
 export type OpenAPITransport = z.infer<typeof OpenAPITransportSchema>;

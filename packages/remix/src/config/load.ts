@@ -27,20 +27,20 @@ function resolveServer(location: string, server: RemixServer): void {
   if (server.type !== 'openapi') return;
 
   // urls do not need to be rewritten
-  if (URL.canParse(server.serverConfig.openapi)) return;
+  if (URL.canParse(server.openapi)) return;
 
   try {
     const url = new URL(location);
-    if (path.isAbsolute(server.serverConfig.openapi)) {
-      url.pathname = server.serverConfig.openapi;
+    if (path.isAbsolute(server.openapi)) {
+      url.pathname = server.openapi;
     } else {
-      url.pathname = path.join(path.dirname(url.pathname), server.serverConfig.openapi);
+      url.pathname = path.join(path.dirname(url.pathname), server.openapi);
     }
 
-    server.serverConfig.openapi = url.toString();
+    server.openapi = url.toString();
   } catch {
-    if (!path.isAbsolute(server.serverConfig.openapi)) {
-      server.serverConfig.openapi = path.join(path.dirname(location), server.serverConfig.openapi);
+    if (!path.isAbsolute(server.openapi)) {
+      server.openapi = path.join(path.dirname(location), server.openapi);
     }
   }
 }

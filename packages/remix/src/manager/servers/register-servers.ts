@@ -18,7 +18,15 @@ async function registerServer(manager: McpManager, name: string, remixServer: Re
 
   let server;
   if (remixServer.type === 'openapi') {
-    const clientConfig = interpolateOpenAPIClientConfig(remixServer.clientConfig, userConfig);
+    const clientConfig = interpolateOpenAPIClientConfig(
+      {
+        path: remixServer.path,
+        query: remixServer.query,
+        headers: remixServer.headers,
+        body: remixServer.body,
+      },
+      userConfig,
+    );
     server = Server.deserialize<OpenAPIServerConfig>(definition, {
       manager,
       async createServer(config) {

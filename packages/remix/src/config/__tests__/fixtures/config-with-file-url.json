@@ -3,10 +3,8 @@
   "servers": {
     "test_server": {
       "type": "openapi",
-      "serverConfig": {
-        "openapi": "file:///placeholder/openapi.json",
-        "serverUrl": "https://example.com"
-      },
+      "openapi": "file:///placeholder/openapi.json",
+      "serverUrl": "https://example.com"
       "tools": ["tool1"]
     }
   }

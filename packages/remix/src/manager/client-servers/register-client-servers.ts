@@ -12,11 +12,17 @@ async function registerClientServer(manager: McpManager, name: string, server: R
       id: `${clientId}-${serverId}`,
       clientId,
       serverId,
-      serverConfig: server.type === 'openapi' ? server.serverConfig : {},
+      serverConfig:
+        server.type === 'openapi'
+          ? {
+              openapi: server.openapi,
+              serverUrl: server.serverUrl,
+            }
+          : {},
       enabled: true,
     },
     { manager },
-    server.tools?.map(tool => (typeof tool === 'string' ? tool : tool.name)) ?? null,
+    new Set(server.tools),
   );
   try {
     await clientServer.connect();

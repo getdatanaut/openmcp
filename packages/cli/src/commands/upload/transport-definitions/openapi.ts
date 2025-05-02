@@ -31,10 +31,8 @@ export default async function createOpenAPITransportDefinition(
     transport: new OpenAPIClientTransport(server, serverTransport),
     transportConfig: {
       type: 'openapi',
-      serverConfig: {
-        openapi: uri,
-        serverUrl: resolvedServerUrl,
-      },
+      openapi: uri,
+      serverUrl: resolvedServerUrl,
     },
     configSchema: undefined,
     externalId: resolvedServerUrl,

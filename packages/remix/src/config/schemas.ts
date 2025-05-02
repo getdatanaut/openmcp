@@ -7,37 +7,32 @@ import {
 } from '@openmcp/schemas/mcp';
 import { z } from 'zod';
 
-export const ToolSchema = z.union([
-  ToolName,
-  z.object({
-    name: ToolName,
-  }),
-]);
+export const ToolSchema = ToolName;
 
 export type Tool = z.infer<typeof ToolSchema>;
 
-const tools = z.array(ToolSchema).nonempty('Tools must be non-empty');
+const tools = z.array(ToolSchema);
 
 export const OpenAPIServerSchema = OpenAPITransportSchema.extend({
-  tools: tools.optional(),
+  tools,
 });
 
 export type OpenAPIServer = z.infer<typeof OpenAPIServerSchema>;
 
 export const StreamableHTTPServerSchema = StreamableHTTPTransportSchema.extend({
-  tools: tools.optional(),
+  tools,
 });
 
 export type StreamableHTTPServer = z.infer<typeof StreamableHTTPServerSchema>;
 
 export const SSEServerSchema = SSETransportSchema.extend({
-  tools: tools.optional(),
+  tools,
 });
 
 export type SSEServer = z.infer<typeof SSEServerSchema>;
 
 export const StdIOServerSchema = StdIOTransportSchema.extend({
-  tools: tools.optional(),
+  tools,
 });
 
 export type StdIOServer = z.infer<typeof StdIOServerSchema>;

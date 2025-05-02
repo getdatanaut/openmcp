@@ -1,5 +1,5 @@
 import type { OpenAPIServer } from '@openmcp/remix';
-import type { HttpSecurityScheme, IHttpService } from '@stoplight/types';
+import type { IHttpService } from '@stoplight/types';
 
 import console, { prompt } from '#libs/console';
 
@@ -8,7 +8,7 @@ import { type ResolvedSecurityScheme, resolveSecuritySchemes } from '../security
 
 type SecurityConfig = {
   readonly userConfig: Record<string, unknown>;
-  readonly serverClientConfig: NonNullable<OpenAPIServer['clientConfig']>;
+  readonly serverClientConfig: NonNullable<Pick<OpenAPIServer, 'headers' | 'query'>>;
 };
 
 type Context = {

@@ -26,7 +26,7 @@ export default async function generateRemix(
   );
 
   const serverUrl = await negotiateServerUrl(service);
-  const serverClientConfig: OpenAPIServer['clientConfig'] = {};
+  const serverClientConfig: Pick<OpenAPIServer, 'path' | 'query' | 'headers' | 'body'> = {};
   const config: Record<string, unknown> = {};
 
   try {
@@ -45,11 +45,10 @@ export default async function generateRemix(
 
   const server: OpenAPIServer = {
     type: 'openapi',
-    serverConfig: {
-      openapi: location,
-      serverUrl,
-    },
-    clientConfig: serverClientConfig,
+    openapi: location,
+    serverUrl,
+    ...serverClientConfig,
+    tools: [],
   };
 
   return {
