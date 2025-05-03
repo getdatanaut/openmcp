@@ -1,0 +1,11 @@
+{
+  "extends": "@datanaut/tsconfig/tsconfig.react.json",
+  "include": ["src", "app.config.ts"],
+  "compilerOptions": {
+    "rootDir": ".",
+    "types": ["vite/client"],
+    "paths": {
+      "~/*": ["./src/*"]
+    }
+  }
+}

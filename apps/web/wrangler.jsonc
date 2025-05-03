@@ -1,0 +1,16 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "openmcp-web",
+  "main": "./.output/server/index.mjs",
+  "compatibility_date": "2025-04-08",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "html_handling": "drop-trailing-slash",
+    "directory": "./.output/public/",
+    "binding": "ASSETS",
+  },
+}
