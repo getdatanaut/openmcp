@@ -1,4 +1,5 @@
-import { interpolable } from '../../../utils/string.ts';
+import { interpolable } from '#libs/string-utils';
+
 import type ConfigSchema from './config-schema.ts';
 
 /**

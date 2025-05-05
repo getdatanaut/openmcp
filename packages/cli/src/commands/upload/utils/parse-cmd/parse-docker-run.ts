@@ -1,6 +1,7 @@
 import { default as yargsParser } from 'yargs-parser';
 
-import { interpolable, screamCase } from '../../../../utils/string.ts';
+import { interpolable, screamCase } from '#libs/string-utils';
+
 import type ConfigSchema from '../config-schema.ts';
 import parseEnvVariables from './parse-env-variables.ts';
 import type { Result, ResultArg, ResultArgFlag } from './types.ts';

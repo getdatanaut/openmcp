@@ -3,9 +3,9 @@ import path from 'node:path';
 
 import type { Argv, CommandModule } from 'yargs';
 
+import { createHandler } from '#libs/cli-utils';
 import { type IntegrationName, integrations } from '#libs/mcp-clients';
 
-import { createHandler } from '../../cli-utils/index.ts';
 import handler from './handler.ts';
 
 const isDev = process.env['NODE_ENV'] === 'development';

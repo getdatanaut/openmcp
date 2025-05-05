@@ -1,6 +1,6 @@
 import { type Argv } from 'yargs';
 
-import { createHandler } from '../../cli-utils/index.ts';
+import { createHandler } from '#libs/cli-utils';
 
 const builder = (yargs: Argv) =>
   yargs.strict().options({

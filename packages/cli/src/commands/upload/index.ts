@@ -2,7 +2,8 @@ import path from 'node:path';
 
 import type { Argv, CommandBuilder, CommandModule } from 'yargs';
 
-import { createHandler } from '../../cli-utils/index.ts';
+import { createHandler } from '#libs/cli-utils';
+
 import handler from './handler.ts';
 import type { ServerDefinition } from './types.ts';
 

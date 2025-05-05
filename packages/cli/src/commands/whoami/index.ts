@@ -1,8 +1,7 @@
 import type { CommandModule } from 'yargs';
 
+import { createHandler } from '#libs/cli-utils';
 import { whoami } from '#libs/datanaut-auth-cli';
-
-import { createHandler } from '../../cli-utils/index.ts';
 
 export default {
   command: 'whoami',

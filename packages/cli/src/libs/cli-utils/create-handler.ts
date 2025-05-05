@@ -1,8 +1,7 @@
 import type { ArgumentsCamelCase } from 'yargs';
 
+import { HandlerError } from '#errors';
 import console from '#libs/console';
-
-import { HandlerError } from '../errors/index.ts';
 
 type Handler<U> = (args: ArgumentsCamelCase<U>) => void | Promise<void>;
 

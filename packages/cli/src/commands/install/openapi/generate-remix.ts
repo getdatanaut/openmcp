@@ -4,8 +4,7 @@ import type { Config as RemixDefinition, OpenAPIServer } from '@openmcp/remix';
 
 import console, { prompt } from '#libs/console';
 import { loadDocumentAsService, negotiateSecurityStrategy, negotiateServerUrl } from '#libs/openapi';
-
-import { screamCase, slugify } from '../../../utils/string.ts';
+import { screamCase, slugify } from '#libs/string-utils';
 
 export default async function generateRemix(
   cwd: string,

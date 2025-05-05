@@ -2,8 +2,8 @@ import type { OpenAPIServer } from '@openmcp/remix';
 import type { IHttpService } from '@stoplight/types';
 
 import console, { prompt } from '#libs/console';
+import { interpolable } from '#libs/string-utils';
 
-import { interpolable } from '../../../utils/string.ts';
 import { type ResolvedSecurityScheme, resolveSecuritySchemes } from '../security/index.ts';
 
 type SecurityConfig = {

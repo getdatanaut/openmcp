@@ -1,6 +1,7 @@
 import type { CommandModule } from 'yargs';
 
-import { createHandler } from '../../cli-utils/index.ts';
+import { createHandler } from '#libs/cli-utils';
+
 import type { BuilderArgv } from '../install/index.ts';
 import { builder } from '../install/index.ts';
 import handler from './handler.ts';
