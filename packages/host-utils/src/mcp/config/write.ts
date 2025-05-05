@@ -1,5 +1,6 @@
 import { dirname } from 'node:path';
 
+import { serializeDocument } from '@openmcp/utils/documents';
 import type { z } from 'zod';
 
 import { isEnoentError } from '../../utils/guards.ts';
@@ -27,6 +28,12 @@ export default async function writeConfig<I extends FsInstallMethod>(
   }
 
   await applyConfig(config);
-  await ctx.fs.writeFile(resolvedConfigPath, JSON.stringify(config, null, 2));
+  const ext = resolvedConfigPath.slice(resolvedConfigPath.lastIndexOf('.') + 1);
+  if (ext === 'json') {
+    await ctx.fs.writeFile(resolvedConfigPath, serializeDocument(config, 'json'));
+  } else {
+    await ctx.fs.writeFile(resolvedConfigPath, serializeDocument(config, 'yaml'));
+  }
+
   ctx.logger.success('Config was saved successfully');
 }

@@ -11,6 +11,7 @@ import readConfig from '../read.ts';
 const constants = {
   HOMEDIR: '/home',
   CONFIGDIR: '/home/.config',
+  CWD: '/home/project',
 } as const;
 
 describe('readConfig', () => {
@@ -44,6 +45,7 @@ describe('readConfig', () => {
       type: 'fs',
       filepath: `$HOME/${filename}`,
       schema,
+      location: 'global',
     };
 
     await expect(readConfig(ctx, installMethod)).resolves.toStrictEqual({
@@ -62,15 +64,16 @@ describe('readConfig', () => {
     const ctx = createTestContext({ fs });
 
     const filename = 'invalid-json.json';
-    const homeConfigPath = path.join(constants.HOMEDIR, filename);
+    const cwdConfigPath = path.join(constants.CWD, filename);
 
-    await fs.promises.mkdir(constants.HOMEDIR, { recursive: true });
-    await fs.promises.writeFile(homeConfigPath, 'invalid json');
+    await fs.promises.mkdir(constants.CWD, { recursive: true });
+    await fs.promises.writeFile(cwdConfigPath, 'invalid json');
 
     const installMethod: FsInstallMethod = {
       type: 'fs',
-      filepath: `$HOME/${filename}`,
+      filepath: `$CWD/${filename}`,
       schema,
+      location: 'local',
     };
 
     await expect(readConfig(ctx, installMethod)).rejects.toThrow('Error parsing config file:');
@@ -90,6 +93,7 @@ describe('readConfig', () => {
       type: 'fs',
       filepath: `$HOME/${filename}`,
       schema,
+      location: 'global',
     };
 
     await expect(readConfig(ctx, installMethod)).rejects.toThrow('Error validating config file:');
@@ -103,6 +107,7 @@ describe('readConfig', () => {
       type: 'fs',
       filepath: '$HOME/non-existent-file.json',
       schema,
+      location: 'global',
     };
 
     await expect(readConfig(ctx, installMethod)).rejects.toThrow('ENOENT');

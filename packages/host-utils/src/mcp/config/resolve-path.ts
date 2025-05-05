@@ -1,11 +1,14 @@
 import { normalize } from 'node:path';
 import { join } from 'node:path/posix';
 
-import type { Constants } from '../types.ts';
+import type { Context } from '../types.ts';
 
-export type ResolvableConfigPath = `${'$HOME' | '$CONFIG' | '$VSCODE' | ''}/${string}`;
+export type ResolvableConfigPath = `${'$CWD' | '$HOME' | '$CONFIG' | '$VSCODE' | ''}/${string}`;
 
-export default function resolveConfigPath({ HOMEDIR, CONFIGDIR }: Constants, value: ResolvableConfigPath) {
+export default function resolveConfigPath(
+  { HOMEDIR, CONFIGDIR, CWD }: Context['constants'],
+  value: ResolvableConfigPath,
+) {
   return normalize(
     value.replace(/^\$[A-Za-z_]+/g, v => {
       switch (v) {
@@ -13,6 +16,8 @@ export default function resolveConfigPath({ HOMEDIR, CONFIGDIR }: Constants, val
           return HOMEDIR;
         case '$CONFIG':
           return CONFIGDIR;
+        case '$CWD':
+          return CWD;
         case '$VSCODE':
           return join(CONFIGDIR, 'Code', 'User');
         default:

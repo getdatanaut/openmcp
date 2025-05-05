@@ -1,5 +1,5 @@
 import type { IntegrationName } from './integrations/index.ts';
-import generateRemixName from './integrations/utils/generate-remix-name.ts';
+import generateServerName from './integrations/utils/generate-server-name.ts';
 import generateTransport from './integrations/utils/generate-transport.ts';
 import type { Remix } from './types.ts';
 
@@ -17,7 +17,7 @@ type Hint = ShellCommandHint | LinkCommandHint;
 
 function generateVsCodeTransport(remix: Remix) {
   return serializeTransport({
-    name: generateRemixName({}, remix),
+    name: generateServerName([], remix),
     type: 'stdio',
     ...generateTransport(remix),
   });

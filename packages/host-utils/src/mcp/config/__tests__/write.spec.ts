@@ -11,6 +11,7 @@ import writeConfig from '../write.ts';
 const constants = {
   HOMEDIR: '/home',
   CONFIGDIR: '/home/.config',
+  CWD: '/home/project',
 } as const;
 
 describe('writeConfig', () => {
@@ -48,6 +49,7 @@ describe('writeConfig', () => {
       type: 'fs',
       filepath: `$HOME/${filename}`,
       schema,
+      location: 'global',
     };
 
     const applyConfig = vi.fn().mockImplementation(async config => {
@@ -85,8 +87,9 @@ describe('writeConfig', () => {
 
     const installMethod: FsInstallMethod = {
       type: 'fs',
-      filepath: `$HOME/${filename}`,
+      filepath: `$CWD/${filename}`,
       schema,
+      location: 'local',
     };
 
     const applyConfig = vi.fn().mockImplementation(async config => {
@@ -103,12 +106,12 @@ describe('writeConfig', () => {
 
     // Verify that the directory was created
     const dirExists = await fs.promises
-      .stat(constants.HOMEDIR)
+      .stat(constants.CWD)
       .then(s => s.isDirectory())
       .catch(() => false);
     expect(dirExists).not.toBe(false);
 
-    const fileContent = String(await fs.promises.readFile(path.join(constants.HOMEDIR, filename), 'utf8'));
+    const fileContent = String(await fs.promises.readFile(path.join(constants.CWD, filename), 'utf8'));
     const writtenConfig = JSON.parse(fileContent);
 
     expect(writtenConfig).toStrictEqual({
@@ -135,6 +138,7 @@ describe('writeConfig', () => {
       type: 'fs',
       filepath: `$HOME/${filename}`,
       schema,
+      location: 'global',
     };
 
     const applyConfig = vi.fn();
@@ -155,6 +159,7 @@ describe('writeConfig', () => {
       type: 'fs',
       filepath: `$HOME/${filename}`,
       schema,
+      location: 'global',
     };
 
     const applyConfig = vi.fn().mockRejectedValue(new Error('Apply config error'));

@@ -11,7 +11,13 @@ export default async function readConfig<I extends FsInstallMethod>(
   const resolvedConfigPath = resolveConfigPath(constants, installMethod.filepath);
   logger.start(`Loading config from "${resolvedConfigPath}"`);
   const content = await fs.readFile(resolvedConfigPath, 'utf8');
-  const document = parseDocument(installMethod.filepath, content);
+  const fileExtension = resolvedConfigPath.split('.').pop() || '';
+  let document;
+  try {
+    document = parseDocument(content, fileExtension);
+  } catch (error) {
+    throw new Error(`Error parsing config file: ${error instanceof Error ? error.message : String(error)}`);
+  }
 
   const result = installMethod.schema.safeParse(document);
   if (result.error) {

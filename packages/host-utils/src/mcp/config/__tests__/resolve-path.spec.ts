@@ -10,6 +10,7 @@ describe('resolveConfigPath', () => {
   const constants = {
     HOMEDIR: '/home/user',
     CONFIGDIR: '/home/user/.config',
+    CWD: '/home/user/project',
   } as const;
 
   it('should replace $HOME with homedir', () => {
@@ -22,6 +23,12 @@ describe('resolveConfigPath', () => {
     const path: ResolvableConfigPath = '$CONFIG/some/path';
     const result = resolveConfigPath(constants, path);
     expect(result).toBe(normalize('/home/user/.config/some/path'));
+  });
+
+  it('should replace $CWD with current working directory', () => {
+    const path: ResolvableConfigPath = '$CWD/some/path';
+    const result = resolveConfigPath(constants, path);
+    expect(result).toBe(normalize('/home/user/project/some/path'));
   });
 
   it('should replace $VSCODE with join(configdir, "Code", "User")', () => {

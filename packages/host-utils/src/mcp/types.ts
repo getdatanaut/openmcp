@@ -11,7 +11,7 @@ export type Constants = {
 
 export type Context = {
   readonly platform: 'darwin' | 'linux' | 'unix' | 'win32';
-  readonly constants: Constants;
+  readonly constants: Constants & { readonly CWD: string };
   readonly logger: Logger;
   readonly fs: {
     readonly readFile: typeof fs.readFile;
@@ -33,19 +33,26 @@ export type FsInstallMethod<O = unknown> = {
   readonly type: 'fs';
   readonly filepath: ResolvableConfigPath;
   readonly schema: z.Schema<O>;
+  readonly location: InstallMethodLocation;
 };
 
-type InstallMethod = FsInstallMethod;
+export type InstallMethodLocation = 'local' | 'global';
+
+export type InstallMethod = FsInstallMethod;
 
 export type Remix = {
   readonly id: string;
   readonly name: string;
-  readonly filepath?: string;
+  readonly target: string;
 };
 
-export type McpHostClient<M extends InstallMethod = InstallMethod> = {
+export type InstallLocation = 'local' | 'global' | 'prefer-local';
+
+export type Server = Remix;
+
+export type McpHostClient<M extends InstallMethod[]> = {
   readonly name: string;
-  readonly installMethod: M;
-  install(ctx: Context, remix: Remix): Promise<void>;
-  uninstall(ctx: Context, remix: Remix): Promise<void>;
+  readonly installMethods: M;
+  install(ctx: Context, server: Server, location: InstallLocation): Promise<InstallMethod>;
+  uninstall(ctx: Context, server: Server, location: InstallLocation): Promise<InstallMethod>;
 };
