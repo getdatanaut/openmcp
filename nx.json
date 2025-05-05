@@ -6,7 +6,10 @@
     "packageManager": "yarn"
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/__tests__/**",
@@ -17,12 +20,20 @@
   },
   "targetDefaults": {
     "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["production", "^production"],
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "production",
+        "^production"
+      ],
       "cache": true
     },
     "test": {
-      "inputs": ["default", "^production"],
+      "inputs": [
+        "default",
+        "^production"
+      ],
       "cache": true
     },
     "typecheck": {
@@ -31,5 +42,6 @@
     "lint": {
       "cache": true
     }
-  }
+  },
+  "nxCloudId": "68191ad677166d4da489ea72"
 }
