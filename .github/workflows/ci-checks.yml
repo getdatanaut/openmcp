@@ -1,0 +1,95 @@
+on:
+  workflow_call:
+    inputs:
+      typecheck-projects:
+        required: true
+        type: string
+      lint-projects:
+        required: true
+        type: string
+      test-projects:
+        required: true
+        type: string
+      build-projects:
+        required: true
+        type: string
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{secrets.NX_CLOUD_ACCESS_TOKEN}}
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.lint-projects
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Lint
+        run: |
+          if [[ "${{ inputs.lint-projects }}" == "--all" ]]; then
+            yarn lint
+          else
+            yarn lint -p ${{ inputs.lint-projects }}
+          fi
+
+  typecheck:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.typecheck-projects
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Typecheck
+        run: |
+          if [[ "${{ inputs.typecheck-projects }}" == "--all" ]]; then
+            yarn typecheck
+          else
+            yarn typecheck -p ${{ inputs.typecheck-projects }}
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.test-projects
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Test
+        run: |
+          if [[ "${{ inputs.test-projects }}" == "--all" ]]; then
+            yarn test
+          else
+            yarn test -p ${{ inputs.test-projects }}
+          fi
+
+  build:
+    runs-on: ubuntu-latest
+    # Skip the job altogether if we don't need to run checks
+    if: inputs.build-projects
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: './.github/actions/setup'
+
+      - name: Build
+        run: |
+          if [[ "${{ inputs.build-projects }}" == "--all" ]]; then
+            yarn build
+          else
+            yarn build -p ${{ inputs.build-projects }}
+          fi

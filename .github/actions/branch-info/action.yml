@@ -1,0 +1,29 @@
+name: Branch Info
+
+description: 'Retrieves and normalizes information about the current branch'
+
+# Export the branch names as output to be able to use it in other jobs
+outputs:
+  base-branch-name:
+    description: The base branch name.
+    value: ${{ steps.get-base-branch-name.outputs.branch }}
+  branch-name:
+    description: The current branch name.
+    value: ${{ steps.branch-name.outputs.current_branch }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get branch name
+      id: branch-name
+      uses: tj-actions/branch-names@v8.2.1
+
+    - name: Get base branch name
+      id: get-base-branch-name
+      shell: bash
+      run: |
+        if [[ "${{steps.branch-name.outputs.base_ref_branch}}" != "" ]]; then
+          echo "branch=${{steps.branch-name.outputs.base_ref_branch}}" >> $GITHUB_OUTPUT
+        else
+          echo "branch=${{steps.branch-name.outputs.current_branch}}" >> $GITHUB_OUTPUT
+        fi

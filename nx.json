@@ -2,6 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
   "parallel": 7,
+  "nxCloudId": "68191ad677166d4da489ea72",
   "cli": {
     "packageManager": "yarn"
   },

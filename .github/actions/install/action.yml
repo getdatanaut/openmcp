@@ -1,0 +1,60 @@
+name: Install Cache
+
+description: 'Installs and caches our key dependencies'
+
+# Good reference for yarn in GH action in general
+# https://gist.github.com/belgattitude/042f9caf10d029badbde6cf9d43e400a
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
+    - shell: bash
+      run: corepack enable
+
+    - name: ⚙️ Expose yarn config as "$GITHUB_OUTPUT"
+      id: yarn-config
+      shell: bash
+      working-directory: '.'
+      env:
+        YARN_ENABLE_GLOBAL_CACHE: 'false'
+      run: |
+        echo "CACHE_KEY=${{ hashFiles('./yarn.lock', './.yarnrc.yml') }}" >> $GITHUB_OUTPUT
+        echo "CACHE_FOLDER=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        echo "NPM_GLOBAL_CACHE_FOLDER=$(npm config get cache)" >> $GITHUB_OUTPUT
+
+    - name: ♻️ Restore node_modules
+      id: yarn-nm-cache
+      uses: actions/cache@v4
+      with:
+        path: ./**/node_modules
+        key: yarn-nm-cache-${{ runner.os }}-${{ steps.yarn-config.outputs.CACHE_KEY }}
+        restore-keys: |
+          yarn-nm-cache-${{ runner.os }}
+
+    - name: ♻️ Restore yarn install state
+      id: yarn-install-state-cache
+      uses: actions/cache@v4
+      with:
+        path: ./.yarn/ci-cache
+        key: yarn-install-state-cache-${{ runner.os }}-${{ steps.yarn-config.outputs.CACHE_KEY }}
+        restore-keys: |
+          yarn-install-state-cache-${{ runner.os }}
+
+    - name: 📥 Install dependencies
+      # If there's a cache hit, we skip this step (the dependencies are already available)
+      # If there's no cache hit, we install our deps
+      if:
+        ${{ steps.yarn-nm-cache.outputs.cache-hit != 'true' || steps.yarn-install-state-cache.outputs.cache-hit !=
+        'true' }}
+      shell: bash
+      run: yarn install --immutable --inline-builds
+      env:
+        # Overrides/align yarnrc.yml options (v3, v4) for CI context
+        YARN_ENABLE_GLOBAL_CACHE: 'false' # Use local cache folder to keep downloaded archives
+        YARN_ENABLE_MIRROR: 'false' # Prevent populating global cache for caches misses (local cache only)
+        YARN_NM_MODE: 'hardlinks-local' # Reduce node_modules size
+        YARN_INSTALL_STATE_PATH: '.yarn/ci-cache/install-state.gz' # Might speed up resolution step when node_modules present

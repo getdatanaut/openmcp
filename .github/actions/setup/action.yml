@@ -1,0 +1,19 @@
+name: Setup
+
+description: 'Sets up the environment for a job during CI workflow'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+
+    - name: ♻️ Restore node_modules
+      id: yarn-nm-cache
+      uses: actions/cache/restore@v4
+      with:
+        path: ./**/node_modules
+        key: yarn-nm-cache-${{ runner.os }}-${{ hashFiles('./yarn.lock', './.yarnrc.yml') }}
+        fail-on-cache-miss: true

@@ -1,0 +1,10 @@
+{
+  "pull_request": {
+    "head": {
+      "ref": "mbm/ci-setup"
+    },
+    "base": {
+      "ref": "main"
+    }
+  }
+}

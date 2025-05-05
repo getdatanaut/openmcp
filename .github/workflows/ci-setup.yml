@@ -1,0 +1,87 @@
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      base-branch-name:
+        value: ${{ jobs.setup.outputs.base-branch-name }}
+      branch-name:
+        value: ${{ jobs.setup.outputs.branch-name }}
+      typecheck-projects:
+        value: ${{ jobs.setup.outputs.typecheck-projects }}
+      lint-projects:
+        value: ${{ jobs.setup.outputs.lint-projects }}
+      test-projects:
+        value: ${{ jobs.setup.outputs.test-projects }}
+      build-projects:
+        value: ${{ jobs.setup.outputs.build-projects }}
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{secrets.NX_CLOUD_ACCESS_TOKEN}}
+
+jobs:
+  # As its name stands for, this jobs will install the npm dependencies and cache them
+  # unless they have been cached in a previous workflow run and remained unchanged.
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
+          filter: tree:0
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install deps (yarn)
+        uses: './.github/actions/install'
+
+      - name: Get branch info
+        id: branch-info
+        uses: './.github/actions/branch-info'
+
+      # Configure Nx to be able to detect changes between branches when we are in a PR
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
+        with:
+          main-branch-name: ${{ steps.branch-info.outputs.base-branch-name }}
+
+      - name: Get affected
+        id: get-projects-arrays
+        shell: bash
+        run: |
+          # Will be set to the sha of the last successful workflow run on this branch, or HEAD~1
+          BASE_SHA="${{ env.NX_BASE }}"
+
+          # When the current branch is main, or if there is no separate base branch (no PR), pass --all flag for the checks.
+          # Otherwise pass the base branch.
+          if [[ "${{steps.branch-info.outputs.branch-name}}" == "main" || "${{steps.branch-info.outputs.branch-name}}" == "${{steps.branch-info.outputs.base-branch-name}}" ]]; then
+            echo "typecheck-projects=--all" >> $GITHUB_OUTPUT
+            echo "lint-projects=--all" >> $GITHUB_OUTPUT
+            echo "test-projects=--all" >> $GITHUB_OUTPUT
+            echo "build-projects=--all" >> $GITHUB_OUTPUT
+          else
+            echo "typecheck-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget typecheck)" >> $GITHUB_OUTPUT
+            echo "lint-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget lint)" >> $GITHUB_OUTPUT
+            echo "test-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget test)" >> $GITHUB_OUTPUT
+            echo "build-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget build)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Print affected
+        shell: bash
+        run: |
+          echo "Print affected arrays:"
+          echo "typecheck-projects: ${{ steps.get-projects-arrays.outputs.typecheck-projects }}"
+          echo "lint-projects: ${{ steps.get-projects-arrays.outputs.lint-projects }}"
+          echo "test-projects: ${{ steps.get-projects-arrays.outputs.test-projects }}"
+          echo "build-projects: ${{ steps.get-projects-arrays.outputs.build-projects }}"
+
+    outputs:
+      base-branch-name: ${{ steps.branch-info.outputs.base-branch-name }}
+      branch-name: ${{ steps.branch-info.outputs.branch-name }}
+      typecheck-projects: ${{ steps.get-projects-arrays.outputs.typecheck-projects }}
+      lint-projects: ${{ steps.get-projects-arrays.outputs.lint-projects }}
+      test-projects: ${{ steps.get-projects-arrays.outputs.test-projects }}
+      build-projects: ${{ steps.get-projects-arrays.outputs.build-projects }}

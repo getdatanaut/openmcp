@@ -1,0 +1,65 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - main
+      - action-testing
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+# Only run one deploy workflow at a time
+concurrency: production
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{secrets.NX_CLOUD_ACCESS_TOKEN}}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  ci-setup:
+    uses: ./.github/workflows/ci-setup.yml
+    secrets: inherit
+
+  ci-checks:
+    uses: ./.github/workflows/ci-checks.yml
+    needs: [ci-setup]
+    secrets: inherit
+    with:
+      typecheck-projects: ${{ needs.ci-setup.outputs.typecheck-projects }}
+      lint-projects: ${{ needs.ci-setup.outputs.lint-projects }}
+      test-projects: ${{ needs.ci-setup.outputs.test-projects }}
+      build-projects: ${{ needs.ci-setup.outputs.build-projects }}
+
+  # publish-packages:
+  #   runs-on: ubuntu-latest
+  #   needs: [ci-setup, ci-checks]
+  #   if: needs.ci-setup.outputs.build-projects
+  #   permissions:
+  #     contents: write
+  #     pull-requests: write
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup
+  #       uses: './.github/actions/setup'
+
+  #     - name: Build
+  #       run: yarn build -p "@openmcp/*"
+
+  #     - name: Create Release Pull Request or Publish to NPM
+  #       id: changesets
+  #       uses: changesets/action@v1
+  #       with:
+  #         publish: yarn changeset publish
+  #         commit: 'ci: release packages'
+  #         title: 'ci: release packages'
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
