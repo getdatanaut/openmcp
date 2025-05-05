@@ -2,10 +2,10 @@
   "$schema": "../node_modules/@changesets/config/schema.json",
   "access": "public",
   "baseBranch": "main",
-  "changelog": "@changesets/cli/changelog",
+  "changelog": ["@changesets/changelog-github", { "repo": "getdatanaut/openmcp" }],
   "commit": false,
   "fixed": [],
-  "ignore": [],
+  "ignore": ["web"],
   "linked": [],
   "updateInternalDependencies": "patch"
 }

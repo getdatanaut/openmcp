@@ -63,10 +63,10 @@ jobs:
             echo "test-projects=--all" >> $GITHUB_OUTPUT
             echo "build-projects=--all" >> $GITHUB_OUTPUT
           else
-            echo "typecheck-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget typecheck)" >> $GITHUB_OUTPUT
-            echo "lint-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget lint)" >> $GITHUB_OUTPUT
-            echo "test-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget test)" >> $GITHUB_OUTPUT
-            echo "build-projects=$(yarn nx show projects --affected --base $BASE_SHA --sep ',' --withTarget build)" >> $GITHUB_OUTPUT
+            echo "typecheck-projects=$(yarn nx show projects --affected --exclude web --base $BASE_SHA --sep ',' --withTarget typecheck)" >> $GITHUB_OUTPUT
+            echo "lint-projects=$(yarn nx show projects --affected --exclude web --base $BASE_SHA --sep ',' --withTarget lint)" >> $GITHUB_OUTPUT
+            echo "test-projects=$(yarn nx show projects --affected --exclude web --base $BASE_SHA --sep ',' --withTarget test)" >> $GITHUB_OUTPUT
+            echo "build-projects=$(yarn nx show projects --affected --exclude web --base $BASE_SHA --sep ',' --withTarget build)" >> $GITHUB_OUTPUT
           fi
 
       - name: Print affected
