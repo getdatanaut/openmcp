@@ -1,27 +1,23 @@
-import { type IntegrationName, integrations, uninstall } from '@openmcp/host-utils/mcp';
-import type { Argv, CommandModule } from 'yargs';
-
-import console from '#libs/console';
+import type { CommandModule } from 'yargs';
 
 import { createHandler } from '../../cli-utils/index.ts';
-import { getAgentById } from '../../libs/datanaut/agent.ts';
-
-export const builder = (yargs: Argv) =>
-  yargs.strict().options({
-    client: {
-      choices: Object.keys(integrations) as IntegrationName[],
-      describe: 'The name of the client to install agent for',
-      demandOption: true,
-    },
-  });
+import type { BuilderArgv } from '../install/index.ts';
+import { builder } from '../install/index.ts';
+import handler from './handler.ts';
 
 export default {
-  describe: process.env['NODE_ENV'] === 'development' ? 'Uninstall the agent' : false,
-  command: 'uninstall <agent-id>',
+  describe: 'Uninstall the target',
+  command: 'uninstall <target>',
   builder,
   handler: createHandler(async args => {
-    const { agentId, client } = args as Awaited<ReturnType<typeof builder>['argv']> & { agentId: string };
-    const agent = await getAgentById(agentId);
-    await uninstall(console, client, agent);
+    const { target, client, type, scope } = args as BuilderArgv & {
+      target: string;
+    };
+
+    await handler(target, {
+      client,
+      type,
+      scope,
+    });
   }),
 } satisfies CommandModule;

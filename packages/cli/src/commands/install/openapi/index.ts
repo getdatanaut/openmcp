@@ -15,7 +15,7 @@ export default async function createOpenAPIRemix(location: string): Promise<Remi
     return {
       id: remix.id,
       name: remix.name,
-      filepath: remixFilepath,
+      target: remixFilepath,
     };
   } catch (error) {
     if (prompt.isOperationCancelled(error)) {

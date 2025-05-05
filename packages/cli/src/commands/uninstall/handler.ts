@@ -1,10 +1,12 @@
-import { install, type IntegrationName } from '@openmcp/host-utils/mcp';
+import * as fs from 'node:fs/promises';
+
+import { type IntegrationName, uninstall } from '@openmcp/host-utils/mcp';
+import { loadDocument } from '@openmcp/utils/documents';
 
 import console from '#libs/console';
 
 import { getAgentById } from '../../libs/datanaut/agent.ts';
 import { inferTargetType } from '../../libs/mcp-utils/index.ts';
-import createOpenAPIRemix from './openapi/index.ts';
 
 type Flags = {
   client: IntegrationName;
@@ -18,7 +20,7 @@ export default async function handler(target: string, { type, client, scope }: F
     cwd: process.cwd(),
     logger: console,
   } as const;
-  await install(ctx, client, server, scope);
+  await uninstall(ctx, client, server, scope);
 }
 
 async function getServer(target: string, type: NonNullable<Flags['type']>) {
@@ -31,7 +33,21 @@ async function getServer(target: string, type: NonNullable<Flags['type']>) {
         target: agent.id,
       } as const;
     }
-    case 'openapi':
-      return createOpenAPIRemix(target);
+    case 'openapi': {
+      const name = (
+        await loadDocument(
+          {
+            fs,
+            fetch,
+          },
+          target,
+        )
+      )['info']?.['title'];
+      return {
+        id: target,
+        name: String(name ?? target),
+        target: target,
+      };
+    }
   }
 }
