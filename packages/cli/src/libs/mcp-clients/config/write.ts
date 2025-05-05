@@ -3,7 +3,7 @@ import { dirname } from 'node:path';
 import { serializeDocument } from '@openmcp/utils/documents';
 import type { z } from 'zod';
 
-import { isEnoentError } from '../../utils/guards.ts';
+import { isEnoentError } from '../../../errors/guards.ts';
 import type { Context, FsInstallMethod } from '../types.ts';
 import readConfig from './read.ts';
 import resolveConfigPath from './resolve-path.ts';

@@ -2,7 +2,7 @@ import * as os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 
-import platform from './platform.ts';
+import platform from './get-platform.ts';
 
 export const HOMEDIR = os.homedir();
 

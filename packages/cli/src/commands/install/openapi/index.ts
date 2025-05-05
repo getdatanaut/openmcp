@@ -1,6 +1,5 @@
-import type { Remix } from '@openmcp/host-utils/mcp';
-
 import console, { prompt } from '#libs/console';
+import type { Remix } from '#libs/mcp-clients';
 
 import negotiatedCreateRemix from './create-remix.ts';
 import generateRemixDefinition from './generate-remix.ts';

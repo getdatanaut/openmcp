@@ -1,7 +1,8 @@
 import path from 'node:path';
 
-import { constants } from '@openmcp/host-utils';
 import envalid from 'envalid';
+
+import { constants } from '#libs/platform';
 
 export default envalid.cleanEnv(process.env, {
   DN_API_URL: envalid.url({

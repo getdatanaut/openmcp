@@ -1,8 +1,9 @@
 import * as fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { type IntegrationName, integrations } from '@openmcp/host-utils/mcp';
 import type { Argv, CommandModule } from 'yargs';
+
+import { type IntegrationName, integrations } from '#libs/mcp-clients';
 
 import { createHandler } from '../../cli-utils/index.ts';
 import handler from './handler.ts';

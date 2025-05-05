@@ -20,10 +20,15 @@
   ],
   "bin": "./bin/index.js",
   "imports": {
-    "#libs/console": {
-      "types": "./src/libs/console/index.ts",
-      "development": "./src/libs/console/index.ts",
-      "default": "./dist/libs/console/index.js"
+    "#errors": {
+      "types": "./src/errors/index.ts",
+      "development": "./src/errors/index.ts",
+      "default": "./dist/errors/index.js"
+    },
+    "#libs/*": {
+      "types": "./src/libs/*/index.ts",
+      "development": "./src/libs/*/index.ts",
+      "default": "./dist/libs/*/index.js"
     },
     "#libs/datanaut-auth": {
       "types": "./src/libs/datanaut/auth/index.ts",
@@ -34,11 +39,6 @@
       "types": "./src/libs/datanaut/auth-cli.ts",
       "development": "./src/libs/datanaut/auth-cli.ts",
       "default": "./dist/libs/datanaut/auth-cli.js"
-    },
-    "#libs/openapi": {
-      "types": "./src/libs/openapi/index.ts",
-      "development": "./src/libs/openapi/index.ts",
-      "default": "./dist/libs/openapi/index.js"
     },
     "#register": {
       "types": "./src/register.ts",
@@ -53,9 +53,9 @@
       "default": "./dist/index.js"
     },
     "./api": {
-      "types": "./src/api.ts",
-      "development": "./src/api.ts",
-      "default": "./dist/api.js"
+      "types": "./src/api/index.ts",
+      "development": "./src/api/index.ts",
+      "default": "./dist/api/index.js"
     },
     "./rpc": {
       "types": "./src/rpc/index.ts",
@@ -75,7 +75,6 @@
     "@clack/core": "0.4.2",
     "@clack/prompts": "0.10.1",
     "@modelcontextprotocol/sdk": "1.10.2",
-    "@openmcp/host-utils": "workspace:*",
     "@openmcp/openapi": "workspace:*",
     "@openmcp/remix": "workspace:*",
     "@openmcp/schemas": "workspace:*",
@@ -106,7 +105,10 @@
     "@types/node": "22.15.3",
     "@types/yargs": "^17.0.33",
     "@types/yargs-parser": "^21.0.3",
+    "esbuild": "0.25.3",
     "eslint": "9.25.1",
+    "exsolve": "^1.0.5",
+    "memfs": "^4.17.1",
     "msw": "2.7.5",
     "ts-node": "^10.9.2",
     "tsup": "8.4.0",

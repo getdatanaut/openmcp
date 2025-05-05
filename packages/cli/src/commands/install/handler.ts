@@ -1,6 +1,5 @@
-import { install, type IntegrationName } from '@openmcp/host-utils/mcp';
-
 import console from '#libs/console';
+import { install, type IntegrationName } from '#libs/mcp-clients';
 
 import { getAgentById } from '../../libs/datanaut/agent.ts';
 import { inferTargetType } from '../../libs/mcp-utils/index.ts';

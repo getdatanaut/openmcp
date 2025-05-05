@@ -1,5 +1,3 @@
-import { join } from 'node:path';
-
 import type { IFs } from 'memfs';
 import { createFsFromVolume, Volume } from 'memfs';
 import { describe, expect, it } from 'vitest';

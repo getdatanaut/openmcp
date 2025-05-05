@@ -1,7 +1,7 @@
 import * as fs from 'node:fs/promises';
 
-import * as osConstants from '../constants.ts';
-import platform from '../platform.ts';
+import { constants as osConstants, getPlatform as platform } from '#libs/platform';
+
 import resolveConfigPath from './config/resolve-path.ts';
 import { ServerConflict } from './errors/index.ts';
 import { type IntegrationName, integrations } from './integrations/index.ts';

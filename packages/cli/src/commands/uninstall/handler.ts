@@ -1,9 +1,9 @@
 import * as fs from 'node:fs/promises';
 
-import { type IntegrationName, uninstall } from '@openmcp/host-utils/mcp';
 import { loadDocument } from '@openmcp/utils/documents';
 
 import console from '#libs/console';
+import { type IntegrationName, uninstall } from '#libs/mcp-clients';
 
 import { getAgentById } from '../../libs/datanaut/agent.ts';
 import { inferTargetType } from '../../libs/mcp-utils/index.ts';
