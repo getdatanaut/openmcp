@@ -1,5 +1,6 @@
+import path from 'node:path';
+
 import { type IO, loadDocument } from '@openmcp/utils/documents';
-import path from 'path-browserify';
 
 import parseConfig from './parse.ts';
 import type { Config, RemixServer } from './schemas.ts';

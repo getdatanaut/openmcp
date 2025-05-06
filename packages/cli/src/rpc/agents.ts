@@ -1,6 +1,7 @@
-import type { Config as RemixDefinition } from '@openmcp/remix';
 import { type } from '@orpc/contract';
 import { z } from 'zod';
+
+import type { Config as RemixDefinition } from '#libs/remix';
 
 import { base } from './base.ts';
 

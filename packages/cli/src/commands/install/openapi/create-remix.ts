@@ -1,9 +1,8 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-import type { Config as RemixConfig } from '@openmcp/remix';
-
 import console, { prompt } from '#libs/console';
+import type { Config as RemixConfig } from '#libs/remix';
 
 export default async function negotiatedCreateRemix(cwd: string, remix: RemixConfig): Promise<string> {
   while (true) {

@@ -1,6 +1,8 @@
 import type { ClientServer, Tool } from '@openmcp/manager';
 import { OpenMcpServer, type OpenMcpServerOptions, type ToolName } from '@openmcp/server';
 
+import console from '#libs/console';
+
 import type { Config } from './config/index.ts';
 import type { RemixMcpManager } from './manager/remix-manager.ts';
 import { createRemixMcpManager } from './manager/remix-manager.ts';

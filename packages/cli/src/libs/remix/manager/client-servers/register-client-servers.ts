@@ -1,5 +1,7 @@
 import { type McpManager } from '@openmcp/manager';
 
+import console from '#libs/console';
+
 import type { Config, RemixServer } from '../../config/index.ts';
 import { ClientServerRegistrationError } from '../../errors.ts';
 import ScopedClientServer from './scoped-client-server.ts';

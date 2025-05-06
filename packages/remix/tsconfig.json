@@ -1,7 +1,0 @@
-{
-  "extends": "@datanaut/tsconfig/tsconfig.isomorphic.json",
-  "include": ["**/*.ts"],
-  "compilerOptions": {
-    "rootDir": "."
-  }
-}
