@@ -18,11 +18,9 @@ describe('ConfigSchema', () => {
         },
         valid_server_2: {
           type: 'openapi',
-          serverConfig: {
-            openapi: 'https://example.com/openapi.json',
-            serverUrl: 'https://example.com',
-          },
-          tools: [{ name: 'tool2' }, 'tool4'],
+          openapi: 'https://example.com/openapi.json',
+          serverUrl: 'https://example.com',
+          tools: ['tool2', 'tool4'],
         },
       },
     };
@@ -71,7 +69,7 @@ describe('ConfigSchema', () => {
         group1: {
           type: 'sse',
           url: 'https://example.com',
-          tools: [{ name: 'tool1' }],
+          tools: ['tool1'],
         },
       },
     };
@@ -86,7 +84,7 @@ describe('RemixServerSchema', () => {
       type: 'sse',
       url: 'https://example.com',
       headers: { 'x-openmcp': 'token' },
-      tools: [{ name: 'tool1' }],
+      tools: ['tool1'],
     };
 
     expect(RemixServerSchema.safeParse(validSSEServer)).toHaveProperty('success', true);
@@ -97,7 +95,7 @@ describe('RemixServerSchema', () => {
       type: 'sse',
       url: 'invalid-url',
       headers: { 'x-openmcp': 'token' },
-      tools: [{ name: 'tool1' }],
+      tools: ['tool1'],
     };
 
     expect(RemixServerSchema.safeParse(invalidSSEServer)).toHaveProperty('success', false);
@@ -115,20 +113,18 @@ describe('RemixServerSchema', () => {
   it('should validate an OpenAPI server with valid configurations', () => {
     const validOpenAPIServer = {
       type: 'openapi',
-      serverConfig: {
-        openapi: 'https://example.com/openapi.json',
-        serverUrl: 'https://example.com',
-      },
-      tools: [{ name: 'tool2' }],
+      openapi: 'https://example.com/openapi.json',
+      serverUrl: 'https://example.com',
+      tools: ['tool2'],
     };
 
     expect(RemixServerSchema.safeParse(validOpenAPIServer)).toHaveProperty('success', true);
   });
 
-  it('should not accept an OpenAPI server with missing serverConfig', () => {
+  it('should not accept an OpenAPI server with missing openapi', () => {
     const invalidOpenAPIServer = {
       type: 'openapi',
-      tools: [{ name: 'tool2' }],
+      tools: ['tool2'],
     };
 
     expect(RemixServerSchema.safeParse(invalidOpenAPIServer)).toHaveProperty('success', false);
@@ -137,11 +133,9 @@ describe('RemixServerSchema', () => {
   it('should not accept an OpenAPI server with invalid serverConfig', () => {
     const invalidOpenAPIServer = {
       type: 'openapi',
-      serverConfig: {
-        openapi: 'invalid-url',
-        serverUrl: 'https://example.com',
-      },
-      tools: [{ name: 'tool2' }],
+      openapi: 'invalid-url',
+      serverUrl: 'https://example.com',
+      tools: ['tool2'],
     };
 
     expect(RemixServerSchema.safeParse(invalidOpenAPIServer)).toHaveProperty('success', false);
@@ -152,7 +146,7 @@ describe('RemixServerSchema', () => {
       type: 'stdio',
       command: 'echo',
       args: ['hello', 'world'],
-      tools: [{ name: 'tool3' }],
+      tools: ['tool3'],
     };
 
     expect(RemixServerSchema.safeParse(validStdIOServer)).toHaveProperty('success', true);
@@ -163,7 +157,7 @@ describe('RemixServerSchema', () => {
       type: 'stdio',
       command: '',
       args: ['arg1'],
-      tools: [{ name: 'tool3' }],
+      tools: ['tool3'],
     };
 
     const result = RemixServerSchema.safeParse(invalidStdIOServer);
@@ -185,7 +179,7 @@ describe('RemixServerSchema', () => {
     const validServerWithExtras = {
       type: 'sse',
       url: 'https://example.com',
-      tools: [{ name: 'tool1' }],
+      tools: ['tool1'],
       extraProperty: 'extraValue',
     };
 

@@ -65,14 +65,14 @@ describe('load', () => {
     const fileUrl = `file://${openapiPath}`;
 
     // Replace the placeholder with the real file URL
-    config.servers.test_server.serverConfig.openapi = fileUrl;
+    config.servers.test_server.openapi = fileUrl;
 
     // Write the modified config to the temp directory
     await fs.writeFile(configPath, JSON.stringify(config));
 
     // File URIs are not rewritten, so the file URL should remain unchanged
     await expect(load({ io, env: {}, cwd: String(tmpDir) }, configPath)).resolves.toHaveProperty(
-      'servers.test_server.serverConfig.openapi',
+      'servers.test_server.openapi',
       fileUrl,
     );
   });
@@ -91,14 +91,14 @@ describe('load', () => {
     const absolutePath = path.join(String(tmpDir), 'absolute/path/to/openapi.json');
 
     // Replace the placeholder with the real absolute path
-    config.servers.test_server.serverConfig.openapi = absolutePath;
+    config.servers.test_server.openapi = absolutePath;
 
     // Write the modified config to the temp directory
     await fs.writeFile(configPath, JSON.stringify(config));
 
     // The absolute path should not be modified
     await expect(load({ io, env: {}, cwd: String(tmpDir) }, configPath)).resolves.toHaveProperty(
-      'servers.test_server.serverConfig.openapi',
+      'servers.test_server.openapi',
       absolutePath,
     );
   });
@@ -129,10 +129,10 @@ describe('load', () => {
     const configPath = path.join(fixturesDir, 'config-with-url.json');
     const fixtureContent = await fs.readFile(configPath, 'utf8');
     const config = JSON.parse(fixtureContent);
-    const expectedUrl = config.servers.test_server.serverConfig.openapi;
+    const expectedUrl = config.servers.test_server.openapi;
 
     await expect(load({ io, env: {}, cwd: fixturesDir }, configPath)).resolves.toHaveProperty(
-      'servers.test_server.serverConfig.openapi',
+      'servers.test_server.openapi',
       expectedUrl,
     );
   });
@@ -165,7 +165,7 @@ describe('load', () => {
     const fixturePath = path.join(fixturesDir, 'config-with-url.json');
     const config = JSON.parse(await fs.readFile(fixturePath, 'utf8'));
 
-    config.servers.test_server.serverConfig.openapi = './openapi/test.json';
+    config.servers.test_server.openapi = './openapi/test.json';
 
     const io: IO = {
       fetch: vi.fn().mockResolvedValue({
@@ -181,7 +181,7 @@ describe('load', () => {
     };
 
     await expect(load({ io, env: {}, cwd: fixturesDir }, configUrl)).resolves.toHaveProperty(
-      'servers.test_server.serverConfig.openapi',
+      'servers.test_server.openapi',
       'https://example.com/mcp/openapi/test.json',
     );
   });
@@ -191,7 +191,7 @@ describe('load', () => {
     const fixturePath = path.join(fixturesDir, 'config-with-url.json');
     const config = JSON.parse(await fs.readFile(fixturePath, 'utf8'));
 
-    config.servers.test_server.serverConfig.openapi = '/openapi/test.json';
+    config.servers.test_server.openapi = '/openapi/test.json';
 
     const io: IO = {
       fetch: vi.fn().mockResolvedValue({
@@ -207,7 +207,7 @@ describe('load', () => {
     };
 
     await expect(load({ io, env: {}, cwd: fixturesDir }, configUrl)).resolves.toHaveProperty(
-      'servers.test_server.serverConfig.openapi',
+      'servers.test_server.openapi',
       'https://example.com/openapi/test.json',
     );
   });
