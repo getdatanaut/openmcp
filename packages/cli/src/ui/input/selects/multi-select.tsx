@@ -35,17 +35,19 @@ const MultiSelectInput = React.memo<IMultiSelectInputProps>(
           label={label}
           hint={`Press Space to select, Type to search, Enter to submit${optional ? ' (selection optional)' : ''}`}
         />
-        <SearchDisplay searchQuery={searchQuery} />
-        <OptionsList
-          options={filteredOptions}
-          highlightedIndex={highlightedIndex}
-          selectedValues={selectedValues}
-          showAllToggle={showAllToggle}
-          allSelected={allSelected}
-          maxVisibleItems={maxVisibleItems}
-        />
-        <Box>
-          <Text>Selected: {Array.from(selectedValues).length} item(s)</Text>
+        <Box paddingLeft={3} flexDirection="column">
+          <SearchDisplay searchQuery={searchQuery} />
+          <OptionsList
+            options={filteredOptions}
+            highlightedIndex={highlightedIndex}
+            selectedValues={selectedValues}
+            showAllToggle={showAllToggle}
+            allSelected={allSelected}
+            maxVisibleItems={maxVisibleItems}
+          />
+          <Box>
+            <Text>Selected: {Array.from(selectedValues).length} item(s)</Text>
+          </Box>
         </Box>
       </Box>
     );

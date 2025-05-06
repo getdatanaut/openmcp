@@ -1,5 +1,7 @@
 import * as path from 'node:path';
 
+import { getToolName } from '@openmcp/openapi';
+
 import console from '#libs/console';
 import * as prompt from '#libs/console/prompts';
 import { loadDocumentAsService, negotiateSecurityStrategy, negotiateServerUrl } from '#libs/openapi';
@@ -30,6 +32,18 @@ export default async function generateRemix(
   const serverClientConfig: Pick<OpenAPIServer, 'path' | 'query' | 'headers' | 'body'> = {};
   const config: Record<string, unknown> = {};
 
+  const tools = await prompt.multiselect({
+    message: 'Please select tools you want to include:',
+    options: service.operations.map(operation => {
+      const value = getToolName(operation);
+      return {
+        label: value,
+        hint: `${operation.method.toUpperCase()} ${operation.path}`,
+        value,
+      };
+    }),
+  });
+
   try {
     const { serverClientConfig: _serverClientConfig, userConfig: _config } = await negotiateSecurityStrategy(
       {
@@ -54,7 +68,7 @@ export default async function generateRemix(
     openapi: location,
     serverUrl,
     ...serverClientConfig,
-    tools: [],
+    tools,
   };
 
   return {

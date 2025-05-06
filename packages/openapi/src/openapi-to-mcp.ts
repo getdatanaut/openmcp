@@ -39,6 +39,11 @@ export type ClientConfig = {
   body?: Record<string, unknown>;
 };
 
+export function getToolName(operation: IHttpOperation<false> | IHttpOperation<true>) {
+  const endpointName = `${operation.method.toUpperCase()} ${operation.path}`;
+  return cleanToolName(String(operation.iid || operation.id || endpointName));
+}
+
 export async function openApiToMcpServerOptions(
   { openapi, serverUrl }: ServerConfig,
   {
@@ -65,7 +70,7 @@ export async function openApiToMcpServerOptions(
 
   for (const operation of operations) {
     const endpointName = `${operation.method.toUpperCase()} ${operation.path}`;
-    const name = cleanToolName(String(operation.iid || operation.id || endpointName));
+    const name = getToolName(operation);
     const description = [endpointName, operation.description || ''].filter(Boolean).join(' - ');
     const collectedAnnotations = collectAnnotations(operation);
 
