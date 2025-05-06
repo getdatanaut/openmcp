@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import * as fs from 'node:fs/promises';
+import { join } from 'node:path';
 
 import type { Plugin } from 'esbuild';
 import { resolveModulePath } from 'exsolve';
@@ -8,7 +10,9 @@ import packageJson from './package.json' with { type: 'json' };
 
 const entry = [
   ...Object.values(packageJson.imports).map(resolveEntry),
-  ...Object.values(packageJson.exports).map(resolveEntry),
+  ...Object.entries(packageJson.exports)
+    .filter(([key]) => key !== './api')
+    .map(([, value]) => resolveEntry(value)),
 ];
 
 const importsResolverPlugin: Plugin = {
@@ -38,14 +42,29 @@ const importsResolverPlugin: Plugin = {
   },
 };
 
-export default defineConfig({
-  format: 'esm',
-  sourcemap: true,
-  clean: true,
-  entry,
-  external: ['@openmcp/schemas/mcp'],
-  esbuildPlugins: [importsResolverPlugin],
-});
+await fs.rm(join(import.meta.dirname, 'dist'), { force: true, recursive: true });
+
+export default defineConfig([
+  {
+    format: 'esm',
+    sourcemap: true,
+    clean: false,
+    platform: 'node',
+    entry,
+    external: ['@openmcp/schemas/mcp'],
+    esbuildPlugins: [importsResolverPlugin],
+    target: 'node20',
+  },
+  {
+    format: 'esm',
+    sourcemap: true,
+    clean: false,
+    platform: 'neutral',
+    entry: ['src/api/index.ts'],
+    outDir: 'dist/api',
+    target: 'es2023',
+  },
+]);
 
 function resolveEntry(entry: Record<string, string>): string {
   const development = entry['development'];
