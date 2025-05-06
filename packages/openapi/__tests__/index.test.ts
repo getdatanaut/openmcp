@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-import { pickBy } from 'lodash';
+import pickBy from 'lodash-es/pickBy.js';
 import { http, HttpResponse } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';

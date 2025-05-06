@@ -14,7 +14,7 @@ import { traverse } from '@stoplight/json';
 import type { IHttpOperation } from '@stoplight/types';
 import { jsonSchema } from 'ai';
 import type { JSONSchema7 } from 'json-schema';
-import unset from 'lodash/unset.js';
+import unset from 'lodash-es/unset.js';
 
 export type ServerConfig = {
   openapi: Record<string, unknown> | string;

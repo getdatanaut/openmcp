@@ -4,7 +4,7 @@ import dedent from 'dedent';
 import { countTokens } from 'gpt-tokenizer/model/gpt-4o';
 import type { JSONSchema7 } from 'json-schema';
 import { batchExec, type Callback } from 'jsonpath-rfc9535';
-import _set from 'lodash/set.js';
+import _set from 'lodash-es/set.js';
 import { err, fromPromise, ok, type Result } from 'neverthrow';
 import { z } from 'zod';
 
