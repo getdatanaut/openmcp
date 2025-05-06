@@ -9,6 +9,9 @@
     "url": "https://github.com/getdatanaut/openmcp",
     "directory": "packages/cli"
   },
+  "engines": {
+    "node": "^20.9 || >=22.11"
+  },
   "files": [
     "dist",
     "bin",
