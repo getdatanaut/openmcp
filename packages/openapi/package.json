@@ -32,24 +32,24 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@apidevtools/json-schema-ref-parser": "11.9.3",
-    "@modelcontextprotocol/sdk": "1.10.2",
+    "@apidevtools/json-schema-ref-parser": "^11.9.3",
+    "@modelcontextprotocol/sdk": "^1.11.0",
     "@openmcp/server": "workspace:*",
-    "@stoplight/http-spec": "7.1.0",
-    "@stoplight/json": "3.21.7",
-    "ai": "4.3.10",
+    "@stoplight/http-spec": "^7.1.0",
+    "@stoplight/json": "^3.21.7",
+    "ai": "^4.3.13",
     "lodash": "4.17.21",
-    "neverthrow": "8.2.0"
+    "neverthrow": "^8.2.0"
   },
   "devDependencies": {
     "@datanaut/eslint-config": "0.1.1",
     "@datanaut/tsconfig": "0.1.3",
-    "eslint": "9.25.1",
+    "eslint": "9.26.0",
     "json-schema": "0.4.0",
-    "msw": "2.7.5",
+    "msw": "2.7.6",
     "tsup": "8.4.0",
     "typescript": "5.8.3",
-    "vitest": "3.1.2"
+    "vitest": "3.1.3"
   },
   "publishConfig": {
     "access": "public"

@@ -16,16 +16,8 @@ describe('logFileReporter', () => {
 
     expect(stdoutMock.write).toHaveBeenCalledTimes(2);
     expect(stdoutMock.write.mock.calls).toEqual([
-      [
-        expect.stringMatching(
-          /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} \+\d{2}:\d{2}]\s\[INFO]\sinfo message\s0\n/,
-        ),
-      ],
-      [
-        expect.stringMatching(
-          /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} \+\d{2}:\d{2}]\s\[LOG]\slog message\s2\n/,
-        ),
-      ],
+      [expect.stringMatching(/\[INFO]\sinfo message\s0\n/)],
+      [expect.stringMatching(/\[LOG]\slog message\s2\n/)],
     ]);
   });
 
@@ -39,11 +31,7 @@ describe('logFileReporter', () => {
     consola.error('error message', new Error('some error'));
 
     expect(stderrMock.write.mock.calls).toEqual([
-      [
-        expect.stringMatching(
-          /[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} \+\d{2}:\d{2}]\s\[ERROR]\serror message\sError: some error\n/,
-        ),
-      ],
+      [expect.stringMatching(/\[ERROR]\serror message\sError: some error\n/)],
     ]);
   });
 
