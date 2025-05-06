@@ -1,7 +1,8 @@
 {
   "extends": "@datanaut/tsconfig/tsconfig.node.json",
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
+    "jsx": "react",
     "rootDir": "."
   }
 }

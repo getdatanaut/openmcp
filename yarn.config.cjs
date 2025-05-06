@@ -13,6 +13,9 @@ function enforceConsistentDependenciesAcrossTheProject({ Yarn }) {
   for (const dependency of Yarn.dependencies()) {
     if (dependency.type === `peerDependencies`) continue;
 
+    // exception for react
+    if (dependency.ident === 'react') continue;
+
     for (const otherDependency of Yarn.dependencies({ ident: dependency.ident })) {
       if (otherDependency.type === `peerDependencies`) continue;
 

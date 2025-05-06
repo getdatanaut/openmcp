@@ -1,6 +1,6 @@
 import type { IHttpService } from '@stoplight/types';
 
-import { prompt } from '#libs/console';
+import * as prompt from '#libs/console/prompts';
 
 import { resolveServers } from '../server/index.ts';
 

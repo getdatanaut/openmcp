@@ -1,4 +1,5 @@
-import console, { prompt } from '#libs/console';
+import { OperationCanceledError } from '#errors';
+import console from '#libs/console';
 import type { Remix } from '#libs/mcp-clients';
 
 import negotiatedCreateRemix from './create-remix.ts';
@@ -17,7 +18,7 @@ export default async function createOpenAPIRemix(location: string): Promise<Remi
       target: remixFilepath,
     };
   } catch (error) {
-    if (prompt.isOperationCancelled(error)) {
+    if (error instanceof OperationCanceledError) {
       throw error;
     } else {
       throw new Error(

@@ -110,5 +110,5 @@ export default {
   command: 'upload',
   builder,
   describe: process.env['NODE_ENV'] === 'development' ? 'Upload an mcp server' : false,
-  handler: createHandler<ServerDefinition>(handler),
+  handler: createHandler<ServerDefinition>(handler, true),
 } satisfies CommandModule<{}, ServerDefinition>;

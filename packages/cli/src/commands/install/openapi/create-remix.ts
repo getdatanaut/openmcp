@@ -1,23 +1,24 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-import console, { prompt } from '#libs/console';
+import console from '#libs/console';
+import * as prompt from '#libs/console/prompts';
 import type { Config as RemixConfig } from '#libs/remix';
 
 export default async function negotiatedCreateRemix(cwd: string, remix: RemixConfig): Promise<string> {
   while (true) {
+    const defaultValue = path.join(cwd, 'openmcp.json');
     const filepath = path.resolve(
       cwd,
-      await prompt.text({
+      (await prompt.text({
         message: 'Please insert location for your openmcp definition:',
-        placeholder: path.join(cwd, 'openmcp.json'),
-        defaultValue: path.join(cwd, 'openmcp.json'),
+        placeholder: defaultValue,
         validate: value => {
           if (value.trim().length === 0) {
             return 'Path cannot be empty';
           }
         },
-      }),
+      })) || defaultValue,
     );
 
     const strFilepath = JSON.stringify(filepath);

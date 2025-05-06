@@ -1,5 +1,6 @@
 // a set of wrappers around auth
-import console, { prompt } from '#libs/console';
+import console from '#libs/console';
+import { confirm } from '#libs/console/prompts';
 
 import { login as _login, logout as _logout, whoami as _whoami } from './auth/index.ts';
 
@@ -7,7 +8,7 @@ export async function login(): Promise<void> {
   console.start('Logging in...');
   const { email } = await _login({
     async openPage(url: URL): Promise<boolean> {
-      const res = await prompt.confirm({
+      const res = await confirm({
         message: `Do you want to open the login page in your browser?`,
       });
 

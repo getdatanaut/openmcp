@@ -20,5 +20,5 @@ export default {
       type,
       scope,
     });
-  }),
+  }, true),
 } satisfies CommandModule;

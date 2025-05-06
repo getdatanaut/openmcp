@@ -4,7 +4,7 @@ export default [
   ...baseConfig,
 
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.{ts,tsx}'],
     rules: {
       'no-console': 'error',
       'import/extensions': 'off', // not needed if moduleResolution is set to node16

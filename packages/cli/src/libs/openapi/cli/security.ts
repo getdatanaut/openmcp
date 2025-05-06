@@ -1,6 +1,7 @@
 import type { IHttpService } from '@stoplight/types';
 
-import console, { prompt } from '#libs/console';
+import console from '#libs/console';
+import * as prompt from '#libs/console/prompts';
 import type { OpenAPIServer } from '#libs/remix';
 import { interpolable } from '#libs/string-utils';
 

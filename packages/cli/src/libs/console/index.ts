@@ -4,7 +4,7 @@ import * as path from 'node:path';
 import { createConsola } from 'consola';
 
 import env from '../../env.ts';
-import fancyReporter from './reporters/fancy.ts';
+import fancyReporter from './reporters/fancy/fancy.ts';
 import type { PromptlessConsola } from './types.ts';
 
 const opts = {
@@ -12,7 +12,6 @@ const opts = {
 };
 
 const consola: PromptlessConsola = createConsola(opts);
-export * as prompt from './prompts/index.ts';
 
 export default consola;
 
