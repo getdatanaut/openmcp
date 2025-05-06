@@ -1,6 +1,6 @@
 {
   "configs": {
-    "test_server": { "key": "$ENV_VAR" }
+    "test_server": { "ENV_VAR": "" }
   },
   "servers": {
     "test_server": {

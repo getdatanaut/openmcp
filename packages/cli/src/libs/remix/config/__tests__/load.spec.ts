@@ -30,7 +30,7 @@ describe('load', () => {
     const configPath = path.join(fixturesDir, 'config-with-env.json');
     const configContent = await fs.readFile(configPath, 'utf8');
     const expectedConfig = JSON.parse(configContent);
-    expectedConfig.configs.test_server.key = 'resolved_value';
+    expectedConfig.configs.test_server.ENV_VAR = 'resolved_value';
 
     await expect(load({ io, env: { ENV_VAR: 'resolved_value' }, cwd: fixturesDir }, configPath)).resolves.toStrictEqual(
       expectedConfig,
@@ -45,7 +45,7 @@ describe('load', () => {
     const configPath = path.join(fixturesDir, 'config-with-undefined-env.json');
 
     await expect(load({ io, env: {}, cwd: fixturesDir }, configPath)).rejects.toThrow(
-      'Environment variable $UNDEFINED_ENV_VAR is not defined',
+      'Environment variable UNDEFINED_ENV_VAR is not defined',
     );
   });
 

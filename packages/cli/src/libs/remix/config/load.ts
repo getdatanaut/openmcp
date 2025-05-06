@@ -16,7 +16,7 @@ function resolveClientConfig(clientConfig: Record<string, unknown>, env: Record<
     }
 
     if (!Object.hasOwn(env, key)) {
-      throw new Error(`Environment variable ${value} is not defined. Please define it before running the command.`);
+      throw new Error(`Environment variable ${key} is not defined. Please define it before running the command.`);
     }
 
     clientConfig[key] = env[key];
