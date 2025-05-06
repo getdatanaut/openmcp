@@ -21,7 +21,7 @@ interface IMultiSelectInputProps {
 }
 
 const MultiSelectInput = React.memo<IMultiSelectInputProps>(
-  ({ label, options, defaultValues = [], optional = false, onSubmit, maxVisibleItems = 10 }) => {
+  ({ label, options, defaultValues = [], optional = false, onSubmit, maxVisibleItems = 5 }) => {
     const { searchQuery, filteredOptions, highlightedIndex, selectedValues, allSelected, showAllToggle } =
       useMultiSelectInput({
         options,
@@ -45,9 +45,6 @@ const MultiSelectInput = React.memo<IMultiSelectInputProps>(
             allSelected={allSelected}
             maxVisibleItems={maxVisibleItems}
           />
-          <Box>
-            <Text>Selected: {Array.from(selectedValues).length} item(s)</Text>
-          </Box>
         </Box>
       </Box>
     );

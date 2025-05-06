@@ -20,7 +20,7 @@ interface ISelectInputProps {
 }
 
 const SelectInput = React.memo<ISelectInputProps>(
-  ({ label, options, defaultValue = '', onSubmit, maxVisibleItems = 10 }) => {
+  ({ label, options, defaultValue = '', onSubmit, maxVisibleItems = 5 }) => {
     const { searchQuery, filteredOptions, highlightedIndex } = useSelectInput({
       options,
       defaultValue,

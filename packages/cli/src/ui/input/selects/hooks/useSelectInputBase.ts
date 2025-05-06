@@ -94,7 +94,10 @@ function useSelectInputBase({
     });
   }, [filteredOptions]);
 
-  const allSelected = filteredOptions.length > 0 && filteredOptions.every(option => selectedValues.has(option.value));
+  const allSelected = useMemo(
+    () => filteredOptions.length > 0 && filteredOptions.every(option => selectedValues.has(option.value)),
+    [filteredOptions, selectedValues],
+  );
 
   // Handle input
   useInput((input, key) => {

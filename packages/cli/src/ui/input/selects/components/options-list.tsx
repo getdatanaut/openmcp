@@ -2,6 +2,7 @@ import { Box, Text } from 'ink';
 import React from 'react';
 
 import type { Option } from '../types.ts';
+import OptionItem from './option-item.tsx';
 
 interface OptionsListProps {
   /**
@@ -53,14 +54,12 @@ const OptionsList = React.memo<OptionsListProps>(
     return (
       <Box flexDirection="column">
         {showAllToggle && (
-          <Box>
-            <Text
-              backgroundColor={highlightedIndex === -1 ? 'blue' : undefined}
-              color={highlightedIndex === -1 ? 'whiteBright' : undefined}
-            >
-              {allSelected ? '[✓]' : '[ ]'} All
-            </Text>
-          </Box>
+          <OptionItem
+            label={`All ${selectedValues?.size && !allSelected ? `(${selectedValues.size}/${options.length})` : ''}`}
+            isHighlighted={highlightedIndex === -1}
+            isSelected={allSelected}
+            showCheckbox={!!selectedValues}
+          />
         )}
 
         {hasMoreAbove && (
@@ -71,18 +70,14 @@ const OptionsList = React.memo<OptionsListProps>(
 
         {visibleOptions.map((option, visibleIndex) => {
           const actualIndex = startIndex + visibleIndex;
-          const checkbox = selectedValues ? (selectedValues.has(option.value) ? '[✓] ' : '[ ] ') : '';
           return (
-            <Box key={option.value}>
-              <Text
-                backgroundColor={actualIndex === highlightedIndex ? 'blueBright' : undefined}
-                color={actualIndex === highlightedIndex ? 'whiteBright' : undefined}
-              >
-                {checkbox}
-                {option.label}
-                {option.hint ? ` (${option.hint})` : ''}
-              </Text>
-            </Box>
+            <OptionItem
+              key={option.value}
+              label={option.label}
+              isHighlighted={actualIndex === highlightedIndex}
+              isSelected={selectedValues?.has(option.value)}
+              showCheckbox={!!selectedValues}
+            />
           );
         })}
 

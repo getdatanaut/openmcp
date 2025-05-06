@@ -10,10 +10,13 @@ import type { Option } from '../types.ts';
  */
 export default function useFilteredOptions(options: Option[], searchQuery: string): Option[] {
   return useMemo(() => {
-    if (!searchQuery) {
+    if (searchQuery.length === 0) {
       return options;
     }
-    return options.filter(option => option.label.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return options.filter(option => {
+      const query = searchQuery.toLowerCase();
+      return option.label.toLowerCase().includes(query) || option.hint?.toLowerCase().includes(query);
+    });
   }, [searchQuery, options]);
 }
-
