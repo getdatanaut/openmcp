@@ -11,7 +11,7 @@ import resolveConfigPath from './resolve-path.ts';
 export default async function writeConfig<I extends FsInstallMethod>(
   ctx: Context,
   installMethod: I,
-  applyConfig: (config: z.infer<I['schema']>) => Promise<void>,
+  applyConfig: (config: z.infer<I['schema']>, filepath: string) => Promise<void>,
 ): Promise<void> {
   const resolvedConfigPath = resolveConfigPath(ctx.constants, installMethod.filepath);
   let config: z.infer<I['schema']>;
@@ -27,7 +27,7 @@ export default async function writeConfig<I extends FsInstallMethod>(
     config = {};
   }
 
-  await applyConfig(config);
+  await applyConfig(config, resolvedConfigPath);
   const ext = resolvedConfigPath.slice(resolvedConfigPath.lastIndexOf('.') + 1);
   if (ext === 'json') {
     await ctx.fs.writeFile(resolvedConfigPath, serializeDocument(config, 'json'));

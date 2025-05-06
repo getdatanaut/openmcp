@@ -1,7 +1,9 @@
+import path from 'node:path';
+
 import type { Server } from '../../types.ts';
 import type { InstalledServer } from './types.ts';
 
-function _findExistingServer(installedServer: InstalledServer, server: Server): boolean {
+function _findExistingServer(configFilepath: string, installedServer: InstalledServer, server: Server): boolean {
   if (installedServer.args.length <= 3) {
     return false;
   }
@@ -22,14 +24,19 @@ function _findExistingServer(installedServer: InstalledServer, server: Server): 
 
     switch (currentFlag) {
       case '--server':
+        return arg === server.target;
       case '--config':
-        return arg === server.id;
+        return (path.isAbsolute(arg) ? arg : path.join(configFilepath, '..', arg)) === server.target;
     }
   }
 
   return false;
 }
 
-export default function findExistingServer(installedServers: readonly InstalledServer[], server: Server): number {
-  return installedServers.findIndex(installedServer => _findExistingServer(installedServer, server));
+export default function findExistingServer(
+  configFilepath: string,
+  installedServers: readonly InstalledServer[],
+  server: Server,
+): number {
+  return installedServers.findIndex(installedServer => _findExistingServer(configFilepath, installedServer, server));
 }

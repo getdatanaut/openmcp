@@ -50,14 +50,14 @@ export default function createVSCodeClient(
     async install(ctx, server, location) {
       switch (location) {
         case 'global':
-          await writeConfig(ctx, this.installMethods[0], async config => {
-            addServer((config.mcp ??= {}), server);
+          await writeConfig(ctx, this.installMethods[0], async (config, configFilepath) => {
+            addServer((config.mcp ??= {}), server, configFilepath, 'global');
           });
           return this.installMethods[0];
         case 'local':
         case 'prefer-local':
-          await writeConfig(ctx, this.installMethods[1], async config => {
-            addServer(config, server);
+          await writeConfig(ctx, this.installMethods[1], async (config, configFilepath) => {
+            addServer(config, server, configFilepath, 'local');
           });
           return this.installMethods[1];
       }
@@ -65,14 +65,14 @@ export default function createVSCodeClient(
     async uninstall(ctx, server, location) {
       switch (location) {
         case 'global':
-          await writeConfig(ctx, this.installMethods[0], async config => {
-            removeServer(config.mcp, server);
+          await writeConfig(ctx, this.installMethods[0], async (config, configFilepath) => {
+            removeServer(config.mcp, server, configFilepath);
           });
           return this.installMethods[0];
         case 'local':
         case 'prefer-local':
-          await writeConfig(ctx, this.installMethods[1], async config => {
-            removeServer(config, server);
+          await writeConfig(ctx, this.installMethods[1], async (config, configFilepath) => {
+            removeServer(config, server, configFilepath);
           });
           return this.installMethods[1];
       }
@@ -98,27 +98,23 @@ function listServers(config: McpConfig | undefined): readonly InstalledServer[] 
   return installedServers;
 }
 
-function addServer(config: McpConfig, server: Server) {
+function addServer(config: McpConfig, server: Server, configFilepath: string, location: InstallMethodLocation) {
   const servers = listServers(config);
-  assertNoExistingServer(servers, server);
+  assertNoExistingServer(configFilepath, servers, server);
   const name = generateServerName(servers, server);
   config.servers ??= {};
-  config.servers[name] = generateVSCodeTransport(server);
+  config.servers[name] = {
+    type: 'stdio',
+    ...generateTransport(server, configFilepath, location),
+  };
 }
 
-function removeServer(config: McpConfig | undefined, server: Server) {
+function removeServer(config: McpConfig | undefined, server: Server, configFilepath: string) {
   const servers = listServers(config);
-  const index = findExistingServer(servers, server);
+  const index = findExistingServer(configFilepath, servers, server);
   if (index === -1) {
     throw new ServerNotInstalled(server);
   }
 
   delete config!.servers![servers[index]!.name];
-}
-
-function generateVSCodeTransport(server: Server) {
-  return {
-    type: 'stdio',
-    ...generateTransport(server),
-  };
 }

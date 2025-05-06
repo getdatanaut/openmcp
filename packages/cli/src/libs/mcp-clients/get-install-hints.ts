@@ -1,7 +1,7 @@
 import type { IntegrationName } from './integrations/index.ts';
 import generateServerName from './integrations/utils/generate-server-name.ts';
 import generateTransport from './integrations/utils/generate-transport.ts';
-import type { Remix } from './types.ts';
+import type { Remix, Server } from './types.ts';
 
 type ShellCommandHint = {
   readonly type: 'command';
@@ -15,11 +15,11 @@ type LinkCommandHint = {
 
 type Hint = ShellCommandHint | LinkCommandHint;
 
-function generateVsCodeTransport(remix: Remix) {
+function generateVsCodeTransport(server: Server) {
   return serializeTransport({
-    name: generateServerName([], remix),
+    name: generateServerName([], server),
     type: 'stdio',
-    ...generateTransport(remix),
+    ...generateTransport(server, '', 'global'),
   });
 }
 
@@ -28,25 +28,25 @@ function serializeTransport(transport: Record<string, unknown>) {
 }
 
 export default function getInstallHints(
-  remix: Remix,
+  server: Server,
   integrationName: IntegrationName,
 ): [ShellCommandHint] | [ShellCommandHint, LinkCommandHint] {
   const hints: [ShellCommandHint, ...Hint[]] = [
     {
       type: 'command',
-      value: `npx openmcp@latest install ${remix.id} --client ${integrationName}`,
+      value: `npx openmcp@latest install ${server.target} --client ${integrationName}`,
     },
   ];
 
   if (integrationName === 'vscode') {
     hints.push({
       type: 'url',
-      value: `vscode:mcp/install?${generateVsCodeTransport(remix)}`,
+      value: `vscode:mcp/install?${generateVsCodeTransport(server)}`,
     });
   } else if (integrationName === 'vscode-insiders') {
     hints.push({
       type: 'url',
-      value: `vscode-insiders:mcp/install?${generateVsCodeTransport(remix)}`,
+      value: `vscode-insiders:mcp/install?${generateVsCodeTransport(server)}`,
     });
   }
 

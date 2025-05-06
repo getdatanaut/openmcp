@@ -1,12 +1,16 @@
-import type { Remix } from '../../types.ts';
+import path from 'node:path';
 
-export default function generateTransport(remix: Remix) {
+import type { InstallMethodLocation, Server } from '../../types.ts';
+
+export default function generateTransport(server: Server, configFilepath: string, location: InstallMethodLocation) {
   const args = ['-y', 'openmcp@latest', 'run'];
   // @todo: remove --config / --server flags once run is updated
-  if (!remix.target.startsWith('ag_')) {
-    args.push('--config', remix.target);
-  } else {
-    args.push('--server', remix.target);
+  if (server.target.startsWith('ag_')) {
+    args.push('--server', server.target);
+  } else if (location === 'global') {
+    args.push('--config', server.target);
+  } else if (location === 'local') {
+    args.push('--config', path.relative(path.dirname(configFilepath), server.target));
   }
 
   return {

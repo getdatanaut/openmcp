@@ -42,20 +42,20 @@ export default function createGenericClient(
     installMethods,
     async install(ctx, server, location) {
       const installMethod = findMatchingInstallMethod(this.installMethods, server, location);
-      await writeConfig(ctx, installMethod, async config => {
+      await writeConfig(ctx, installMethod, async (config, configFilepath) => {
         const servers = listServers(config);
-        assertNoExistingServer(servers, server);
+        assertNoExistingServer(configFilepath, servers, server);
         const name = generateServerName(servers, server);
         config.mcpServers ??= {};
-        config.mcpServers[name] = generateTransport(server);
+        config.mcpServers[name] = generateTransport(server, configFilepath, installMethod.location);
       });
       return installMethod;
     },
     async uninstall(ctx, server, location) {
       const installMethod = findMatchingInstallMethod(this.installMethods, server, location);
-      await writeConfig(ctx, installMethod, async config => {
+      await writeConfig(ctx, installMethod, async (config, configFilepath) => {
         const servers = listServers(config);
-        const index = findExistingServer(servers, server);
+        const index = findExistingServer(configFilepath, servers, server);
         if (index === -1) {
           throw new ServerNotInstalled(server);
         }

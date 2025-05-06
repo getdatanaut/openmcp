@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { writeConfig } from '../config/index.ts';
 import { ServerNotInstalled } from '../errors/index.ts';
-import type { FsInstallMethod, McpHostClient, Server } from '../types.ts';
+import type { FsInstallMethod, InstallMethodLocation, McpHostClient, Server } from '../types.ts';
 import findExistingServer from './utils/find-existing-server.ts';
 import findMatchingInstallMethod from './utils/find-matching-install-method.ts';
 import generateServerName from './utils/generate-server-name.ts';
@@ -40,20 +40,20 @@ export default function createGooseClient(): VSCodeClient {
     ] as const,
     async install(ctx, server, location) {
       const installMethod = findMatchingInstallMethod(this.installMethods, server, location);
-      await writeConfig(ctx, installMethod, async config => {
+      await writeConfig(ctx, installMethod, async (config, configFilepath) => {
         const servers = listServers(config);
-        assertNoExistingServer(servers, server);
+        assertNoExistingServer(configFilepath, servers, server);
         const name = generateServerName(servers, server);
         config.extensions ??= {};
-        config.extensions[name] = generateGooseTransport(server);
+        config.extensions[name] = generateGooseTransport(server, configFilepath, installMethod.location);
       });
       return installMethod;
     },
     async uninstall(ctx, server, location) {
       const installMethod = findMatchingInstallMethod(this.installMethods, server, location);
-      await writeConfig(ctx, installMethod, async config => {
+      await writeConfig(ctx, installMethod, async (config, configFilepath) => {
         const servers = listServers(config);
-        const index = findExistingServer(servers, server);
+        const index = findExistingServer(configFilepath, servers, server);
         if (index === -1) {
           throw new ServerNotInstalled(server);
         }
@@ -83,8 +83,8 @@ function listServers(config: Config): readonly InstalledServer[] {
   return installedServers;
 }
 
-function generateGooseTransport(server: Server) {
-  const { args, command } = generateTransport(server);
+function generateGooseTransport(server: Server, configFilepath: string, location: InstallMethodLocation) {
+  const { args, command } = generateTransport(server, configFilepath, location);
   return {
     args,
     bundled: null,

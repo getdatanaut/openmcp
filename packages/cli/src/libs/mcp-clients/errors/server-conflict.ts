@@ -1,7 +1,7 @@
-import type { Remix } from '../types.ts';
+import type { Server } from '../types.ts';
 
-export default class RemixConflict extends Error {
-  constructor(remix: Remix) {
-    super(`Server "${remix.name}" is already installed.`);
+export default class ServerConflict extends Error {
+  constructor(server: Server) {
+    super(`Server "${server.name}" is already installed.`);
   }
 }

@@ -41,7 +41,7 @@ export type InstallMethodLocation = 'local' | 'global';
 export type InstallMethod = FsInstallMethod;
 
 export type Remix = {
-  readonly id: string;
+  readonly id?: string;
   readonly name: string;
   readonly target: string;
 };
