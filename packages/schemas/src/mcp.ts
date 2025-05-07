@@ -1,3 +1,4 @@
+import isValidPath from 'is-valid-path';
 import { z } from 'zod';
 
 export const ToolName = z.string().regex(/^[a-zA-Z0-9_-]{1,64}$/, 'Tool name must match /^[a-zA-Z0-9_-]{1,64}$/');
@@ -6,12 +7,7 @@ export const OpenAPITransportSchema = z.object({
   type: z.literal('openapi'),
   openapi: z.string().refine(
     value => {
-      if (URL.canParse(value)) {
-        return true;
-      }
-
-      // If not a URL, check if it looks like a file path
-      return /^.{0,2}\//.test(value) || /^[a-zA-Z]:\\/.test(value);
+      return URL.canParse(value) || isValidPath(value);
     },
     {
       message: 'openapi must be a valid URL or file path',

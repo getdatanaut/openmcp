@@ -9,30 +9,38 @@ import { listTools, negotiateSecurityStrategy, negotiateServerUrl, parseAsServic
 import type { Config as RemixDefinition, OpenAPIServer } from '#libs/remix';
 import { screamCase, slugify } from '#libs/string-utils';
 
-export default async function generateRemix(
-  cwd: string,
+function findExistingServer(
+  servers: RemixDefinition['servers'],
+  remixFilepath: string,
   location: string,
-): Promise<{ id: string; name: string; definition: RemixDefinition }> {
+): { name: string; server: OpenAPIServer } | null {
+  const absoluteLocation = resolvePath(remixFilepath, location);
+  for (const [name, server] of Object.entries(servers)) {
+    if (server.type !== 'openapi') continue;
+    if (resolvePath(remixFilepath, server.openapi) === absoluteLocation) {
+      return { name, server };
+    }
+  }
+
+  return null;
+}
+
+export default async function generateRemix(
+  remix: {
+    definition: RemixDefinition | null;
+    filepath: string;
+  },
+  location: string,
+): Promise<RemixDefinition> {
   const document = await loadDocument({ fetch, fs }, location);
   const service = parseAsService(document);
-  const defaultName = slugify(service.name).slice(0, 24);
-  const name =
-    slugify(
-      await prompt.text({
-        message: 'Please insert a name for your server:',
-        placeholder: defaultName,
-        validate: value => {
-          const slug = slugify(value);
-          if (slug.length < 1 || slug.length > 24) {
-            return 'Name must be between 1 and 24 characters long';
-          }
-        },
-      }),
-    ) || defaultName;
+  const existingServer =
+    remix.definition === null ? null : findExistingServer(remix.definition.servers, remix.filepath, location);
+  const name = existingServer?.name ?? (await negotiateName(slugify(service.name).slice(0, 24)));
 
-  const serverUrl = await negotiateServerUrl(service);
-  const serverClientConfig: Pick<OpenAPIServer, 'path' | 'query' | 'headers' | 'body'> = {};
-  const config: Record<string, unknown> = {};
+  if (existingServer !== null) {
+    console.info(`Given openmcp definition already contains ${JSON.stringify(name)} server.`);
+  }
 
   const tools = await prompt.multiselect({
     message: 'Please select tools you want to include:',
@@ -41,8 +49,20 @@ export default async function generateRemix(
       hint: route,
       value: name,
     })),
+    initialValues: existingServer?.server.tools,
   });
   tools.sort((a, b) => a.localeCompare(b));
+
+  if (existingServer?.server) {
+    Object.assign(existingServer.server, {
+      tools,
+    });
+    return remix.definition!;
+  }
+
+  const serverUrl = await negotiateServerUrl(service);
+  const serverClientConfig: Pick<OpenAPIServer, 'path' | 'query' | 'headers' | 'body'> = {};
+  const config: Record<string, unknown> = {};
 
   try {
     const { serverClientConfig: _serverClientConfig, userConfig: _config } = await negotiateSecurityStrategy(
@@ -59,24 +79,48 @@ export default async function generateRemix(
     console.error(error instanceof Error ? error.message : String(error));
   }
 
+  const definition = remix.definition ?? {
+    configs: {},
+    servers: {},
+  };
+
   const server: OpenAPIServer = {
     type: 'openapi',
-    openapi: location,
+    openapi: resolveOpenAPIPath(remix.filepath, location),
     serverUrl,
     ...serverClientConfig,
     tools,
   };
 
-  return {
-    id: URL.canParse(location) ? location : `file://${path.resolve(cwd, location)}`,
-    name,
-    definition: {
-      configs: {
-        [name]: config,
-      },
-      servers: {
-        [name]: server,
-      },
+  definition.configs[name] = config;
+  definition.servers[name] = server;
+
+  return definition;
+}
+
+async function negotiateName(defaultName: string): Promise<string> {
+  const name = await prompt.text({
+    message: 'Please insert a name for your server:',
+    placeholder: defaultName,
+    validate: value => {
+      const slug = slugify(value);
+      if (slug.length < 1 || slug.length > 24) {
+        return 'Name must be between 1 and 24 characters long';
+      }
     },
-  };
+  });
+
+  return name.length === 0 ? defaultName : slugify(name);
+}
+
+function resolvePath(remixFilepath: string, location: string): string {
+  if (URL.canParse(location)) return location;
+  if (path.isAbsolute(location)) return location;
+  return path.join(path.dirname(remixFilepath), location);
+}
+
+function resolveOpenAPIPath(remixFilepath: string, location: string): string {
+  if (URL.canParse(location)) return location;
+
+  return path.relative(path.dirname(remixFilepath), location);
 }
