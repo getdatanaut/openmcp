@@ -52,7 +52,7 @@ const OptionsList = React.memo<OptionsListProps>(
     const hasMoreBelow = endIndex < options.length;
 
     return (
-      <Box flexDirection="column">
+      <Box flexDirection="column" rowGap={1} marginTop={1}>
         {showAllToggle && (
           <OptionItem
             label={`All ${selectedValues?.size && !allSelected ? `(${selectedValues.size}/${options.length})` : ''}`}
@@ -73,7 +73,7 @@ const OptionsList = React.memo<OptionsListProps>(
           return (
             <OptionItem
               key={option.value}
-              label={option.label}
+              label={`${option.label}${option.hint ? ` (${option.hint})` : ''}`}
               isHighlighted={actualIndex === highlightedIndex}
               isSelected={selectedValues?.has(option.value)}
               showCheckbox={!!selectedValues}

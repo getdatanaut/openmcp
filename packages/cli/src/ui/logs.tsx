@@ -20,7 +20,7 @@ const ICONS_MAP = {
   success: '🌟',
   error: '💥',
   info: '💡',
-  start: '⌛',
+  start: '🚀',
   warn: '⚠️',
   verbose: '📝',
 } as const satisfies Record<LogType, string>;

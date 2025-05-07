@@ -24,7 +24,7 @@ const InputLabel = React.memo<InputLabelProps>(({ label, hint }) => {
       <TextRow icon={'👇'} color="blue" value={label} />
       {hint ? (
         <Box paddingLeft={3}>
-          <Text color="gray" wrap="truncate-end">
+          <Text color="gray" wrap="wrap">
             {hint}
           </Text>
         </Box>
