@@ -1,5 +1,12 @@
 # openmcp
 
+## 0.0.4
+
+### Patch Changes
+
+- [`e807a0f`](https://github.com/getdatanaut/openmcp/commit/e807a0fa04e9813eca017d866a7cb6a5ace8f817) Thanks
+  [@marbemac](https://github.com/marbemac)! - Fix to publish missing dist folder
+
 ## 0.0.3
 
 ### Patch Changes
