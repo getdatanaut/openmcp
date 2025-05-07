@@ -47,12 +47,8 @@ export default async function generateRemix(
   try {
     const { serverClientConfig: _serverClientConfig, userConfig: _config } = await negotiateSecurityStrategy(
       {
-        generateConfigKey(key, value) {
-          if (value.length === 0) {
-            return screamCase([name, key].filter(Boolean).join(' '));
-          }
-
-          return key;
+        generateConfigKey(key) {
+          return screamCase([name, key].filter(Boolean).join(' '));
         },
       },
       service,
