@@ -1,6 +1,6 @@
 {
   "name": "@openmcp/manager",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Manage connections between MCP Servers and Clients through a single interface.",
   "type": "module",
   "license": "MIT",
