@@ -1,8 +1,0 @@
-{
-  "extends": "@datanaut/tsconfig/tsconfig.workerd.json",
-  "include": ["**/*.ts"],
-  "compilerOptions": {
-    "rootDir": ".",
-    "types": ["@cloudflare/workers-types/2023-07-01"]
-  }
-}

@@ -5,18 +5,6 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@ai-sdk/openai@npm:1.3.21":
-  version: 1.3.21
-  resolution: "@ai-sdk/openai@npm:1.3.21"
-  dependencies:
-    "@ai-sdk/provider": "npm:1.1.3"
-    "@ai-sdk/provider-utils": "npm:2.2.7"
-  peerDependencies:
-    zod: ^3.0.0
-  checksum: 10c0/adba1dcfe26eaea09e3ebdf55d03f5008765e1b153f7fbf376b703d40cc16b574fc44f73507d2a0e8aef81fbe70d9f2ca0a4b482d8ba73d1ea78a7489d418a9c
-  languageName: node
-  linkType: hard
-
 "@ai-sdk/provider-utils@npm:2.2.7":
   version: 2.2.7
   resolution: "@ai-sdk/provider-utils@npm:2.2.7"
@@ -786,13 +774,6 @@ __metadata:
   version: 1.20250428.0
   resolution: "@cloudflare/workerd-windows-64@npm:1.20250428.0"
   conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@cloudflare/workers-types@npm:4.20250506.0":
-  version: 4.20250506.0
-  resolution: "@cloudflare/workers-types@npm:4.20250506.0"
-  checksum: 10c0/b9135596e328fb2efe1984362d23212bee4ec1b0fd13694a03fd98c81f21396ad5147acd0bb5d67390326847e3bee4ca8035a9cb60a579bf8290e85edaabd321
   languageName: node
   linkType: hard
 
@@ -2984,24 +2965,6 @@ __metadata:
   checksum: 10c0/61d3f99718dd86bb393fee2d7a785f961dcaf12f2055f0c693b27f4d0cd5f7a03d498a6d9289773b117590d794a43cd129366fd8e99222e4832f67b1653d54cf
   languageName: node
   linkType: hard
-
-"@openmcp/cloudflare@workspace:packages/cloudflare":
-  version: 0.0.0-use.local
-  resolution: "@openmcp/cloudflare@workspace:packages/cloudflare"
-  dependencies:
-    "@ai-sdk/openai": "npm:1.3.21"
-    "@cloudflare/workers-types": "npm:4.20250506.0"
-    "@datanaut/eslint-config": "npm:0.1.1"
-    "@datanaut/tsconfig": "npm:0.1.3"
-    "@modelcontextprotocol/sdk": "npm:^1.11.0"
-    "@openmcp/openapi": "workspace:*"
-    "@openmcp/server": "workspace:*"
-    eslint: "npm:9.26.0"
-    tsup: "npm:8.4.0"
-    typescript: "npm:5.8.3"
-    vitest: "npm:3.1.3"
-  languageName: unknown
-  linkType: soft
 
 "@openmcp/manager@workspace:*, @openmcp/manager@workspace:packages/manager":
   version: 0.0.0-use.local
