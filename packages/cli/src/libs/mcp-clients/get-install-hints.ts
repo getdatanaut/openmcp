@@ -1,7 +1,6 @@
 import type { IntegrationName } from './integrations/index.ts';
 import generateServerName from './integrations/utils/generate-server-name.ts';
-import generateTransport from './integrations/utils/generate-transport.ts';
-import type { Remix, Server } from './types.ts';
+import type { Server } from './types.ts';
 
 type ShellCommandHint = {
   readonly type: 'command';
@@ -19,7 +18,7 @@ function generateVsCodeTransport(server: Server) {
   return serializeTransport({
     name: generateServerName([], server),
     type: 'stdio',
-    ...generateTransport(server, '', 'global'),
+    args: ['-y', 'openmcp@latest', 'run', '--server', server.target],
   });
 }
 
