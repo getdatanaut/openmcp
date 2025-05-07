@@ -1,5 +1,12 @@
 # openmcp
 
+## 0.0.5
+
+### Patch Changes
+
+- [`eee714a`](https://github.com/getdatanaut/openmcp/commit/eee714ad002396876b0b164f23e621ef64fde9c5) Thanks
+  [@P0lip](https://github.com/P0lip)! - release(cli): 0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
