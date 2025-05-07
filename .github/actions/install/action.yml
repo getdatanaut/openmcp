@@ -22,7 +22,7 @@ runs:
       env:
         YARN_ENABLE_GLOBAL_CACHE: 'false'
       run: |
-        echo "CACHE_KEY=${{ hashFiles('./yarn.lock', './.yarnrc.yml', './.yarn/patches/*') }}" >> $GITHUB_OUTPUT
+        echo "CACHE_KEY=${{ hashFiles('./yarn.lock', './.yarnrc.yml') }}" >> $GITHUB_OUTPUT
         echo "CACHE_FOLDER=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
         echo "NPM_GLOBAL_CACHE_FOLDER=$(npm config get cache)" >> $GITHUB_OUTPUT
 
