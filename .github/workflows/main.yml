@@ -51,7 +51,7 @@ jobs:
         uses: './.github/actions/setup'
 
       - name: Build
-        run: yarn build -p "@openmcp/*"
+        run: yarn build -p openmcp "@openmcp/*"
 
       - name: Set NPM Auth Token
         run: yarn config set npmAuthToken "$NPM_TOKEN"
