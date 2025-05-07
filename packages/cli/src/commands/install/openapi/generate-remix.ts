@@ -1,10 +1,11 @@
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
-import { getToolName } from '@openmcp/openapi';
+import { loadDocument } from '@openmcp/utils/documents';
 
 import console from '#libs/console';
 import * as prompt from '#libs/console/prompts';
-import { loadDocumentAsService, negotiateSecurityStrategy, negotiateServerUrl } from '#libs/openapi';
+import { listTools, negotiateSecurityStrategy, negotiateServerUrl, parseAsService } from '#libs/openapi';
 import type { Config as RemixDefinition, OpenAPIServer } from '#libs/remix';
 import { screamCase, slugify } from '#libs/string-utils';
 
@@ -12,7 +13,8 @@ export default async function generateRemix(
   cwd: string,
   location: string,
 ): Promise<{ id: string; name: string; definition: RemixDefinition }> {
-  const service = await loadDocumentAsService(location);
+  const document = await loadDocument({ fetch, fs }, location);
+  const service = parseAsService(document);
   const defaultName = slugify(service.name).slice(0, 24);
   const name =
     slugify(
@@ -34,14 +36,11 @@ export default async function generateRemix(
 
   const tools = await prompt.multiselect({
     message: 'Please select tools you want to include:',
-    options: service.operations.map(operation => {
-      const value = getToolName(operation);
-      return {
-        label: value,
-        hint: `${operation.method.toUpperCase()} ${operation.path}`,
-        value,
-      };
-    }),
+    options: listTools(document).map(({ name, route }) => ({
+      label: name,
+      hint: route,
+      value: name,
+    })),
   });
   tools.sort((a, b) => a.localeCompare(b));
 
