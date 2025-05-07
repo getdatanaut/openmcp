@@ -1,5 +1,5 @@
 diff --git a/dist/changesets-cli.cjs.js b/dist/changesets-cli.cjs.js
-index 82ed39a6b2a38fe0aaabb71c2ec745c502dbe06a..c1b87ba16087a7c7aa22e1076111c06af85fb227 100644
+index 82ed39a6b2a38fe0aaabb71c2ec745c502dbe06a..7883186534390a1869df97d53bb43e260ddf8ace 100644
 --- a/dist/changesets-cli.cjs.js
 +++ b/dist/changesets-cli.cjs.js
 @@ -634,25 +634,55 @@ async function getPublishTool(cwd) {
@@ -92,7 +92,7 @@ index 82ed39a6b2a38fe0aaabb71c2ec745c502dbe06a..c1b87ba16087a7c7aa22e1076111c06a
    }
    const {
      scope,
-@@ -764,16 +801,26 @@ async function internalPublish(packageJson, opts, twoFactorState) {
+@@ -764,16 +801,27 @@ async function internalPublish(packageJson, opts, twoFactorState) {
    const envOverride = {
      [scope ? `npm_config_${scope}:registry` : "npm_config_registry"]: registry
    };
@@ -104,7 +104,8 @@ index 82ed39a6b2a38fe0aaabb71c2ec745c502dbe06a..c1b87ba16087a7c7aa22e1076111c06a
 +    });
 +  } else if (publishTool.name === "yarn") {
 +    results = await spawn__default["default"]("yarn", ["npm", "publish", ...publishFlags], {
-+      env: Object.assign({}, process.env, envOverride)
++      env: Object.assign({}, process.env, envOverride),
++      cwd: opts.cwd
 +    });
 +  } else {
 +    results = await spawn__default["default"](publishTool.name, ["publish", opts.publishDir, "--json", ...publishFlags], {
@@ -126,7 +127,7 @@ index 82ed39a6b2a38fe0aaabb71c2ec745c502dbe06a..c1b87ba16087a7c7aa22e1076111c06a
      // NPM's --json output is included alongside the `prepublish` and `postpublish` output in terminal
      // We want to handle this as best we can but it has some struggles:
 diff --git a/dist/changesets-cli.esm.js b/dist/changesets-cli.esm.js
-index 1e945455b39b9c6424b26960b3d26a095ad980e4..791b95f7310d1c307b4607884ec3b122affc941b 100644
+index 1e945455b39b9c6424b26960b3d26a095ad980e4..b89c754a3121eb0a73fa23d2287537429a26296e 100644
 --- a/dist/changesets-cli.esm.js
 +++ b/dist/changesets-cli.esm.js
 @@ -596,25 +596,55 @@ async function getPublishTool(cwd) {
@@ -219,7 +220,7 @@ index 1e945455b39b9c6424b26960b3d26a095ad980e4..791b95f7310d1c307b4607884ec3b122
    }
    const {
      scope,
-@@ -726,16 +763,26 @@ async function internalPublish(packageJson, opts, twoFactorState) {
+@@ -726,16 +763,27 @@ async function internalPublish(packageJson, opts, twoFactorState) {
    const envOverride = {
      [scope ? `npm_config_${scope}:registry` : "npm_config_registry"]: registry
    };
@@ -231,7 +232,8 @@ index 1e945455b39b9c6424b26960b3d26a095ad980e4..791b95f7310d1c307b4607884ec3b122
 +    });
 +  } else if (publishTool.name === "yarn") {
 +    results = await spawn$1("yarn", ["npm", "publish", ...publishFlags], {
-+      env: Object.assign({}, process.env, envOverride)
++      env: Object.assign({}, process.env, envOverride),
++      cwd: opts.cwd
 +    });
 +  } else {
 +    results = await spawn$1(publishTool.name, ["publish", opts.publishDir, "--json", ...publishFlags], {
