@@ -8,7 +8,11 @@ import { state } from '#libs/console/prompts';
 import Logs from './logs.tsx';
 import Prompt from './prompt.tsx';
 
-const App = observer(() => {
+interface AppProps {
+  onCancel(): void;
+}
+
+const App = observer<AppProps>(({ onCancel }) => {
   const currentPrompt = state.currentPrompt.get();
   useInput((input, key) => {
     if (input !== 'c' || !key.ctrl) {
@@ -18,7 +22,7 @@ const App = observer(() => {
     if (currentPrompt) {
       currentPrompt?.reject(new OperationCanceledError());
     } else {
-      process.exit(1);
+      onCancel();
     }
   });
 

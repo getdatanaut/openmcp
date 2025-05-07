@@ -14,11 +14,15 @@ export default function createHandler<U, F extends Handler<U> = Handler<U>>(fn: 
     try {
       await fn(args);
     } catch (error) {
+      if (inkInstance !== null) {
+        console.error(error instanceof Error ? error.message : String(error));
+      }
+
       throw new HandlerError(error);
     } finally {
       console.restoreConsole();
       inkInstance?.rerender();
-      process.exit(0);
+      inkInstance?.unmount();
     }
   };
 
