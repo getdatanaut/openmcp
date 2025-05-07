@@ -43,6 +43,7 @@ export default async function generateRemix(
       };
     }),
   });
+  tools.sort((a, b) => a.localeCompare(b));
 
   try {
     const { serverClientConfig: _serverClientConfig, userConfig: _config } = await negotiateSecurityStrategy(
