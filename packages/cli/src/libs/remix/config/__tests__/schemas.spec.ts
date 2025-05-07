@@ -133,7 +133,7 @@ describe('RemixServerSchema', () => {
   it('should not accept an OpenAPI server with invalid serverConfig', () => {
     const invalidOpenAPIServer = {
       type: 'openapi',
-      openapi: 'invalid-url',
+      openapi: '!;;;;',
       serverUrl: 'https://example.com',
       tools: ['tool2'],
     };
