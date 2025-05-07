@@ -14,7 +14,7 @@ export default async function createOpenAPIRemix(location: string): Promise<Remi
 
     return {
       id: remix.id,
-      name: remix.name,
+      name: 'openmcp',
       target: remixFilepath,
     };
   } catch (error) {
