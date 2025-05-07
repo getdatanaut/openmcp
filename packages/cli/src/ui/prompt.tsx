@@ -1,12 +1,12 @@
-import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { state } from '#libs/console/prompts';
+import { useObservable } from '#libs/observable/hooks';
 
 import { ConfirmInput, MultiSelectInput, SelectInput, TextInput } from './input/index.ts';
 
-const Prompt = observer(() => {
-  const currentPrompt = state.currentPrompt.get();
+const Prompt = React.memo(() => {
+  const currentPrompt = useObservable(state.currentPrompt);
   switch (currentPrompt?.type) {
     case 'text':
       return (

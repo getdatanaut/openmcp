@@ -1,9 +1,9 @@
 import { Box, useInput } from 'ink';
-import { observer } from 'mobx-react-lite';
 import React from 'react';
 
 import { OperationCanceledError } from '#errors';
 import { state } from '#libs/console/prompts';
+import { useObservable } from '#libs/observable/hooks';
 
 import Logs from './logs.tsx';
 import Prompt from './prompt.tsx';
@@ -12,8 +12,8 @@ interface AppProps {
   onCancel(): void;
 }
 
-const App = observer<AppProps>(({ onCancel }) => {
-  const currentPrompt = state.currentPrompt.get();
+const App = React.memo(({ onCancel }: AppProps) => {
+  const currentPrompt = useObservable(state.currentPrompt);
   useInput((input, key) => {
     if (input !== 'c' || !key.ctrl) {
       return;

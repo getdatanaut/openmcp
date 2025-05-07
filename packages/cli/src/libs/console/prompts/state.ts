@@ -1,6 +1,5 @@
-import { action, observable } from 'mobx';
-
 import { OperationTimedOutError } from '#errors';
+import { createObservableRef } from '#libs/observable';
 
 import type { ConfirmPrompt, MultiSelectPrompt, SelectPrompt, TextPrompt } from './types.ts';
 
@@ -36,15 +35,13 @@ type MultiSelectPromptResult = {
 
 type PromptResult = TextPromptResult | ConfirmPromptResult | SelectPromptResult | MultiSelectPromptResult;
 
-export const currentPrompt = observable.box<PromptResult | null>(null, {
-  deep: false,
-});
+export const currentPrompt = createObservableRef<PromptResult | null>(null);
 
-function _setPrompt(prompt: ConfirmPrompt, timeout?: number): Promise<boolean>;
-function _setPrompt(prompt: TextPrompt, timeout?: number): Promise<string>;
-function _setPrompt(prompt: SelectPrompt, timeout?: number): Promise<string>;
-function _setPrompt(prompt: MultiSelectPrompt, timeout?: number): Promise<string[]>;
-async function _setPrompt(
+export function setAndWaitForPrompt(prompt: ConfirmPrompt, timeout?: number): Promise<boolean>;
+export function setAndWaitForPrompt(prompt: TextPrompt, timeout?: number): Promise<string>;
+export function setAndWaitForPrompt(prompt: SelectPrompt, timeout?: number): Promise<string>;
+export function setAndWaitForPrompt(prompt: MultiSelectPrompt, timeout?: number): Promise<string[]>;
+export async function setAndWaitForPrompt(
   prompt: ConfirmPrompt | TextPrompt | SelectPrompt | MultiSelectPrompt,
   timeout = DEFAULT_TIMEOUT,
 ): Promise<string | boolean | string[]> {
@@ -59,12 +56,8 @@ async function _setPrompt(
   const id = setTimeout(() => {
     reject(new OperationTimedOutError(timeout));
   }, timeout);
-  return promise.finally(
-    action(() => {
-      currentPrompt.set(null);
-      clearTimeout(id);
-    }),
-  );
+  return promise.finally(() => {
+    currentPrompt.set(null);
+    clearTimeout(id);
+  });
 }
-
-export const setAndWaitForPrompt = action(_setPrompt);

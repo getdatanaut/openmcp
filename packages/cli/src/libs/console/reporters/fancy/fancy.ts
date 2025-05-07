@@ -1,5 +1,6 @@
 import type { ConsolaReporter, LogObject, LogType as ConsolaLogType } from 'consola/core';
-import { action, observable } from 'mobx';
+
+import { createShallowObservableArray } from '#libs/observable';
 
 export type LogType = 'error' | 'warn' | 'info' | 'verbose' | 'start' | 'success';
 
@@ -10,18 +11,16 @@ export type Log = {
   readonly timestamp: Date;
 };
 
-export const logs = observable.array<Log>([], {
-  deep: false,
-});
+export const logs = createShallowObservableArray<Log>([]);
 
-export const addLog = action(function (type: LogType, message: string, timestamp: Date) {
+export function addLog(type: LogType, message: string, timestamp: Date) {
   logs.push({
     id: String(logs.length + 1),
     type,
     message,
     timestamp,
   });
-});
+}
 
 const map = {
   error: 'error',
