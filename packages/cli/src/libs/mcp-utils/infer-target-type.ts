@@ -1,4 +1,4 @@
-export default async function inferTargetType(target: string) {
+export default function inferTargetType(target: string) {
   switch (true) {
     case target.startsWith('ag_'):
       return 'agent-id' as const;

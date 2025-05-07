@@ -1,7 +1,7 @@
 import { constants as osConstants } from '#libs/platform';
 
 import { resolveConfigPath } from './config/index.ts';
-import { type IntegrationName, integrations } from './integrations/index.js';
+import { type IntegrationName, integrations } from './integrations/index.ts';
 import findMatchingInstallMethod from './integrations/utils/find-matching-install-method.ts';
 import type { InstallLocation } from './types.ts';
 

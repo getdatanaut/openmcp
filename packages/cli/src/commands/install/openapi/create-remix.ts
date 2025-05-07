@@ -8,7 +8,7 @@ export default async function createRemix(cwd: string, filepath: string, remix: 
   const dirname = path.dirname(filepath);
   if (dirname !== cwd) {
     try {
-      await fs.mkdir(cwd, { recursive: true });
+      await fs.mkdir(dirname, { recursive: true });
     } catch (error) {
       throw new Error(formatErrorMessage(`Failed to create directory at ${JSON.stringify(dirname)}`, error));
     }

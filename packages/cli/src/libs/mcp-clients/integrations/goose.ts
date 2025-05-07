@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { writeConfig } from '../config/index.ts';
 import { ServerNotInstalled } from '../errors/index.ts';
-import type { FsInstallMethod, InstallMethodLocation, McpHostClient, Server } from '../types.ts';
+import type { FsInstallMethod, McpHostClient, Server } from '../types.ts';
 import findExistingServer from './utils/find-existing-server.ts';
 import generateServerName from './utils/generate-server-name.ts';
 import generateTransport from './utils/generate-transport.ts';
@@ -45,7 +45,7 @@ export default function createGooseClient(): VSCodeClient {
         assertNoExistingServer(configFilepath, servers, server);
         const name = generateServerName(servers, server);
         config.extensions ??= {};
-        config.extensions[name] = generateGooseTransport(server, configFilepath, installMethod.location);
+        config.extensions[name] = generateGooseTransport(server);
       });
       return installMethod;
     },
@@ -83,8 +83,8 @@ function listServers(config: Config): readonly InstalledServer[] {
   return installedServers;
 }
 
-function generateGooseTransport(server: Server, configFilepath: string, location: InstallMethodLocation) {
-  const { args, command } = generateTransport(server, configFilepath, location);
+function generateGooseTransport(server: Server) {
+  const { args, command } = generateTransport(server);
   return {
     args,
     bundled: null,

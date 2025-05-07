@@ -1,9 +1,18 @@
 import { z } from 'zod';
 
-import { type ResolvableConfigPath, writeConfig } from '../config/index.ts';
+import { inferTargetType } from '../../mcp-utils/index.ts';
+import { type ResolvableConfigPath, resolveConfigPath, writeConfig } from '../config/index.ts';
 import { ServerNotInstalled } from '../errors/index.ts';
-import type { FsInstallMethod, InstallMethodLocation, McpHostClient, Server } from '../types.ts';
+import type {
+  Context,
+  FsInstallMethod,
+  InstallMethod,
+  InstallMethodLocation,
+  McpHostClient,
+  Server,
+} from '../types.ts';
 import findExistingServer from './utils/find-existing-server.ts';
+import generateDefinitionWorkspacePath from './utils/generate-definition-workspace-path.ts';
 import generateServerName from './utils/generate-server-name.ts';
 import generateTransport from './utils/generate-transport.ts';
 import { assertNoExistingServer } from './utils/guards.ts';
@@ -57,7 +66,7 @@ export default function createVSCodeClient(
         case 'local':
         case 'prefer-local':
           await writeConfig(ctx, this.installMethods[1], async (config, configFilepath) => {
-            addServer(config, server, configFilepath, 'local');
+            addServer(config, resolveServer(ctx, this.installMethods[1], server), configFilepath, 'local');
           });
           return this.installMethods[1];
       }
@@ -72,7 +81,7 @@ export default function createVSCodeClient(
         case 'local':
         case 'prefer-local':
           await writeConfig(ctx, this.installMethods[1], async (config, configFilepath) => {
-            removeServer(config, server, configFilepath);
+            removeServer(config, resolveServer(ctx, this.installMethods[1], server), configFilepath);
           });
           return this.installMethods[1];
       }
@@ -105,7 +114,19 @@ function addServer(config: McpConfig, server: Server, configFilepath: string, lo
   config.servers ??= {};
   config.servers[name] = {
     type: 'stdio',
-    ...generateTransport(server, configFilepath, location),
+    ...generateTransport(server),
+  };
+}
+
+function resolveServer(ctx: Context, installMethod: InstallMethod, server: Server) {
+  if (inferTargetType(server.target) !== 'openapi') {
+    return server;
+  }
+
+  const resolvedPath = resolveConfigPath(ctx.constants, installMethod.filepath);
+  return {
+    ...server,
+    target: generateDefinitionWorkspacePath('${workspaceFolder}/.vscode', resolvedPath, server.target),
   };
 }
 

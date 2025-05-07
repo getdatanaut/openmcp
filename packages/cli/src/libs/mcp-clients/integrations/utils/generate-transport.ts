@@ -1,16 +1,17 @@
-import path from 'node:path';
+import { inferTargetType } from '#libs/mcp-utils';
 
-import type { InstallMethodLocation, Server } from '../../types.ts';
+import type { Server } from '../../types.ts';
 
-export default function generateTransport(server: Server, configFilepath: string, location: InstallMethodLocation) {
+export default function generateTransport(server: Server) {
   const args = ['-y', 'openmcp@latest', 'run'];
   // @todo: remove --config / --server flags once run is updated
-  if (server.target.startsWith('ag_')) {
-    args.push('--server', server.target);
-  } else if (location === 'global') {
-    args.push('--config', server.target);
-  } else if (location === 'local') {
-    args.push('--config', path.relative(path.dirname(configFilepath), server.target));
+  switch (inferTargetType(server.target)) {
+    case 'agent-id':
+      args.push('--server', server.target);
+      break;
+    case 'openapi':
+      args.push('--config', server.target);
+      break;
   }
 
   return {

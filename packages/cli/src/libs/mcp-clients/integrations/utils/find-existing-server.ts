@@ -26,7 +26,10 @@ function _findExistingServer(configFilepath: string, installedServer: InstalledS
       case '--server':
         return arg === server.target;
       case '--config':
-        return (path.isAbsolute(arg) ? arg : path.join(configFilepath, '..', arg)) === server.target;
+        return (
+          (arg.startsWith('$') && arg === server.target) ||
+          (path.isAbsolute(arg) ? arg : path.join(configFilepath, '..', arg)) === server.target
+        );
     }
   }
 

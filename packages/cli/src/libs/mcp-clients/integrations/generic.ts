@@ -47,7 +47,7 @@ export default function createGenericClient(
         assertNoExistingServer(configFilepath, servers, server);
         const name = generateServerName(servers, server);
         config.mcpServers ??= {};
-        config.mcpServers[name] = generateTransport(server, configFilepath, installMethod.location);
+        config.mcpServers[name] = generateTransport(server);
       });
       return installMethod;
     },

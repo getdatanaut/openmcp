@@ -1,3 +1,4 @@
+import createCursorClient from './cursor.ts';
 import createGenericClient from './generic.ts';
 import createGooseClient from './goose.ts';
 import createVSCodeClient from './vscode.ts';
@@ -17,10 +18,7 @@ export const integrations = {
     global: '$VSCODE/saoudrizwan.claude-dev/settings/cline_mcp_settings.json',
     local: null,
   }),
-  cursor: createGenericClient('cursor', {
-    global: '$HOME/.cursor/mcp.json',
-    local: '$CWD/.cursor/mcp.json',
-  }),
+  cursor: createCursorClient(),
   goose: createGooseClient(),
   roocode: createGenericClient('roocode', {
     global: '$VSCODE/rooveterinaryinc.roo-cline/settings/mcp_settings.json',
