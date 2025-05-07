@@ -1,5 +1,5 @@
 import { useInput } from 'ink';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import type { Option } from '../types.ts';
 import useFilteredOptions from './useFilteredOptions.ts';
@@ -67,6 +67,9 @@ function useSelectInputBase({
     minIndex: minIndex ?? defaultMinIndex,
   });
 
+  // Whether the search input is active
+  const inSearchRef = useRef(false);
+
   // Selection state (for multi-select)
   const [selectedValues, setSelectedValues] = useState<Set<string>>(new Set(defaultValues));
 
@@ -108,29 +111,28 @@ function useSelectInputBase({
     }
 
     // Handle search input
-    if (
-      input &&
-      !key.upArrow &&
-      !key.downArrow &&
-      !key.return &&
-      (input !== ' ' || (multiple && highlightedIndex === -2))
-    ) {
+    if (input && !key.upArrow && !key.downArrow && !key.return && (input !== ' ' || inSearchRef.current)) {
+      inSearchRef.current = true;
+      setHighlightedIndex(-1);
       addCharacter(input);
+      return;
+    } else {
+      inSearchRef.current = false;
     }
 
     // Handle navigation
     if (key.upArrow) {
-      moveUp();
+      moveUp(searchQuery.length === 0);
     } else if (key.downArrow) {
       moveDown();
     }
 
     // Handle selection with space (multi-select only)
     if (multiple && input === ' ') {
-      if (highlightedIndex === -1) {
+      if (highlightedIndex === -1 && searchQuery.length === 0) {
         // Toggle all items
         toggleAll();
-      } else if (filteredOptions.length > 0) {
+      } else if (filteredOptions.length > 0 && highlightedIndex >= 0) {
         const highlightedItem = filteredOptions[highlightedIndex];
         if (highlightedItem) {
           toggleSelection(highlightedItem.value);

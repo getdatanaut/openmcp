@@ -43,8 +43,8 @@ export default function useHighlightedIndex({
       setHighlightedIndex,
 
       // Helper functions for navigation
-      moveUp: () => {
-        setHighlightedIndex(prev => Math.max(minIndex, prev - 1));
+      moveUp: (canGoOOB: boolean) => {
+        setHighlightedIndex(prev => Math.max(minIndex, canGoOOB ? prev - 1 : 0));
       },
 
       moveDown: () => {
