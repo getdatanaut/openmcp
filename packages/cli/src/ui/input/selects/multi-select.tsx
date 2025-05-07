@@ -1,4 +1,4 @@
-import { Box, Text } from 'ink';
+import { Box } from 'ink';
 import React from 'react';
 
 import InputLabel from '../../components/input-label.tsx';

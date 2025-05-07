@@ -12,7 +12,7 @@ type Flags = {
 };
 
 export default async function handler(target: string, { type, client, scope }: Flags) {
-  const server = await getServer(target, type ?? (await inferTargetType(target)));
+  const server = await getServer(target, type ?? (await inferTargetType(target)), client, scope);
   const ctx = {
     cwd: process.cwd(),
     logger: console,
@@ -20,7 +20,12 @@ export default async function handler(target: string, { type, client, scope }: F
   await install(ctx, client, server, scope);
 }
 
-async function getServer(target: string, type: NonNullable<Flags['type']>) {
+async function getServer(
+  target: string,
+  type: NonNullable<Flags['type']>,
+  client: IntegrationName,
+  scope: Flags['scope'],
+) {
   switch (type) {
     case 'agent-id': {
       const agent = await getAgentById(target);
@@ -31,6 +36,6 @@ async function getServer(target: string, type: NonNullable<Flags['type']>) {
       } as const;
     }
     case 'openapi':
-      return createOpenAPIRemix(target);
+      return createOpenAPIRemix(target, client, scope);
   }
 }

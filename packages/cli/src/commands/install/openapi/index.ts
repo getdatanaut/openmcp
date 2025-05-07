@@ -1,17 +1,21 @@
 import { OperationCanceledError } from '#errors';
 import console from '#libs/console';
-import type { Remix } from '#libs/mcp-clients';
+import type { InstallLocation, IntegrationName, Remix } from '#libs/mcp-clients';
 
 import createRemix from './create-remix.ts';
 import generateRemixDefinition from './generate-remix.ts';
 import negotiateFilepath from './negotiate-filepath.ts';
 
-export default async function createOpenAPIRemix(location: string): Promise<Remix> {
+export default async function createOpenAPIRemix(
+  openapiLocation: string,
+  client: IntegrationName,
+  installLocation: InstallLocation,
+): Promise<Remix> {
   const cwd = process.cwd();
   console.start('Generating OpenAPI openmcp definition...');
   try {
-    const remix = await negotiateFilepath(cwd);
-    const definition = await generateRemixDefinition(remix, location);
+    const remix = await negotiateFilepath(cwd, client, installLocation);
+    const definition = await generateRemixDefinition(remix, openapiLocation);
     await createRemix(cwd, remix.filepath, definition);
 
     return {

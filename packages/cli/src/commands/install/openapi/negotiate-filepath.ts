@@ -6,13 +6,30 @@ import { parseDocument } from '@openmcp/utils/documents';
 import { OperationCanceledError } from '#errors';
 import console from '#libs/console';
 import * as prompt from '#libs/console/prompts';
+import { getInstallFilepath, type InstallLocation, type IntegrationName } from '#libs/mcp-clients';
 import { type Config as RemixDefinition, parseConfig } from '#libs/remix';
+
+function getDefaultLocation(cwd: string, client: IntegrationName, installLocation: InstallLocation): string {
+  const filename = 'openmcp.json';
+  if (installLocation === 'global') {
+    return path.join(cwd, filename);
+  }
+
+  const localInstallPath = getInstallFilepath(cwd, client, 'local');
+  if (localInstallPath === null) {
+    return path.join(cwd, filename);
+  }
+
+  return path.join(path.dirname(localInstallPath), filename);
+}
 
 export default async function negotiateFilepath(
   cwd: string,
+  client: IntegrationName,
+  installLocation: InstallLocation,
 ): Promise<{ definition: RemixDefinition | null; filepath: string }> {
   while (true) {
-    const defaultValue = path.join(cwd, 'openmcp.json');
+    const defaultValue = getDefaultLocation(cwd, client, installLocation);
     const filepath = path.resolve(
       cwd,
       (await prompt.text({

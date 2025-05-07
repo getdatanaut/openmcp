@@ -12,9 +12,9 @@ import { screamCase, slugify } from '#libs/string-utils';
 function findExistingServer(
   servers: RemixDefinition['servers'],
   remixFilepath: string,
-  location: string,
+  openapiLocation: string,
 ): { name: string; server: OpenAPIServer } | null {
-  const absoluteLocation = resolvePath(remixFilepath, location);
+  const absoluteLocation = resolvePath(remixFilepath, openapiLocation);
   for (const [name, server] of Object.entries(servers)) {
     if (server.type !== 'openapi') continue;
     if (resolvePath(remixFilepath, server.openapi) === absoluteLocation) {
@@ -30,12 +30,12 @@ export default async function generateRemix(
     definition: RemixDefinition | null;
     filepath: string;
   },
-  location: string,
+  openapiLocation: string,
 ): Promise<RemixDefinition> {
-  const document = await loadDocument({ fetch, fs }, location);
+  const document = await loadDocument({ fetch, fs }, openapiLocation);
   const service = parseAsService(document);
   const existingServer =
-    remix.definition === null ? null : findExistingServer(remix.definition.servers, remix.filepath, location);
+    remix.definition === null ? null : findExistingServer(remix.definition.servers, remix.filepath, openapiLocation);
   const name = existingServer?.name ?? (await negotiateName(slugify(service.name).slice(0, 24)));
 
   if (existingServer !== null) {
@@ -86,7 +86,7 @@ export default async function generateRemix(
 
   const server: OpenAPIServer = {
     type: 'openapi',
-    openapi: resolveOpenAPIPath(remix.filepath, location),
+    openapi: resolveOpenAPIPath(remix.filepath, openapiLocation),
     serverUrl,
     ...serverClientConfig,
     tools,

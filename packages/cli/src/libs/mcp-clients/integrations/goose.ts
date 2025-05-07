@@ -4,11 +4,11 @@ import { writeConfig } from '../config/index.ts';
 import { ServerNotInstalled } from '../errors/index.ts';
 import type { FsInstallMethod, InstallMethodLocation, McpHostClient, Server } from '../types.ts';
 import findExistingServer from './utils/find-existing-server.ts';
-import findMatchingInstallMethod from './utils/find-matching-install-method.ts';
 import generateServerName from './utils/generate-server-name.ts';
 import generateTransport from './utils/generate-transport.ts';
 import { assertNoExistingServer } from './utils/guards.ts';
 import type { InstalledServer } from './utils/types.ts';
+import unwrapMatchingInstallMethod from './utils/uwrap-matching-install-method.ts';
 
 const CONFIG_SCHEMA = z
   .object({
@@ -39,7 +39,7 @@ export default function createGooseClient(): VSCodeClient {
       },
     ] as const,
     async install(ctx, server, location) {
-      const installMethod = findMatchingInstallMethod(this.installMethods, server, location);
+      const installMethod = unwrapMatchingInstallMethod(this.installMethods, server, location);
       await writeConfig(ctx, installMethod, async (config, configFilepath) => {
         const servers = listServers(config);
         assertNoExistingServer(configFilepath, servers, server);
@@ -50,7 +50,7 @@ export default function createGooseClient(): VSCodeClient {
       return installMethod;
     },
     async uninstall(ctx, server, location) {
-      const installMethod = findMatchingInstallMethod(this.installMethods, server, location);
+      const installMethod = unwrapMatchingInstallMethod(this.installMethods, server, location);
       await writeConfig(ctx, installMethod, async (config, configFilepath) => {
         const servers = listServers(config);
         const index = findExistingServer(configFilepath, servers, server);

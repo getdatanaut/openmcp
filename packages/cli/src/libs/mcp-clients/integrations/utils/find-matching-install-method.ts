@@ -1,11 +1,9 @@
-import { InstallLocationUnavailable } from '../../errors/index.ts';
-import type { InstallLocation, InstallMethod, Server } from '../../types.ts';
+import type { InstallLocation, InstallMethod } from '../../types.ts';
 
 export default function findMatchingInstallMethod<I extends InstallMethod>(
   methods: I[],
-  server: Server,
   location: InstallLocation,
-): I {
+): I | null {
   let globalMethod: I | null = null;
   for (const method of methods) {
     if (method.location === location) {
@@ -25,5 +23,5 @@ export default function findMatchingInstallMethod<I extends InstallMethod>(
     return globalMethod;
   }
 
-  throw new InstallLocationUnavailable(server, location === 'prefer-local' ? 'local' : location);
+  return null;
 }
