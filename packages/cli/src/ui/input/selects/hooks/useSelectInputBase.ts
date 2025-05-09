@@ -1,5 +1,5 @@
 import { useInput } from 'ink';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { Option } from '../types.ts';
 import useFilteredOptions from './useFilteredOptions.ts';
@@ -52,13 +52,13 @@ function useSelectInputBase({
   defaultValues = [],
   onSubmit,
 }: UseSelectInputBaseOptions) {
-  // Set default values based on select mode
-  const defaultInitialIndex = multiple ? -1 : 0;
-  const defaultMinIndex = multiple ? -1 : 0;
-
   // Search and filtering
   const { searchQuery, addCharacter, removeCharacter } = useSearchInput('');
   const filteredOptions = useFilteredOptions(options, searchQuery);
+
+  // Set default values based on select mode
+  const defaultInitialIndex = multiple ? -1 : 0;
+  const defaultMinIndex = multiple && searchQuery.length === 0 ? -1 : 0;
 
   // Highlighting
   const { highlightedIndex, setHighlightedIndex, moveUp, moveDown } = useHighlightedIndex({
@@ -102,10 +102,30 @@ function useSelectInputBase({
     [filteredOptions, selectedValues],
   );
 
+  // Store the currently highlighted item's value for tracking across filter changes
+  const currentHighlightedItemRef = useRef<Option | null>(null);
+
+  // Update the highlighted index when filtered options change
+  useEffect(() => {
+    if (currentHighlightedItemRef.current) {
+      const newIndex = filteredOptions.findIndex(option => option.value === currentHighlightedItemRef.current?.value);
+      if (newIndex >= 0) {
+        setHighlightedIndex(newIndex);
+      } else {
+        setHighlightedIndex(-1);
+      }
+      // Reset the ref after updating the index
+      currentHighlightedItemRef.current = null;
+    }
+  }, [filteredOptions, setHighlightedIndex]);
+
   // Handle input
   useInput((input, key) => {
     // Handle backspace
     if (key.backspace || key.delete) {
+      currentHighlightedItemRef.current =
+        highlightedIndex >= 0 && highlightedIndex < filteredOptions.length ? filteredOptions[highlightedIndex]! : null;
+
       removeCharacter();
       return;
     }
@@ -113,7 +133,10 @@ function useSelectInputBase({
     // Handle search input
     if (input && !key.upArrow && !key.downArrow && !key.return && (input !== ' ' || inSearchRef.current)) {
       inSearchRef.current = true;
-      setHighlightedIndex(-1);
+
+      currentHighlightedItemRef.current =
+        highlightedIndex >= 0 && highlightedIndex < filteredOptions.length ? filteredOptions[highlightedIndex]! : null;
+
       addCharacter(input);
       return;
     } else {
@@ -122,7 +145,7 @@ function useSelectInputBase({
 
     // Handle navigation
     if (key.upArrow) {
-      moveUp(searchQuery.length === 0);
+      moveUp();
     } else if (key.downArrow) {
       moveDown();
     }

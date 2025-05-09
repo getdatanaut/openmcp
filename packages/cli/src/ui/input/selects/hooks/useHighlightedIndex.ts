@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 interface UseHighlightedIndexOptions {
   /**
@@ -29,28 +29,38 @@ export default function useHighlightedIndex({
   minIndex = 0,
 }: UseHighlightedIndexOptions) {
   const [highlightedIndex, setHighlightedIndex] = useState(initialIndex);
+  const [previousHighlightedIndex, setPreviousHighlightedIndex] = useState(initialIndex);
+
+  // Custom setter to track previous value
+  const setHighlightedIndexWithHistory = (newIndex: number | ((prev: number) => number)) => {
+    setHighlightedIndex(prevIndex => {
+      setPreviousHighlightedIndex(prevIndex);
+      return typeof newIndex === 'function' ? newIndex(prevIndex) : newIndex;
+    });
+  };
 
   // Ensure highlightedIndex is within bounds when itemsCount changes
   useEffect(() => {
     if (highlightedIndex >= itemsCount && highlightedIndex !== minIndex - 1) {
-      setHighlightedIndex(Math.max(minIndex, itemsCount - 1));
+      setHighlightedIndexWithHistory(Math.max(minIndex, itemsCount - 1));
     }
   }, [itemsCount, highlightedIndex, minIndex]);
 
   return useMemo(
     () => ({
       highlightedIndex,
-      setHighlightedIndex,
+      previousHighlightedIndex,
+      setHighlightedIndex: setHighlightedIndexWithHistory,
 
       // Helper functions for navigation
-      moveUp: (canGoOOB: boolean) => {
-        setHighlightedIndex(prev => Math.max(minIndex, canGoOOB ? prev - 1 : 0));
+      moveUp: () => {
+        setHighlightedIndexWithHistory(prev => Math.max(minIndex, prev - 1));
       },
 
       moveDown: () => {
-        setHighlightedIndex(prev => Math.min(itemsCount - 1, prev + 1));
+        setHighlightedIndexWithHistory(prev => Math.min(itemsCount - 1, prev + 1));
       },
     }),
-    [highlightedIndex, setHighlightedIndex, minIndex, itemsCount],
+    [highlightedIndex, previousHighlightedIndex, minIndex, itemsCount],
   );
 }
