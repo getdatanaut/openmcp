@@ -33,10 +33,14 @@ export const builder = (yargs: Argv) =>
     .middleware(async argv => {
       if (argv.scope) return;
 
-      const s = await fs.stat(path.join(process.cwd(), '.git'));
-      if (s.isDirectory()) {
-        argv.scope = 'prefer-local';
-      } else {
+      try {
+        const s = await fs.stat(path.join(process.cwd(), '.git'));
+        if (s.isDirectory()) {
+          argv.scope = 'prefer-local';
+        } else {
+          argv.scope = 'global';
+        }
+      } catch {
         argv.scope = 'global';
       }
     });
