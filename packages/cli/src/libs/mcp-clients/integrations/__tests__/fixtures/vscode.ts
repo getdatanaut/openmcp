@@ -5,7 +5,7 @@ export const settingsJson = JSON.stringify(
         'test-server': {
           type: 'stdio',
           command: 'npx',
-          args: ['-y', 'openmcp@latest', 'run', '--server', 'ag_abc123de'],
+          args: ['-y', 'openmcp@1', 'run', '--server', 'ag_abc123de'],
         },
       },
     },
@@ -30,7 +30,7 @@ export const mcpJson = JSON.stringify(
       'test-server': {
         type: 'stdio',
         command: 'npx',
-        args: ['-y', 'openmcp@latest', 'run', '--server', 'ag_abc123de'],
+        args: ['-y', 'openmcp@1', 'run', '--server', 'ag_abc123de'],
       },
     },
   },

@@ -3,7 +3,7 @@ import { inferTargetType } from '#libs/mcp-utils';
 import type { Server } from '../../types.ts';
 
 export default function generateTransport(server: Server) {
-  const args = ['-y', 'openmcp@latest', 'run'];
+  const args = ['-y', 'openmcp@1', 'run'];
   // @todo: remove --config / --server flags once run is updated
   switch (inferTargetType(server.target)) {
     case 'agent-id':

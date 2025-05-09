@@ -4,7 +4,7 @@ export const configYaml = serializeDocument(
   {
     extensions: {
       'test-server': {
-        args: ['-y', 'openmcp@latest', 'run', '--server', 'ag_abc123de'],
+        args: ['-y', 'openmcp@1', 'run', '--server', 'ag_abc123de'],
         bundled: null,
         cmd: 'npx',
         description: null,

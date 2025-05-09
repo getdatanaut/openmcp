@@ -5,7 +5,7 @@ export const configYaml = serializeDocument(
     mcpServers: {
       'test-server': {
         command: 'npx',
-        args: ['-y', 'openmcp@latest', 'run', '--server', 'ag_abc123de'],
+        args: ['-y', 'openmcp@1', 'run', '--server', 'ag_abc123de'],
       },
     },
   },
@@ -24,11 +24,11 @@ export const invalidConfigYaml = serializeDocument(
     mcpServers: {
       'test-server': {
         command: 'invalid-command', // Not 'npx', so it won't match SERVER_SCHEMA
-        args: ['-y', 'openmcp@latest', 'run', '--server', 'ag_abc123de'],
+        args: ['-y', 'openmcp@1', 'run', '--server', 'ag_abc123de'],
       },
       'valid-server': {
         command: 'npx',
-        args: ['-y', 'openmcp@latest', 'run', '--server', 'ag_xyz789'],
+        args: ['-y', 'openmcp@1', 'run', '--server', 'ag_xyz789'],
       },
     },
   },
