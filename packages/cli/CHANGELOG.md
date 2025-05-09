@@ -1,5 +1,18 @@
 # openmcp
 
+## 1.0.0
+
+### Major Changes
+
+- [`7a26706`](https://github.com/getdatanaut/openmcp/commit/7a2670675adfce757f24f3cfcab49cdfc5465fb6) Thanks
+  [@P0lip](https://github.com/P0lip)! - Initial v1 release
+
+### Patch Changes
+
+- [`73ac8d4`](https://github.com/getdatanaut/openmcp/commit/73ac8d41f1517d6fbddcf7387d96f3f0c94fa964) Thanks
+  [@P0lip](https://github.com/P0lip)! - Use ${workspaceFolder} for local openmcp installations when vscode / cursor is
+  the client
+
 ## 0.0.5
 
 ### Patch Changes
