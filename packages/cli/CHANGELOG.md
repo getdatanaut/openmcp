@@ -1,5 +1,12 @@
 # openmcp
 
+## 1.0.1
+
+### Patch Changes
+
+- [`869755a`](https://github.com/getdatanaut/openmcp/commit/869755ab6b4d2ad7059793c46757c8bb39b5c3b0) Thanks
+  [@P0lip](https://github.com/P0lip)! - Account for missing .git directories
+
 ## 1.0.0
 
 ### Major Changes
