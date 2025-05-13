@@ -1,5 +1,12 @@
 # openmcp
 
+## 1.0.2
+
+### Patch Changes
+
+- [`3508d71`](https://github.com/getdatanaut/openmcp/commit/3508d71578ac6c6a403588d23d673fc06a352bef) Thanks
+  [@marbemac](https://github.com/marbemac)! - Add tags to npm package
+
 ## 1.0.1
 
 ### Patch Changes
