@@ -12,6 +12,12 @@
   "engines": {
     "node": "^20.9 || >=22.11"
   },
+  "keywords": [
+    "modelcontextprotocol",
+    "mcp",
+    "openapi",
+    "oas"
+  ],
   "files": [
     "dist",
     "bin",
