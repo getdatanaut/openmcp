@@ -13,4 +13,10 @@
     "directory": "./.output/public/",
     "binding": "ASSETS",
   },
+  "routes": [
+    {
+      "pattern": "openmcp.datanaut.ai",
+      "custom_domain": true,
+    },
+  ],
 }

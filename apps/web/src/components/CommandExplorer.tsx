@@ -49,12 +49,6 @@ const examples = {
     type: 'openapi',
     target: 'https://api.weather.gov/openapi.json',
   },
-  sentry: {
-    name: 'Sentry',
-    icon: SentryIcon,
-    type: 'sse',
-    target: 'https://mcp.sentry.dev/sse',
-  },
   exa: {
     name: 'Exa',
     icon: ExaIcon,
@@ -268,10 +262,6 @@ function WitsyIcon({ className }: { className?: string }) {
 
 function RootCodeIcon({ className }: { className?: string }) {
   return <img className={twMerge('rounded-xs', className)} src="https://icons.duckduckgo.com/ip3/roocode.com.ico" />;
-}
-
-function SentryIcon({ className }: { className?: string }) {
-  return <img className={className} src="https://icons.duckduckgo.com/ip3/docs.sentry.io.ico" />;
 }
 
 function WeatherGovIcon({ className }: { className?: string }) {
