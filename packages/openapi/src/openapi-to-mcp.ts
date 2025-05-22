@@ -16,6 +16,8 @@ import { jsonSchema } from 'ai';
 import type { JSONSchema7 } from 'json-schema';
 import unset from 'lodash-es/unset.js';
 
+import { Client, collectOperationClientMeta } from './client.ts';
+
 export type ServerConfig = {
   openapi: Record<string, unknown> | string;
   serverUrl?: string;
@@ -44,6 +46,20 @@ export function getToolName(operation: IHttpOperation<false> | IHttpOperation<tr
   return cleanToolName(String(operation.iid || operation.id || endpointName));
 }
 
+function createBaseUrl(baseUrl: unknown) {
+  if (typeof baseUrl !== 'string') {
+    throw new TypeError(
+      `No valid server URL was specified. You need to provide one using serverURL server config property or define one in OpenAPI document.`,
+    );
+  }
+
+  try {
+    return new URL(baseUrl);
+  } catch {
+    throw new Error(`Invalid server URL: ${baseUrl}`);
+  }
+}
+
 export async function openApiToMcpServerOptions(
   { openapi, serverUrl }: ServerConfig,
   {
@@ -62,7 +78,13 @@ export async function openApiToMcpServerOptions(
     throw error;
   }
 
-  const baseUrl = serverUrl || service.servers?.[0]?.url;
+  const defaultContentTypeHeader = 'application/json';
+  const baseUrl = createBaseUrl(serverUrl || service.servers?.[0]?.url);
+  const client = new Client(baseUrl, {
+    requestHeaders: {
+      'Content-Type': defaultContentTypeHeader,
+    },
+  });
 
   const operationTools: OpenMcpServerOptions<OpenAPITool>['tools'] = {};
 
@@ -73,6 +95,7 @@ export async function openApiToMcpServerOptions(
     const name = getToolName(operation);
     const description = [endpointName, operation.description || ''].filter(Boolean).join(' - ');
     const collectedAnnotations = collectAnnotations(operation);
+    const operationClientMeta = collectOperationClientMeta(operation);
 
     operationTools[name] = tool({
       description,
@@ -84,7 +107,7 @@ export async function openApiToMcpServerOptions(
         query: Record<string, unknown>;
         headers: Record<string, unknown>;
         body: Record<string, unknown>;
-      }>(getOperationInputSchema(operation)),
+      }>(getOperationInputSchema(operation, operationClientMeta.requestContentType ?? defaultContentTypeHeader)),
 
       output: jsonSchema(getOperationOutputSchema(operation)),
 
@@ -102,7 +125,6 @@ export async function openApiToMcpServerOptions(
             ...(clientConfig?.query || {}),
           },
           headers: {
-            'Content-Type': operation.request?.body?.contents?.[0]?.mediaType || 'application/json',
             ...(args['headers'] || {}),
             ...(clientConfig?.headers || {}),
           },
@@ -112,36 +134,7 @@ export async function openApiToMcpServerOptions(
           },
         };
 
-        const template = new UriTemplate(operation.path);
-
-        // Convert all values in params.path to strings to satisfy the Variables type
-        const stringifiedPathParams: Record<string, string | string[]> = {};
-        Object.entries(params.path).forEach(([key, value]) => {
-          stringifiedPathParams[key] = String(value);
-        });
-        const path = template.expand(stringifiedPathParams);
-
-        const url = new URL(`${baseUrl?.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}${path}`);
-
-        // @TODO(CL): could use a proper querystring library
-        Object.entries(params.query).forEach(([key, value]) => {
-          if (typeof value !== 'undefined') {
-            url.searchParams.set(key, String(value));
-          }
-        });
-
-        const res = await fetch(url.toString(), {
-          method: operation.method,
-          headers: params.headers,
-          body: formatBody(params.body, params.headers['Content-Type']),
-        });
-
-        if (res.headers.get('content-type')?.includes('application/json')) {
-          return res.json();
-        } else {
-          // @TODO hmm... how should a text response be handled?
-          return res.text();
-        }
+        return client.request(operationClientMeta, params);
       },
     });
   }
@@ -194,12 +187,12 @@ async function dereferenceOpenapi(openapi: Record<string, unknown> | string) {
   }
 }
 
-function getOperationInputSchema(operation: IHttpOperation<false>) {
+function getOperationInputSchema(operation: IHttpOperation<false>, requestContentType: string) {
   const request = operation.request || {};
   const pathParams = parametersToTool(request.path);
   const queryParams = parametersToTool(request.query);
   const headerParams = parametersToTool(request.headers);
-  const bodyParam = request.body?.contents?.find(param => param.schema)?.schema;
+  const bodyParam = request.body?.contents?.find(param => param.mediaType === requestContentType)?.schema;
 
   return {
     type: 'object',
@@ -240,36 +233,6 @@ function parameterToTool(param: { name: string; description?: string; schema?: u
  */
 function cleanToolName(name: string) {
   return name.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 64);
-}
-
-/**
- * Format body based on the content type
- */
-function formatBody(body: object, contentType: string) {
-  if (Object.keys(body).length) {
-    if (contentType.includes('application/json')) {
-      return JSON.stringify(body);
-    } else if (contentType.includes('application/x-www-form-urlencoded')) {
-      // URL encoded format
-      const formData = new URLSearchParams();
-      Object.entries(body).forEach(([key, value]) => {
-        formData.append(key, String(value));
-      });
-      return formData.toString();
-    } else if (contentType.includes('multipart/form-data')) {
-      // Multipart form data
-      const formData = new FormData();
-      Object.entries(body).forEach(([key, value]) => {
-        formData.append(key, String(value));
-      });
-      return formData;
-    } else if (contentType.includes('text/plain')) {
-      // Plain text
-      return typeof body === 'string' ? body : String(body);
-    }
-
-    return JSON.stringify(body);
-  }
 }
 
 /**
