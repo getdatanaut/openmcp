@@ -32,8 +32,8 @@ export type FetchImpl = (
   url: URL,
   init: {
     method: string;
-    headers: HeadersInit;
-    body: BodyInit | undefined;
+    headers: Headers;
+    body: ReadableStream | FormData | string | undefined;
     signal?: AbortSignal;
   },
 ) => Promise<{
