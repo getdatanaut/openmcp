@@ -134,7 +134,7 @@ export async function openApiToMcpServerOptions(
           },
         };
 
-        return client.request(operationClientMeta, params);
+        return (await client.request(operationClientMeta, params)).data;
       },
     });
   }

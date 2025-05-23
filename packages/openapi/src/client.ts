@@ -159,36 +159,53 @@ export class Client {
    * @param requestInit.path - Path parameters to replace in the URL path template.
    * @param requestInit.query - Query parameters to append to the URL.
    * @param requestInit.signal - Request-specific signal. Overrides default request timeout.
-   * @return The response data in its appropriate format (text, JSON, or binary).
+   * @return The response data in its appropriate format (text, JSON, or binary), together with OK status indicating whether the request was successful, and an optional error.
    */
   async request(meta: OperationClientMeta, requestInit: RequestInit) {
     const [url, init] = this.createFetchRequestInit(meta, requestInit);
     if (requestInit.signal) {
       return processResponse(
-        await this.#fetch(url, {
+        this.#fetch(url, {
           ...init,
           signal: requestInit.signal,
         }),
       );
     } else if (this.#defaultRequestTimeout > 0) {
       using controller = Client.createTimedController(this.#defaultRequestTimeout);
-      return processResponse(
-        await this.#fetch(url, {
-          ...init,
-          signal: controller.signal,
-        }),
-      );
+      try {
+        return await processResponse(
+          this.#fetch(url, {
+            ...init,
+            signal: controller.signal,
+          }),
+        );
+      } finally {
+        controller.abort();
+      }
     } else {
-      return processResponse(await this.#fetch(url, init));
+      return processResponse(this.#fetch(url, init));
     }
   }
 }
 
-function processResponse(res: Awaited<ReturnType<FetchImpl>>) {
-  if (res.body === null) {
-    return null;
+async function processResponse(resPromise: ReturnType<FetchImpl>) {
+  try {
+    const res = await resPromise;
+    return {
+      ok: res.ok,
+      error: res.ok ? null : res.statusText,
+      data: res.body === null ? null : await readBody(res),
+    } as const;
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof DOMException && error.name === 'AbortError' ? 'aborted or timed out' : String(error),
+      data: null,
+    } as const;
   }
+}
 
+function readBody(res: Awaited<ReturnType<FetchImpl>>) {
   const contentType = parseContentTypeValue(res.headers.get('content-type'));
   if (contentType === null) {
     return res.arrayBuffer();

@@ -346,7 +346,11 @@ describe('Client', () => {
         headers: { 'content-type': 'text/plain' },
       });
 
-      await expect(client.request(meta, {})).resolves.toBe('response text');
+      await expect(client.request(meta, {})).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: 'response text',
+      });
     });
 
     it.concurrent('should send a POST request with JSON body', async () => {
@@ -371,7 +375,11 @@ describe('Client', () => {
       );
 
       const requestBody = { name: 'Test User', email: 'test@example.com' };
-      await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({ success: true, id: 123 });
+      await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: { success: true, id: 123 },
+      });
     });
 
     it.concurrent('should send a PUT request to update a resource', async () => {
@@ -397,8 +405,12 @@ describe('Client', () => {
 
       const requestBody = { name: 'Updated Name', role: 'admin' };
       await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({
-        success: true,
-        updated: true,
+        ok: true,
+        error: null,
+        data: {
+          success: true,
+          updated: true,
+        },
       });
     });
 
@@ -416,7 +428,11 @@ describe('Client', () => {
         headers: {},
       });
 
-      await expect(client.request(meta, {})).resolves.toBeNull();
+      await expect(client.request(meta, {})).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: null,
+      });
     });
 
     it.concurrent('should handle error responses', async () => {
@@ -436,7 +452,11 @@ describe('Client', () => {
 
       const result = await client.request(meta, {});
 
-      expect(result).toStrictEqual({ error: 'Resource not found' });
+      expect(result).toStrictEqual({
+        ok: false,
+        error: 'Not Found',
+        data: { error: 'Resource not found' },
+      });
     });
 
     it.concurrent('should handle URL with path parameters', async () => {
@@ -461,7 +481,11 @@ describe('Client', () => {
             postId: 456,
           },
         }),
-      ).resolves.toStrictEqual({ userId: 123, postId: 456, title: 'Test Post' });
+      ).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: { userId: 123, postId: 456, title: 'Test Post' },
+      });
     });
 
     it.concurrent('should handle query parameters with different styles', async () => {
@@ -503,7 +527,11 @@ describe('Client', () => {
             filter: ['active', 'featured'],
           },
         }),
-      ).resolves.toStrictEqual({ results: ['item1', 'item2'] });
+      ).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: { results: ['item1', 'item2'] },
+      });
     });
 
     it.concurrent('should send a multipart/form-data request with binary data', async () => {
@@ -541,8 +569,12 @@ describe('Client', () => {
       };
 
       await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({
-        success: true,
-        fileSize: 123,
+        ok: true,
+        error: null,
+        data: {
+          success: true,
+          fileSize: 123,
+        },
       });
     });
 
@@ -566,8 +598,12 @@ describe('Client', () => {
       });
 
       const response = await client.request(meta, {});
-      expect(response).toBeInstanceOf(ArrayBuffer);
-      expect(new Uint8Array(response as ArrayBuffer)).toStrictEqual(binaryData);
+      expect(response).toStrictEqual({
+        ok: true,
+        error: null,
+        data: expect.any(ArrayBuffer),
+      });
+      expect(new Uint8Array(response.data as ArrayBuffer)).toStrictEqual(binaryData);
     });
 
     it.concurrent('should send a plain text request body', async () => {
@@ -587,8 +623,12 @@ describe('Client', () => {
       });
 
       await expect(client.request(meta, { body: 'Hello, world!' })).resolves.toStrictEqual({
-        success: true,
-        length: 13,
+        ok: true,
+        error: null,
+        data: {
+          success: true,
+          length: 13,
+        },
       });
     });
 
@@ -631,12 +671,18 @@ describe('Client', () => {
 
       const response = await client.request(meta, {});
 
+      expect(response).toStrictEqual({
+        ok: true,
+        error: null,
+        data: expect.anything(),
+      });
+
       if (isBinary) {
-        expect(response).toBeInstanceOf(ArrayBuffer);
-        const responseString = new TextDecoder().decode(response as ArrayBuffer);
+        expect(response.data).toBeInstanceOf(ArrayBuffer);
+        const responseString = new TextDecoder().decode(response.data as ArrayBuffer);
         expect(responseString).toBe(body);
       } else {
-        expect(response).toBe(body);
+        expect(response.data).toBe(body);
       }
     });
 
@@ -660,7 +706,12 @@ describe('Client', () => {
         };
       });
 
-      await expect(client.request(meta, {})).rejects.toThrow(DOMException);
+      const response = await client.request(meta, {});
+      expect(response).toStrictEqual({
+        ok: false,
+        error: 'aborted or timed out',
+        data: null,
+      });
     });
 
     it.concurrent('should not use a signal if defaultRequestTimeout is lower than or equal to 0', async () => {
@@ -687,7 +738,11 @@ describe('Client', () => {
         };
       });
 
-      await expect(client.request(meta, {})).resolves.toBe('delayed response');
+      await expect(client.request(meta, {})).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: 'delayed response',
+      });
     });
 
     it.concurrent('should use the provided signal instead of default timeout', async () => {
@@ -716,7 +771,11 @@ describe('Client', () => {
 
       // The request should complete successfully because we're using a custom signal
       // that won't be aborted
-      await expect(client.request(meta, { signal: new AbortController().signal })).resolves.toBe('delayed response');
+      await expect(client.request(meta, { signal: new AbortController().signal })).resolves.toStrictEqual({
+        ok: true,
+        error: null,
+        data: 'delayed response',
+      });
     });
 
     it.concurrent('should abort the request when the signal is aborted', async () => {
@@ -748,7 +807,12 @@ describe('Client', () => {
         fetchController.abort();
       });
 
-      await expect(requestPromise).rejects.toThrow(DOMException);
+      const response = await requestPromise;
+      expect(response).toStrictEqual({
+        ok: false,
+        error: 'aborted or timed out',
+        data: null,
+      });
     });
   });
 
