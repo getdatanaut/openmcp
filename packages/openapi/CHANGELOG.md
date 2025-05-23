@@ -1,5 +1,12 @@
 # @openmcp/openapi
 
+## 0.1.0
+
+### Minor Changes
+
+- [`fc24b8d`](https://github.com/getdatanaut/openmcp/commit/fc24b8d5d47c9e7fb9f6bbc0498824432c0b432b) Thanks
+  [@P0lip](https://github.com/P0lip)! - Introduced improvement request client
+
 ## 0.0.3
 
 ### Patch Changes
