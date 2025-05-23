@@ -25,6 +25,7 @@ export type RequestInit = {
   headers?: Record<string, unknown>;
   query?: Record<string, unknown>;
   body?: unknown;
+  signal?: AbortSignal;
 };
 
 export type FetchImpl = (
@@ -33,6 +34,7 @@ export type FetchImpl = (
     method: string;
     headers: HeadersInit;
     body: BodyInit | undefined;
+    signal?: AbortSignal;
   },
 ) => Promise<{
   ok: boolean;
@@ -48,6 +50,7 @@ export type FetchImpl = (
 export type ClientConfig = {
   fetch?: FetchImpl;
   requestHeaders?: Record<string, string>;
+  defaultRequestTimeout?: number;
 };
 
 const DEFAULT_ACCEPT_HEADER = 'application/json, text/*;q=0.9, */*;q=0.8';
@@ -60,14 +63,16 @@ export class Client {
   readonly #baseURL: URL;
   readonly #fetch: FetchImpl;
   readonly #defaultRequestHeaders: Record<string, string>;
+  readonly #defaultRequestTimeout: number;
 
-  constructor(baseURL: URL, { fetch: _fetch = fetch, requestHeaders }: ClientConfig = {}) {
+  constructor(baseURL: URL, { fetch: _fetch = fetch, requestHeaders, defaultRequestTimeout }: ClientConfig = {}) {
     this.#baseURL = baseURL;
     this.#fetch = _fetch;
     this.#defaultRequestHeaders = {
       ...DEFAULT_REQUEST_HEADERS,
       ...requestHeaders,
     };
+    this.#defaultRequestTimeout = Math.max(0, defaultRequestTimeout ?? 0);
   }
 
   #createHeaders(meta: OperationClientMeta) {
@@ -81,6 +86,27 @@ export class Client {
     }
 
     return headers;
+  }
+
+  /**
+   * Creates a timed controller that triggers an abort after the specified timeout.
+   *
+   * @param timeout - The timeout value in milliseconds after which the signal will be aborted.
+   * @return A disposable object containing the abort signal and an abort function.
+   */
+  static createTimedController(timeout: number) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+    return {
+      signal: controller.signal,
+      abort() {
+        clearTimeout(id);
+        controller.abort();
+      },
+      [Symbol.dispose]() {
+        clearTimeout(id);
+      },
+    };
   }
 
   /**
@@ -121,33 +147,53 @@ export class Client {
   }
 
   /**
-   * Sends an HTTP request to the specified endpoint, processes the response, and determines its format.
-   *
+   * Sends an HTTP request to the specified endpoint, processes the response, and determines its format. Supports optional signal.
    * @param meta - Metadata for the operation, including endpoint path, method, and request content type.
    * @param requestInit - Additional parameters for the request.
    * @param requestInit.body - The payload of the request, typically for POST or PUT requests.
    * @param requestInit.headers - Headers to include in the HTTP request.
    * @param requestInit.path - Path parameters to replace in the URL path template.
    * @param requestInit.query - Query parameters to append to the URL.
+   * @param requestInit.signal - Request-specific signal. Overrides default request timeout.
    * @return The response data in its appropriate format (text, JSON, or binary).
    */
   async request(meta: OperationClientMeta, requestInit: RequestInit) {
-    const res = await this.#fetch(...this.createFetchRequestInit(meta, requestInit));
-
-    if (res.body === null) {
-      return null;
-    }
-
-    const contentType = parseContentTypeValue(res.headers.get('content-type'));
-    if (contentType === null) {
-      return res.arrayBuffer();
-    } else if (contentType.startsWith('text/')) {
-      return res.text();
-    } else if (isJsonContentType(contentType)) {
-      return res.json();
+    const [url, init] = this.createFetchRequestInit(meta, requestInit);
+    if (requestInit.signal) {
+      return processResponse(
+        await this.#fetch(url, {
+          ...init,
+          signal: requestInit.signal,
+        }),
+      );
+    } else if (this.#defaultRequestTimeout > 0) {
+      using controller = Client.createTimedController(this.#defaultRequestTimeout);
+      return processResponse(
+        await this.#fetch(url, {
+          ...init,
+          signal: controller.signal,
+        }),
+      );
     } else {
-      return res.arrayBuffer();
+      return processResponse(await this.#fetch(url, init));
     }
+  }
+}
+
+function processResponse(res: Awaited<ReturnType<FetchImpl>>) {
+  if (res.body === null) {
+    return null;
+  }
+
+  const contentType = parseContentTypeValue(res.headers.get('content-type'));
+  if (contentType === null) {
+    return res.arrayBuffer();
+  } else if (contentType.startsWith('text/')) {
+    return res.text();
+  } else if (isJsonContentType(contentType)) {
+    return res.json();
+  } else {
+    return res.arrayBuffer();
   }
 }
 

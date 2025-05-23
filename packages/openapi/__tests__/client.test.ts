@@ -1,3 +1,5 @@
+import * as timers from 'node:timers/promises';
+
 import { HttpParamStyles } from '@stoplight/types';
 import fetchMock from 'fetch-mock';
 import { describe, expect, it } from 'vitest';
@@ -6,6 +8,47 @@ import { Client, type OperationClientMeta } from '../src/client.ts';
 
 describe('Client', () => {
   const baseURL = new URL('https://api.datanaut.ai');
+
+  describe('createTimedController()', () => {
+    it.concurrent('should create a controller that aborts after the specified timeout', async () => {
+      using controller = Client.createTimedController(50);
+
+      const abortPromise = new Promise<void>(resolve => {
+        controller.signal.addEventListener('abort', () => resolve());
+      });
+
+      await expect(abortPromise).resolves.toBeUndefined();
+      expect(controller.signal.aborted).toBe(true);
+    });
+
+    it.concurrent('should allow manual abort before timeout', async () => {
+      using controller = Client.createTimedController(1000);
+
+      const abortPromise = new Promise<void>(resolve => {
+        controller.signal.addEventListener('abort', () => resolve());
+      });
+
+      controller.abort();
+
+      await expect(abortPromise).resolves.toBeUndefined();
+      expect(controller.signal.aborted).toBe(true);
+    });
+
+    it.concurrent('should be disposable', async () => {
+      let controller: ReturnType<typeof Client.createTimedController>;
+
+      {
+        using _controller = Client.createTimedController(1);
+        controller = _controller;
+        expect(controller.signal.aborted).toBe(false);
+      }
+
+      await timers.setTimeout(20);
+
+      // the controller never gets aborted
+      expect(controller.signal.aborted).toBe(false);
+    });
+  });
 
   describe('createFetchRequestInit()', () => {
     it('should create a basic URL with no parameters', () => {
@@ -596,9 +639,138 @@ describe('Client', () => {
         expect(response).toBe(body);
       }
     });
+
+    it.concurrent('should use a signal with defaultRequestTimeout', async () => {
+      const fetch = fetchMock.createInstance();
+      using controller = createDisposableAbortController();
+      const client = createClient({
+        fetch: fetch.fetchHandler,
+        defaultRequestTimeout: 20,
+      });
+
+      const meta: OperationClientMeta = {
+        path: '/delayed',
+        method: 'GET',
+      };
+
+      fetch.get('https://api.datanaut.ai/delayed', async () => {
+        await timers.setTimeout(1000, null, { signal: controller.signal });
+        return {
+          status: 200,
+        };
+      });
+
+      await expect(client.request(meta, {})).rejects.toThrow(DOMException);
+    });
+
+    it.concurrent('should not use a signal if defaultRequestTimeout is lower than or equal to 0', async () => {
+      const fetch = fetchMock.createInstance();
+      using controller = createDisposableAbortController();
+      const client = createClient({
+        fetch: fetch.fetchHandler,
+        defaultRequestTimeout: 0,
+      });
+
+      const meta: OperationClientMeta = {
+        path: '/delayed',
+        method: 'GET',
+      };
+
+      fetch.get('https://api.datanaut.ai/delayed', async () => {
+        await timers.setTimeout(50, null, { signal: controller.signal });
+        return {
+          status: 200,
+          body: 'delayed response',
+          headers: {
+            'content-type': 'text/plain',
+          },
+        };
+      });
+
+      await expect(client.request(meta, {})).resolves.toBe('delayed response');
+    });
+
+    it.concurrent('should use the provided signal instead of default timeout', async () => {
+      const fetch = fetchMock.createInstance();
+      using controller = createDisposableAbortController();
+      const client = createClient({
+        fetch: fetch.fetchHandler,
+        defaultRequestTimeout: 10,
+      });
+
+      const meta: OperationClientMeta = {
+        path: '/delayed',
+        method: 'GET',
+      };
+
+      fetch.get('https://api.datanaut.ai/delayed', async () => {
+        await timers.setTimeout(50, null, { signal: controller.signal });
+        return {
+          status: 200,
+          body: 'delayed response',
+          headers: {
+            'content-type': 'text/plain',
+          },
+        };
+      });
+
+      // The request should complete successfully because we're using a custom signal
+      // that won't be aborted
+      await expect(client.request(meta, { signal: new AbortController().signal })).resolves.toBe('delayed response');
+    });
+
+    it.concurrent('should abort the request when the signal is aborted', async () => {
+      const fetch = fetchMock.createInstance();
+      using timeoutController = createDisposableAbortController();
+      const fetchController = new AbortController();
+      const client = createClient({
+        fetch: fetch.fetchHandler,
+      });
+
+      const meta: OperationClientMeta = {
+        path: '/delayed',
+        method: 'GET',
+      };
+
+      fetch.get('https://api.datanaut.ai/delayed', async () => {
+        await timers.setTimeout(50, null, { signal: timeoutController.signal });
+        return {
+          status: 200,
+          body: 'delayed response',
+          headers: {
+            'content-type': 'text/plain',
+          },
+        };
+      });
+
+      const requestPromise = client.request(meta, { signal: fetchController.signal });
+      setImmediate(() => {
+        fetchController.abort();
+      });
+
+      await expect(requestPromise).rejects.toThrow(DOMException);
+    });
   });
 
-  function createClient({ baseURL: url = baseURL, fetch }: { baseURL?: URL; fetch?: typeof globalThis.fetch }) {
-    return new Client(url, { fetch });
+  function createClient({
+    baseURL: url = baseURL,
+    fetch,
+    defaultRequestTimeout,
+  }: {
+    baseURL?: URL;
+    fetch?: typeof globalThis.fetch;
+    defaultRequestTimeout?: number;
+  }) {
+    return new Client(url, { fetch, defaultRequestTimeout });
+  }
+
+  function createDisposableAbortController() {
+    const controller = new AbortController();
+    const abort = controller.abort.bind(controller);
+    return {
+      signal: controller.signal,
+      abort,
+      [Symbol.dispose]: abort,
+    };
   }
 });
