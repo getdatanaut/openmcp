@@ -135,13 +135,17 @@ export class Client {
     }
 
     const requestContentType = parseContentTypeValue(headers.get('Content-Type'));
+    const isGetOrHead = meta.method === 'GET' || meta.method === 'HEAD';
 
     return [
       url,
       {
         method: meta.method,
         headers,
-        body: requestContentType !== null && isPlainObject(body) ? formatBody(body, requestContentType) : undefined,
+        body:
+          !isGetOrHead && requestContentType !== null && isPlainObject(body)
+            ? formatBody(body, requestContentType)
+            : undefined,
       },
     ] as const;
   }
