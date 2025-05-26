@@ -1,5 +1,12 @@
 # @openmcp/openapi
 
+## 0.1.1
+
+### Patch Changes
+
+- [`00af5e2`](https://github.com/getdatanaut/openmcp/commit/00af5e2dc9e639c3877172bef5637e147bcd1b67) Thanks
+  [@P0lip](https://github.com/P0lip)! - Minor adjustment in Blob availability detection
+
 ## 0.1.0
 
 ### Minor Changes
