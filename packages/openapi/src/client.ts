@@ -350,7 +350,7 @@ function formatBody(body: unknown, contentType: string) {
         // Multipart form data
         const formData = new FormData();
         for (const [key, value] of Object.entries(body)) {
-          if (globalThis.Blob && value instanceof globalThis.Blob) {
+          if (typeof Blob !== 'undefined' && value instanceof Blob) {
             formData.append(key, value);
           } else {
             formData.append(key, String(toPrimitiveValue(value)));
