@@ -12,9 +12,13 @@ npx -y openmcp install <url or file path to openapi specification> --client <cha
 For example, to add the ability to query the weather from Cursor, you could run this:
 
 ```bash
-# openmcp will prompt you for a security key since this api requires it - but the value can be any string
+# openmcp will prompt you for a security key since this api requires it - but for this weather api the value can be any string
 npx -y openmcp install https://api.weather.gov/openapi.json --client cursor
 ```
+
+And this is what that ends up looking like:
+
+![2025-05-15 14 20 46](https://github.com/user-attachments/assets/8336d7d2-5dc5-409a-b745-0093fbc78d7c)
 
 Running the install command will create an `openmcp.json` file for you, and add the openmcp server to your the mcp
 config of your target (cursor, claude, etc). Running install again will update any existing `openmcp.json` file, if
