@@ -1,5 +1,12 @@
 # @openmcp/openapi
 
+## 0.1.2
+
+### Patch Changes
+
+- [`7ee5b16`](https://github.com/getdatanaut/openmcp/commit/7ee5b169d621211ed85dbb11625a8dd6b951178b) Thanks
+  [@P0lip](https://github.com/P0lip)! - Added a separate exports entry for the request client
+
 ## 0.1.1
 
 ### Patch Changes
