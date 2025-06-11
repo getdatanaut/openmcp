@@ -65,7 +65,10 @@ export class Client {
   readonly #defaultRequestHeaders: Record<string, string>;
   readonly #defaultRequestTimeout: number;
 
-  constructor(baseURL: URL, { fetch: _fetch = fetch, requestHeaders, defaultRequestTimeout }: ClientConfig = {}) {
+  constructor(
+    baseURL: URL,
+    { fetch: _fetch = fetch.bind(globalThis), requestHeaders, defaultRequestTimeout }: ClientConfig = {},
+  ) {
     this.#baseURL = baseURL;
     this.#fetch = _fetch;
     this.#defaultRequestHeaders = {
