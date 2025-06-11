@@ -1,5 +1,17 @@
 # @openmcp/openapi
 
+## 0.2.0
+
+### Minor Changes
+
+- [`08ef129`](https://github.com/getdatanaut/openmcp/commit/08ef12959c5119bc882fe2c35abf1b538bd89f38) Thanks
+  [@P0lip](https://github.com/P0lip)! - Introduced initial version of schema validator
+
+### Patch Changes
+
+- [`bce4ddf`](https://github.com/getdatanaut/openmcp/commit/bce4ddf4c194b222010ecbb60d6fae20a4fa39e5) Thanks
+  [@P0lip](https://github.com/P0lip)! - Bound context to fetch
+
 ## 0.1.2
 
 ### Patch Changes
