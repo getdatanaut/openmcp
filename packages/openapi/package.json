@@ -27,6 +27,11 @@
       "types": "./src/client.ts",
       "development": "./src/client.ts",
       "default": "./dist/client.js"
+    },
+    "./schema-validator": {
+      "types": "./src/schema-validator/index.ts",
+      "development": "./src/schema-validator/index.ts",
+      "default": "./dist/schema-validator/index.js"
     }
   },
   "scripts": {

@@ -4,5 +4,5 @@ export default defineConfig({
   format: 'esm',
   sourcemap: true,
   clean: true,
-  entry: ['src/index.ts', 'src/client.ts'],
+  entry: ['src/index.ts', 'src/client.ts', 'src/schema-validator/index.ts'],
 });
