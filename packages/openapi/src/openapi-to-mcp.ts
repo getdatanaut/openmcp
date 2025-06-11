@@ -1,5 +1,4 @@
 import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
-import { UriTemplate } from '@modelcontextprotocol/sdk/shared/uriTemplate.js';
 import {
   type McpServerTool,
   type OpenMcpServerOptions,
@@ -194,7 +193,7 @@ function getOperationInputSchema(operation: IHttpOperation<false>, requestConten
   const headerParams = parametersToTool(request.headers);
   const bodyParam = request.body?.contents?.find(param => param.mediaType === requestContentType)?.schema;
 
-  return {
+  return constrainedObject({
     type: 'object',
     properties: removeExtraProperties({
       ...(pathParams ? { path: { type: 'object', properties: pathParams } } : {}),
@@ -202,7 +201,20 @@ function getOperationInputSchema(operation: IHttpOperation<false>, requestConten
       ...(headerParams ? { headers: { type: 'object', properties: headerParams } } : {}),
       ...(bodyParam ? { body: bodyParam } : {}),
     }),
-  } satisfies JSONSchema7;
+  } satisfies JSONSchema7);
+}
+
+function constrainedObject<Value extends JSONSchema7 & { type: 'object'; properties: Record<string, JSONSchema7> }>(
+  value: Value,
+): Value & {
+  required: (keyof Value['properties'])[];
+  additionalProperties: false;
+} {
+  return {
+    ...value,
+    required: Object.keys(value.properties),
+    additionalProperties: false,
+  };
 }
 
 // Turn parameters into an object with the parameter name as the key and the parameter schema as the value
