@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "age": {
+      "type": "number"
+    },
+    "email": {
+      "type": "string"
+    }
+  },
+  "required": ["name", "age", "email"]
+}

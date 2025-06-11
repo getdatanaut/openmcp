@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "longString": {
+      "type": "string",
+      "description": "This is a very long string that exceeds the maximum string length limit. The limit is 15,000 characters, so this string needs to be longer than that."
+    }
+  }
+}

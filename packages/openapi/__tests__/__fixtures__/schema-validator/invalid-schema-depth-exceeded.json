@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "level1": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "level2": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "level3": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "level4": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "level5": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "level6": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "tooDeep": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
