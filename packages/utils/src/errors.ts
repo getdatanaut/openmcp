@@ -1,4 +1,4 @@
-import { APICallError, type LanguageModelV1 } from 'ai';
+import { APICallError, type LanguageModel } from 'ai';
 
 export type ClientServerNotFound = ReturnType<typeof clientServerNotFound>;
 export const clientServerNotFound = ({ serverId }: { serverId: string }) => ({
@@ -122,7 +122,7 @@ export const other = ({ message, error }: { message: string; error: unknown }) =
 });
 
 export type AiSdk = LlmApiCall | Stream;
-export const handleAiSdkError = ({ error, model }: { error: unknown; model: LanguageModelV1 }) => {
+export const handleAiSdkError = ({ error, model }: { error: unknown; model: LanguageModel }) => {
   if (APICallError.isInstance(error)) {
     return llmApiCall({ provider: model.provider, error });
   }

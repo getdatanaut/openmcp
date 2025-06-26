@@ -1,5 +1,5 @@
 import { traverse } from '@stoplight/json';
-import { type CoreMessage, generateObject, type LanguageModelV1 } from 'ai';
+import { type CoreMessage, generateObject, type LanguageModel } from 'ai';
 import dedent from 'dedent';
 import { countTokens } from 'gpt-tokenizer/model/gpt-4o';
 import type { JSONSchema7 } from 'json-schema';
@@ -24,7 +24,7 @@ export async function autoTrimToolResult<T>({
   toolResult: T;
   /** A description of what the tool results will be used for. */
   toolResultRequirements: string;
-  model: LanguageModelV1;
+  model: LanguageModel;
   minTokens?: number;
   tokenRatioThreshold?: number;
 }): Promise<Result<T, AutoTrimToolResultError>> {
@@ -121,7 +121,7 @@ export async function autoTrimToolResult<T>({
   }
 
   const endingTokenCount = countTokens(JSON.stringify(processedResultResult.value));
-  const tokenSavings = resultTokenCount - endingTokenCount - usage?.totalTokens;
+  const tokenSavings = resultTokenCount - endingTokenCount - (usage?.totalTokens ?? 0);
 
   console.log(
     `autoTrimToolResult(${tool.name}): used ${usage?.totalTokens} tokens to reduce result token count by ${resultTokenCount - endingTokenCount} tokens (${(((resultTokenCount - endingTokenCount) / resultTokenCount) * 100).toFixed(2)}%), resulting in a total token savings of ${tokenSavings} tokens`,

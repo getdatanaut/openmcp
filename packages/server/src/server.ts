@@ -1,4 +1,4 @@
-import { asSchema } from '@ai-sdk/ui-utils';
+import { asSchema } from '@ai-sdk/provider-utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import {
@@ -15,7 +15,7 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { addToolRequirementsToSchema, autoTrimToolResult } from '@openmcp/utils';
-import type { LanguageModelV1 } from 'ai';
+import type { LanguageModel } from 'ai';
 import type { JSONSchema7 } from 'json-schema';
 import type { z } from 'zod';
 
@@ -62,7 +62,7 @@ export interface OpenMcpServerOptions<Tool extends McpServerTool = McpServerTool
   transformToolResult?: (opts: TransformToolResultOpts) => any;
   autoTrimToolResult?: {
     enabled: boolean;
-    model: LanguageModelV1;
+    model: LanguageModel;
 
     // Tool results with fewer than this many tokens will not be trimmed
     minTokens?: number;
