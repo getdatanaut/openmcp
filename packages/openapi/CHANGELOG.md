@@ -1,5 +1,16 @@
 # @openmcp/openapi
 
+## 0.2.1
+
+### Patch Changes
+
+- [`1999c19`](https://github.com/getdatanaut/openmcp/commit/1999c190635b265f25c8533ade73e952d5d4aa86) Thanks
+  [@P0lip](https://github.com/P0lip)! - Added support for AI SDK v5
+
+- Updated dependencies
+  [[`1999c19`](https://github.com/getdatanaut/openmcp/commit/1999c190635b265f25c8533ade73e952d5d4aa86)]:
+  - @openmcp/server@0.0.4
+
 ## 0.2.0
 
 ### Minor Changes
