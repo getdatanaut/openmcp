@@ -1,5 +1,21 @@
 # @openmcp/server
 
+## 0.1.0
+
+### Minor Changes
+
+- [`be3e343`](https://github.com/getdatanaut/openmcp/commit/be3e343f9e75e37a2a37dd0fe1d4c29bbea8af5f) Thanks
+  [@P0lip](https://github.com/P0lip)! - Added new `structuredOutputs` opt-in option to enable rigid output validation
+
+### Patch Changes
+
+- [`66c4507`](https://github.com/getdatanaut/openmcp/commit/66c45070b16d07c8458a53c1dbd9ac0ab7a876ad) Thanks
+  [@P0lip](https://github.com/P0lip)! - Update dependencies to support latest ai-sdk v5 beta.2
+
+- Updated dependencies
+  [[`66c4507`](https://github.com/getdatanaut/openmcp/commit/66c45070b16d07c8458a53c1dbd9ac0ab7a876ad)]:
+  - @openmcp/utils@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes
