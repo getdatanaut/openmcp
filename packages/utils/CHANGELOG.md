@@ -1,5 +1,12 @@
 # @openmcp/utils
 
+## 0.0.5
+
+### Patch Changes
+
+- [`66c4507`](https://github.com/getdatanaut/openmcp/commit/66c45070b16d07c8458a53c1dbd9ac0ab7a876ad) Thanks
+  [@P0lip](https://github.com/P0lip)! - Update dependencies to support latest ai-sdk v5 beta.2
+
 ## 0.0.4
 
 ### Patch Changes

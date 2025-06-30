@@ -1,5 +1,25 @@
 # @openmcp/openapi
 
+## 0.3.0
+
+### Minor Changes
+
+- [`0644fec`](https://github.com/getdatanaut/openmcp/commit/0644fec490322af94bb367aff736da78363dbc02) Thanks
+  [@P0lip](https://github.com/P0lip)! - Enhance error handling for client requests
+
+- [`c8d4702`](https://github.com/getdatanaut/openmcp/commit/c8d47027af19b6dcdb1fabc56816fffa675417c0) Thanks
+  [@P0lip](https://github.com/P0lip)! - Add support for handling combined schemas with allOf
+
+### Patch Changes
+
+- [`66c4507`](https://github.com/getdatanaut/openmcp/commit/66c45070b16d07c8458a53c1dbd9ac0ab7a876ad) Thanks
+  [@P0lip](https://github.com/P0lip)! - Update dependencies to support latest ai-sdk v5 beta.2
+
+- Updated dependencies
+  [[`66c4507`](https://github.com/getdatanaut/openmcp/commit/66c45070b16d07c8458a53c1dbd9ac0ab7a876ad),
+  [`be3e343`](https://github.com/getdatanaut/openmcp/commit/be3e343f9e75e37a2a37dd0fe1d4c29bbea8af5f)]:
+  - @openmcp/server@0.1.0
+
 ## 0.2.1
 
 ### Patch Changes
