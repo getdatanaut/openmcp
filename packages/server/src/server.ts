@@ -1,18 +1,22 @@
 import { asSchema } from '@ai-sdk/provider-utils';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
+import type {
+  CallToolResultSchema,
+  ClientCapabilities,
+  Implementation,
+  ListResourcesResult,
+  ListResourceTemplatesResult,
+} from '@modelcontextprotocol/sdk/types.js';
 import {
   CallToolRequestSchema,
-  type ClientCapabilities,
   ErrorCode,
-  type Implementation,
   ListResourcesRequestSchema,
-  type ListResourcesResult,
   ListResourceTemplatesRequestSchema,
-  type ListResourceTemplatesResult,
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
+  ToolSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { addToolRequirementsToSchema, autoTrimToolResult } from '@openmcp/utils';
 import type { LanguageModel } from 'ai';
@@ -60,6 +64,7 @@ export interface OpenMcpServerOptions<Tool extends McpServerTool = McpServerTool
   resources?: (Resource<string, unknown> | ResourceTemplate<string, unknown>)[];
   onInitialize?: (clientInfo: Implementation, clientCapabilities: ClientCapabilities) => void;
   transformToolResult?: (opts: TransformToolResultOpts) => any;
+  structuredOutputs?: boolean;
   autoTrimToolResult?: {
     enabled: boolean;
     model: LanguageModel & { provider: string };
@@ -87,11 +92,13 @@ export class OpenMcpServer {
   #resources: Record<ResourceUri, Resource> = {};
   #resourceTemplates: Record<ResourceUri, ResourceTemplate> = {};
   #transformToolResult: OpenMcpServerOptions['transformToolResult'];
+  #structuredOutputs: OpenMcpServerOptions['structuredOutputs'];
   #autoTrimToolResult: OpenMcpServerOptions['autoTrimToolResult'];
 
   constructor(options: OpenMcpServerOptions) {
     this.#transformToolResult = options.transformToolResult;
     this.#autoTrimToolResult = options.autoTrimToolResult;
+    this.#structuredOutputs = options.structuredOutputs;
 
     this.server = new Server({ name: options.name, version: options.version }, { instructions: options.instructions });
 
@@ -160,12 +167,24 @@ export class OpenMcpServer {
     annotations?: Annotations;
   }) {
     const inputSchema = parameters ? asSchema(parameters).jsonSchema : undefined;
+    let outputSchema: JSONSchema7 | undefined;
+    if (this.#structuredOutputs) {
+      const maybeOutputSchema = asSchema(output).jsonSchema;
+      const outputSchemaParseResult = ToolSchema.shape.outputSchema.safeParse(maybeOutputSchema);
+      if (outputSchemaParseResult.success) {
+        outputSchema = maybeOutputSchema;
+      } else {
+        console.warn(
+          `[tool] output schema for tool ${JSON.stringify(name)} is invalid: ${outputSchemaParseResult.error}`,
+        );
+      }
+    }
 
     this.#tools[name] = {
       name,
       description,
       inputSchema: this.#autoTrimToolResult ? addToolRequirementsToSchema(inputSchema) : inputSchema,
-      outputSchema: output ? asSchema(output).jsonSchema : undefined,
+      outputSchema,
       execute,
       annotations: {
         title: annotations?.title,
@@ -186,7 +205,7 @@ export class OpenMcpServer {
     };
   }
 
-  async callTool(request: z.infer<typeof CallToolRequestSchema>) {
+  async callTool(request: z.infer<typeof CallToolRequestSchema>): Promise<z.infer<typeof CallToolResultSchema>> {
     const toolName = request.params.name as ToolName;
 
     const tool = (await this.getTools())[toolName];
@@ -230,6 +249,11 @@ export class OpenMcpServer {
 
       return {
         content: result ? [{ type: 'text', text: JSON.stringify(result) }] : [],
+        ...(tool.outputSchema
+          ? {
+              structuredContent: Object(result),
+            }
+          : null),
       };
     } catch (error) {
       return {
