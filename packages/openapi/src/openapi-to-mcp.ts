@@ -10,6 +10,7 @@ import {
 import { bundleOas2Service } from '@stoplight/http-spec/oas2';
 import { bundleOas3Service } from '@stoplight/http-spec/oas3';
 import { traverse } from '@stoplight/json';
+import mergeAllOf from '@stoplight/json-schema-merge-allof';
 import type { IHttpOperation } from '@stoplight/types';
 import { jsonSchema } from 'ai';
 import type { JSONSchema7 } from 'json-schema';
@@ -262,7 +263,7 @@ function removeExtraProperties<T>(obj: T): T {
   return obj;
 }
 
-function getOperationOutputSchema(operation: IHttpOperation<false>): JSONSchema7 {
+function _getOperationOutputSchema(operation: IHttpOperation<false>): JSONSchema7 {
   // Try 200 first
   let response = operation.responses.find(r => r.code === '200')?.contents?.find(c => c.schema)?.schema;
   if (!response) {
@@ -271,6 +272,15 @@ function getOperationOutputSchema(operation: IHttpOperation<false>): JSONSchema7
   }
 
   return response ? removeExtraProperties(response) : ({ type: 'object' } satisfies JSONSchema7);
+}
+
+function getOperationOutputSchema(operation: IHttpOperation<false>): JSONSchema7 {
+  const schema = _getOperationOutputSchema(operation);
+  try {
+    return mergeAllOf(schema);
+  } catch {
+    return schema;
+  }
 }
 
 // https://datatracker.ietf.org/doc/html/rfc9110#section-9.2.1
