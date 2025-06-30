@@ -31,10 +31,10 @@
   },
   "dependencies": {
     "@ai-sdk/provider-utils": "3.0.0-beta.2",
-    "@modelcontextprotocol/sdk": "^1.11.0",
+    "@modelcontextprotocol/sdk": "^1.13.2",
     "@openmcp/utils": "workspace:*",
     "ai": "^4.3.13 || 5.0.0-beta.2",
-    "zod": "^3.24.3"
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@datanaut/eslint-config": "0.1.1",
