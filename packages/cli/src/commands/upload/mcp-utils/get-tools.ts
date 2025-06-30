@@ -6,10 +6,6 @@ import type { ConnectedClient } from './create-client.ts';
 
 type Tool = NonNullable<Parameters<typeof rpcClient.cli.mcpServers.upload>[0]['tools']>[number];
 
-function unwrapBooleanOrUndefined(value: unknown) {
-  return typeof value === 'boolean' ? value : undefined;
-}
-
 export default async function getTools(client: ConnectedClient): Promise<Tool[]> {
   const capabilities = client.getServerCapabilities();
   if (!capabilities?.tools) {
@@ -19,19 +15,18 @@ export default async function getTools(client: ConnectedClient): Promise<Tool[]>
 
   try {
     return (await client.listTools()).tools.map<Tool>(tool => {
-      const annotations = tool['annotations'] as Record<string, unknown> | undefined;
-      const title = annotations?.['title'];
+      const annotations = tool.annotations;
       return {
         name: tool.name,
         description: tool.description,
         summary: tool.description ? getSummary(tool.description) : undefined,
-        displayName: typeof title === 'string' ? title : undefined,
+        displayName: annotations?.title,
         inputSchema: tool.inputSchema,
-        outputSchema: tool['outputSchema'] as Tool['outputSchema'] | undefined,
-        isReadonly: unwrapBooleanOrUndefined(annotations?.['readOnlyHint']),
-        isDestructive: unwrapBooleanOrUndefined(annotations?.['destructiveHint']),
-        isIdempotent: unwrapBooleanOrUndefined(annotations?.['idempotentHint']),
-        isOpenWorld: unwrapBooleanOrUndefined(annotations?.['openWorldHint']),
+        outputSchema: tool.outputSchema,
+        isReadonly: annotations?.readOnlyHint,
+        isDestructive: annotations?.destructiveHint,
+        isIdempotent: annotations?.idempotentHint,
+        isOpenWorld: annotations?.openWorldHint,
       };
     });
   } catch (error) {
