@@ -122,7 +122,7 @@ export const other = ({ message, error }: { message: string; error: unknown }) =
 });
 
 export type AiSdk = LlmApiCall | Stream;
-export const handleAiSdkError = ({ error, model }: { error: unknown; model: LanguageModel }) => {
+export const handleAiSdkError = ({ error, model }: { error: unknown; model: LanguageModel & { provider: string } }) => {
   if (APICallError.isInstance(error)) {
     return llmApiCall({ provider: model.provider, error });
   }

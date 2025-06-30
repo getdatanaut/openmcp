@@ -24,7 +24,7 @@ export async function autoTrimToolResult<T>({
   toolResult: T;
   /** A description of what the tool results will be used for. */
   toolResultRequirements: string;
-  model: LanguageModel;
+  model: LanguageModel & { provider: string };
   minTokens?: number;
   tokenRatioThreshold?: number;
 }): Promise<Result<T, AutoTrimToolResultError>> {

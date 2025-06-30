@@ -62,7 +62,7 @@ export interface OpenMcpServerOptions<Tool extends McpServerTool = McpServerTool
   transformToolResult?: (opts: TransformToolResultOpts) => any;
   autoTrimToolResult?: {
     enabled: boolean;
-    model: LanguageModel;
+    model: LanguageModel & { provider: string };
 
     // Tool results with fewer than this many tokens will not be trimmed
     minTokens?: number;
