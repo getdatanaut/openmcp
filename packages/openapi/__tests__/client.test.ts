@@ -348,6 +348,7 @@ describe('Client', () => {
 
       await expect(client.request(meta, {})).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: 'response text',
       });
@@ -377,6 +378,7 @@ describe('Client', () => {
       const requestBody = { name: 'Test User', email: 'test@example.com' };
       await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: { success: true, id: 123 },
       });
@@ -406,6 +408,7 @@ describe('Client', () => {
       const requestBody = { name: 'Updated Name', role: 'admin' };
       await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: {
           success: true,
@@ -430,6 +433,7 @@ describe('Client', () => {
 
       await expect(client.request(meta, {})).resolves.toStrictEqual({
         ok: true,
+        status: 204,
         error: null,
         data: null,
       });
@@ -454,6 +458,7 @@ describe('Client', () => {
 
       expect(result).toStrictEqual({
         ok: false,
+        status: 404,
         error: 'Not Found',
         data: { error: 'Resource not found' },
       });
@@ -483,6 +488,7 @@ describe('Client', () => {
         }),
       ).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: { userId: 123, postId: 456, title: 'Test Post' },
       });
@@ -529,6 +535,7 @@ describe('Client', () => {
         }),
       ).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: { results: ['item1', 'item2'] },
       });
@@ -570,6 +577,7 @@ describe('Client', () => {
 
       await expect(client.request(meta, { body: requestBody })).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: {
           success: true,
@@ -600,6 +608,7 @@ describe('Client', () => {
       const response = await client.request(meta, {});
       expect(response).toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: expect.any(ArrayBuffer),
       });
@@ -624,6 +633,7 @@ describe('Client', () => {
 
       await expect(client.request(meta, { body: 'Hello, world!' })).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: {
           success: true,
@@ -673,6 +683,7 @@ describe('Client', () => {
 
       expect(response).toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: expect.anything(),
       });
@@ -709,6 +720,7 @@ describe('Client', () => {
       const response = await client.request(meta, {});
       expect(response).toStrictEqual({
         ok: false,
+        status: null,
         error: 'aborted or timed out',
         data: null,
       });
@@ -740,6 +752,7 @@ describe('Client', () => {
 
       await expect(client.request(meta, {})).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: 'delayed response',
       });
@@ -773,6 +786,7 @@ describe('Client', () => {
       // that won't be aborted
       await expect(client.request(meta, { signal: new AbortController().signal })).resolves.toStrictEqual({
         ok: true,
+        status: 200,
         error: null,
         data: 'delayed response',
       });
@@ -810,6 +824,7 @@ describe('Client', () => {
       const response = await requestPromise;
       expect(response).toStrictEqual({
         ok: false,
+        status: null,
         error: 'aborted or timed out',
         data: null,
       });

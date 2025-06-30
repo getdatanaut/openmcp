@@ -196,12 +196,14 @@ async function processResponse(resPromise: ReturnType<FetchImpl>) {
     const res = await resPromise;
     return {
       ok: res.ok,
+      status: res.status,
       error: res.ok ? null : res.statusText,
       data: res.body === null ? null : await readBody(res),
     } as const;
   } catch (error) {
     return {
       ok: false,
+      status: null,
       error: error instanceof DOMException && error.name === 'AbortError' ? 'aborted or timed out' : String(error),
       data: null,
     } as const;
@@ -466,13 +468,13 @@ function isJsonContentType(value: string) {
 
 /**
  * Extracts the vendor-specific text subtype from a MIME type string.
- * Example of such vendor extension: application/vnd.github+json
+ * Example of such vendor extension: application/vnd.github+json, application/geo+json
  *
  * @param {string} value - The MIME type string to analyze.
  * @return {string | null} The extracted subtype if present and matches (json, xml, yaml, text), or null if not found.
  */
 function extractVendorSpecificTextType(value: string): string | null {
-  if (!value.startsWith('application/vnd.')) return null;
+  if (!/^application\/([a-z]+\+|vnd\.)/.test(value)) return null;
 
   const type = /\+(json|xml|yaml|text)$/.exec(value);
   return type === null ? null : type[1]!;

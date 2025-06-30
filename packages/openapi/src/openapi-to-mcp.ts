@@ -134,7 +134,16 @@ export async function openApiToMcpServerOptions(
           },
         };
 
-        return (await client.request(operationClientMeta, params)).data;
+        const res = await client.request(operationClientMeta, params);
+        if (res.ok) {
+          return res.data;
+        }
+
+        if (res.status === null) {
+          throw new Error(res.error);
+        }
+
+        throw new Error(`Request failed with status code ${res.status} and body: ${JSON.stringify(res.data, null, 2)}`);
       },
     });
   }
