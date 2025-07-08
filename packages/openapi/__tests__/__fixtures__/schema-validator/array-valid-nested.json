@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "matrix": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 10,
+        "items": { "type": "number" }
+      }
+    }
+  },
+  "required": ["matrix"],
+  "additionalProperties": false
+}

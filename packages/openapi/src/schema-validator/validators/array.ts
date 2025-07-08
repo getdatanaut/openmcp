@@ -13,13 +13,13 @@ export function validateArray(ctx: Context, value: { type: 'array'; [key: string
 
   let minItems = 0;
   if (validateKeywordValueType(ctx, value, 'minItems', 'number', true)) {
-    minItems = Math.max(0, minItems);
+    minItems = Math.max(0, value.minItems);
     if (value.minItems < 0) {
       ctx.errors.push(new InvalidSchemaError([...ctx.path, 'minItems'], '"minItems" must be greater than 0'));
     }
   }
 
-  if (validateKeywordValueType(ctx, value, 'maxItems', 'number') && value.maxItems < minItems) {
+  if (validateKeywordValueType(ctx, value, 'maxItems', 'number', true) && value.maxItems < minItems) {
     ctx.errors.push(new InvalidSchemaError([...ctx.path, 'maxItems'], '"maxItems" must be greater than "minItems"'));
   }
 

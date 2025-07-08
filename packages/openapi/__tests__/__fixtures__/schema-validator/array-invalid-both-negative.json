@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "minItems": -3,
+      "maxItems": -1,
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["items"],
+  "additionalProperties": false
+}
