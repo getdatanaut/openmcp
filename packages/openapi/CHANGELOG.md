@@ -1,5 +1,12 @@
 # @openmcp/openapi
 
+## 0.3.1
+
+### Patch Changes
+
+- [`d83d98a`](https://github.com/getdatanaut/openmcp/commit/d83d98a2fb49dc55d00f97d1e1781ea4121a98ae) Thanks
+  [@P0lip](https://github.com/P0lip)! - Improve validations for minItems/maxItems in array schemas
+
 ## 0.3.0
 
 ### Minor Changes
