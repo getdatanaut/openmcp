@@ -1,5 +1,12 @@
 # @openmcp/utils
 
+## 0.0.6
+
+### Patch Changes
+
+- [`aad0a17`](https://github.com/getdatanaut/openmcp/commit/aad0a178ce9cd53691f8338bf5f4102329a818f1) Thanks
+  [@P0lip](https://github.com/P0lip)! - Upgraded `@ai-sdk/provider-utils` to `^3.0.1` and `ai` to `^5.0.4`
+
 ## 0.0.5
 
 ### Patch Changes

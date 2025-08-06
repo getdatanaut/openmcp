@@ -1,5 +1,16 @@
 # openmcp
 
+## 1.0.10
+
+### Patch Changes
+
+- Updated dependencies
+  [[`98d3849`](https://github.com/getdatanaut/openmcp/commit/98d3849190b9dae06d743899b2f91f36d785b6c1),
+  [`aad0a17`](https://github.com/getdatanaut/openmcp/commit/aad0a178ce9cd53691f8338bf5f4102329a818f1)]:
+  - @openmcp/openapi@0.3.2
+  - @openmcp/server@0.1.1
+  - @openmcp/utils@0.0.6
+
 ## 1.0.9
 
 ### Patch Changes
