@@ -30,10 +30,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@ai-sdk/provider-utils": "3.0.0-beta.2",
+    "@ai-sdk/provider-utils": "^3.0.1",
     "@modelcontextprotocol/sdk": "^1.13.2",
     "@openmcp/utils": "workspace:*",
-    "ai": "^4.3.13 || 5.0.0-beta.2",
+    "ai": "^5.0.4",
     "zod": "^3.25.67"
   },
   "devDependencies": {
