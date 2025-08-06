@@ -1,3 +1,4 @@
+import { jsonSchema } from '@ai-sdk/provider-utils';
 import { dereference, JSONParserErrorGroup } from '@apidevtools/json-schema-ref-parser';
 import {
   type McpServerTool,
@@ -12,7 +13,6 @@ import { bundleOas3Service } from '@stoplight/http-spec/oas3';
 import { traverse } from '@stoplight/json';
 import mergeAllOf from '@stoplight/json-schema-merge-allof';
 import type { IHttpOperation } from '@stoplight/types';
-import { jsonSchema } from 'ai';
 import type { JSONSchema7 } from 'json-schema';
 import unset from 'lodash-es/unset.js';
 

@@ -31,6 +31,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ai-sdk/provider-utils@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@ai-sdk/provider-utils@npm:3.0.1"
+  dependencies:
+    "@ai-sdk/provider": "npm:2.0.0"
+    "@standard-schema/spec": "npm:^1.0.0"
+    eventsource-parser: "npm:^3.0.3"
+    zod-to-json-schema: "npm:^3.24.1"
+  peerDependencies:
+    zod: ^3.25.76 || ^4
+  checksum: 10c0/895229a717f8bbe2cb9031f3d58d4ec2eb913f03870d87bf66b7ed85c4ea41614e24fccac1e76ba4ec22d0005de32b33f7b639e5ee85ef25a83b911a44700b3a
+  languageName: node
+  linkType: hard
+
+"@ai-sdk/provider@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@ai-sdk/provider@npm:2.0.0"
+  dependencies:
+    json-schema: "npm:^0.4.0"
+  checksum: 10c0/e50e520016c9fc0a8b5009cadd47dae2f1c81ec05c1792b9e312d7d15479f024ca8039525813a33425c884e3449019fed21043b1bfabd6a2626152ca9a388199
+  languageName: node
+  linkType: hard
+
 "@ai-sdk/provider@npm:2.0.0-beta.1":
   version: 2.0.0-beta.1
   resolution: "@ai-sdk/provider@npm:2.0.0-beta.1"
@@ -2765,6 +2788,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@openmcp/openapi@workspace:packages/openapi"
   dependencies:
+    "@ai-sdk/provider-utils": "npm:^3.0.1"
     "@apidevtools/json-schema-ref-parser": "npm:^11.9.3"
     "@datanaut/eslint-config": "npm:0.1.1"
     "@datanaut/tsconfig": "npm:0.1.3"
@@ -2773,7 +2797,6 @@ __metadata:
     "@stoplight/http-spec": "npm:^7.1.0"
     "@stoplight/json": "npm:^3.21.7"
     "@stoplight/json-schema-merge-allof": "npm:0.8.0"
-    ai: "npm:^4.3.13 || 5.0.0-beta.2"
     eslint: "npm:9.26.0"
     fetch-mock: "npm:^12.5.2"
     json-schema: "npm:0.4.0"

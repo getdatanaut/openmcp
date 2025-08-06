@@ -42,13 +42,13 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@ai-sdk/provider-utils": "^3.0.1",
     "@apidevtools/json-schema-ref-parser": "^11.9.3",
     "@modelcontextprotocol/sdk": "^1.13.2",
     "@openmcp/server": "workspace:*",
     "@stoplight/http-spec": "^7.1.0",
     "@stoplight/json": "^3.21.7",
     "@stoplight/json-schema-merge-allof": "0.8.0",
-    "ai": "^4.3.13 || 5.0.0-beta.2",
     "lodash-es": "^4.17.21",
     "neverthrow": "^8.2.0",
     "url-template": "^3.1.1",
