@@ -1,5 +1,16 @@
 # @openmcp/openapi
 
+## 0.3.2
+
+### Patch Changes
+
+- [`98d3849`](https://github.com/getdatanaut/openmcp/commit/98d3849190b9dae06d743899b2f91f36d785b6c1) Thanks
+  [@P0lip](https://github.com/P0lip)! - Replaced `ai@^4.3.13 || 5.0.0-beta.2` with `@ai-sdk/provider-utils@^3.0.1`.
+
+- Updated dependencies
+  [[`aad0a17`](https://github.com/getdatanaut/openmcp/commit/aad0a178ce9cd53691f8338bf5f4102329a818f1)]:
+  - @openmcp/server@0.1.1
+
 ## 0.3.1
 
 ### Patch Changes
